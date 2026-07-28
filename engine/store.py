@@ -1,0 +1,63 @@
+"""Guarded reads from the normalised store.
+
+The database deliberately holds the *whole* corpus, sealed seasons included:
+serving predictions for 2026-27 needs 2023-26 match data to know where teams
+currently stand. That makes the store a second way into the data, so it gets
+the same guard the CSV loaders have -- otherwise the seal would be enforced on
+one path and open on the other, which is worse than no seal at all because it
+looks safe.
+"""
+
+from __future__ import annotations
+
+import sqlite3
+
+import pandas as pd
+
+from engine.ingest.holdout import Corpus, Purpose, resolve_seasons
+from engine.seasons import ALL_DIVISIONS
+
+
+def read_matches(
+    conn: sqlite3.Connection,
+    *,
+    purpose: Purpose = Purpose.DEV,
+    seasons: tuple[str, ...] | None = None,
+    divisions: tuple[str, ...] = ALL_DIVISIONS,
+    unseal_reason: str | None = None,
+) -> Corpus:
+    resolved = resolve_seasons(
+        purpose, seasons, conn=conn, unseal_reason=unseal_reason, name="store.read_matches"
+    )
+    frame = _select(conn, "matches", resolved, divisions, order="match_date, match_id")
+    frame["match_date"] = pd.to_datetime(frame["match_date"])
+    return Corpus(frame, purpose, tuple(resolved), tuple(divisions))
+
+
+def read_player_seasons(
+    conn: sqlite3.Connection,
+    *,
+    purpose: Purpose = Purpose.DEV,
+    seasons: tuple[str, ...] | None = None,
+    divisions: tuple[str, ...] = ALL_DIVISIONS,
+    unseal_reason: str | None = None,
+) -> Corpus:
+    resolved = resolve_seasons(
+        purpose, seasons, conn=conn, unseal_reason=unseal_reason,
+        name="store.read_player_seasons",
+    )
+    frame = _select(conn, "player_seasons", resolved, divisions, order="season, division, id")
+    return Corpus(frame, purpose, tuple(resolved), tuple(divisions))
+
+
+def _select(conn, table, seasons, divisions, *, order):
+    if not seasons or not divisions:
+        return pd.read_sql_query(f"SELECT * FROM {table} WHERE 0", conn)
+    s_marks = ",".join("?" * len(seasons))
+    d_marks = ",".join("?" * len(divisions))
+    return pd.read_sql_query(
+        f"SELECT * FROM {table} "
+        f"WHERE season IN ({s_marks}) AND division IN ({d_marks}) ORDER BY {order}",
+        conn,
+        params=[*seasons, *divisions],
+    )

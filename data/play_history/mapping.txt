@@ -1,0 +1,5 @@
+E0 - Premier League
+E1 - Championship
+E2 - League 1
+E3 - League 2
+EC - Championship

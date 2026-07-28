@@ -1,0 +1,19 @@
+Rk - Rank
+Player - Player Name
+Nation - Country of Origin
+Pos - Position
+Squad - Team
+Born - Year of Birth
+MP - Matches Played
+Starts - Games player started
+min - Minutes Played
+90's - Minutes played divided by 90
+Gls - Goals scored
+Ast - Assists
+G + A - Goals and Assists
+G - PK - Goals Minus Penalty Kicks
+PK - Penalty Kicks
+PKatt - Penalty Kicks Attempted
+CrdY - Yellow Cards
+CrdR - Red Cards
+G + A -PK - Goals and Assists minus Penalty Kicks

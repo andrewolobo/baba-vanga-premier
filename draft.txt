@@ -1,0 +1,17 @@
+The data is premier league, championship and league1 and league2 matches since 2010 to date and player statistics for each player in those teams(squad composition) to date
+
+Goal is a similar model team performance relative to player performance to determine correlation for 1x2 and O/U. 
+
+Things to Model
+
+- Team Strength, goal scoring means, average, 1x2
+- Player Strength
+- Head to Head, how each teams perform when paired with every other teams
+- Player pace, how a player improves/declines over the course of a season
+- Team pace, how a team performs over the course of a season 
+
+`Both of the pace predictors would be dynamic so if a team improves over the course of the tournament we can track it and update predictions` - These will be slow
+
+TOD, H2H
+
+Pick Model - Le Prado

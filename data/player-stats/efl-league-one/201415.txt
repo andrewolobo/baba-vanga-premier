@@ -1,0 +1,809 @@
+,,,,,,,Playing Time,Playing Time,Playing Time,Playing Time,Performance,Performance,Performance,Performance,Performance,Performance,Performance,Performance,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,,-additional
+Rk,Player,Nation,Pos,Squad,Age,Born,MP,Starts,Min,90s,Gls,Ast,G+A,G-PK,PK,PKatt,CrdY,CrdR,Gls,Ast,G+A,G-PK,G+A-PK,Matches,-9999
+1,Brad Abbott,eng ENG,MF,Barnsley,19,1994,5,4,314,3.5,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,d6fa48c0
+2,Adam El-Abd,eg EGY,DF,Bristol City,29,1984,2,0,37,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4eb90566
+3,Blair Adams,eng ENG,DF,Notts County,22,1991,34,31,2631,29.2,1,1,2,1,0,0,3,0,0.03,0.03,0.07,0.03,0.07,Matches,739a0921
+4,Ché Adams,sct SCO,FWMF,Sheffield United,18,1996,10,5,467,5.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,f2bf1b0f
+5,Miles Addison,eng ENG,DFMF,Scunthorpe,25,1989,3,3,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ccc9bd95
+6,Victor Adeboyejo,eng ENG,FW,Leyton Orient,16,1998,1,0,7,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e3c24495
+7,Hakeeb Adelakun,eng ENG,FWMF,Scunthorpe,18,1996,32,7,1034,11.5,6,2,8,6,0,0,3,0,0.52,0.17,0.70,0.52,0.70,Matches,042d182c
+8,Benik Afobe,cd COD,FW,MK Dons,21,1993,22,11,1259,14.0,10,2,12,9,1,1,2,0,0.71,0.14,0.86,0.64,0.79,Matches,b63f4077
+9,Kieran Agard,eng ENG,FWMF,Bristol City,24,1989,39,34,2880,32.0,13,4,17,12,1,2,3,0,0.41,0.12,0.53,0.37,0.50,Matches,a6c9bf1c
+10,Harry Agombar,eng ENG,FW,Swindon Town,22,1992,1,1,62,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,59e83b25
+11,Montel Agyemang,eng ENG,MF,Leyton Orient,17,1996,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,11f68bb8
+12,Nicky Ajose,eng ENG,FW,Crewe Alexandra,22,1991,27,23,2022,22.5,8,4,12,6,2,3,0,0,0.36,0.18,0.53,0.27,0.45,Matches,9ba0ea6e
+13,Craig Alcock,eng ENG,DF,Sheffield United,26,1987,24,17,1646,18.3,0,2,2,0,0,0,1,0,0.00,0.11,0.11,0.00,0.11,Matches,86f6cfd2
+14,Jamie Allen,eng ENG,MF,Rochdale,19,1995,35,33,2741,30.5,0,2,2,0,0,0,0,0,0.00,0.07,0.07,0.00,0.07,Matches,2c183a79
+15,Dele Alli,eng ENG,FWMF,MK Dons,18,1996,39,39,3399,37.8,16,9,25,16,0,0,7,0,0.42,0.24,0.66,0.42,0.66,Matches,cea4ee8f
+16,Ryan Allsop,eng ENG,GK,Coventry City,22,1992,24,24,2160,24.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,af615123
+17,Ben Alnwick,eng ENG,GK,Peterborough,27,1987,41,41,3690,41.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,55b11e73
+18,Jak Alnwick,eng ENG,GK,Bradford City,21,1993,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b0835fc0
+19,Blair Anderson,,MF,Crawley Town,22,1992,1,0,22,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9c893353
+20,Harry Anderson,eng ENG,FWMF,Peterborough,17,1997,10,6,596,6.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c6f940ed
+21,Jermaine Anderson,eng ENG,DFMF,Peterborough,18,1996,24,19,1614,17.9,1,0,1,1,0,0,3,0,0.06,0.00,0.06,0.06,0.06,Matches,97d9a4df
+22,Calvin Andrew,eng ENG,FW,Rochdale,27,1986,32,5,977,10.9,5,0,5,5,0,0,4,0,0.46,0.00,0.46,0.46,0.46,Matches,4b2711f5
+23,Danny Andrew,eng ENG,DFMF,Fleetwood Town,23,1990,7,6,489,5.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,90b57521
+24,Keith Andrews,ie IRL,MF,MK Dons,33,1980,5,2,201,2.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,5bca867f
+25,Gboly Ariyibi,us USA,FWMF,Chesterfield,19,1995,17,5,695,7.7,1,2,3,1,0,0,0,0,0.13,0.26,0.39,0.13,0.39,Matches,37849392
+26,Stephen Arthurworrey,eng ENG,DF,Yeovil Town,19,1994,29,29,2610,29.0,2,0,2,2,0,0,8,0,0.07,0.00,0.07,0.07,0.07,Matches,64c9d2f6
+27,Jamie Ashdown,eng ENG,GK,Crawley Town,33,1980,9,9,810,9.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0f056348
+28,Chris Atkinson,eng ENG,MF,Crewe Alexandra,22,1992,19,8,705,7.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,d0ce3b79
+29,Thierry Audel,fr FRA,DF,Crewe Alexandra,27,1987,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b3ff6173
+30,Luke Ayling,eng ENG,DFMF,Bristol City,22,1991,46,46,4080,45.3,4,2,6,4,0,0,3,0,0.09,0.04,0.13,0.09,0.13,Matches,420d7c7d
+31,James Bailey,eng ENG,DFMF,Barnsley,25,1988,25,19,1663,18.5,0,0,0,0,0,0,2,1,0.00,0.00,0.00,0.00,0.00,Matches,c16d7863
+32,James Baillie,eng ENG,DF,Crewe Alexandra,18,1996,13,12,1039,11.5,0,3,3,0,0,0,0,0,0.00,0.26,0.26,0.00,0.26,Matches,cef12475
+33,Bálint Bajner,hu HUN,FW,Notts County,23,1990,19,8,916,10.2,3,1,4,3,0,0,2,0,0.29,0.10,0.39,0.29,0.39,Matches,a676b68c
+34,Amadou Bakayoko,sl SLE,FW,Walsall,18,1996,7,0,49,0.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,7831875a
+35,Carl Baker,eng ENG,MF,MK Dons,31,1982,32,24,2292,25.5,9,8,17,9,0,0,4,0,0.35,0.31,0.67,0.35,0.67,Matches,9ab0af00
+36,Lewis Baker,eng ENG,MF,MK Dons,19,1995,12,8,767,8.5,3,2,5,3,0,0,0,0,0.35,0.23,0.59,0.35,0.59,Matches,1b278bf5
+37,George Baldock,gr GRE,DFMF,MK Dons,21,1993,9,6,550,6.1,0,1,1,0,0,0,2,0,0.00,0.16,0.16,0.00,0.16,Matches,394854c4
+38,Sam Baldock,eng ENG,FWMF,Bristol City,25,1989,4,4,359,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,9d597f08
+39,Jack Baldwin,eng ENG,DFMF,Peterborough,21,1993,11,11,939,10.4,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Matches,8ae7c4f9
+40,David Ball,eng ENG,FWMF,Fleetwood Town,24,1989,32,20,1807,20.1,8,8,16,8,0,0,2,0,0.40,0.40,0.80,0.40,0.80,Matches,c538e9e7
+41,Jeremy Balmy,fr FRA,FW,Notts County,20,1994,1,0,30,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f0c36ef2
+42,Ollie Banks,eng ENG,DFFW,Chesterfield,21,1992,24,11,1017,11.3,0,1,1,0,0,0,2,0,0.00,0.09,0.09,0.00,0.09,Matches,d4ec6c9a
+43,Charles Banya,eng ENG,MF,Crawley Town,20,1993,9,0,172,1.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,dd4ae02c
+44,George Barker,eng ENG,FW,Swindon Town,22,1991,5,1,104,1.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2972401e
+45,Tyrone Barnett,eng ENG,FW,Peterborough,28,1985,4,0,48,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ba241676
+46,Jack Barthram,eng ENG,DF,Swindon Town,20,1993,5,3,257,2.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,31699716
+47,Marvin Bartley,eng ENG,MF,Leyton Orient,28,1986,22,17,1500,16.7,0,1,1,0,0,0,4,0,0.00,0.06,0.06,0.00,0.06,Matches,be726139
+48,Adam Barton,nir NIR,MF,Coventry City,23,1991,27,24,1909,21.2,0,0,0,0,0,0,3,1,0.00,0.00,0.00,0.00,0.00,Matches,a36b02fd
+49,Chris Basham,eng ENG,DFMF,Sheffield United,26,1988,37,35,3074,34.2,0,0,0,0,0,0,9,1,0.00,0.00,0.00,0.00,0.00,Matches,1aa84968
+50,Shaun Batt,eng ENG,FWMF,Leyton Orient,27,1987,16,5,479,5.3,1,1,2,1,0,0,2,0,0.19,0.19,0.38,0.19,0.38,Matches,74c0ce72
+51,Mathieu Baudry,fr FRA,DF,Leyton Orient,26,1988,31,28,2596,28.8,1,1,2,1,0,0,9,1,0.03,0.03,0.07,0.03,0.07,Matches,f3c2e308
+52,Bobson Bawling,eng ENG,MF,Crawley Town,18,1995,28,13,1339,14.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,58cbc1bc
+53,James Baxendale,eng ENG,MF,Walsall,21,1992,28,17,1394,15.5,1,0,1,1,0,0,3,0,0.06,0.00,0.06,0.06,0.06,Matches,5db90096
+54,Jose Baxter,eng ENG,FWMF,Sheffield United,22,1992,34,28,2210,24.6,10,2,12,5,5,6,4,1,0.41,0.08,0.49,0.20,0.29,Matches,185990eb
+55,Marcus Bean,jm JAM,MF,Colchester,29,1984,3,3,238,2.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d7e4c65c
+56,Harry Beautyman,eng ENG,DFFW,Peterborough,22,1992,18,15,1318,14.6,1,0,1,1,0,0,0,0,0.07,0.00,0.07,0.07,0.07,Matches,b6623a0a
+57,Jermaine Beckford,jm JAM,FW,Preston,30,1983,23,19,1571,17.5,12,1,13,12,0,0,3,0,0.69,0.06,0.74,0.69,0.74,Matches,393303c7
+58,Cameron Belford,eng ENG,GK,Swindon Town,25,1988,1,0,69,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,25e47120
+59,Tyrell Belford,eng ENG,GK,Swindon Town,20,1994,2,2,110,1.2,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,285cc779
+60,Amari'i Bell,jm JAM,DFMF,Swindon Town,20,1994,10,7,572,6.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,399e9474
+61,Amari'i Bell,jm JAM,DFMF,Gillingham,20,1994,7,6,483,5.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,399e9474
+62,Fergus Bell,eng ENG,MF,Yeovil Town,23,1991,2,1,52,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,04130013
+63,Nyal Bell,eng ENG,FW,Rochdale,17,1997,3,0,60,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2cbbd5ad
+64,Kyle Bennett,eng ENG,MF,Doncaster,23,1990,41,31,2685,29.8,8,4,12,8,0,0,4,0,0.27,0.13,0.40,0.27,0.40,Matches,46b16c2c
+65,Mason Bennett,eng ENG,FWMF,Bradford City,18,1996,11,4,376,4.2,1,0,1,1,0,0,0,0,0.24,0.00,0.24,0.24,0.24,Matches,aba031ad
+66,Rhys Bennett,eng ENG,DF,Rochdale,22,1991,39,33,2980,33.1,2,5,7,2,0,0,7,0,0.06,0.15,0.21,0.06,0.21,Matches,50c7de8f
+67,Malvind Benning,eng ENG,DFMF,Walsall,20,1993,20,11,1052,11.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,f7722d79
+68,James Berrett,ie IRL,MF,Yeovil Town,25,1989,28,18,1668,18.5,1,0,1,1,0,0,4,0,0.05,0.00,0.05,0.05,0.05,Matches,7993b498
+69,Luke Berry,eng ENG,MF,Barnsley,22,1992,31,25,2256,25.1,1,2,3,1,0,0,5,0,0.04,0.08,0.12,0.04,0.12,Matches,2aaadf33
+70,Chris Birchall,tt TRI,MF,Port Vale,30,1984,27,12,1097,12.2,3,0,3,3,0,0,2,0,0.25,0.00,0.25,0.25,0.25,Matches,4820d2ac
+71,Colby Bishop,eng ENG,FW,Notts County,17,1996,3,2,162,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4a7dee3b
+72,Neal Bishop,eng ENG,MF,Scunthorpe,32,1981,35,34,2968,33.0,4,1,5,4,0,0,10,0,0.12,0.03,0.15,0.12,0.15,Matches,2c7b276d
+73,Matty Blair,eng ENG,DFMF,Fleetwood Town,25,1989,8,3,284,3.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,14455ab7
+74,Nana Boakye-Yiadom,eng ENG,FW,Barnsley,18,1996,1,0,13,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6a0e7453
+75,Romuald Boco,bj BEN,MF,Chesterfield,29,1985,13,11,880,9.8,1,1,2,1,0,0,2,0,0.10,0.10,0.20,0.10,0.20,Matches,8b5befda
+76,Macauley Bonne,zw ZIM,DFFW,Colchester,18,1995,10,3,350,3.9,1,0,1,1,0,0,0,0,0.26,0.00,0.26,0.26,0.26,Matches,9ca8b21c
+77,Michael Bostwick,eng ENG,DFMF,Peterborough,26,1988,38,37,3284,36.5,7,1,8,6,1,1,11,1,0.19,0.03,0.22,0.16,0.19,Matches,649b0d73
+78,Jordan Bove,eng ENG,FW,Oldham Athletic,18,1995,5,0,101,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f60df5d2
+79,Dean Bowditch,eng ENG,FWMF,MK Dons,28,1986,35,26,2026,22.5,7,5,12,7,0,0,2,0,0.31,0.22,0.53,0.31,0.53,Matches,5b20043e
+80,Andrew Boyce,eng ENG,DFMF,Scunthorpe,24,1989,29,25,2355,26.2,1,0,1,1,0,0,6,0,0.04,0.00,0.04,0.04,0.04,Matches,375aaca1
+81,Sonny Bradley,eng ENG,DF,Crawley Town,22,1991,26,25,2218,24.6,1,0,1,1,0,0,1,0,0.04,0.00,0.04,0.04,0.04,Matches,94ffccb3
+82,Tom Bradshaw,wls WAL,FW,Walsall,22,1992,29,29,2412,26.8,17,2,19,15,2,3,2,0,0.63,0.07,0.71,0.56,0.63,Matches,a9d071f8
+83,Raphael Branco,br BRA,DF,Swindon Town,24,1990,29,26,2375,26.4,3,0,3,3,0,0,11,0,0.11,0.00,0.11,0.11,0.11,Matches,275cd87c
+84,Febian Brandy,kn SKN,FW,Crewe Alexandra,25,1989,8,6,543,6.0,1,0,1,1,0,0,0,0,0.17,0.00,0.17,0.17,0.17,Matches,c5193ca1
+85,Febian Brandy,kn SKN,FW,Rochdale,25,1989,4,1,101,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c5193ca1
+86,John Brayford,eng ENG,DFMF,Sheffield United,26,1987,22,22,1980,22.0,1,3,4,1,0,0,2,0,0.05,0.14,0.18,0.05,0.18,Matches,bab2f2a5
+87,James Bree,eng ENG,DFMF,Barnsley,16,1997,11,6,588,6.5,0,1,1,0,0,0,0,0,0.00,0.15,0.15,0.00,0.15,Matches,c07b7c5c
+88,Matthew Briggs,gy GUY,DF,Colchester,23,1991,18,17,1552,17.2,0,4,4,0,0,0,2,1,0.00,0.23,0.23,0.00,0.23,Matches,182c89db
+89,Richard Brindley,eng ENG,DFMF,Colchester,21,1993,8,7,675,7.5,0,1,1,0,0,0,0,0,0.00,0.13,0.13,0.00,0.13,Matches,a7588b8d
+90,Richard Brindley,eng ENG,DFMF,Scunthorpe,21,1993,3,3,270,3.0,0,1,1,0,0,0,0,0,0.00,0.33,0.33,0.00,0.33,Matches,a7588b8d
+91,Shaun Brisley,eng ENG,DF,Scunthorpe,24,1990,7,6,598,6.6,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,cf4522d0
+92,Shaun Brisley,eng ENG,DF,Peterborough,24,1990,15,11,1026,11.4,1,0,1,1,0,0,2,0,0.09,0.00,0.09,0.09,0.09,Matches,cf4522d0
+93,Jack Broadhead,eng ENG,DFMF,Chesterfield,19,1994,1,0,6,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2030e9d7
+94,Connor Brown,eng ENG,DFMF,Oldham Athletic,21,1992,24,22,1945,21.6,0,2,2,0,0,0,6,0,0.00,0.09,0.09,0.00,0.09,Matches,44aea7fc
+95,Michael Brown,eng ENG,MF,Port Vale,37,1977,36,30,2475,27.5,4,0,4,4,0,0,6,1,0.15,0.00,0.15,0.15,0.15,Matches,85543572
+96,Reece Brown,eng ENG,FWMF,Notts County,18,1996,3,3,198,2.2,0,1,1,0,0,0,0,0,0.00,0.45,0.45,0.00,0.45,Matches,59dc2fe5
+97,Reece Brown,eng ENG,DFMF,Barnsley,22,1991,13,10,914,10.2,0,1,1,0,0,0,0,0,0.00,0.10,0.10,0.00,0.10,Matches,3c0fba18
+98,Alan Browne,ie IRL,DFMF,Preston,19,1995,20,14,1319,14.7,3,0,3,3,0,0,1,0,0.20,0.00,0.20,0.20,0.20,Matches,25dea15a
+99,Josh Brownhill,eng ENG,MF,Preston,18,1995,18,13,1182,13.1,2,2,4,2,0,0,0,0,0.15,0.15,0.30,0.15,0.30,Matches,47369df8
+100,Joe Bryan,eng ENG,DFMF,Bristol City,20,1993,41,39,3373,37.5,6,10,16,6,0,0,4,0,0.16,0.27,0.43,0.16,0.43,Matches,af69e7f0
+101,David Buchanan,nir NIR,DFMF,Preston,28,1986,17,17,1421,15.8,0,1,1,0,0,0,2,0,0.00,0.06,0.06,0.00,0.06,Matches,a49a3e23
+102,Joe Bunney,eng ENG,DFFW,Rochdale,20,1993,19,10,1038,11.5,2,1,3,2,0,0,2,0,0.17,0.09,0.26,0.17,0.26,Matches,7d4c4f3b
+103,Lee Burge,eng ENG,GK,Coventry City,21,1993,18,18,1620,18.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,1393c5ac
+104,Christian Burgess,eng ENG,DF,Peterborough,22,1991,30,28,2518,28.0,3,0,3,3,0,0,7,0,0.11,0.00,0.11,0.11,0.11,Matches,f8766ef9
+105,Graham Burke,ie IRL,FWMF,Notts County,20,1993,7,6,498,5.5,1,2,3,1,0,0,3,0,0.18,0.36,0.54,0.18,0.54,Matches,bc227f51
+106,Oliver Burke,sct SCO,FWMF,Bradford City,17,1997,2,2,139,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f631c17f
+107,Wes Burns,wls WAL,DFFW,Bristol City,19,1994,3,0,77,0.9,1,0,1,1,0,0,0,0,1.17,0.00,1.17,1.17,1.17,Matches,b3fe23c6
+108,Deon Burton,jm JAM,FW,Scunthorpe,37,1976,5,1,204,2.3,0,1,1,0,0,0,0,0,0.00,0.44,0.44,0.00,0.44,Matches,c0567c0f
+109,Andy Butler,eng ENG,DF,Doncaster,30,1983,33,33,2970,33.0,3,1,4,3,0,0,6,0,0.09,0.03,0.12,0.09,0.12,Matches,7a10f219
+110,Andy Butler,eng ENG,DF,Walsall,30,1983,7,7,630,7.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,7a10f219
+111,Nathan Byrne,eng ENG,DFMF,Swindon Town,22,1992,42,42,3780,42.0,3,10,13,3,0,0,4,0,0.07,0.24,0.31,0.07,0.31,Matches,c4041fbc
+112,Stephen Bywater,eng ENG,GK,Doncaster,33,1981,21,21,1890,21.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,aaa3d97b
+113,Stephen Bywater,eng ENG,GK,Gillingham,33,1981,13,13,1170,13.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,aaa3d97b
+114,Michael Cain,,MF,Walsall,19,1994,32,28,2465,27.4,2,2,4,2,0,0,0,0,0.07,0.07,0.15,0.07,0.15,Matches,2ea1a7d7
+115,Dominic Calvert-Lewin,eng ENG,FWMF,Sheffield United,17,1997,2,0,57,0.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,59e6e5bf
+116,Adam Campbell,eng ENG,FWMF,Fleetwood Town,19,1995,2,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e3aa211f
+117,Jamal Campbell-Ryce,jm JAM,FWMF,Sheffield United,31,1983,19,14,1232,13.7,4,1,5,4,0,0,3,0,0.29,0.07,0.37,0.29,0.37,Matches,d02c06d8
+118,Jamal Campbell-Ryce,jm JAM,FWMF,Notts County,31,1983,4,3,315,3.5,0,1,1,0,0,0,0,0,0.00,0.29,0.29,0.00,0.29,Matches,d02c06d8
+119,Achille Campion,fr FRA,FW,Port Vale,24,1990,12,4,444,4.9,1,0,1,1,0,0,0,0,0.20,0.00,0.20,0.20,0.20,Matches,fcc55c26
+120,Callum Camps,nir NIR,MF,Rochdale,18,1995,12,6,543,6.0,1,1,2,1,0,0,0,0,0.17,0.17,0.33,0.17,0.33,Matches,44b52781
+121,Niall Canavan,ie IRL,DF,Scunthorpe,23,1991,32,31,2806,31.2,3,2,5,3,0,0,3,0,0.10,0.06,0.16,0.10,0.16,Matches,f7ce89e7
+122,Andy Cannon,eng ENG,MF,Rochdale,18,1996,18,16,1472,16.4,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,5d7b6611
+123,Roy Carroll,nir NIR,GK,Notts County,36,1977,45,45,4050,45.0,0,0,0,0,0,0,9,0,0.00,0.00,0.00,0.00,0.00,Matches,0e880937
+124,Samir Carruthers,ie IRL,MF,MK Dons,21,1993,32,20,1768,19.6,2,6,8,2,0,0,6,0,0.10,0.31,0.41,0.10,0.41,Matches,5a853458
+125,Ashley Carter,eng ENG,DF,Chesterfield,18,1995,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,029201aa
+126,Jake Cassidy,wls WAL,FW,Notts County,21,1993,16,15,1302,14.5,3,1,4,3,0,0,2,0,0.21,0.07,0.28,0.21,0.28,Matches,a3cb12c8
+127,Adam Chambers,eng ENG,DFMF,Walsall,33,1980,45,45,3950,43.9,0,2,2,0,0,0,7,0,0.00,0.05,0.05,0.00,0.05,Matches,c04ec549
+128,James Chambers,eng ENG,DF,Walsall,33,1980,31,31,2621,29.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,4f2a1eb0
+129,Adam Chicksen,zw ZIM,DFMF,Fleetwood Town,22,1991,13,13,1100,12.2,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,c87352d6
+130,Adam Chicksen,zw ZIM,DFMF,Gillingham,22,1991,3,3,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c87352d6
+131,Alex Cisak,au AUS,GK,Leyton Orient,25,1989,19,19,1710,19.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1bbe1801
+132,Billy Clarke,ie IRL,FWMF,Bradford City,26,1987,36,32,2808,31.2,13,1,14,13,0,0,6,0,0.42,0.03,0.45,0.42,0.45,Matches,8286db68
+133,Jordan Clarke,eng ENG,DF,Scunthorpe,22,1991,24,24,2160,24.0,0,0,0,0,0,0,8,0,0.00,0.00,0.00,0.00,0.00,Matches,08229d38
+134,Jordan Clarke,eng ENG,DF,Yeovil Town,22,1991,5,5,450,5.0,2,1,3,2,0,0,0,0,0.40,0.20,0.60,0.40,0.60,Matches,08229d38
+135,Jordan Clarke,eng ENG,DF,Coventry City,22,1991,11,10,940,10.4,1,0,1,1,0,0,2,0,0.10,0.00,0.10,0.10,0.10,Matches,08229d38
+136,Nathan Clarke,eng ENG,DFMF,Leyton Orient,30,1983,33,31,2817,31.3,0,0,0,0,0,0,8,0,0.00,0.00,0.00,0.00,0.00,Matches,3a8ce088
+137,Tom Clarke,eng ENG,DFMF,Preston,26,1987,43,42,3763,41.8,1,2,3,1,0,0,6,0,0.02,0.05,0.07,0.02,0.07,Matches,73e704dd
+138,Jonson Clarke-Harris,jm JAM,FW,Doncaster,20,1994,9,3,423,4.7,1,0,1,1,0,0,1,0,0.21,0.00,0.21,0.21,0.21,Matches,260af28b
+139,Jonson Clarke-Harris,jm JAM,FW,Oldham Athletic,20,1994,5,5,439,4.9,1,0,1,1,0,0,0,0,0.21,0.00,0.21,0.21,0.21,Matches,260af28b
+140,Jonson Clarke-Harris,jm JAM,FW,MK Dons,20,1994,5,2,191,2.1,0,1,1,0,0,0,0,0,0.00,0.47,0.47,0.00,0.47,Matches,260af28b
+141,Billy Clifford,eng ENG,MF,Walsall,21,1992,13,7,684,7.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ac30d565
+142,Sean Clohessy,eng ENG,DF,Colchester,27,1986,32,31,2805,31.2,0,5,5,0,0,0,2,0,0.00,0.16,0.16,0.00,0.16,Matches,f546e3e8
+143,Sam Clucas,eng ENG,MF,Chesterfield,23,1990,41,40,3575,39.7,9,2,11,9,0,0,5,0,0.23,0.05,0.28,0.23,0.28,Matches,987718f5
+144,John Cofie,eng ENG,FW,Crawley Town,21,1993,1,0,7,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,98d91ecf
+145,Ryan Colclough,eng ENG,FWMF,Crewe Alexandra,19,1994,7,3,351,3.9,2,1,3,2,0,0,1,0,0.51,0.26,0.77,0.51,0.77,Matches,e6e6ff5c
+146,Devante Cole,eng ENG,FW,Barnsley,19,1995,19,15,1435,15.9,5,1,6,5,0,0,3,0,0.31,0.06,0.38,0.31,0.38,Matches,5736378a
+147,Devante Cole,eng ENG,FW,MK Dons,19,1995,15,5,470,5.2,3,1,4,3,0,0,0,0,0.57,0.19,0.77,0.57,0.77,Matches,5736378a
+148,Joel Coleman,eng ENG,GK,Oldham Athletic,18,1995,11,10,934,10.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b73e459a
+149,Neill Collins,sct SCO,DF,Port Vale,30,1983,7,7,606,6.7,0,1,1,0,0,0,1,0,0.00,0.15,0.15,0.00,0.15,Matches,91ff7e1e
+150,Neill Collins,sct SCO,DF,Sheffield United,30,1983,8,8,717,8.0,1,1,2,1,0,0,0,0,0.13,0.13,0.25,0.13,0.25,Matches,91ff7e1e
+151,Jordan Cook,eng ENG,FW,Walsall,24,1990,32,27,2344,26.0,5,4,9,5,0,0,4,0,0.19,0.15,0.35,0.19,0.35,Matches,28a7e81c
+152,Josh Cooke,eng ENG,FW,Swindon Town,17,1997,2,1,28,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f0272c21
+153,George Cooper,eng ENG,MF,Crewe Alexandra,17,1996,22,5,749,8.3,3,1,4,3,0,0,3,0,0.36,0.12,0.48,0.36,0.48,Matches,239aa601
+154,Liam Cooper,sct SCO,DF,Chesterfield,22,1991,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,dc64b8b3
+155,James Coppinger,eng ENG,FWMF,Doncaster,33,1981,34,33,2818,31.3,4,6,10,4,0,0,0,0,0.13,0.19,0.32,0.13,0.32,Matches,181152ec
+156,Mohamed Coulibaly,fr FRA,FWMF,Port Vale,25,1988,4,1,147,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3cc07724
+157,Mohamed Coulibaly,fr FRA,FWMF,Coventry City,25,1988,4,1,112,1.2,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,3cc07724
+158,Paul Coutts,sct SCO,MF,Sheffield United,26,1988,20,19,1638,18.2,0,1,1,0,0,0,3,0,0.00,0.05,0.05,0.00,0.05,Matches,e00c4257
+159,Jack Cowgill,eng ENG,DF,Barnsley,17,1997,2,1,76,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,fa6d1d1d
+160,Dean Cox,eng ENG,MF,Leyton Orient,26,1987,37,27,2540,28.2,6,9,15,6,0,0,6,0,0.21,0.32,0.53,0.21,0.53,Matches,f419ee74
+161,Stephen Crainey,sct SCO,DF,Fleetwood Town,33,1981,28,26,2337,26.0,0,0,0,0,0,0,6,2,0.00,0.00,0.00,0.00,0.00,Matches,2f6dd6a3
+162,Martin Cranie,eng ENG,DF,Barnsley,27,1986,39,39,3446,38.3,1,0,1,1,0,0,10,0,0.03,0.00,0.03,0.03,0.03,Matches,9e53837d
+163,Jordan Cranston,wls WAL,DFMF,Notts County,20,1993,9,9,741,8.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,44ebf2e2
+164,Ryan Cresswell,eng ENG,DF,Fleetwood Town,26,1987,1,0,4,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,39d496a8
+165,Greg Cunningham,ie IRL,DFMF,Bristol City,23,1991,24,9,1003,11.1,2,3,5,1,1,1,2,0,0.18,0.27,0.45,0.09,0.36,Matches,dc10b26c
+166,Scott Cuthbert,sct SCO,DFMF,Leyton Orient,27,1987,38,36,3242,36.0,2,2,4,2,0,0,4,0,0.06,0.06,0.11,0.06,0.11,Matches,a76227cb
+167,Florent Cuvelier,be BEL,MF,Sheffield United,21,1992,3,1,64,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,99b48f8c
+168,Tomasz Cywka,pl POL,DFFW,Rochdale,26,1988,3,1,101,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,db7e8bab
+169,Bradley Dack,eng ENG,FWMF,Gillingham,20,1993,42,35,3124,34.7,9,8,17,9,0,0,8,0,0.26,0.23,0.49,0.26,0.49,Matches,542d4f02
+170,Chris Dagnall,eng ENG,FW,Leyton Orient,28,1986,38,34,2979,33.1,11,7,18,10,1,2,2,1,0.33,0.21,0.54,0.30,0.51,Matches,5cf6999a
+171,Lauri Dalla Valle,fi FIN,FW,Crewe Alexandra,22,1991,16,10,914,10.2,4,2,6,4,0,0,1,0,0.39,0.20,0.59,0.39,0.59,Matches,efca7b19
+172,Colin Daniel,eng ENG,DFMF,Port Vale,26,1988,28,8,1038,11.5,4,0,4,4,0,0,1,0,0.35,0.00,0.35,0.35,0.35,Matches,c2684852
+173,Billy Daniels,eng ENG,FW,Notts County,20,1994,3,1,97,1.1,1,0,1,1,0,0,0,0,0.93,0.00,0.93,0.93,0.93,Matches,7cc2c53e
+174,Billy Daniels,eng ENG,FW,Coventry City,20,1994,2,0,26,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7cc2c53e
+175,Luke Daniels,eng ENG,GK,Scunthorpe,26,1988,23,23,2070,23.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,87fce32b
+176,Stephen Darby,eng ENG,DF,Bradford City,25,1988,45,45,3994,44.4,0,2,2,0,0,0,6,1,0.00,0.05,0.05,0.00,0.05,Matches,f2909779
+177,Tendayi Darikwa,zw ZIM,DFMF,Chesterfield,22,1991,46,46,4103,45.6,1,2,3,1,0,0,7,0,0.02,0.04,0.07,0.02,0.07,Matches,beecc37c
+178,Alex Davey,sct SCO,DF,Scunthorpe,19,1994,13,13,1103,12.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,546d706e
+179,Adam Davies,wls WAL,GK,Barnsley,22,1992,23,22,1997,22.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,71894777
+180,Andrew Davies,eng ENG,DF,Bradford City,29,1984,28,28,2187,24.3,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,8912dc31
+181,Ben Davies,eng ENG,DFMF,Sheffield United,33,1981,15,11,980,10.9,4,1,5,3,1,1,3,0,0.37,0.09,0.46,0.28,0.37,Matches,b99746b2
+182,Ben Davies,eng ENG,DF,Preston,18,1995,4,4,315,3.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c9009a1f
+183,Callum Davies,eng ENG,DF,Gillingham,21,1993,5,5,409,4.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3f0a8fbf
+184,Kevin Davies,eng ENG,FW,Preston,37,1977,32,8,1057,11.7,1,7,8,1,0,0,2,0,0.09,0.60,0.68,0.09,0.68,Matches,2f726a89
+185,Steve Davies,eng ENG,FW,Sheffield United,26,1987,12,10,777,8.6,2,1,3,2,0,0,2,0,0.23,0.12,0.35,0.23,0.35,Matches,c4612ab6
+186,Harry Davis,eng ENG,DF,Crewe Alexandra,22,1991,31,31,2741,30.5,1,0,1,1,0,0,4,0,0.03,0.00,0.03,0.03,0.03,Matches,04d0f653
+187,Liam Davis,eng ENG,DFMF,Yeovil Town,27,1986,8,8,666,7.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,0d7eef8b
+188,Adam Dawson,eng ENG,MF,Notts County,21,1992,2,1,116,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0043fdf3
+189,Andy Dawson,eng ENG,DF,Scunthorpe,35,1978,3,3,255,2.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d87a80b2
+190,Kevin Dawson,ie IRL,MF,Yeovil Town,24,1990,17,12,1111,12.3,1,1,2,1,0,0,4,0,0.08,0.08,0.16,0.08,0.16,Matches,38ab7e00
+191,Stephen Dawson,ie IRL,MF,Rochdale,28,1985,30,27,2253,25.0,0,5,5,0,0,0,6,0,0.00,0.20,0.20,0.00,0.20,Matches,fd55dd25
+192,James Dayton,eng ENG,MF,Oldham Athletic,25,1988,17,5,530,5.9,1,0,1,1,0,0,0,0,0.17,0.00,0.17,0.17,0.17,Matches,d81b93e0
+193,Bobby De Cordova-Reid,jm JAM,FWMF,Bristol City,21,1993,2,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0f7533cd
+194,Johny Diba,eng ENG,GK,Rochdale,16,1997,1,0,31,0.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,e0dbedf0
+195,Brennan Dickenson,eng ENG,FWMF,Gillingham,21,1993,34,17,1757,19.5,1,1,2,1,0,0,3,0,0.05,0.05,0.10,0.05,0.10,Matches,37a18c9e
+196,Carl Dickinson,eng ENG,DF,Port Vale,27,1987,43,43,3825,42.5,1,3,4,1,0,0,8,0,0.02,0.07,0.09,0.02,0.09,Matches,ddce8cfa
+197,Ryan Dickson,eng ENG,DFMF,Crawley Town,27,1986,32,30,2694,29.9,1,3,4,1,0,0,5,0,0.03,0.10,0.13,0.03,0.13,Matches,1eb7cac1
+198,Timothée Dieng,fr FRA,DFMF,Oldham Athletic,22,1992,22,15,1228,13.6,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,fabed0b8
+199,Emmanuel Dieseruvwe,eng ENG,FW,Chesterfield,19,1995,9,0,94,1.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,fda11e76
+200,Paul Digby,eng ENG,DFMF,Barnsley,19,1995,11,5,431,4.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,7c39baa2
+201,Stephen Dobbie,sct SCO,FW,Fleetwood Town,31,1982,27,18,1521,16.9,4,2,6,3,1,1,1,0,0.24,0.12,0.36,0.18,0.30,Matches,2d67e9c7
+202,Louis Dodds,eng ENG,FWMF,Port Vale,27,1986,37,24,2036,22.6,4,1,5,4,0,0,5,0,0.18,0.04,0.22,0.18,0.22,Matches,62fe7159
+203,Matthew Dolan,eng ENG,DFMF,Bradford City,21,1993,13,3,384,4.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ae812276
+204,Matt Done,wls WAL,DFFW,Sheffield United,26,1988,15,12,1091,12.1,7,1,8,7,0,0,0,0,0.58,0.08,0.66,0.58,0.66,Matches,004bdc92
+205,Matt Done,wls WAL,DFFW,Rochdale,26,1988,23,23,1956,21.7,10,6,16,10,0,1,3,1,0.46,0.28,0.74,0.46,0.74,Matches,004bdc92
+206,George Donnelly,eng ENG,FW,Rochdale,26,1988,3,1,114,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,85fa3416
+207,Andrea Dossena,it ITA,DFMF,Leyton Orient,32,1981,15,13,1134,12.6,1,1,2,1,0,0,1,0,0.08,0.08,0.16,0.08,0.16,Matches,3ae59b9c
+208,Michael Doughty,wls WAL,MF,Gillingham,21,1992,9,9,775,8.6,0,2,2,0,0,0,2,1,0.00,0.23,0.23,0.00,0.23,Matches,e98740ac
+209,Paul Downing,eng ENG,DF,Walsall,22,1991,35,33,3080,34.2,1,0,1,1,0,0,5,0,0.03,0.00,0.03,0.03,0.03,Matches,1100cd5a
+210,Eoin Doyle,ie IRL,FW,Chesterfield,26,1988,26,26,2310,25.7,22,2,24,16,6,7,5,0,0.86,0.08,0.94,0.62,0.70,Matches,cbb97d3b
+211,Michael Doyle,ie IRL,DFMF,Sheffield United,32,1981,43,35,3256,36.2,1,2,3,1,0,0,6,0,0.03,0.06,0.08,0.03,0.08,Matches,445f0d6f
+212,Joe Dudgeon,nir NIR,DF,Barnsley,23,1990,14,14,1259,14.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,96ff7c5d
+213,Mark Duffy,eng ENG,MF,Chesterfield,28,1985,3,1,106,1.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d86ccbc9
+214,Richard Duffy,wls WAL,DF,Port Vale,28,1985,27,27,2367,26.3,1,0,1,1,0,0,8,1,0.04,0.00,0.04,0.04,0.04,Matches,4faca002
+215,Adam Dugdale,eng ENG,DF,Crewe Alexandra,26,1987,18,16,1517,16.9,1,0,1,1,0,0,3,0,0.06,0.00,0.06,0.06,0.06,Matches,27e5adf5
+216,Mustapha Dumbuya,sl SLE,DFMF,Notts County,26,1987,29,27,2407,26.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,113d887e
+217,Neal Eardley,wls WAL,DF,Leyton Orient,25,1988,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2bb4411f
+218,Ashley Eastham,eng ENG,DF,Rochdale,23,1991,41,40,3546,39.4,2,2,4,2,0,0,1,1,0.05,0.05,0.10,0.05,0.10,Matches,b045cd5c
+219,Tom Eastman,eng ENG,DF,Colchester,22,1991,46,46,4140,46.0,1,1,2,1,0,0,8,0,0.02,0.02,0.04,0.02,0.04,Matches,c7e4c513
+220,Craig Eastmond,eng ENG,DFMF,Colchester,23,1990,10,6,474,5.3,1,0,1,1,0,0,2,0,0.19,0.00,0.19,0.19,0.19,Matches,a8c40a73
+221,Craig Eastmond,eng ENG,DFMF,Yeovil Town,23,1990,1,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a8c40a73
+222,Tom Eaves,eng ENG,FW,Yeovil Town,22,1992,5,4,383,4.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,377c465b
+223,Sylvan Ebanks-Blake,eng ENG,FW,Preston,28,1986,9,1,167,1.9,1,1,2,1,0,0,0,0,0.54,0.54,1.08,0.54,1.08,Matches,9dfe6a3f
+224,Gwion Edwards,wls WAL,FWMF,Crawley Town,21,1993,37,29,2617,29.1,4,4,8,4,0,0,4,0,0.14,0.14,0.28,0.14,0.28,Matches,9a60d8f4
+225,Joe Edwards,eng ENG,DFMF,Yeovil Town,23,1990,34,33,2945,32.7,0,0,0,0,0,0,7,0,0.00,0.00,0.00,0.00,0.00,Matches,a04d478f
+226,Jonathan Edwards,eng ENG,FW,Peterborough,17,1996,3,1,93,1.0,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,86057c05
+227,Mike Edwards,eng ENG,DF,Notts County,34,1980,18,17,1448,16.1,3,0,3,3,0,0,4,0,0.19,0.00,0.19,0.19,0.19,Matches,020839bb
+228,John Egan,ie IRL,DF,Gillingham,21,1992,45,45,4041,44.9,4,0,4,4,0,0,7,0,0.09,0.00,0.09,0.09,0.09,Matches,debe38a0
+229,Max Ehmer,eng ENG,DFMF,Gillingham,22,1992,27,27,2430,27.0,1,3,4,1,0,0,4,0,0.04,0.11,0.15,0.04,0.15,Matches,ca4d02c3
+230,Marvin Elliott,jm JAM,MF,Crawley Town,29,1984,27,22,1935,21.5,6,0,6,6,0,0,2,0,0.28,0.00,0.28,0.28,0.28,Matches,431228a8
+231,Wade Elliott,eng ENG,MF,Bristol City,35,1978,36,26,2193,24.4,2,2,4,2,0,0,2,1,0.08,0.08,0.16,0.08,0.16,Matches,20435992
+232,George Elokobi,cm CMR,DF,Oldham Athletic,28,1986,24,20,1757,19.5,3,0,3,3,0,0,1,0,0.15,0.00,0.15,0.15,0.15,Matches,36aad3ed
+233,Jay Emmanuel-Thomas,eng ENG,FWMF,Bristol City,23,1990,36,10,1108,12.3,9,3,12,5,4,4,0,0,0.73,0.24,0.97,0.41,0.65,Matches,b5f1c3c8
+234,Gareth Evans,eng ENG,FWMF,Fleetwood Town,26,1988,43,40,3465,38.5,3,2,5,3,0,0,6,0,0.08,0.05,0.13,0.08,0.13,Matches,eccc9817
+235,George Evans,eng ENG,DFMF,Scunthorpe,19,1994,16,9,844,9.4,1,0,1,1,0,0,0,0,0.11,0.00,0.11,0.11,0.11,Matches,40302e12
+236,Ian Evatt,eng ENG,DF,Chesterfield,32,1981,39,38,3380,37.6,1,0,1,1,0,0,8,1,0.03,0.00,0.03,0.03,0.03,Matches,749bcfb8
+237,Cedric Evina,cm CMR,DF,Doncaster,22,1991,19,17,1477,16.4,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,8362e9f2
+238,Rory Fallon,nz NZL,FW,Scunthorpe,32,1982,4,4,300,3.3,3,0,3,3,0,0,0,0,0.90,0.00,0.90,0.90,0.90,Matches,4ab4976e
+239,Shamir Fenelon,ie IRL,FWMF,Rochdale,19,1994,4,0,48,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ce4e7a21
+240,Kane Ferdinand,ie IRL,DFMF,Peterborough,21,1992,12,2,330,3.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,705da758
+241,Frank Fielding,eng ENG,GK,Bristol City,26,1988,46,46,4140,46.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,4999f2fa
+242,Jack Finch,eng ENG,MF,Coventry City,17,1996,16,8,823,9.1,0,0,0,0,0,0,3,1,0.00,0.00,0.00,0.00,0.00,Matches,e2199e72
+243,Matt Fish,eng ENG,DF,Gillingham,25,1989,3,2,215,2.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,82242d59
+244,Reece Flanagan,eng ENG,MF,Walsall,19,1994,16,9,811,9.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,86279547
+245,Tom Flanagan,nir NIR,DF,MK Dons,22,1992,6,3,248,2.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,3419ab84
+246,John Fleck,sct SCO,FWMF,Coventry City,22,1991,44,43,3841,42.7,0,4,4,0,0,0,9,0,0.00,0.09,0.09,0.00,0.09,Matches,b63e789d
+247,Aden Flint,eng ENG,DF,Bristol City,25,1989,46,46,4140,46.0,14,1,15,14,0,0,0,0,0.30,0.02,0.33,0.30,0.33,Matches,952672e1
+248,Ryan Flynn,sct SCO,MF,Sheffield United,25,1988,32,18,1612,17.9,1,2,3,1,0,0,1,0,0.06,0.11,0.17,0.06,0.17,Matches,cf635bf9
+249,Wes Foderingham,eng ENG,GK,Swindon Town,23,1991,44,44,3960,44.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,96cf7b61
+250,Sam Foley,ie IRL,DFMF,Yeovil Town,27,1986,40,37,3188,35.4,2,7,9,2,0,0,8,0,0.06,0.20,0.25,0.06,0.25,Matches,5979c340
+251,Anthony Forde,ie IRL,DFFW,Walsall,20,1993,37,24,2274,25.3,3,5,8,3,0,0,1,0,0.12,0.20,0.32,0.12,0.32,Matches,2d139834
+252,Harry Forrester,eng ENG,MF,Doncaster,23,1991,40,24,2320,25.8,7,5,12,7,0,1,7,2,0.27,0.19,0.47,0.27,0.47,Matches,13879b4a
+253,Jonathan Forte,bb BRB,FWMF,Oldham Athletic,28,1986,34,32,2711,30.1,15,4,19,11,4,5,1,0,0.50,0.13,0.63,0.37,0.50,Matches,203d94d6
+254,Lee Fowler,wls WAL,MF,Crawley Town,31,1983,19,16,1449,16.1,1,3,4,1,0,0,5,0,0.06,0.19,0.25,0.06,0.25,Matches,593e18b1
+255,David Fox,eng ENG,MF,Colchester,30,1983,30,29,2490,27.7,2,3,5,1,1,1,1,0,0.07,0.11,0.18,0.04,0.14,Matches,102a7473
+256,Kieron Freeman,wls WAL,DFMF,Sheffield United,22,1992,19,13,1281,14.2,1,2,3,1,0,0,1,0,0.07,0.14,0.21,0.07,0.21,Matches,c13c24c8
+257,Luke Freeman,eng ENG,FWMF,Bristol City,22,1992,46,44,3711,41.2,7,17,24,7,0,0,2,0,0.17,0.41,0.58,0.17,0.58,Matches,636b64cd
+258,Dean Furman,za RSA,MF,Doncaster,26,1988,34,32,2717,30.2,2,2,4,2,0,0,6,0,0.07,0.07,0.13,0.07,0.13,Matches,0adce8ab
+259,Danny Galbraith,sct SCO,MF,Gillingham,23,1990,7,3,238,2.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a9e9adbc
+260,Paul Gallagher,sct SCO,FWMF,Preston,29,1984,46,45,3737,41.5,8,14,22,6,2,3,5,0,0.19,0.34,0.53,0.14,0.48,Matches,9f0fb63c
+261,Dan Gardner,eng ENG,FWMF,Chesterfield,24,1990,17,8,499,5.5,1,0,1,1,0,0,1,0,0.18,0.00,0.18,0.18,0.18,Matches,91cd24fc
+262,Bradley Garmston,ie IRL,DFMF,Gillingham,20,1994,8,7,559,6.2,1,1,2,1,0,0,0,0,0.16,0.16,0.32,0.16,0.32,Matches,e051c4a6
+263,Joe Garner,eng ENG,FWMF,Preston,26,1988,37,36,3122,34.7,25,4,29,22,3,3,8,0,0.72,0.12,0.84,0.63,0.75,Matches,adb9f204
+264,Ben Garratt,eng ENG,GK,Crewe Alexandra,20,1994,30,30,2680,29.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d662144e
+265,Antonio German,gd GRN,FWMF,Gillingham,22,1991,10,1,215,2.4,1,0,1,1,0,0,0,0,0.42,0.00,0.42,0.42,0.42,Matches,12183e9e
+266,Anthony Gerrard,ie IRL,DF,Oldham Athletic,28,1986,6,6,516,5.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2f70ec31
+267,Alex Gilbey,eng ENG,FWMF,Colchester,19,1994,34,32,2817,31.3,1,0,1,1,0,0,8,0,0.03,0.00,0.03,0.03,0.03,Matches,b97f0be7
+268,Simon Gillett,eng ENG,MF,Yeovil Town,28,1985,17,14,1222,13.6,1,0,1,1,0,0,1,0,0.07,0.00,0.07,0.07,0.07,Matches,bca7dcf7
+269,Ben Gladwin,eng ENG,DFMF,Swindon Town,22,1992,34,28,2343,26.0,8,7,15,5,3,4,2,0,0.31,0.27,0.58,0.19,0.46,Matches,e957399e
+270,Armand Gnanduillet,ci CIV,FW,Chesterfield,22,1991,26,12,1292,14.4,2,1,3,2,0,0,3,0,0.14,0.07,0.21,0.14,0.21,Matches,bda099d0
+271,Oscar Gobern,eng ENG,DFMF,Chesterfield,23,1991,3,3,240,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a69d4228
+272,Ben Gordon,eng ENG,DF,Colchester,23,1991,18,16,1409,15.7,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,6aec5de1
+273,Kaspars Gorkšs,lv LVA,DF,Colchester,32,1981,7,7,630,7.0,1,0,1,1,0,0,0,0,0.14,0.00,0.14,0.14,0.14,Matches,a340b996
+274,Anthony Grant,jm JAM,DFMF,Crewe Alexandra,27,1987,43,42,3736,41.5,2,2,4,2,0,0,9,0,0.05,0.05,0.10,0.05,0.10,Matches,79b041fa
+275,Joel Grant,jm JAM,FWMF,Yeovil Town,26,1987,21,15,1399,15.5,3,1,4,3,0,0,2,0,0.19,0.06,0.26,0.19,0.26,Matches,dc90d045
+276,Danny Green,eng ENG,MF,MK Dons,26,1988,14,4,446,5.0,1,2,3,1,0,0,1,1,0.20,0.40,0.61,0.20,0.61,Matches,98d09542
+277,Will Grigg,nir NIR,FW,MK Dons,23,1991,44,31,2800,31.1,20,3,23,18,2,2,5,0,0.64,0.10,0.74,0.58,0.68,Matches,35ac6cc1
+278,Ashley Grimes,eng ENG,MF,Walsall,27,1986,27,11,1077,12.0,2,0,2,2,0,0,2,0,0.17,0.00,0.17,0.17,0.17,Matches,f58317ab
+279,William Gros,mg MAD,FW,Oldham Athletic,22,1992,1,0,10,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6f976466
+280,Jon Guthrie,eng ENG,DF,Crewe Alexandra,22,1992,25,21,1806,20.1,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,ce7d5878
+281,Marcus Haber,ca CAN,FW,Crewe Alexandra,25,1989,36,25,2272,25.2,7,4,11,6,1,1,0,0,0.28,0.16,0.44,0.24,0.40,Matches,3d016b29
+282,Robert Hall,eng ENG,FWMF,MK Dons,20,1993,7,5,423,4.7,3,0,3,3,0,0,0,0,0.64,0.00,0.64,0.64,0.64,Matches,89602ebf
+283,Ryan Hall,eng ENG,FWMF,Notts County,26,1988,4,2,159,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,46ee2a4a
+284,Andy Halliday,sct SCO,DFMF,Bradford City,22,1991,25,20,1558,17.3,1,2,3,1,0,0,2,0,0.06,0.12,0.17,0.06,0.17,Matches,7d48aed2
+285,James Hanson,eng ENG,FW,Bradford City,26,1987,38,31,2836,31.5,9,6,15,9,0,0,2,0,0.29,0.19,0.48,0.29,0.48,Matches,d8e0f3bc
+286,Josh Hare,eng ENG,DFMF,Gillingham,19,1994,2,2,100,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,271332b3
+287,Jamie Harney,nir NIR,DF,Colchester,18,1996,1,0,19,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a0247f9d
+288,Shaun Harrad,eng ENG,FW,Notts County,29,1984,12,4,487,5.4,1,0,1,1,0,0,1,0,0.18,0.00,0.18,0.18,0.18,Matches,7df0cd65
+289,Bob Harris,sct SCO,DF,Sheffield United,26,1987,40,35,3137,34.9,3,6,9,3,0,0,6,0,0.09,0.17,0.26,0.09,0.26,Matches,4f3dd864
+290,Byron Harrison,eng ENG,FW,Chesterfield,27,1987,12,4,377,4.2,1,0,1,1,0,0,0,0,0.24,0.00,0.24,0.24,0.24,Matches,d185baeb
+291,Matt Harrold,eng ENG,FW,Crawley Town,30,1984,20,4,668,7.4,1,0,1,1,0,0,3,0,0.13,0.00,0.13,0.13,0.13,Matches,6874478d
+292,Nick Haughton,eng ENG,DFFW,Fleetwood Town,19,1994,22,11,1038,11.5,1,3,4,1,0,0,2,0,0.09,0.26,0.35,0.09,0.35,Matches,7c47ac8b
+293,Kortney Hause,eng ENG,DF,Gillingham,19,1995,14,14,1197,13.3,1,0,1,1,0,0,1,0,0.08,0.00,0.08,0.08,0.08,Matches,bf8fad51
+294,Terry Hawkridge,eng ENG,MF,Scunthorpe,24,1990,11,10,722,8.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b9735ef8
+295,Will Hayhurst,ie IRL,MF,Preston,20,1994,7,2,200,2.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a71f5e39
+296,Will Hayhurst,ie IRL,MF,Notts County,20,1994,12,8,742,8.2,0,1,1,0,0,0,0,0,0.00,0.12,0.12,0.00,0.12,Matches,a71f5e39
+297,Danny Haynes,eng ENG,FWMF,Notts County,26,1988,2,1,85,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,44b31c52
+298,Danny Haynes,eng ENG,FWMF,Crewe Alexandra,26,1988,3,2,146,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,44b31c52
+299,Ryan Haynes,eng ENG,DFMF,Coventry City,18,1995,26,20,1972,21.9,1,1,2,1,0,0,4,0,0.05,0.05,0.09,0.05,0.09,Matches,96169411
+300,James Hayter,eng ENG,FW,Yeovil Town,35,1979,38,23,2164,24.0,5,0,5,5,0,1,2,0,0.21,0.00,0.21,0.21,0.21,Matches,4e13b228
+301,Rhys Healey,wls WAL,FW,Colchester,19,1994,21,7,800,8.9,4,0,4,4,0,0,1,0,0.45,0.00,0.45,0.45,0.45,Matches,07ace8c3
+302,Ryan Hedges,wls WAL,FWMF,Leyton Orient,19,1995,17,11,970,10.8,2,2,4,2,0,0,3,0,0.19,0.19,0.37,0.19,0.37,Matches,c54816a4
+303,Kane Hemmings,eng ENG,FW,Barnsley,22,1992,23,11,1044,11.6,3,1,4,3,0,0,2,0,0.26,0.09,0.34,0.26,0.34,Matches,7cdcd959
+304,Conor Henderson,eng ENG,MF,Crawley Town,22,1991,17,13,1042,11.6,2,1,3,2,0,0,4,0,0.17,0.09,0.26,0.17,0.26,Matches,5f74f8f6
+305,Darius Henderson,eng ENG,FW,Leyton Orient,32,1981,23,16,1528,17.0,8,3,11,7,1,1,4,1,0.47,0.18,0.65,0.41,0.59,Matches,ea503cef
+306,Ian Henderson,eng ENG,FWMF,Rochdale,29,1985,44,44,3931,43.7,22,7,29,16,6,8,2,0,0.50,0.16,0.66,0.37,0.53,Matches,afb0fae3
+307,Rico Henry,jm JAM,DFMF,Walsall,17,1997,9,4,366,4.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8a3c1dc7
+308,Bastien Hery,mg MAD,MF,Rochdale,22,1992,21,12,1118,12.4,1,0,1,1,0,0,3,0,0.08,0.00,0.08,0.08,0.08,Matches,21dc41bd
+309,Jake Hessenthaler,eng ENG,DFMF,Gillingham,20,1994,37,35,3043,33.8,1,8,9,1,0,0,6,0,0.03,0.24,0.27,0.03,0.27,Matches,4a3ab75c
+310,Elliott Hewitt,wls WAL,DFMF,Colchester,20,1994,21,21,1748,19.4,1,2,3,1,0,0,2,1,0.05,0.10,0.15,0.05,0.15,Matches,fdc877e9
+311,Michael Higdon,eng ENG,FW,Sheffield United,30,1983,13,9,712,7.9,2,0,2,2,0,0,1,1,0.25,0.00,0.25,0.25,0.25,Matches,580fac60
+312,Seb Hines,eng ENG,DFMF,Coventry City,26,1988,9,6,589,6.5,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,5a2cabda
+313,Sam Hird,eng ENG,DF,Chesterfield,26,1987,28,28,2365,26.3,3,1,4,3,0,0,2,1,0.11,0.04,0.15,0.11,0.15,Matches,72d2c7fa
+314,Tom Hitchcock,eng ENG,FW,Fleetwood Town,21,1992,6,4,305,3.4,1,0,1,1,0,0,2,0,0.30,0.00,0.30,0.30,0.30,Matches,658e2b84
+315,Tom Hitchcock,eng ENG,FW,MK Dons,21,1992,12,1,183,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,658e2b84
+316,Jordy Hiwula,eng ENG,FWMF,Yeovil Town,19,1994,8,7,630,7.0,0,1,1,0,0,0,1,0,0.00,0.14,0.14,0.00,0.14,Matches,f6121039
+317,Jordy Hiwula,eng ENG,FWMF,Walsall,19,1994,19,17,1507,16.7,9,1,10,9,0,0,2,0,0.54,0.06,0.60,0.54,0.60,Matches,f6121039
+318,Lee Hodson,nir NIR,DFMF,MK Dons,22,1991,14,12,1067,11.9,1,1,2,1,0,0,1,0,0.08,0.08,0.17,0.08,0.17,Matches,7206c879
+319,Liam Hogan,eng ENG,DFMF,Fleetwood Town,25,1989,4,4,360,4.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,7a5e2895
+320,Dean Holden,eng ENG,DF,Walsall,34,1979,4,2,284,3.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f71c82f4
+321,Mason Holgate,jm JAM,DF,Barnsley,17,1996,20,18,1664,18.5,1,1,2,1,0,0,2,1,0.05,0.05,0.11,0.05,0.11,Matches,d0042ab9
+322,Haydn Hollis,eng ENG,DFFW,Notts County,21,1992,41,41,3645,40.5,0,3,3,0,0,0,8,0,0.00,0.07,0.07,0.00,0.07,Matches,3e6bea88
+323,Dan Holman,eng ENG,FW,Colchester,24,1990,4,0,49,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bb1ae2c6
+324,Jason Holt,sct SCO,MF,Sheffield United,21,1993,16,11,1150,12.8,5,0,5,5,0,0,2,0,0.39,0.00,0.39,0.39,0.39,Matches,68e30c30
+325,Tom Hopper,eng ENG,FW,Scunthorpe,20,1993,12,12,942,10.5,4,1,5,4,0,0,0,0,0.38,0.10,0.48,0.38,0.48,Matches,ad8a7344
+326,Tyler Hornby-Forbes,eng ENG,DFMF,Fleetwood Town,18,1996,17,11,995,11.1,0,1,1,0,0,0,2,0,0.00,0.09,0.09,0.00,0.09,Matches,8240c506
+327,Sam Hoskins,eng ENG,FWMF,Yeovil Town,21,1993,12,2,342,3.8,1,0,1,1,0,0,0,0,0.26,0.00,0.26,0.26,0.26,Matches,7292e67b
+328,Conor Hourihane,ie IRL,MF,Barnsley,23,1991,46,45,3965,44.1,13,15,28,9,4,5,7,0,0.30,0.34,0.64,0.20,0.54,Matches,fcab00a0
+329,Mark Howard,eng ENG,GK,Sheffield United,27,1986,35,35,3150,35.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d5d89b53
+330,Gavin Hoyte,tt TRI,DF,Gillingham,24,1990,30,26,2427,27.0,0,1,1,0,0,0,1,0,0.00,0.04,0.04,0.00,0.04,Matches,e5fa95f7
+331,Jeff Hughes,nir NIR,DFMF,Fleetwood Town,29,1985,22,20,1820,20.2,1,0,1,1,0,0,6,0,0.05,0.00,0.05,0.05,0.05,Matches,f38f0c25
+332,Matty Hughes,eng ENG,FW,Fleetwood Town,22,1992,6,2,245,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ce9b05c5
+333,Jordan Hugill,eng ENG,FW,Preston,22,1992,3,0,98,1.1,0,1,1,0,0,0,0,1,0.00,0.92,0.92,0.00,0.92,Matches,a36d4785
+334,Chris Humphrey,jm JAM,MF,Preston,26,1987,44,32,2898,32.2,4,8,12,4,0,0,3,0,0.12,0.25,0.37,0.12,0.37,Matches,6959c1c0
+335,Ritchie Humphreys,eng ENG,DFFW,Chesterfield,36,1977,19,9,858,9.5,0,1,1,0,0,0,1,0,0.00,0.10,0.10,0.00,0.10,Matches,67423398
+336,Ashley Hunter,eng ENG,FWMF,Fleetwood Town,18,1995,12,3,370,4.1,1,0,1,1,0,0,2,0,0.24,0.00,0.24,0.24,0.24,Matches,21737406
+337,Paul Huntington,eng ENG,DF,Preston,26,1987,32,32,2827,31.4,4,1,5,4,0,0,6,0,0.13,0.03,0.16,0.13,0.16,Matches,930585c0
+338,Jermaine Hylton,eng ENG,FWMF,Swindon Town,21,1993,11,1,259,2.9,1,0,1,1,0,0,2,0,0.35,0.00,0.35,0.35,0.35,Matches,92cd16f4
+339,Jabo Ibehre,eng ENG,FW,Barnsley,31,1983,9,4,416,4.6,2,1,3,2,0,0,2,0,0.43,0.22,0.65,0.43,0.65,Matches,a21b88de
+340,Jabo Ibehre,eng ENG,FW,Colchester,31,1983,5,5,426,4.7,0,2,2,0,0,0,0,0,0.00,0.42,0.42,0.00,0.42,Matches,a21b88de
+341,Jabo Ibehre,eng ENG,FW,Oldham Athletic,31,1983,11,8,814,9.0,2,1,3,2,0,0,1,1,0.22,0.11,0.33,0.22,0.33,Matches,a21b88de
+342,Uche Ikpeazu,ug UGA,FW,Doncaster,19,1995,7,3,332,3.7,0,1,1,0,0,0,0,0,0.00,0.27,0.27,0.00,0.27,Matches,b3a3638d
+343,Uche Ikpeazu,ug UGA,FW,Crewe Alexandra,19,1995,17,11,989,11.0,2,1,3,2,0,0,2,0,0.18,0.09,0.27,0.18,0.27,Matches,b3a3638d
+344,Brad Inman,sct SCO,FWMF,Crewe Alexandra,22,1991,21,12,1128,12.5,1,0,1,0,1,1,2,0,0.08,0.00,0.08,0.00,0.00,Matches,9dbcbe80
+345,Ryan Inniss,eng ENG,DF,Yeovil Town,19,1995,6,4,352,3.9,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,600ae8cb
+346,Ryan Inniss,eng ENG,DF,Port Vale,19,1995,5,5,395,4.4,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,Matches,600ae8cb
+347,Zeli Ismail,eng ENG,MF,Notts County,20,1993,14,10,950,10.6,4,0,4,2,2,2,3,0,0.38,0.00,0.38,0.19,0.19,Matches,63f3cf46
+348,Simeon Jackson,ca CAN,FW,Coventry City,27,1987,28,12,1228,13.6,3,1,4,3,0,0,2,0,0.22,0.07,0.29,0.22,0.29,Matches,8f8bbbac
+349,Devante Jacobs,eng ENG,FW,Oldham Athletic,17,1996,2,0,54,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,02517b8c
+350,Lloyd James,wls WAL,DFMF,Leyton Orient,26,1988,13,10,850,9.4,1,0,1,0,1,2,2,0,0.11,0.00,0.11,0.00,0.00,Matches,68927d5e
+351,Luke James,eng ENG,FWMF,Peterborough,19,1994,32,21,2000,22.2,1,1,2,1,0,0,0,0,0.05,0.05,0.09,0.05,0.09,Matches,388b3a67
+352,Dale Jennings,eng ENG,MF,Barnsley,21,1992,20,9,993,11.0,1,4,5,1,0,0,0,1,0.09,0.36,0.45,0.09,0.45,Matches,621635db
+353,Steve Jennings,eng ENG,MF,Port Vale,29,1984,4,1,140,1.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,a747de3b
+354,Brian Jensen,dk DEN,GK,Crawley Town,39,1975,20,19,1703,18.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d6a6a1f4
+355,Declan John,wls WAL,DFMF,Barnsley,19,1995,9,8,752,8.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8e42ea27
+356,Daniel Johnson,jm JAM,MF,Preston,21,1992,20,20,1787,19.9,8,6,14,8,0,0,1,0,0.40,0.30,0.71,0.40,0.71,Matches,6d477b52
+357,Daniel Johnson,jm JAM,MF,Oldham Athletic,21,1992,6,5,445,4.9,3,1,4,3,0,0,0,0,0.61,0.20,0.81,0.61,0.81,Matches,6d477b52
+358,Daniel Johnson,jm JAM,MF,Chesterfield,21,1992,11,7,764,8.5,0,6,6,0,0,0,0,0,0.00,0.71,0.71,0.00,0.71,Matches,6d477b52
+359,Réda Johnson,bj BEN,DF,Coventry City,26,1988,20,20,1606,17.8,5,0,5,5,0,0,5,1,0.28,0.00,0.28,0.28,0.28,Matches,4bd05969
+360,Sam Johnson,eng ENG,GK,Port Vale,21,1992,7,6,577,6.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a8fe5f70
+361,Sam Johnstone,eng ENG,GK,Doncaster,21,1993,10,10,900,10.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,9e5708be
+362,Sam Johnstone,eng ENG,GK,Preston,21,1993,22,22,1980,22.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,9e5708be
+363,Daniel Jones,eng ENG,DFMF,Chesterfield,27,1986,33,27,2294,25.5,0,1,1,0,0,0,5,1,0.00,0.04,0.04,0.00,0.04,Matches,4d8c6d57
+364,Gary Jones,eng ENG,MF,Notts County,37,1977,43,39,3366,37.4,3,3,6,3,0,0,2,1,0.08,0.08,0.16,0.08,0.16,Matches,0f95466a
+365,James Jones,sct SCO,DFMF,Crewe Alexandra,18,1996,24,21,1794,19.9,1,1,2,1,0,0,3,0,0.05,0.05,0.10,0.05,0.10,Matches,713d009d
+366,Jamie Jones,eng ENG,GK,Rochdale,25,1989,13,13,1143,12.7,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Matches,8bba5887
+367,Jamie Jones,eng ENG,GK,Preston,25,1989,17,17,1530,17.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8bba5887
+368,Jamie Jones,eng ENG,GK,Coventry City,25,1989,4,4,360,4.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8bba5887
+369,Mike Jones,eng ENG,MF,Oldham Athletic,26,1987,45,45,3994,44.4,6,4,10,6,0,0,3,0,0.14,0.09,0.23,0.14,0.23,Matches,a8771fa1
+370,Rob Jones,eng ENG,DF,Doncaster,34,1979,10,10,753,8.4,2,0,2,2,0,0,2,0,0.24,0.00,0.24,0.24,0.24,Matches,ca7aff54
+371,Stephen Jordan,eng ENG,DF,Fleetwood Town,32,1982,42,40,3530,39.2,1,0,1,1,0,0,5,0,0.03,0.00,0.03,0.03,0.03,Matches,1a3d94b5
+372,Francisco Júnior,gw GNB,MF,Port Vale,22,1992,1,1,53,0.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,2051e1e9
+373,Todd Kane,eng ENG,DFMF,Bristol City,20,1993,5,1,125,1.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,dd082c59
+374,Scott Kashket,eng ENG,FWMF,Leyton Orient,18,1996,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6b5ec72d
+375,Yaser Kasim,iq IRQ,MF,Swindon Town,23,1991,35,28,2620,29.1,2,3,5,2,0,0,8,0,0.07,0.10,0.17,0.07,0.17,Matches,ffc35ab3
+376,Antony Kay,eng ENG,DFMF,MK Dons,31,1982,45,45,4021,44.7,1,1,2,1,0,0,8,0,0.02,0.02,0.04,0.02,0.04,Matches,44717a3c
+377,Jake Kean,eng ENG,GK,Oldham Athletic,23,1991,11,11,956,10.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,66d29ce7
+378,Jake Kean,eng ENG,GK,Yeovil Town,23,1991,5,5,450,5.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,66d29ce7
+379,Cieron Keane,ie IRL,DF,Notts County,17,1996,2,2,145,1.6,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Matches,9602ad1c
+380,Keith Keane,ie IRL,DFMF,Crawley Town,27,1986,12,12,1070,11.9,0,1,1,0,0,0,8,0,0.00,0.08,0.08,0.00,0.08,Matches,8656fc34
+381,Danny Kedwell,eng ENG,FWMF,Gillingham,30,1983,14,10,829,9.2,4,0,4,3,1,4,2,0,0.43,0.00,0.43,0.33,0.33,Matches,9f13cd27
+382,Billy Kee,nir NIR,FW,Scunthorpe,23,1990,12,0,183,2.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,00bb9ede
+383,Paul Keegan,ie IRL,MF,Doncaster,30,1984,32,30,2548,28.3,0,0,0,0,0,0,8,0,0.00,0.00,0.00,0.00,0.00,Matches,409edd15
+384,Liam Kelly,sct SCO,MF,Oldham Athletic,24,1990,37,37,3311,36.8,1,1,2,1,0,0,5,0,0.03,0.03,0.05,0.03,0.05,Matches,f92eb2a4
+385,Jason Kennedy,eng ENG,MF,Bradford City,27,1986,20,17,1480,16.4,2,1,3,2,0,0,3,0,0.12,0.06,0.18,0.12,0.18,Matches,d49a1592
+386,Terry Kennedy,eng ENG,DF,Sheffield United,20,1993,11,10,798,8.9,0,1,1,0,0,0,2,0,0.00,0.11,0.11,0.00,0.11,Matches,7ed73b22
+387,Tom Kennedy,eng ENG,DF,Rochdale,29,1985,23,22,2027,22.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,c79217e0
+388,Paddy Kenny,ie IRL,GK,Oldham Athletic,36,1978,3,3,270,3.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,b03eb26c
+389,Frankie Kent,eng ENG,DF,Colchester,18,1995,10,9,769,8.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,151cc732
+390,Bongani Khumalo,za RSA,DF,Colchester,27,1987,10,10,900,10.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ff39e310
+391,Neil Kilkenny,au AUS,MF,Preston,28,1985,35,24,2153,23.9,0,4,4,0,0,0,4,0,0.00,0.17,0.17,0.00,0.17,Matches,eb34721b
+392,Jack King,eng ENG,DFMF,Preston,28,1985,18,10,1080,12.0,1,0,1,1,0,0,2,0,0.08,0.00,0.08,0.08,0.08,Matches,ebede3aa
+393,Stephen Kingsley,sct SCO,DF,Yeovil Town,20,1994,12,12,957,10.6,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,488cc9c7
+394,Liam Kinsella,ie IRL,MF,Walsall,18,1996,4,4,360,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,514459bd
+395,Alex Kiwomya,eng ENG,FWMF,Barnsley,18,1996,5,3,286,3.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,20db4cdd
+396,Billy Knott,eng ENG,MF,Bradford City,21,1992,40,31,2770,30.8,3,3,6,3,0,0,2,0,0.10,0.10,0.19,0.10,0.19,Matches,49809c96
+397,Cole Kpekawa,eng ENG,DF,Colchester,18,1996,4,3,283,3.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ee15cb07
+398,Artur Krysiak,pl POL,GK,Yeovil Town,24,1989,15,15,1295,14.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,603d2869
+399,Genséric Kusunga,ao ANG,DFMF,Oldham Athletic,26,1988,18,12,1178,13.1,1,1,2,1,0,0,2,0,0.08,0.08,0.15,0.08,0.15,Matches,66ec16b8
+400,Louis Laing,eng ENG,DF,Notts County,21,1993,10,10,900,10.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,827ae666
+401,Scott Laird,eng ENG,DF,Preston,26,1988,31,27,2461,27.3,0,2,2,0,0,0,3,0,0.00,0.07,0.07,0.00,0.07,Matches,b905af28
+402,Milan Lalkovič,sk SVK,FWMF,Barnsley,21,1992,17,13,1084,12.0,0,1,1,0,0,0,0,1,0.00,0.08,0.08,0.00,0.08,Matches,67d6305d
+403,Olly Lancashire,eng ENG,DF,Rochdale,25,1988,21,16,1502,16.7,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,fae0e3e3
+404,Tom Lapslie,eng ENG,DFMF,Colchester,18,1995,11,11,884,9.8,1,0,1,1,0,0,3,0,0.10,0.00,0.10,0.10,0.10,Matches,168d5101
+405,Caolan Lavery,ca CAN,FW,Chesterfield,21,1992,8,6,517,5.7,3,0,3,3,0,0,0,0,0.52,0.00,0.52,0.52,0.52,Matches,58f204f3
+406,Byron Lawrence,eng ENG,MF,Colchester,18,1996,1,0,15,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,792233a0
+407,Dean Leacock,eng ENG,DFMF,Crawley Town,30,1984,23,23,1989,22.1,1,0,1,1,0,0,5,0,0.05,0.00,0.05,0.05,0.05,Matches,c3cbae51
+408,Harry Lee,eng ENG,MF,Leyton Orient,19,1995,2,0,15,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,efbc8f3a
+409,Tommy Lee,eng ENG,GK,Chesterfield,28,1986,46,46,4091,45.5,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Matches,494c9721
+410,Leon Legge,eng ENG,DF,Gillingham,29,1985,22,21,1865,20.7,4,1,5,4,0,0,3,0,0.19,0.05,0.24,0.19,0.24,Matches,af131214
+411,Adam Legzdins,eng ENG,GK,Leyton Orient,27,1986,11,11,970,10.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f5b114ca
+412,Greg Leigh,jm JAM,DFMF,Crewe Alexandra,19,1994,38,36,3250,36.1,1,2,3,1,0,0,2,0,0.03,0.06,0.08,0.03,0.08,Matches,9684b64f
+413,AJ Leitch-Smith,eng ENG,FWMF,Yeovil Town,24,1990,33,21,1957,21.7,2,0,2,2,0,0,2,0,0.09,0.00,0.09,0.09,0.09,Matches,2d11b9fa
+414,Josh Lelan,ke KEN,DF,Swindon Town,19,1994,5,2,184,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,fe35686f
+415,Harry Lennon,eng ENG,DF,Gillingham,19,1994,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d2b3963d
+416,Chris Lewington,eng ENG,GK,Colchester,25,1988,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0843dbdd
+417,Dean Lewington,eng ENG,DFMF,MK Dons,30,1984,41,41,3680,40.9,3,0,3,3,0,0,5,1,0.07,0.00,0.07,0.07,0.07,Matches,2dc5fc1c
+418,Gary Liddle,eng ENG,DFMF,Bradford City,28,1986,41,39,3508,39.0,1,2,3,1,0,0,10,0,0.03,0.05,0.08,0.03,0.08,Matches,6c3d5e53
+419,Josh Lillis,eng ENG,GK,Rochdale,27,1987,16,14,1342,14.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b6940111
+420,Chris Lines,eng ENG,MF,Port Vale,28,1985,27,19,1823,20.3,2,0,2,1,1,1,2,1,0.10,0.00,0.10,0.05,0.05,Matches,d10c76c1
+421,Amine Linganzi,cg CGO,MF,Gillingham,24,1989,7,3,317,3.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,e465378c
+422,Kevin Lisbie,jm JAM,FW,Leyton Orient,35,1978,7,5,323,3.6,2,0,2,2,0,0,0,0,0.56,0.00,0.56,0.56,0.56,Matches,e509ea01
+423,Leroy Lita,eng ENG,FW,Notts County,29,1984,6,3,277,3.1,0,1,1,0,0,0,0,0,0.00,0.32,0.32,0.00,0.32,Matches,238f467d
+424,Leroy Lita,eng ENG,FW,Barnsley,29,1984,19,11,868,9.6,2,1,3,2,0,0,0,0,0.21,0.10,0.31,0.21,0.31,Matches,238f467d
+425,Andrew Little,nir NIR,FW,Preston,25,1989,12,5,385,4.3,1,0,1,1,0,0,2,0,0.23,0.00,0.23,0.23,0.23,Matches,8a5c941e
+426,Mark Little,eng ENG,DF,Bristol City,25,1988,37,35,3100,34.4,1,4,5,1,0,0,3,0,0.03,0.12,0.15,0.03,0.15,Matches,42c64f3e
+427,Miguel Llera,es ESP,DF,Scunthorpe,34,1979,15,15,1286,14.3,1,0,1,1,0,0,5,1,0.07,0.00,0.07,0.07,0.07,Matches,b58a6d72
+428,Scott Loach,eng ENG,GK,Yeovil Town,26,1988,6,6,540,6.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b3fa8488
+429,Scott Loach,eng ENG,GK,Peterborough,26,1988,5,5,450,5.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b3fa8488
+430,Adam Lockwood,eng ENG,DF,Oldham Athletic,32,1981,12,11,982,10.9,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Matches,b119313d
+431,Doug Loft,eng ENG,DFMF,Gillingham,27,1986,36,36,3131,34.8,1,8,9,1,0,0,9,1,0.03,0.23,0.26,0.03,0.26,Matches,da5ee57b
+432,Conrad Logan,ie IRL,GK,Rochdale,28,1986,19,19,1624,18.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,164fb840
+433,Joel Logan,eng ENG,FWMF,Rochdale,19,1995,8,4,337,3.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9606ccb8
+434,Shane Lowry,ie IRL,DF,Leyton Orient,25,1989,34,31,2818,31.3,0,0,0,0,0,0,6,0,0.00,0.00,0.00,0.00,0.00,Matches,7f5738cb
+435,Jamar Loza,jm JAM,FWMF,Yeovil Town,20,1994,5,4,287,3.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,e8f3848e
+436,Greg Luer,eng ENG,FW,Port Vale,19,1994,2,0,33,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,82865517
+437,Matty Lund,nir NIR,MF,Rochdale,23,1990,14,12,924,10.3,2,0,2,2,0,0,4,1,0.19,0.00,0.19,0.19,0.19,Matches,67f4129a
+438,Mitchell Lund,eng ENG,DF,Doncaster,17,1996,4,4,343,3.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,02b28243
+439,John Lundstram,eng ENG,MF,Scunthorpe,20,1994,7,5,529,5.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,0df2b165
+440,John Lundstram,eng ENG,MF,Leyton Orient,20,1994,4,3,300,3.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0df2b165
+441,Massimo Luongo,au AUS,MF,Swindon Town,21,1992,34,33,2940,32.7,6,5,11,6,0,0,5,0,0.18,0.15,0.34,0.18,0.34,Matches,967ac6e1
+442,Jean-Yves M'voto,fr FRA,DF,Barnsley,25,1988,15,13,1160,12.9,0,0,0,0,0,0,2,1,0.00,0.00,0.00,0.00,0.00,Matches,7136563a
+443,Craig MacGillivray,sct SCO,GK,Walsall,21,1993,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,97090f78
+444,Craig Mackail-Smith,sct SCO,FW,Peterborough,30,1984,3,3,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f6454937
+445,Gary MacKenzie,sct SCO,DF,Bradford City,28,1985,12,9,909,10.1,1,0,1,1,0,0,1,0,0.10,0.00,0.10,0.10,0.10,Matches,219a9295
+446,Paddy Madden,ie IRL,FWMF,Scunthorpe,24,1990,46,46,4070,45.2,14,6,20,13,1,2,3,0,0.31,0.13,0.44,0.29,0.42,Matches,9c708676
+447,James Maddison,eng ENG,FWMF,Coventry City,17,1996,12,2,445,4.9,2,0,2,2,0,0,1,1,0.40,0.00,0.40,0.40,0.40,Matches,ee38d9c5
+448,Marcus Maddison,eng ENG,FWMF,Peterborough,20,1993,29,23,2149,23.9,8,4,12,8,0,0,2,1,0.34,0.17,0.50,0.34,0.50,Matches,00458f4e
+449,Gary Madine,eng ENG,FW,Coventry City,23,1990,11,11,990,11.0,3,2,5,2,1,2,1,0,0.27,0.18,0.45,0.18,0.36,Matches,e3e6502a
+450,Curtis Main,eng ENG,FW,Doncaster,22,1992,38,23,2195,24.4,8,2,10,7,1,1,2,0,0.33,0.08,0.41,0.29,0.37,Matches,cfd8f4d3
+451,Liam Mandeville,eng ENG,DFFW,Doncaster,17,1997,3,0,35,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,66c517d8
+452,Mathieu Manset,fr FRA,FW,Walsall,24,1989,19,4,564,6.3,0,1,1,0,0,0,0,0,0.00,0.16,0.16,0.00,0.16,Matches,8eea4abe
+453,Sam Mantom,eng ENG,MF,Walsall,22,1992,12,6,598,6.6,0,1,1,0,0,0,0,0,0.00,0.15,0.15,0.00,0.15,Matches,e60f37af
+454,Georg Margreitter,at AUT,DFMF,Chesterfield,25,1988,13,11,1013,11.3,1,0,1,1,0,0,1,0,0.09,0.00,0.09,0.09,0.09,Matches,b5114f85
+455,George Maris,eng ENG,DFFW,Barnsley,18,1996,2,1,79,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3e189b2b
+456,Marko Maroši,sk SVK,GK,Doncaster,20,1993,3,2,241,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1aa0308a
+457,John Marquis,eng ENG,FW,Gillingham,22,1992,21,18,1578,17.5,8,1,9,8,0,0,3,0,0.46,0.06,0.51,0.46,0.51,Matches,e66b6ae0
+458,Jack Marriott,eng ENG,FW,Colchester,19,1994,5,0,34,0.4,1,0,1,1,0,0,0,0,2.65,0.00,2.65,2.65,2.65,Matches,e4551dab
+459,Lee Marshall,,MF,Swindon Town,16,1997,2,1,118,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a930666e
+460,Mark Marshall,eng ENG,MF,Port Vale,27,1987,46,45,3982,44.2,7,7,14,7,0,0,4,0,0.16,0.16,0.32,0.16,0.32,Matches,8ca136e8
+461,Aaron Martin,eng ENG,DF,Yeovil Town,24,1989,12,12,1080,12.0,3,0,3,3,0,0,2,0,0.25,0.00,0.25,0.25,0.25,Matches,2b118830
+462,Aaron Martin,eng ENG,DF,Coventry City,24,1989,27,26,2385,26.5,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,2b118830
+463,David Martin,eng ENG,GK,MK Dons,28,1986,39,39,3465,38.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,07666c20
+464,Joe Martin,eng ENG,DFMF,Gillingham,25,1988,25,22,1967,21.9,2,0,2,2,0,0,6,0,0.09,0.00,0.09,0.09,0.09,Matches,cad49722
+465,Gavin Massey,eng ENG,FWMF,Colchester,21,1992,46,39,3545,39.4,7,4,11,7,0,0,6,0,0.18,0.10,0.28,0.18,0.28,Matches,2d20498b
+466,Chris Maxwell,wls WAL,GK,Fleetwood Town,24,1990,46,46,4140,46.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,609f9b60
+467,Liam McAlinden,ie IRL,FWMF,Fleetwood Town,20,1993,19,10,910,10.1,4,2,6,4,0,0,0,0,0.40,0.20,0.59,0.40,0.59,Matches,b7fe4155
+468,Sean McAllister,eng ENG,MF,Scunthorpe,26,1987,23,13,1199,13.3,0,1,1,0,0,0,1,0,0.00,0.08,0.08,0.00,0.08,Matches,4f335df5
+469,Jobi McAnuff,jm JAM,MF,Leyton Orient,32,1981,34,25,2248,25.0,3,3,6,3,0,0,7,1,0.12,0.12,0.24,0.12,0.24,Matches,0f602616
+470,Rory McArdle,nir NIR,DF,Bradford City,27,1987,43,43,3870,43.0,3,0,3,3,0,0,4,2,0.07,0.00,0.07,0.07,0.07,Matches,859f489c
+471,Oliver McBurnie,sct SCO,FW,Bradford City,18,1996,7,0,92,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,78b8ac63
+472,Grant McCann,nir NIR,MF,Peterborough,34,1980,6,2,162,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e016d510
+473,Paddy McCarthy,ie IRL,DF,Sheffield United,31,1983,11,10,917,10.2,1,0,1,1,0,0,1,1,0.10,0.00,0.10,0.10,0.10,Matches,74a9a389
+474,Jamie McCombe,eng ENG,DF,Doncaster,31,1983,18,16,1502,16.7,1,0,1,1,0,0,2,0,0.06,0.00,0.06,0.06,0.06,Matches,759d755b
+475,Paddy McCourt,nir NIR,MF,Notts County,30,1983,12,11,892,9.9,1,0,1,1,0,0,4,0,0.10,0.00,0.10,0.10,0.10,Matches,6c530e7f
+476,Luke McCullough,nir NIR,DFMF,Doncaster,20,1994,33,33,2935,32.6,0,2,2,0,0,0,0,0,0.00,0.06,0.06,0.00,0.06,Matches,71b416a0
+477,Cody McDonald,eng ENG,FW,Gillingham,28,1986,43,38,3373,37.5,16,4,20,13,3,3,5,0,0.43,0.11,0.53,0.35,0.45,Matches,3d02518d
+478,Jay McEveley,sct SCO,DF,Sheffield United,29,1985,34,31,2726,30.3,1,0,1,1,0,0,5,0,0.03,0.00,0.03,0.03,0.03,Matches,c5c63c9a
+479,Kenny McEvoy,ie IRL,MF,Colchester,19,1994,1,0,2,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8c873c73
+480,Kenny McEvoy,ie IRL,MF,Peterborough,19,1994,7,2,184,2.0,1,0,1,1,0,0,0,0,0.49,0.00,0.49,0.49,0.49,Matches,8c873c73
+481,Kyle McFadzean,sct SCO,DF,MK Dons,27,1987,41,41,3618,40.2,3,1,4,3,0,0,13,1,0.07,0.02,0.10,0.07,0.10,Matches,d958cde6
+482,Harrison McGahey,eng ENG,DF,Sheffield United,18,1995,15,11,1105,12.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6d99f4f8
+483,Ryan McGivern,nir NIR,DF,Port Vale,24,1990,20,18,1686,18.7,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,Matches,4c2e7e85
+484,Jermaine McGlashan,eng ENG,MF,Gillingham,26,1988,40,23,2406,26.7,5,1,6,5,0,0,2,0,0.19,0.04,0.22,0.19,0.22,Matches,9a81ca5d
+485,Jack McKay,sct SCO,FW,Doncaster,17,1996,4,1,70,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2ff2b271
+486,Taylor McKenzie,eng ENG,DF,Notts County,20,1994,4,2,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,39cc8d01
+487,Conor McLaughlin,nir NIR,DF,Fleetwood Town,23,1991,39,38,3440,38.2,1,2,3,1,0,0,14,0,0.03,0.05,0.08,0.03,0.08,Matches,179055e8
+488,Stephen McLaughlin,ie IRL,DFMF,Notts County,24,1990,13,13,1128,12.5,0,5,5,0,0,0,3,0,0.00,0.40,0.40,0.00,0.40,Matches,827969d6
+489,Aaron McLean,eng ENG,FW,Peterborough,31,1983,18,10,883,9.8,1,0,1,1,0,0,1,0,0.10,0.00,0.10,0.10,0.10,Matches,dc49ea82
+490,Aaron McLean,eng ENG,FW,Bradford City,31,1983,13,7,567,6.3,2,0,2,2,0,0,1,0,0.32,0.00,0.32,0.32,0.32,Matches,dc49ea82
+491,Izale McLeod,eng ENG,FW,Crawley Town,29,1984,42,41,3506,39.0,19,4,23,14,5,6,6,1,0.49,0.10,0.59,0.36,0.46,Matches,d95b933e
+492,Ian McLoughlin,ie IRL,GK,MK Dons,22,1991,8,7,675,7.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3803b4f0
+493,Tony McMahon,eng ENG,DFMF,Bradford City,28,1986,8,4,419,4.7,1,0,1,1,0,0,2,0,0.21,0.00,0.21,0.21,0.21,Matches,a1dd16a8
+494,Marc McNulty,sct SCO,FWMF,Sheffield United,21,1992,31,11,1222,13.6,9,4,13,8,1,1,1,0,0.66,0.29,0.96,0.59,0.88,Matches,ed6bb087
+495,Josh McQuoid,nir NIR,FWMF,Coventry City,24,1989,14,12,881,9.8,3,1,4,3,0,0,2,0,0.31,0.10,0.41,0.31,0.41,Matches,88f448c4
+496,Gary McSheffrey,eng ENG,FWMF,Scunthorpe,31,1982,41,35,3062,34.0,7,7,14,7,0,0,11,0,0.21,0.21,0.41,0.21,0.41,Matches,e4852a2c
+497,Jacob Mellis,eng ENG,MF,Oldham Athletic,23,1991,7,2,232,2.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,827c05db
+498,David Mellor,eng ENG,DFMF,Oldham Athletic,21,1993,2,1,103,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b11b581d
+499,Nathaniel Mendez-Laing,gt GUA,FWMF,Peterborough,22,1992,14,6,631,7.0,0,1,1,0,0,0,1,0,0.00,0.14,0.14,0.00,0.14,Matches,b4b2f632
+500,James Meredith,au AUS,DFMF,Bradford City,26,1988,40,38,3438,38.2,0,2,2,0,0,0,3,0,0.00,0.05,0.05,0.00,0.05,Matches,6b616c73
+501,Harry Middleton,eng ENG,MF,Doncaster,19,1995,4,1,129,1.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,173bf419
+502,Shaun Miller,eng ENG,FW,Crawley Town,26,1987,5,4,329,3.7,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,9f59aa73
+503,Shaun Miller,eng ENG,FW,Coventry City,26,1987,11,1,259,2.9,1,0,1,1,0,0,0,0,0.35,0.00,0.35,0.35,0.35,Matches,9f59aa73
+504,Joseph Mills,eng ENG,DFMF,Oldham Athletic,24,1989,30,28,2390,26.6,0,1,1,0,0,0,3,1,0.00,0.04,0.04,0.00,0.04,Matches,7f725b83
+505,Brendan Moloney,ie IRL,DF,Yeovil Town,25,1989,5,4,287,3.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ad295197
+506,Lee Molyneux,eng ENG,DFMF,Crewe Alexandra,25,1989,3,2,172,1.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,eda627e3
+507,George Moncur,eng ENG,FWMF,Colchester,20,1993,41,34,3119,34.7,8,1,9,8,0,0,1,0,0.23,0.03,0.26,0.23,0.26,Matches,14a7d8e3
+508,Dave Mooney,ie IRL,FW,Leyton Orient,29,1984,33,20,1946,21.6,9,1,10,7,2,3,3,0,0.42,0.05,0.46,0.32,0.37,Matches,fb6f5a60
+509,Byron Moore,eng ENG,FWMF,Port Vale,25,1988,15,9,844,9.4,1,0,1,1,0,0,0,0,0.11,0.00,0.11,0.11,0.11,Matches,58438192
+510,Kieffer Moore,wls WAL,DFFW,Yeovil Town,21,1992,30,20,1777,19.7,3,1,4,3,0,1,4,0,0.15,0.05,0.20,0.15,0.20,Matches,01ce9e70
+511,Filipe Morais,pt POR,MF,Bradford City,28,1985,30,22,1958,21.8,3,4,7,3,0,0,4,0,0.14,0.18,0.32,0.14,0.32,Matches,daf6dca5
+512,Adam Morgan,eng ENG,FW,Yeovil Town,20,1994,6,3,273,3.0,1,1,2,0,1,2,1,0,0.33,0.33,0.66,0.00,0.33,Matches,c6a354a9
+513,Dean Morgan,ms MSR,FWMF,Crawley Town,30,1983,13,3,396,4.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,38a6c299
+514,Amari Morgan-Smith,eng ENG,FWMF,Oldham Athletic,25,1989,13,3,381,4.2,2,0,2,2,0,0,2,0,0.47,0.00,0.47,0.47,0.47,Matches,6f7788d7
+515,Aaron Morris,wls WAL,DFMF,Gillingham,24,1989,23,20,1687,18.7,0,1,1,0,0,0,1,0,0.00,0.05,0.05,0.00,0.05,Matches,256a3bdd
+516,Glenn Morris,eng ENG,GK,Gillingham,30,1983,10,9,855,9.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,5060edd1
+517,Josh Morris,eng ENG,DFFW,Fleetwood Town,22,1991,45,43,3753,41.7,8,4,12,8,0,0,4,0,0.19,0.10,0.29,0.19,0.29,Matches,6449a543
+518,Kieron Morris,eng ENG,FWMF,Walsall,20,1994,14,9,795,8.8,2,1,3,2,0,0,0,0,0.23,0.11,0.34,0.23,0.34,Matches,d5bb505a
+519,Sam Morsy,eg EGY,MF,Chesterfield,22,1991,39,39,3370,37.4,2,1,3,2,0,0,10,1,0.05,0.03,0.08,0.05,0.08,Matches,a23c0949
+520,Dylan Mottley-Henry,eng ENG,MF,Bradford City,16,1997,1,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,972a8f07
+521,Jack Muldoon,eng ENG,FWMF,Rochdale,25,1989,3,2,174,1.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,088e1392
+522,Oliver Muldoon,eng ENG,MF,Gillingham,19,1994,3,3,175,1.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,21b62e36
+523,Hayden Mullins,eng ENG,MF,Notts County,35,1979,32,32,2879,32.0,0,0,0,0,0,0,6,0,0.00,0.00,0.00,0.00,0.00,Matches,0e5ae692
+524,Stewart Murdoch,sct SCO,DFMF,Fleetwood Town,24,1990,11,5,505,5.6,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,69414599
+525,Jacob Murphy,eng ENG,DFFW,Colchester,19,1995,11,11,897,10.0,4,2,6,4,0,0,0,0,0.40,0.20,0.60,0.40,0.60,Matches,de112b84
+526,Jacob Murphy,eng ENG,DFFW,Scunthorpe,19,1995,3,3,208,2.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,de112b84
+527,Jamie Murphy,sct SCO,FWMF,Sheffield United,24,1989,43,41,3755,41.7,11,7,18,11,0,0,3,0,0.26,0.17,0.43,0.26,0.43,Matches,6c96b263
+528,Jordan Murphy,eng ENG,FW,Walsall,18,1996,2,0,14,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4f17b181
+529,Rhys Murphy,eng ENG,FW,Oldham Athletic,23,1990,11,3,415,4.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ced7a86c
+530,Ronan Murray,ie IRL,FW,Notts County,22,1991,20,7,856,9.5,1,1,2,1,0,0,0,0,0.11,0.11,0.21,0.11,0.21,Matches,663949a6
+531,Jennison Myrie-Williams,eng ENG,FWMF,Scunthorpe,26,1988,15,7,693,7.7,0,0,0,0,0,0,3,1,0.00,0.00,0.00,0.00,0.00,Matches,746fc1a0
+532,Dany N'Guessan,fr FRA,FWMF,Port Vale,26,1987,11,10,765,8.5,2,1,3,1,1,1,0,0,0.24,0.12,0.35,0.12,0.24,Matches,b315c9be
+533,Seth Nana Twumasi,eng ENG,DFMF,Yeovil Town,24,1990,25,18,1703,18.9,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,ab233000
+534,Chris Neal,eng ENG,GK,Port Vale,28,1985,40,40,3561,39.6,0,0,0,0,0,0,5,1,0.00,0.00,0.00,0.00,0.00,Matches,fc630b3c
+535,Stuart Nelson,eng ENG,GK,Gillingham,32,1981,24,24,2115,23.5,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,1fdf595b
+536,Jamie Ness,sct SCO,MF,Crewe Alexandra,23,1991,34,31,2677,29.7,2,2,4,2,0,0,6,0,0.07,0.07,0.13,0.07,0.13,Matches,c303f6b9
+537,Joe Newell,eng ENG,MF,Peterborough,21,1993,39,35,3110,34.6,2,3,5,2,0,0,9,1,0.06,0.09,0.14,0.06,0.14,Matches,4751ecdf
+538,Sean Newton,eng ENG,DF,Notts County,25,1988,8,6,527,5.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,19680057
+539,Alex Nimely,eng ENG,FW,Port Vale,23,1991,1,0,25,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e5597a4d
+540,David Noble,eng ENG,MF,Oldham Athletic,32,1982,2,0,15,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,80406167
+541,Liam Noble,eng ENG,MF,Notts County,23,1991,33,30,2672,29.7,5,2,7,4,1,1,13,3,0.17,0.07,0.24,0.13,0.20,Matches,3b21a4f4
+542,Reuben Noble-Lazarus,eng ENG,FWMF,Rochdale,20,1993,19,7,860,9.6,1,1,2,1,0,0,3,0,0.10,0.10,0.21,0.10,0.21,Matches,94936663
+543,Reuben Noble-Lazarus,eng ENG,FWMF,Barnsley,20,1993,1,0,3,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,94936663
+544,Eddie Nolan,ie IRL,DF,Scunthorpe,25,1988,6,4,415,4.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3144c7fa
+545,Liam Nolan,nir NIR,MF,Crewe Alexandra,19,1994,13,6,708,7.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b1adf20b
+546,David Norris,eng ENG,MF,Peterborough,33,1981,8,3,363,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,3436e03d
+547,Luke Norris,eng ENG,FW,Gillingham,21,1993,37,13,1371,15.2,6,1,7,6,0,1,3,0,0.39,0.07,0.46,0.39,0.46,Matches,6158b76c
+548,Frank Nouble,eng ENG,FWMF,Coventry City,22,1991,31,28,2460,27.3,6,3,9,6,0,0,5,0,0.22,0.11,0.33,0.22,0.33,Matches,0a8e46da
+549,Kgosi Ntlhe,za RSA,DF,Peterborough,20,1994,28,25,2173,24.1,1,0,1,1,0,0,3,2,0.04,0.00,0.04,0.04,0.04,Matches,792dd871
+550,Ben Nugent,eng ENG,DF,Yeovil Town,21,1992,23,23,1950,21.7,1,0,1,1,0,0,7,2,0.05,0.00,0.05,0.05,0.05,Matches,1983c45d
+551,Lewin Nyatanga,wls WAL,DF,Barnsley,25,1988,45,45,4038,44.9,5,2,7,5,0,0,5,0,0.11,0.04,0.16,0.11,0.16,Matches,3c1ad530
+552,Jim O'Brien,ie IRL,DFFW,Coventry City,26,1987,44,43,3675,40.8,6,7,13,6,0,0,6,0,0.15,0.17,0.32,0.15,0.32,Matches,f1fda54f
+553,Jack O'Connell,eng ENG,DF,Rochdale,20,1994,29,28,2585,28.7,5,3,8,5,0,0,2,0,0.17,0.10,0.28,0.17,0.28,Matches,312626c1
+554,Emmett O'Connor,ca CAN,MF,Crawley Town,21,1992,4,1,129,1.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d01c06c7
+555,James O'Connor,eng ENG,DF,Walsall,29,1984,32,30,2703,30.0,1,0,1,1,0,0,2,0,0.03,0.00,0.03,0.03,0.03,Matches,849c41fb
+556,Michael O'Connor,nir NIR,FWMF,Port Vale,26,1987,44,44,3795,42.2,6,7,13,3,3,3,8,0,0.14,0.17,0.31,0.07,0.24,Matches,68192fe7
+557,Richard O'Donnell,eng ENG,GK,Walsall,25,1988,44,44,3960,44.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,89265c89
+558,Michael O'Donoghue,ie IRL,DF,Colchester,18,1996,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,5247adb5
+559,Chris O'Grady,eng ENG,FW,Sheffield United,28,1986,4,4,292,3.2,1,0,1,1,0,0,0,0,0.31,0.00,0.31,0.31,0.31,Matches,da7c9e6f
+560,Liam O'Neil,eng ENG,DFMF,Scunthorpe,21,1993,22,21,1846,20.5,2,5,7,2,0,0,2,0,0.10,0.24,0.34,0.10,0.34,Matches,22e07c17
+561,Luke O'Neill,eng ENG,DFMF,Scunthorpe,22,1991,13,13,1170,13.0,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,0b8720ce
+562,Luke O'Neill,eng ENG,DFMF,Leyton Orient,22,1991,8,8,696,7.7,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,0b8720ce
+563,Jay O'Shea,ie IRL,MF,Chesterfield,25,1988,41,27,2523,28.0,7,1,8,6,1,1,4,0,0.25,0.04,0.29,0.21,0.25,Matches,2100a116
+564,John O'Sullivan,ie IRL,FWMF,Barnsley,20,1993,8,7,604,6.7,0,3,3,0,0,0,0,0,0.00,0.45,0.45,0.00,0.45,Matches,6a6165d9
+565,Tommy O'Sullivan,wls WAL,MF,Port Vale,19,1995,5,1,161,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e48a00b5
+566,Rhys Oates,eng ENG,FWMF,Barnsley,19,1994,9,0,106,1.2,0,2,2,0,0,0,0,0,0.00,1.70,1.70,0.00,1.70,Matches,2fd98a53
+567,Jonathan Obika,eng ENG,FW,Swindon Town,23,1990,32,21,1672,18.6,8,0,8,8,0,0,0,0,0.43,0.00,0.43,0.43,0.43,Matches,ccecacd5
+568,Sanmi Odelusi,eng ENG,FW,Coventry City,21,1993,14,4,520,5.8,3,0,3,3,0,0,0,0,0.52,0.00,0.52,0.52,0.52,Matches,dc6d59e0
+569,Magnus Okuonghae,ng NGA,DF,Colchester,28,1986,9,8,760,8.4,1,0,1,1,0,0,1,1,0.12,0.00,0.12,0.12,0.12,Matches,bdfdad23
+570,Bobby Olejnik,at AUT,GK,Scunthorpe,27,1986,13,13,1170,13.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,f35955db
+571,Vadaine Oliver,eng ENG,FW,Crewe Alexandra,22,1991,9,6,526,5.8,1,0,1,1,0,0,1,0,0.17,0.00,0.17,0.17,0.17,Matches,b00ec28d
+572,Elliot Omozusi,eng ENG,DF,Leyton Orient,25,1988,25,24,2081,23.1,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,cb604608
+573,Michael Onovwigun,eng ENG,MF,Chesterfield,18,1996,2,0,2,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3b539105
+574,Karleigh Osborne,eng ENG,DF,Colchester,26,1988,4,4,320,3.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,1e27b998
+575,Karleigh Osborne,eng ENG,DF,Bristol City,26,1988,1,0,6,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1e27b998
+576,Isaiah Osbourne,eng ENG,MF,Scunthorpe,26,1987,28,24,2082,23.1,0,3,3,0,0,0,4,0,0.00,0.13,0.13,0.00,0.13,Matches,50888f31
+577,Lanre Oyebanjo,ie IRL,DF,Crawley Town,24,1990,31,26,2381,26.5,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,60783348
+578,Erhun Oztumer,,FWMF,Peterborough,23,1991,20,11,962,10.7,1,0,1,1,0,0,3,0,0.09,0.00,0.09,0.09,0.09,Matches,327092e2
+579,Marlon Pack,eng ENG,DFMF,Bristol City,23,1991,34,22,2142,23.8,3,4,7,2,1,1,2,0,0.13,0.17,0.29,0.08,0.25,Matches,8633b350
+580,Will Packwood,us USA,DFMF,Colchester,21,1993,1,1,67,0.7,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,524d551d
+581,Martin Paterson,nir NIR,FW,Fleetwood Town,27,1987,3,3,202,2.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,53daa1e9
+582,Jack Payne,eng ENG,DFMF,Peterborough,22,1991,41,38,3316,36.8,3,1,4,3,0,0,9,0,0.08,0.03,0.11,0.08,0.11,Matches,c7010c0b
+583,Ben Pearson,eng ENG,MF,Barnsley,19,1995,22,21,1882,20.9,1,0,1,1,0,0,5,0,0.05,0.00,0.05,0.05,0.05,Matches,a6b461e7
+584,Matthew Pennington,eng ENG,DF,Coventry City,19,1994,24,24,2115,23.5,0,1,1,0,0,0,4,0,0.00,0.04,0.04,0.00,0.04,Matches,0ff967f7
+585,Alex Peterson,eng ENG,FW,Doncaster,19,1994,1,0,25,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,35ef04fa
+586,Michael Petrasso,ca CAN,DFMF,Notts County,19,1995,8,5,479,5.3,3,0,3,3,0,0,0,0,0.56,0.00,0.56,0.56,0.56,Matches,075faf85
+587,Michael Petrasso,ca CAN,DFMF,Leyton Orient,19,1995,3,2,155,1.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,075faf85
+588,Mike Phenix,eng ENG,FW,Barnsley,25,1989,2,0,36,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8b13adeb
+589,Aaron Phillips,eng ENG,DF,Coventry City,20,1993,18,14,1190,13.2,0,1,1,0,0,0,2,0,0.00,0.08,0.08,0.00,0.08,Matches,09056ccd
+590,Danny Philliskirk,eng ENG,DFFW,Oldham Athletic,23,1991,43,37,3322,36.9,4,3,7,4,0,1,2,0,0.11,0.08,0.19,0.11,0.19,Matches,bc156e10
+591,Jordan Pickford,eng ENG,GK,Bradford City,20,1994,33,33,2891,32.1,0,0,0,0,0,0,1,2,0.00,0.00,0.00,0.00,0.00,Matches,4806ec67
+592,Kevin Pilkington,eng ENG,GK,Notts County,40,1974,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,96ba3590
+593,Gianvito Plasmati,it ITA,FW,Leyton Orient,31,1983,14,7,515,5.7,2,2,4,1,1,1,1,0,0.35,0.35,0.70,0.17,0.52,Matches,d767827f
+594,Mathias Pogba,gn GUI,FW,Crawley Town,23,1990,17,14,1091,12.1,2,2,4,2,0,0,1,0,0.16,0.16,0.33,0.16,0.33,Matches,32f28ca4
+595,Dominic Poleon,lc LCA,FWMF,Oldham Athletic,20,1993,35,21,1869,20.8,4,0,4,4,0,0,3,0,0.19,0.00,0.19,0.19,0.19,Matches,18c922bb
+596,Nathan Pond,ms MSR,DFMF,Fleetwood Town,29,1985,27,24,2247,25.0,1,1,2,1,0,0,6,0,0.04,0.04,0.08,0.04,0.08,Matches,bbe1cdb6
+597,Tom Pope,eng ENG,FW,Port Vale,28,1985,33,28,2561,28.5,8,3,11,8,0,0,6,0,0.28,0.11,0.39,0.28,0.39,Matches,40432f88
+598,Chris Porter,eng ENG,FW,Sheffield United,30,1983,1,0,6,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2a05f837
+599,Chris Porter,eng ENG,FW,Colchester,30,1983,21,20,1782,19.8,7,1,8,5,2,3,2,0,0.35,0.05,0.40,0.25,0.30,Matches,2a05f837
+600,Darren Potter,ie IRL,MF,MK Dons,29,1984,40,40,3526,39.2,2,3,5,2,0,0,11,0,0.05,0.08,0.13,0.05,0.13,Matches,fc561eff
+601,Daniel Powell,eng ENG,FWMF,MK Dons,23,1991,42,30,2768,30.8,8,4,12,8,0,0,3,0,0.26,0.13,0.39,0.26,0.39,Matches,852a7aa0
+602,Matt Preston,eng ENG,DF,Walsall,19,1995,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,dabf5226
+603,Jack Price,eng ENG,MF,Yeovil Town,21,1992,6,5,462,5.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6217c92d
+604,Jack Price,eng ENG,MF,Leyton Orient,21,1992,5,4,360,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,6217c92d
+605,Lewis Price,wls WAL,GK,Crawley Town,30,1984,18,18,1575,17.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,55f07e07
+606,Bradley Pritchard,zw ZIM,MF,Leyton Orient,28,1985,31,22,1985,22.1,0,2,2,0,0,0,2,0,0.00,0.09,0.09,0.00,0.09,Matches,e81ca41c
+607,Josh Pritchard,wls WAL,MF,Gillingham,21,1992,25,14,1167,13.0,0,1,1,0,0,0,2,0,0.00,0.08,0.08,0.00,0.08,Matches,0582dc7d
+608,Jamie Proctor,eng ENG,FW,Fleetwood Town,22,1992,41,32,3075,34.2,8,6,14,8,0,0,7,0,0.23,0.18,0.41,0.23,0.41,Matches,9c451bde
+609,Nick Proschwitz,de GER,FW,Coventry City,27,1986,9,6,567,6.3,1,0,1,1,0,1,0,0,0.16,0.00,0.16,0.16,0.16,Matches,9cf4fd68
+610,Danny Pugh,eng ENG,DFMF,Coventry City,31,1982,5,5,397,4.4,0,1,1,0,0,0,0,0,0.00,0.23,0.23,0.00,0.23,Matches,7f60e79c
+611,Ben Purkiss,eng ENG,DF,Walsall,30,1984,32,31,2742,30.5,0,2,2,0,0,0,3,0,0.00,0.07,0.07,0.00,0.07,Matches,cafb162e
+612,Paul Rachubka,eng ENG,GK,Crewe Alexandra,33,1981,15,14,1280,14.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f3229025
+613,Paul Rachubka,eng ENG,GK,Oldham Athletic,33,1981,22,22,1980,22.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f3229025
+614,Joe Rafferty,ie IRL,DFMF,Rochdale,20,1993,31,28,2261,25.1,1,2,3,1,0,0,8,1,0.04,0.08,0.12,0.04,0.12,Matches,4d5ecb73
+615,Charlie Raglan,eng ENG,DFMF,Chesterfield,21,1993,18,15,1552,17.2,1,0,1,1,0,0,3,0,0.06,0.00,0.06,0.06,0.06,Matches,387ac5d8
+616,Nathan Ralph,eng ENG,DF,Yeovil Town,21,1993,21,9,968,10.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,2dec3014
+617,Peter Ramage,eng ENG,DF,Barnsley,30,1983,19,19,1608,17.9,3,0,3,3,0,0,3,0,0.17,0.00,0.17,0.17,0.17,Matches,a3576e11
+618,Mark Randall,eng ENG,MF,MK Dons,24,1989,9,2,281,3.1,0,3,3,0,0,0,4,0,0.00,0.96,0.96,0.00,0.96,Matches,0871bc14
+619,Will Randall,eng ENG,MF,Swindon Town,17,1997,4,2,239,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,130915c8
+620,George Ray,wls WAL,DF,Crewe Alexandra,20,1993,35,35,2999,33.3,2,0,2,2,0,0,6,2,0.06,0.00,0.06,0.06,0.06,Matches,56504d51
+621,Abdul Razak,ci CIV,MF,Doncaster,21,1992,9,5,330,3.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,5e61927c
+622,Louis Reed,eng ENG,MF,Sheffield United,17,1997,19,10,986,11.0,0,2,2,0,0,0,1,0,0.00,0.18,0.18,0.00,0.18,Matches,391c1d38
+623,Ben Reeves,nir NIR,MF,MK Dons,22,1991,30,25,2070,23.0,7,4,11,5,2,2,3,0,0.30,0.17,0.48,0.22,0.39,Matches,4db1f85d
+624,Jake Reeves,eng ENG,MF,Swindon Town,21,1993,10,1,240,2.7,1,0,1,1,0,0,1,0,0.37,0.00,0.37,0.37,0.37,Matches,290a9106
+625,Kyel Reid,eng ENG,MF,Preston,26,1987,14,5,574,6.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,33cce752
+626,Sam Ricketts,wls WAL,DF,Swindon Town,32,1981,9,8,715,7.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3f8ef948
+627,Gary Roberts,eng ENG,MF,Chesterfield,30,1984,34,33,2743,30.5,6,9,15,5,1,1,7,0,0.20,0.30,0.49,0.16,0.46,Matches,245c2093
+628,Mark Roberts,eng ENG,DF,Fleetwood Town,30,1983,27,27,2402,26.7,3,1,4,3,0,0,6,0,0.11,0.04,0.15,0.11,0.15,Matches,9459a3ea
+629,Chris Robertson,sct SCO,DF,Port Vale,27,1986,24,21,1916,21.3,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,45c7076e
+630,Callum Robinson,ie IRL,FWMF,Preston,19,1995,25,18,1583,17.6,4,4,8,4,0,0,0,0,0.23,0.23,0.45,0.23,0.45,Matches,e75750a3
+631,Theo Robinson,jm JAM,FW,Doncaster,25,1989,32,13,1436,16.0,4,1,5,3,1,1,0,0,0.25,0.06,0.31,0.19,0.25,Matches,a170bb25
+632,Theo Robinson,jm JAM,FW,Scunthorpe,25,1989,8,8,621,6.9,3,1,4,3,0,0,1,0,0.43,0.14,0.58,0.43,0.58,Matches,a170bb25
+633,Anton Rodgers,ie IRL,MF,Swindon Town,21,1993,10,7,542,6.0,2,0,2,2,0,0,0,0,0.33,0.00,0.33,0.33,0.33,Matches,a7ae8397
+634,Kemar Roofe,jm JAM,FWMF,Colchester,21,1993,2,0,32,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,5f3d00d1
+635,Danny Rose,eng ENG,FW,Barnsley,20,1993,1,1,65,0.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d08e15e1
+636,Michael Rose,eng ENG,DFMF,Rochdale,32,1982,32,26,2375,26.4,1,7,8,1,0,0,0,0,0.04,0.27,0.30,0.04,0.30,Matches,d3203787
+637,Mitch Rose,eng ENG,DFMF,Crawley Town,20,1994,1,0,51,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,93db8202
+638,Christopher Routis,fr FRA,DFMF,Bradford City,24,1990,18,16,1257,14.0,2,0,2,2,0,0,3,1,0.14,0.00,0.14,0.14,0.14,Matches,75d36724
+639,Jack Ryan,eng ENG,FW,Preston,18,1996,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,17a6dc72
+640,Jimmy Ryan,ie IRL,MF,Chesterfield,25,1988,44,42,3705,41.2,4,4,8,4,0,0,7,0,0.10,0.10,0.19,0.10,0.19,Matches,ac732ee5
+641,Mat Sadler,eng ENG,DF,Oldham Athletic,29,1985,8,7,675,7.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,1108f3c0
+642,Mat Sadler,eng ENG,DF,Crawley Town,29,1985,10,10,900,10.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,1108f3c0
+643,Dominic Samuel,eng ENG,FWMF,Coventry City,20,1994,13,12,1002,11.1,6,0,6,6,0,0,1,0,0.54,0.00,0.54,0.54,0.54,Matches,65829d85
+644,Alefe Santos,br BRA,FWMF,Notts County,19,1995,3,1,120,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,021a2962
+645,Ricardo Santos,,DF,Peterborough,19,1995,24,22,1850,20.6,0,0,0,0,0,0,3,1,0.00,0.00,0.00,0.00,0.00,Matches,82edbfad
+646,Antoni Sarcevic,eng ENG,MF,Fleetwood Town,22,1992,37,29,2618,29.1,2,1,3,2,0,0,4,1,0.07,0.03,0.10,0.07,0.10,Matches,80e8d5aa
+647,Callum Saunders,wls WAL,FW,Crewe Alexandra,18,1995,4,1,108,1.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f8dd49ac
+648,George Saville,nir NIR,MF,Bristol City,21,1993,7,1,125,1.4,1,0,1,1,0,0,2,0,0.72,0.00,0.72,0.72,0.72,Matches,c4c00019
+649,Gary Sawyer,eng ENG,DF,Leyton Orient,29,1985,13,12,1102,12.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,2f72652f
+650,Romaine Sawyers,kn SKN,FWMF,Walsall,22,1991,42,37,3266,36.3,4,4,8,4,0,0,1,0,0.11,0.11,0.22,0.11,0.22,Matches,77bb1522
+651,Steven Schumacher,eng ENG,MF,Fleetwood Town,30,1984,32,27,2387,26.5,0,3,3,0,0,0,6,0,0.00,0.11,0.11,0.00,0.11,Matches,569c657a
+652,Stefan Scougall,sct SCO,MF,Sheffield United,21,1992,25,20,1668,18.5,1,0,1,1,0,0,3,0,0.05,0.00,0.05,0.05,0.05,Matches,024e297f
+653,Josh Scowen,eng ENG,MF,Barnsley,21,1993,21,19,1743,19.4,4,2,6,4,0,0,3,0,0.21,0.10,0.31,0.21,0.31,Matches,60c484d0
+654,Freddie Sears,eng ENG,FWMF,Colchester,24,1989,24,24,2129,23.7,10,2,12,10,0,1,0,0,0.42,0.08,0.51,0.42,0.51,Matches,07059b2e
+655,Dion Sembie-Ferris,eng ENG,MF,Colchester,18,1996,10,2,249,2.8,0,1,1,0,0,0,0,0,0.00,0.36,0.36,0.00,0.36,Matches,de1795fe
+656,James Severn,eng ENG,GK,Scunthorpe,22,1991,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9d78b38a
+657,Mo Shariff,eng ENG,FWMF,Bradford City,21,1993,1,0,15,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1a23ed27
+658,Scott Shearer,sct SCO,GK,Crewe Alexandra,33,1981,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bd106774
+659,Alan Sheehan,ie IRL,DF,Peterborough,27,1986,2,1,102,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0e39bdaa
+660,Alan Sheehan,ie IRL,DF,Bradford City,27,1986,23,13,1434,15.9,1,1,2,0,1,2,3,1,0.06,0.06,0.13,0.00,0.06,Matches,0e39bdaa
+661,Josh Sheehan,wls WAL,MF,Yeovil Town,19,1995,13,12,1001,11.1,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,c30e605a
+662,Liam Shephard,wls WAL,DFMF,Yeovil Town,19,1994,20,20,1787,19.9,0,1,1,0,0,0,0,0,0.00,0.05,0.05,0.00,0.05,Matches,de9b2ee6
+663,Leonardo da Silva Lopes,pt POR,DFMF,Peterborough,15,1998,2,2,135,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7dfcfd17
+664,Jay Simpson,eng ENG,FWMF,Leyton Orient,25,1988,28,12,1160,12.9,5,0,5,5,0,0,1,0,0.39,0.00,0.39,0.39,0.39,Matches,fe9c9bfc
+665,Josh Simpson,eng ENG,MF,Crawley Town,27,1987,8,8,592,6.6,1,0,1,1,0,0,1,0,0.15,0.00,0.15,0.15,0.15,Matches,ded86fdd
+666,Jordan Slew,eng ENG,FWMF,Port Vale,21,1992,9,5,416,4.6,2,0,2,2,0,0,0,1,0.43,0.00,0.43,0.43,0.43,Matches,372307ab
+667,Sam Slocombe,eng ENG,GK,Scunthorpe,26,1988,9,9,761,8.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,09050ce6
+668,Alan Smith,eng ENG,FWMF,Notts County,33,1980,23,20,1547,17.2,0,0,0,0,0,0,8,0,0.00,0.00,0.00,0.00,0.00,Matches,fdac06ea
+669,Alex Smith,eng ENG,DF,Yeovil Town,22,1991,6,3,333,3.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1c8af6eb
+670,Brad Smith,au AUS,DFMF,Swindon Town,20,1994,7,7,614,6.8,0,1,1,0,0,0,0,0,0.00,0.15,0.15,0.00,0.15,Matches,c76c717c
+671,Dominic Smith,eng ENG,FW,Colchester,18,1995,1,0,14,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,77bd8852
+672,George Smith,eng ENG,DFFW,Barnsley,17,1996,18,16,1427,15.9,0,1,1,0,0,0,0,0,0.00,0.06,0.06,0.00,0.06,Matches,2d23ed56
+673,Jimmy Smith,eng ENG,MF,Crawley Town,27,1987,36,28,2468,27.4,1,4,5,1,0,0,3,0,0.04,0.15,0.18,0.04,0.18,Matches,5ed1816c
+674,Korey Smith,eng ENG,DFMF,Bristol City,23,1991,44,44,3902,43.4,0,3,3,0,0,0,5,0,0.00,0.07,0.07,0.00,0.07,Matches,b80dbb09
+675,Matt Smith,eng ENG,FW,Bristol City,25,1989,14,11,903,10.0,7,1,8,7,0,0,1,0,0.70,0.10,0.80,0.70,0.80,Matches,2d44ca9b
+676,Michael Smith,nir NIR,DFMF,Peterborough,25,1988,43,40,3639,40.4,1,4,5,1,0,0,7,0,0.02,0.10,0.12,0.02,0.12,Matches,ffea470f
+677,Michael Smith,eng ENG,FW,Swindon Town,22,1991,40,32,2809,31.2,13,6,19,11,2,4,5,0,0.42,0.19,0.61,0.35,0.54,Matches,b93da142
+678,Nathan Smith,jm JAM,DF,Yeovil Town,27,1987,41,36,3343,37.1,0,4,4,0,0,0,6,0,0.00,0.11,0.11,0.00,0.11,Matches,4d969861
+679,Tom Smith,eng ENG,MF,Swindon Town,16,1998,1,0,21,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4bae7c12
+680,Jakub Sokolík,cz CZE,DF,Yeovil Town,20,1993,11,11,920,10.2,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,febb36ea
+681,Keith Southern,eng ENG,MF,Fleetwood Town,33,1981,2,1,104,1.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,8db518ba
+682,Matt Sparrow,eng ENG,MF,Scunthorpe,32,1981,9,6,551,6.1,1,0,1,1,0,0,1,0,0.16,0.00,0.16,0.16,0.16,Matches,7b8ae0ae
+683,Jordan Spence,eng ENG,DF,MK Dons,24,1990,38,33,2978,33.1,0,2,2,0,0,0,8,0,0.00,0.06,0.06,0.00,0.06,Matches,f7780381
+684,Jimmy Spencer,eng ENG,FW,Notts County,22,1991,9,8,635,7.1,1,0,1,1,0,0,1,0,0.14,0.00,0.14,0.14,0.14,Matches,dcd41652
+685,Jon Stead,eng ENG,FW,Bradford City,31,1983,32,27,2316,25.7,6,5,11,6,0,0,2,0,0.23,0.19,0.43,0.23,0.43,Matches,aba66ab7
+686,Jed Steer,eng ENG,GK,Doncaster,21,1992,13,13,1109,12.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a8a3d139
+687,Jed Steer,eng ENG,GK,Yeovil Town,21,1992,12,12,1080,12.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,a8a3d139
+688,Jack Stephens,eng ENG,DF,Swindon Town,20,1994,37,36,3284,36.5,1,5,6,1,0,0,8,1,0.03,0.14,0.16,0.03,0.16,Matches,6adbc307
+689,Enda Stevens,ie IRL,DFMF,Doncaster,24,1990,28,27,2433,27.0,1,1,2,1,0,0,4,0,0.04,0.04,0.07,0.04,0.07,Matches,17d4507a
+690,Anthony Stewart,eng ENG,DF,Crewe Alexandra,21,1992,10,2,331,3.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,09bdb662
+691,Cameron Stewart,eng ENG,MF,Barnsley,23,1991,4,3,249,2.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,c29409df
+692,Gareth Stewart,eng ENG,GK,Yeovil Town,34,1980,1,0,55,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,09157774
+693,Chris Stokes,eng ENG,DF,Coventry City,23,1991,16,16,1421,15.8,1,1,2,1,0,0,1,0,0.06,0.06,0.13,0.06,0.13,Matches,de1260a3
+694,Remie Streete,eng ENG,DF,Port Vale,19,1994,2,1,135,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0c653b95
+695,Thorsten Stuckmann,de GER,GK,Preston,33,1981,7,7,630,7.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,62e15ef4
+696,Danny Swanson,sct SCO,MF,Coventry City,27,1986,15,8,704,7.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,a79b65cd
+697,John Swift,eng ENG,FWMF,Swindon Town,19,1995,18,12,1052,11.7,2,2,4,2,0,0,2,0,0.17,0.17,0.34,0.17,0.34,Matches,646ee278
+698,Dave Syers,eng ENG,MF,Scunthorpe,26,1987,6,1,75,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9f8ed98d
+699,Sammie Szmodics,ie IRL,FWMF,Colchester,18,1995,31,17,1599,17.8,4,0,4,4,0,0,2,0,0.23,0.00,0.23,0.23,0.23,Matches,39944392
+700,Drew Talbot,eng ENG,DF,Chesterfield,28,1986,9,8,666,7.4,0,1,1,0,0,0,0,0,0.00,0.14,0.14,0.00,0.14,Matches,4785fc78
+701,Scott Tanser,eng ENG,DFMF,Rochdale,19,1994,30,27,2329,25.9,1,2,3,1,0,0,1,0,0.04,0.08,0.12,0.04,0.12,Matches,ca952807
+702,Alan Tate,eng ENG,DF,Crewe Alexandra,31,1982,26,26,2179,24.2,0,2,2,0,0,0,4,1,0.00,0.08,0.08,0.00,0.08,Matches,d25626aa
+703,James Tavernier,eng ENG,DF,Bristol City,22,1991,12,9,815,9.1,3,0,3,3,0,0,0,0,0.33,0.00,0.33,0.33,0.33,Matches,be765073
+704,Andy Taylor,eng ENG,DF,Walsall,28,1986,39,37,3357,37.3,1,1,2,1,0,0,5,0,0.03,0.03,0.05,0.03,0.05,Matches,5c402d41
+705,Jake Taylor,wls WAL,FWMF,Leyton Orient,22,1991,3,3,188,2.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,999185eb
+706,Jon Taylor,eng ENG,MF,Peterborough,22,1992,24,22,1746,19.4,3,7,10,3,0,0,1,0,0.15,0.36,0.52,0.15,0.52,Matches,e8e96ecf
+707,Lyle Taylor,ms MSR,FW,Scunthorpe,24,1990,18,11,921,10.2,3,1,4,3,0,0,1,0,0.29,0.10,0.39,0.29,0.39,Matches,3e80e04e
+708,Conor Thomas,eng ENG,MF,Coventry City,20,1993,16,13,1080,12.0,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,Matches,4d7f3b9c
+709,George Thomas,wls WAL,FWMF,Coventry City,17,1997,6,0,202,2.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7ef24097
+710,Kwame Thomas,kn SKN,FW,Notts County,18,1995,5,2,249,2.8,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Matches,42971f4b
+711,Curtis Thompson,eng ENG,MF,Notts County,20,1993,31,20,1943,21.6,0,1,1,0,0,0,3,0,0.00,0.05,0.05,0.00,0.05,Matches,282e4e38
+712,Garry Thompson,eng ENG,MF,Notts County,33,1980,41,36,3173,35.3,12,2,14,12,0,0,2,0,0.34,0.06,0.40,0.34,0.40,Matches,b549d5b2
+713,Louis Thompson,wls WAL,MF,Swindon Town,19,1994,32,30,2610,29.0,2,3,5,2,0,0,6,1,0.07,0.10,0.17,0.07,0.17,Matches,390a1184
+714,Nathan Thompson,eng ENG,DF,Swindon Town,23,1990,35,35,3059,34.0,0,0,0,0,0,0,8,1,0.00,0.00,0.00,0.00,0.00,Matches,89a323f2
+715,Michael Tidser,sct SCO,MF,Oldham Athletic,24,1990,5,1,182,2.0,0,1,1,0,0,0,0,0,0.00,0.49,0.49,0.00,0.49,Matches,acfb1635
+716,Harry Toffolo,eng ENG,DFMF,Swindon Town,18,1995,28,22,1948,21.6,1,6,7,1,0,0,4,0,0.05,0.28,0.32,0.05,0.32,Matches,a105d46a
+717,Gavin Tomlin,eng ENG,FWMF,Crawley Town,31,1983,35,29,2579,28.7,3,3,6,3,0,1,9,0,0.10,0.10,0.21,0.10,0.21,Matches,ec714d12
+718,Matt Tootle,eng ENG,DF,Crewe Alexandra,23,1990,15,15,1350,15.0,0,1,1,0,0,1,0,0,0.00,0.07,0.07,0.00,0.07,Matches,80a82fcd
+719,Conor Townsend,eng ENG,DFMF,Scunthorpe,21,1993,6,5,451,5.0,0,1,1,0,0,0,1,0,0.00,0.20,0.20,0.00,0.20,Matches,4dc4f138
+720,Drissa Traoré,ci CIV,MF,Notts County,22,1992,4,2,204,2.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7e4be9f0
+721,Keith Treacy,ie IRL,MF,Barnsley,25,1988,12,6,479,5.3,1,0,1,1,0,0,1,0,0.19,0.00,0.19,0.19,0.19,Matches,4cee514e
+722,Marcello Trotta,it ITA,FW,Barnsley,21,1992,5,3,252,2.8,1,0,1,1,0,0,0,0,0.36,0.00,0.36,0.36,0.36,Matches,acdad0aa
+723,Marcus Tudgay,eng ENG,FWMF,Coventry City,31,1983,22,18,1469,16.3,4,0,4,4,0,1,2,0,0.25,0.00,0.25,0.25,0.25,Matches,b6369b56
+724,Jack Tuohy,eng ENG,FW,Oldham Athletic,17,1996,1,0,23,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,5a301647
+725,Blair Turgott,jm JAM,FWMF,Coventry City,20,1994,3,0,55,0.6,1,0,1,1,0,0,0,0,1.64,0.00,1.64,1.64,1.64,Matches,2c272afa
+726,Jordan Turnbull,eng ENG,DF,Swindon Town,19,1994,44,44,3915,43.5,1,0,1,1,0,0,10,0,0.02,0.00,0.02,0.02,0.02,Matches,81560b83
+727,Ross Turnbull,eng ENG,GK,Barnsley,29,1985,22,22,1963,21.8,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Matches,6db380ef
+728,Iain Turner,sct SCO,GK,Sheffield United,30,1984,11,11,990,11.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bab68c3c
+729,Rhys Turner,eng ENG,FW,Oldham Athletic,19,1995,14,9,726,8.1,3,0,3,3,0,0,0,0,0.37,0.00,0.37,0.37,0.37,Matches,1917b82a
+730,Oliver Turton,eng ENG,DFMF,Crewe Alexandra,21,1992,44,39,3461,38.5,1,2,3,1,0,0,3,0,0.03,0.05,0.08,0.03,0.08,Matches,01753a47
+731,Nathan Tyson,eng ENG,FW,Doncaster,32,1982,39,31,2677,29.7,12,3,15,8,4,4,5,0,0.40,0.10,0.50,0.27,0.37,Matches,8cab3924
+732,Gozie Ugwu,eng ENG,FW,Yeovil Town,21,1993,22,21,1795,19.9,5,1,6,5,0,0,0,0,0.25,0.05,0.30,0.25,0.30,Matches,faf3a4e1
+733,Marc de Val,es ESP,MF,Doncaster,24,1990,11,8,605,6.7,0,2,2,0,0,0,1,0,0.00,0.30,0.30,0.00,0.30,Matches,8d704258
+734,Kyle Vassell,nir NIR,FW,Peterborough,21,1993,17,12,1055,11.7,5,1,6,5,0,0,3,0,0.43,0.09,0.51,0.43,0.51,Matches,1f74bb10
+735,Kevin van Veen,nl NED,FW,Scunthorpe,23,1991,20,11,1023,11.4,2,1,3,2,0,0,2,0,0.18,0.09,0.26,0.18,0.26,Matches,0be1a7cb
+736,Freddie Veseli,al ALB,DF,Port Vale,21,1992,37,37,3315,36.8,1,0,1,1,0,0,6,0,0.03,0.00,0.03,0.03,0.03,Matches,d541e703
+737,Romain Vincelot,fr FRA,DFMF,Leyton Orient,28,1985,27,27,2421,26.9,2,0,2,2,0,0,9,0,0.07,0.00,0.07,0.07,0.07,Matches,f5838e66
+738,Peter Vincenti,eng ENG,FWMF,Rochdale,28,1986,37,36,2862,31.8,13,2,15,13,0,0,5,0,0.41,0.06,0.47,0.41,0.47,Matches,bece9c8c
+739,Dominic Vose,eng ENG,MF,Colchester,20,1993,7,2,263,2.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,277f04f8
+740,Reece Wabara,eng ENG,DF,Doncaster,22,1991,43,42,3797,42.2,1,6,7,1,0,0,7,0,0.02,0.14,0.17,0.02,0.17,Matches,0c7d15af
+741,Scott Wagstaff,eng ENG,MF,Bristol City,24,1990,26,2,331,3.7,2,0,2,2,0,0,2,0,0.54,0.00,0.54,0.54,0.54,Matches,81d066f9
+742,Liam Wakefield,eng ENG,DF,Doncaster,20,1994,6,3,412,4.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2b89550e
+743,Connor Waldon,eng ENG,FW,Swindon Town,19,1995,1,1,62,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6c337d2e
+744,Sam Walker,eng ENG,GK,Colchester,22,1991,45,45,4050,45.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,06ec123a
+745,James Wallace,eng ENG,MF,Sheffield United,22,1991,10,7,492,5.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,506bbd45
+746,Kieran Wallace,eng ENG,DFMF,Sheffield United,19,1995,4,2,147,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d83a1b10
+747,Joe Walsh,wls WAL,DFMF,Crawley Town,22,1992,28,28,2497,27.7,1,0,1,1,0,0,2,1,0.04,0.00,0.04,0.04,0.04,Matches,ba177c39
+748,Joe Walsh,wls WAL,DFMF,MK Dons,22,1992,2,2,180,2.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ba177c39
+749,Darren Ward,eng ENG,DF,Crawley Town,35,1978,18,17,1531,17.0,1,1,2,1,0,0,0,0,0.06,0.06,0.12,0.06,0.12,Matches,9ae008d4
+750,Grant Ward,eng ENG,MF,Coventry City,19,1994,11,11,990,11.0,0,1,1,0,0,0,0,0,0.00,0.09,0.09,0.00,0.09,Matches,1a1d5424
+751,George Waring,eng ENG,FW,Barnsley,19,1994,19,17,1431,15.9,6,0,6,6,0,0,3,0,0.38,0.00,0.38,0.38,0.38,Matches,125ce1b3
+752,Conor Washington,nir NIR,FW,Peterborough,22,1992,40,31,2801,31.1,12,5,17,12,0,1,1,0,0.39,0.16,0.55,0.39,0.55,Matches,a20986b6
+753,Billy Waters,eng ENG,FWMF,Crewe Alexandra,19,1994,16,11,970,10.8,2,0,2,2,0,0,0,0,0.19,0.00,0.19,0.19,0.19,Matches,19dc8fb7
+754,Sanchez Watt,eng ENG,FWMF,Colchester,23,1991,21,17,1402,15.6,3,2,5,3,0,0,4,0,0.19,0.13,0.32,0.19,0.32,Matches,836c6717
+755,Chris Weale,eng ENG,GK,Yeovil Town,32,1982,8,8,720,8.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1760ea72
+756,Reece Webb-Foster,eng ENG,FW,Bradford City,16,1998,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1dab8890
+757,Andy Webster,sct SCO,DF,Coventry City,32,1982,30,25,2282,25.4,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,f0c22147
+758,Byron Webster,eng ENG,DFMF,Yeovil Town,27,1987,14,14,1215,13.5,0,1,1,0,0,0,3,0,0.00,0.07,0.07,0.00,0.07,Matches,a88cb6f0
+759,Richie Wellens,eng ENG,MF,Doncaster,34,1980,39,37,3358,37.3,3,1,4,3,0,0,3,0,0.08,0.03,0.11,0.08,0.11,Matches,1a6efe8d
+760,John Welsh,eng ENG,MF,Preston,30,1984,32,30,2624,29.2,0,1,1,0,0,0,9,0,0.00,0.03,0.03,0.00,0.03,Matches,9713e675
+761,Hayden White,eng ENG,DFMF,Notts County,19,1995,3,2,176,2.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,28dd441c
+762,Billy Whitehouse,eng ENG,MF,Doncaster,18,1996,4,0,25,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c3dbc591
+763,Elliott Whitehouse,eng ENG,MF,Notts County,20,1993,7,3,340,3.8,1,2,3,1,0,0,2,0,0.26,0.53,0.79,0.26,0.79,Matches,14f86115
+764,Aaron Wilbraham,eng ENG,FW,Bristol City,34,1979,37,33,3017,33.5,18,4,22,18,0,0,6,0,0.54,0.12,0.66,0.54,0.66,Matches,9b2c7f55
+765,Joe Wildsmith,eng ENG,GK,Barnsley,18,1995,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,aa61b4a3
+766,Conor Wilkinson,ie IRL,FWMF,Oldham Athletic,19,1995,17,10,939,10.4,3,3,6,3,0,0,2,0,0.29,0.29,0.58,0.29,0.58,Matches,c547c634
+767,Andy Williams,eng ENG,FWMF,Swindon Town,27,1986,46,28,2856,31.7,21,1,22,18,3,5,2,0,0.66,0.03,0.69,0.57,0.60,Matches,8750ba2d
+768,Ben Williams,eng ENG,GK,Bradford City,31,1982,14,12,1160,12.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,05be4744
+769,Derrick Williams,ie IRL,DF,Bristol City,21,1993,44,44,3838,42.6,2,0,2,2,0,0,4,1,0.05,0.00,0.05,0.05,0.05,Matches,c0a28fbd
+770,George Williams,eng ENG,DFMF,Barnsley,21,1993,4,1,208,2.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f977a94c
+771,George Williams,wls WAL,DFFW,MK Dons,18,1995,4,2,156,1.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4159940e
+772,Jordan Williams,wls WAL,DFMF,Notts County,18,1995,8,8,720,8.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,bdc91db2
+773,Luke Williams,eng ENG,FW,Scunthorpe,21,1993,6,6,513,5.7,2,1,3,2,0,0,4,0,0.35,0.18,0.53,0.35,0.53,Matches,dedb0f8d
+774,Luke Williams,eng ENG,FW,Coventry City,21,1993,5,4,284,3.2,0,1,1,0,0,0,0,0,0.00,0.32,0.32,0.00,0.32,Matches,dedb0f8d
+775,Luke Williams,eng ENG,FW,Peterborough,21,1993,2,1,135,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,dedb0f8d
+776,Marcus Williams,eng ENG,DF,Scunthorpe,28,1986,40,40,3497,38.9,0,1,1,0,0,0,2,1,0.00,0.03,0.03,0.00,0.03,Matches,e7e03b8f
+777,Ryan Williams,in IND,FWMF,Barnsley,20,1993,5,5,422,4.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ae1d3932
+778,Ben Williamson,eng ENG,FWMF,Port Vale,25,1988,43,33,2783,30.9,6,3,9,6,0,0,2,0,0.19,0.10,0.29,0.19,0.29,Matches,919f7838
+779,Jordan Willis,eng ENG,DF,Coventry City,19,1994,34,33,2877,32.0,0,1,1,0,0,0,2,0,0.00,0.03,0.03,0.00,0.03,Matches,b1d4d4d8
+780,Brian Wilson,eng ENG,DFMF,Oldham Athletic,31,1983,33,33,2883,32.0,0,4,4,0,0,0,3,1,0.00,0.12,0.12,0.00,0.12,Matches,d00ba3d7
+781,James Wilson,wls WAL,DF,Oldham Athletic,25,1989,41,40,3605,40.1,1,0,1,1,0,0,5,0,0.02,0.00,0.02,0.02,0.02,Matches,77621175
+782,Carl Winchester,nir NIR,DFMF,Oldham Athletic,21,1993,41,36,3098,34.4,4,1,5,4,0,0,1,0,0.12,0.03,0.15,0.12,0.15,Matches,6459ee4e
+783,Sam Winnall,eng ENG,FW,Barnsley,23,1991,32,23,2048,22.8,9,2,11,9,0,0,4,0,0.40,0.09,0.48,0.40,0.48,Matches,878c2d27
+784,Scott Wiseman,gi GIB,DFMF,Preston,28,1985,22,17,1629,18.1,2,0,2,2,0,0,3,0,0.11,0.00,0.11,0.11,0.11,Matches,4ac936f9
+785,Richard Wood,eng ENG,DF,Crawley Town,29,1985,10,10,900,10.0,3,0,3,3,0,0,0,0,0.30,0.00,0.30,0.30,0.30,Matches,b6a8cf65
+786,Luke Woodland,ph PHI,MF,Oldham Athletic,19,1995,6,6,498,5.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,b1325d78
+787,Calum Woods,eng ENG,DF,Preston,27,1987,18,12,1079,12.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,02f0f728
+788,Gary Woods,eng ENG,GK,Leyton Orient,23,1990,17,16,1460,16.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,68929703
+789,Kaiyne Woolery,eng ENG,FWMF,Notts County,19,1995,5,3,299,3.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6bef94db
+790,Kyle Wootton,eng ENG,DFFW,Scunthorpe,17,1996,12,1,189,2.1,1,0,1,1,0,0,0,0,0.48,0.00,0.48,0.48,0.48,Matches,1ecff6e9
+791,Anthony Wordsworth,eng ENG,MF,Crawley Town,25,1989,18,18,1606,17.8,4,4,8,4,0,0,8,0,0.22,0.22,0.45,0.22,0.45,Matches,8dd92de0
+792,Bailey Wright,au AUS,DF,Preston,22,1992,27,27,2345,26.1,1,0,1,1,0,0,3,0,0.04,0.00,0.04,0.04,0.04,Matches,4be70ecf
+793,David Wright,eng ENG,DF,Colchester,34,1980,2,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,fdc640d2
+794,Drey Wright,eng ENG,DFMF,Colchester,19,1995,5,1,133,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e0694349
+795,Josh Wright,eng ENG,MF,Leyton Orient,24,1989,29,26,2265,25.2,2,0,2,2,0,0,6,0,0.08,0.00,0.08,0.08,0.08,Matches,2aa43fab
+796,Josh Wright,eng ENG,MF,Crawley Town,24,1989,4,2,202,2.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2aa43fab
+797,Myles Wright,eng ENG,GK,Chesterfield,17,1996,1,0,49,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,afd20763
+798,Nicky Wroe,eng ENG,MF,Notts County,28,1985,12,6,558,6.2,0,1,1,0,0,0,1,1,0.00,0.16,0.16,0.00,0.16,Matches,71b0ec2b
+799,Alex Wynter,eng ENG,DFMF,Colchester,20,1993,18,16,1402,15.6,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,f9601336
+800,Adam Yates,eng ENG,DF,Port Vale,31,1983,25,24,2190,24.3,1,1,2,1,0,0,0,0,0.04,0.04,0.08,0.04,0.08,Matches,9ef5acf1
+801,Mark Yeates,ie IRL,DFFW,Bradford City,29,1985,40,26,2496,27.7,3,6,9,3,0,0,3,0,0.11,0.22,0.32,0.11,0.32,Matches,b3922703
+802,Kelly Youga,cf CTA,DF,Crawley Town,28,1985,5,5,443,4.9,1,0,1,1,0,0,1,0,0.20,0.00,0.20,0.20,0.20,Matches,62c3e769
+803,Lewis Young,eng ENG,DFMF,Crawley Town,24,1989,38,29,2606,29.0,0,5,5,0,0,0,5,0,0.00,0.17,0.17,0.00,0.17,Matches,40e78558
+804,Gabriel Zakuani,cd COD,DF,Peterborough,28,1986,22,20,1831,20.3,1,1,2,1,0,0,1,0,0.05,0.05,0.10,0.05,0.10,Matches,f9263f99
+805,François Zoko,ci CIV,FW,Bradford City,30,1983,16,3,376,4.2,1,1,2,1,0,0,4,0,0.24,0.24,0.48,0.24,0.48,Matches,23f804a2
+806,Stéphane Zubar,gp GLP,DF,Port Vale,27,1986,2,2,169,1.9,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,424022a3
+807,Michael Freiter,,,Gillingham,,,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,Michael-Freiter

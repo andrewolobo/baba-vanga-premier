@@ -1,0 +1,751 @@
+,,,,,,,Playing Time,Playing Time,Playing Time,Playing Time,Performance,Performance,Performance,Performance,Performance,Performance,Performance,Performance,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,-additional
+Rk,Player,Nation,Pos,Squad,Age,Born,MP,Starts,Min,90s,Gls,Ast,G+A,G-PK,PK,PKatt,CrdY,CrdR,Gls,Ast,G+A,G-PK,G+A-PK,-9999
+1,Brad Abbott,eng ENG,MF,Barrow,20,1994,5,1,213,2.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,d6fa48c0
+2,Fisayo Adarabioyo,eng ENG,FW,Macclesfield,20,1995,3,1,82,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3a4a234c
+3,Toby Ajala,eng ENG,FWMF,Torquay United,23,1991,18,12,1059,11.8,1,0,1,1,0,0,1,0,0.08,0.00,0.08,0.08,0.08,6186eead
+4,Toby Ajala,eng ENG,FWMF,Dover Athletic,23,1991,16,7,666,7.4,1,0,1,1,0,0,1,0,0.14,0.00,0.14,0.14,0.14,6186eead
+5,Simeon Akinola,eng ENG,FW,Braintree Town,22,1992,41,41,3536,39.3,10,4,14,10,0,0,2,0,0.25,0.10,0.36,0.25,0.36,e48edc45
+6,Dipo Akinyemi,eng ENG,FW,Aldershot Town,18,1997,4,2,194,2.2,1,0,1,1,0,0,0,0,0.46,0.00,0.46,0.46,0.46,fd0970a5
+7,James Alabi,eng ENG,FW,Grimsby Town,20,1994,2,0,29,0.3,0,1,1,0,0,0,0,0,0.00,3.10,3.10,0.00,3.10,1c7b983d
+8,James Alabi,eng ENG,FW,Chester,20,1994,16,13,1078,12.0,6,2,8,6,0,0,1,0,0.50,0.17,0.67,0.50,0.67,1c7b983d
+9,Reise Allassani,eng ENG,FW,Bromley,19,1996,3,2,149,1.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,5913dbc1
+10,Iffy Allen,eng ENG,FWMF,Torquay United,21,1994,13,5,714,7.9,3,0,3,3,0,0,1,0,0.38,0.00,0.38,0.38,0.38,e27443d5
+11,Jamie Allen,ms MSR,FWMF,Southport,20,1995,32,15,1621,18.0,4,1,5,4,0,0,0,0,0.22,0.06,0.28,0.22,0.28,5b2ad206
+12,River Allen,,MF,Gateshead,19,1996,4,3,217,2.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,f1d8831c
+13,Louis Almond,eng ENG,FW,Southport,23,1992,42,41,3448,38.3,12,4,16,8,4,4,3,0,0.31,0.10,0.42,0.21,0.31,db14c0bc
+14,Pádraig Amond,ie IRL,FWMF,Grimsby Town,27,1988,40,37,3221,35.8,30,3,33,29,1,1,1,0,0.84,0.08,0.92,0.81,0.89,75499f71
+15,Harry Anderson,eng ENG,FWMF,Braintree Town,18,1997,2,1,91,1.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,c6f940ed
+16,Joe Anderson,eng ENG,DF,Bromley,25,1989,45,44,3968,44.1,1,7,8,1,0,0,2,0,0.02,0.16,0.18,0.02,0.18,2d56c75b
+17,Nick Anderton,eng ENG,DF,Barrow,19,1996,21,21,1875,20.8,0,1,1,0,0,0,4,2,0.00,0.05,0.05,0.00,0.05,cb03c4d4
+18,Nick Anderton,eng ENG,DF,Aldershot Town,19,1996,11,11,935,10.4,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,cb03c4d4
+19,Bruno Andrade,pt POR,FWMF,Woking,21,1993,43,28,2727,30.3,5,7,12,5,0,0,1,0,0.17,0.23,0.40,0.17,0.40,6e87c80f
+20,Nathan Arnold,eng ENG,FWMF,Grimsby Town,28,1987,40,38,3324,36.9,8,8,16,8,0,0,0,0,0.22,0.22,0.43,0.22,0.43,4966b48d
+21,Steve Arnold,eng ENG,GK,Forest Green,25,1989,26,26,2340,26.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,8c0d375b
+22,Chris Arthur,eng ENG,DFMF,Woking,25,1990,37,30,2728,30.3,0,2,2,0,0,0,5,1,0.00,0.07,0.07,0.00,0.07,0ca137fd
+23,Neil Ashton,eng ENG,DFMF,Barrow,30,1985,22,22,1909,21.2,0,2,2,0,0,0,3,0,0.00,0.09,0.09,0.00,0.09,602ab267
+24,Rob Atkinson,eng ENG,DF,Guiseley,28,1987,38,38,3341,37.1,5,0,5,5,0,0,3,0,0.13,0.00,0.13,0.13,0.13,b2ac6d2d
+25,Wes Atkinson,eng ENG,DF,Eastleigh,20,1994,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,47e27690
+26,Michael Bakare,eng ENG,FWMF,Welling United,28,1986,21,13,1044,11.6,3,0,3,3,0,0,0,1,0.26,0.00,0.26,0.26,0.26,c87cfb5e
+27,Zane Banton,eng ENG,FW,Boreham Wood,19,1996,2,0,49,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,f64a724e
+28,Chris Barker,eng ENG,DF,Aldershot Town,35,1980,3,3,256,2.8,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,c67c2a68
+29,Matthew Barnes-Homer,eng ENG,FW,Aldershot Town,29,1986,15,7,678,7.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,86e174e7
+30,Matthew Barnes-Homer,eng ENG,FW,Harriers,29,1986,8,6,495,5.5,0,1,1,0,0,0,0,0,0.00,0.18,0.18,0.00,0.18,86e174e7
+31,Jack Barthram,eng ENG,DF,Cheltenham,21,1993,42,38,3181,35.3,0,3,3,0,0,0,4,0,0.00,0.08,0.08,0.00,0.08,31699716
+32,Mark Beck,sct SCO,FWMF,Wrexham,21,1994,11,7,638,7.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,60d58b05
+33,Omar Beckles,gd GRN,DF,Aldershot Town,23,1991,45,45,4050,45.0,1,0,1,1,0,0,7,0,0.02,0.00,0.02,0.02,0.02,668005c9
+34,Reece Beckles,ag ATG,FW,Woking,20,1995,1,0,11,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,25950da6
+35,Lee Beevers,wls WAL,DFMF,Lincoln City,31,1983,44,43,3898,43.3,0,6,6,0,0,0,6,1,0.00,0.14,0.14,0.00,0.14,1c8083e9
+36,Cameron Belford,eng ENG,GK,Wrexham,26,1988,19,19,1710,19.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,25e47120
+37,Fergus Bell,eng ENG,MF,Torquay United,24,1991,6,2,241,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,04130013
+38,Nyal Bell,eng ENG,FW,Chester,18,1997,3,0,48,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,2cbbd5ad
+39,Hamza Bencherif,dz ALG,DFMF,FC Halifax Town,27,1988,41,38,3147,35.0,0,1,1,0,0,0,2,0,0.00,0.03,0.03,0.00,0.03,77bb7a30
+40,Tom Bender,wls WAL,DF,Forest Green,22,1993,2,0,6,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,ab4fbcf0
+41,Dale Bennett,eng ENG,DF,Forest Green,25,1990,42,42,3616,40.2,0,0,0,0,0,0,7,1,0.00,0.00,0.00,0.00,0.00,473fb36c
+42,Durrell Berry,eng ENG,DF,Torquay United,23,1992,26,26,2263,25.1,1,2,3,1,0,0,5,0,0.04,0.08,0.12,0.04,0.12,468a942c
+43,Andy Bishop,eng ENG,FW,FC Halifax Town,32,1982,4,2,150,1.7,0,1,1,0,0,0,0,0,0.00,0.60,0.60,0.00,0.60,e793de7f
+44,Andy Bishop,eng ENG,FW,Southport,32,1982,23,13,1106,12.3,3,1,4,3,0,0,1,1,0.24,0.08,0.33,0.24,0.33,e793de7f
+45,Adam Blakeman,eng ENG,DF,Southport,23,1991,28,27,2304,25.6,1,3,4,1,0,0,6,0,0.04,0.12,0.16,0.04,0.16,6ee98861
+46,Nathan Blissett,eng ENG,FW,Torquay United,25,1990,17,16,1350,15.0,8,3,11,8,0,0,0,0,0.53,0.20,0.73,0.53,0.73,827ecad9
+47,Nathan Blissett,eng ENG,FW,Tranmere Rovers,25,1990,5,2,231,2.6,1,0,1,1,0,0,1,0,0.39,0.00,0.39,0.39,0.39,827ecad9
+48,Nathan Blissett,eng ENG,FW,Lincoln City,25,1990,3,1,111,1.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,827ecad9
+49,Omar Bogle,eng ENG,FW,Grimsby Town,22,1993,41,29,2654,29.5,13,9,22,9,4,5,2,0,0.44,0.31,0.75,0.31,0.61,c334bcfc
+50,James Bolton,eng ENG,DF,FC Halifax Town,20,1994,45,45,4013,44.6,3,1,4,3,0,0,5,1,0.07,0.02,0.09,0.07,0.09,bf6fbdca
+51,Danny Boshell,eng ENG,MF,Guiseley,34,1981,28,24,1965,21.8,2,2,4,2,0,0,4,0,0.09,0.09,0.18,0.09,0.18,ab62d153
+52,James Bowen,eng ENG,DF,Cheltenham,19,1996,1,0,10,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3b3d70d7
+53,George Bowerman,eng ENG,FW,Altrincham,23,1991,28,14,1311,14.6,5,0,5,5,0,0,0,0,0.34,0.00,0.34,0.34,0.34,4079ab9a
+54,Ryan Bowman,eng ENG,FW,Gateshead,23,1991,41,38,3293,36.6,16,6,22,13,3,3,2,0,0.44,0.16,0.60,0.36,0.52,89880099
+55,Adam Boyes,eng ENG,FW,Guiseley,24,1990,42,28,2693,29.9,6,2,8,6,0,0,1,0,0.20,0.07,0.27,0.20,0.27,d39335c5
+56,Craig Braham-Barrett,ms MSR,DF,Dover Athletic,27,1988,11,11,930,10.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,57e15a78
+57,Craig Braham-Barrett,ms MSR,DF,Woking,27,1988,4,4,360,4.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,57e15a78
+58,Ritchie Branagan,ie IRL,GK,Macclesfield,23,1991,11,9,827,9.2,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,db00abb1
+59,Louis Briscoe,eng ENG,FWMF,Torquay United,27,1988,21,14,1138,12.6,0,1,1,0,0,0,0,0,0.00,0.08,0.08,0.00,0.08,82110bb9
+60,Louis Briscoe,eng ENG,FWMF,Wrexham,27,1988,4,0,78,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,82110bb9
+61,Richard Brodie,eng ENG,FW,Southport,28,1987,1,1,64,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,1523e245
+62,Richard Brodie,eng ENG,FW,Aldershot Town,28,1987,22,17,1551,17.2,5,1,6,5,0,0,4,0,0.29,0.06,0.35,0.29,0.35,1523e245
+63,David Brooks,wls WAL,FWMF,FC Halifax Town,18,1997,5,3,316,3.5,1,0,1,1,0,0,0,0,0.28,0.00,0.28,0.28,0.28,dc4cae05
+64,Patrick Brough,eng ENG,DFMF,Lincoln City,19,1996,4,4,360,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,4fdba4d6
+65,Matty Brown,eng ENG,DFMF,FC Halifax Town,25,1990,29,29,2528,28.1,0,1,1,0,0,0,6,0,0.00,0.04,0.04,0.00,0.04,23ea840e
+66,Nat Brown,eng ENG,DF,FC Halifax Town,34,1981,3,3,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,078a5f15
+67,Nat Brown,eng ENG,DF,Lincoln City,34,1981,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,078a5f15
+68,Scott Brown,eng ENG,MF,Grimsby Town,30,1985,3,0,56,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,8adefff9
+69,Rhys Browne,ag ATG,DFFW,Aldershot Town,19,1995,37,31,2719,30.2,6,8,14,6,0,0,6,0,0.20,0.26,0.46,0.20,0.46,b88d0922
+70,Mitch Brundle,eng ENG,DFMF,Braintree Town,20,1994,34,24,2234,24.8,3,4,7,3,0,0,2,1,0.12,0.16,0.28,0.12,0.28,3e061157
+71,Nathan Buddle,eng ENG,DF,Gateshead,21,1993,15,11,1015,11.3,2,0,2,2,0,0,1,0,0.18,0.00,0.18,0.18,0.18,34d573c1
+72,Cameron Burgess,au AUS,DF,Cheltenham,19,1995,17,17,1530,17.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,da61ca98
+73,Jordan Burrow,eng ENG,FW,FC Halifax Town,22,1992,45,43,3848,42.8,14,4,18,11,3,4,3,1,0.33,0.09,0.42,0.26,0.35,013463b0
+74,Chris Bush,eng ENG,DFFW,Lincoln City,23,1992,31,29,2539,28.2,1,1,2,1,0,0,2,0,0.04,0.04,0.07,0.04,0.07,6d14377a
+75,Matt Butcher,eng ENG,MF,Woking,18,1997,10,10,841,9.3,2,0,2,2,0,0,1,0,0.21,0.00,0.21,0.21,0.21,b170cfa2
+76,Dan Butler,eng ENG,DFMF,Torquay United,20,1994,45,45,4050,45.0,2,9,11,2,0,0,7,0,0.04,0.20,0.24,0.04,0.24,84dd2a1f
+77,Neill Byrne,ie IRL,DFMF,Macclesfield,22,1993,27,25,2238,24.9,2,0,2,2,0,0,3,1,0.08,0.00,0.08,0.08,0.08,34731ad8
+78,Courtney Cameron,eng ENG,MF,Southport,22,1993,10,4,351,3.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,7bbc0398
+79,Tahvon Campbell,eng ENG,FWMF,Harriers,18,1997,15,11,906,10.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,106f7efa
+80,Achille Campion,fr FRA,FW,Torquay United,25,1990,3,2,170,1.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,fcc55c26
+81,Jake Caprice,eng ENG,DFMF,Woking,22,1992,42,33,3057,34.0,0,4,4,0,0,0,3,0,0.00,0.12,0.12,0.00,0.12,d3082f30
+82,Harry Cardwell,sct SCO,FW,Woking,18,1996,5,4,271,3.0,0,1,1,0,0,0,0,0,0.00,0.33,0.33,0.00,0.33,7f876c2e
+83,Harry Cardwell,sct SCO,FW,Braintree Town,18,1996,4,2,211,2.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,7f876c2e
+84,Josh Carmichael,sct SCO,MF,Torquay United,20,1994,14,12,1049,11.7,1,1,2,1,0,0,3,0,0.09,0.09,0.17,0.09,0.17,c601442b
+85,Daniel Carr,tt TRI,FW,Woking,21,1994,10,9,649,7.2,2,0,2,1,1,1,1,0,0.28,0.00,0.28,0.14,0.14,7e245150
+86,Daniel Carr,tt TRI,FW,Aldershot Town,21,1994,7,5,449,5.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,7e245150
+87,Mark Carrington,eng ENG,DFMF,Wrexham,28,1987,32,26,2405,26.7,1,3,4,1,0,0,2,1,0.04,0.11,0.15,0.04,0.15,c4ef73ec
+88,Darren Carter,eng ENG,DFMF,Forest Green,31,1983,33,32,2747,30.5,7,2,9,6,1,1,6,0,0.23,0.07,0.29,0.20,0.26,52fefc5b
+89,James Caton,eng ENG,MF,Lincoln City,21,1994,12,8,715,7.9,3,4,7,3,0,0,0,0,0.38,0.50,0.88,0.38,0.88,3194fb55
+90,James Caton,eng ENG,MF,Wrexham,21,1994,4,0,85,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3194fb55
+91,Jamie Chandler,eng ENG,MF,Gateshead,26,1989,26,17,1688,18.8,0,1,1,0,0,0,5,0,0.00,0.05,0.05,0.00,0.05,b01aa4dc
+92,Jordan Chapell,eng ENG,FWMF,Chester,23,1991,36,29,2390,26.6,3,5,8,3,0,0,0,0,0.11,0.19,0.30,0.11,0.30,6dc8d46e
+93,Noah Chesmain,eng ENG,DF,Welling United,17,1997,12,12,1080,12.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,2bd2f749
+94,Jordan Chiedozie,ng NGA,FW,Braintree Town,20,1994,5,4,304,3.4,1,0,1,1,0,0,0,0,0.30,0.00,0.30,0.30,0.30,914b7a76
+95,Jordan Chiedozie,ng NGA,FW,Boreham Wood,20,1994,1,1,55,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,914b7a76
+96,Ben Chorley,eng ENG,DF,Bromley,32,1982,31,29,2514,27.9,0,1,1,0,0,0,5,0,0.00,0.04,0.04,0.00,0.04,2a6839d7
+97,Ben Clark,eng ENG,DF,Gateshead,32,1983,44,44,3872,43.0,2,0,2,2,0,0,3,0,0.05,0.00,0.05,0.05,0.05,3cd1c96c
+98,Craig Clay,eng ENG,DFMF,Grimsby Town,23,1992,35,29,2544,28.3,3,0,3,3,0,0,3,0,0.11,0.00,0.11,0.11,0.11,c003124a
+99,Billy Clifford,eng ENG,MF,Boreham Wood,22,1992,21,14,1331,14.8,1,3,4,0,1,1,3,1,0.07,0.20,0.27,0.00,0.20,ac30d565
+100,Conor Clifford,ie IRL,MF,Boreham Wood,23,1991,44,44,3925,43.6,2,5,7,1,1,1,6,0,0.05,0.11,0.16,0.02,0.14,55df1b99
+101,Charlie Clough,eng ENG,DF,Forest Green,24,1990,36,28,2679,29.8,1,0,1,1,0,0,3,0,0.03,0.00,0.03,0.03,0.03,765ff543
+102,John Cofie,eng ENG,FW,Wrexham,22,1993,2,1,91,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,98d91ecf
+103,Jake Cole,eng ENG,GK,Woking,29,1985,44,44,3960,44.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,7c5b4491
+104,Tom Connor,au AUS,GK,Bromley,25,1990,5,0,51,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,68e66ea3
+105,Jack Connors,ie IRL,DF,Boreham Wood,20,1994,1,0,50,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,5b307501
+106,James Constable,eng ENG,FW,Eastleigh,30,1984,36,32,2890,32.1,15,3,18,15,0,0,5,1,0.47,0.09,0.56,0.47,0.56,e60043fb
+107,Andy Cook,eng ENG,FW,Barrow,24,1990,45,45,3987,44.3,24,3,27,22,2,3,6,0,0.54,0.07,0.61,0.50,0.56,ef9bbaf3
+108,Anthony Cook,eng ENG,DFMF,Bromley,25,1989,20,19,1693,18.8,4,2,6,1,3,3,4,0,0.21,0.11,0.32,0.05,0.16,67e48f87
+109,Lee Cook,eng ENG,MF,Eastleigh,32,1982,36,21,1940,21.6,5,6,11,5,0,0,4,0,0.23,0.28,0.51,0.23,0.51,a8ac00c8
+110,Josh Cooke,eng ENG,FW,Cheltenham,18,1997,6,0,80,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,f0272c21
+111,Adam Coombes,eng ENG,FW,Bromley,24,1991,15,10,914,10.2,1,0,1,1,0,0,1,0,0.10,0.00,0.10,0.10,0.10,217ee467
+112,Sam Cosgrove,eng ENG,FW,Barrow,18,1996,5,1,108,1.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,ea55ae1a
+113,Andy Coughlin,eng ENG,GK,Southport,22,1993,15,15,1350,15.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,926222d2
+114,Luke Coulson,eng ENG,DFFW,Eastleigh,21,1994,16,16,1292,14.4,2,1,3,2,0,0,3,0,0.14,0.07,0.21,0.14,0.21,9be637af
+115,Niall Cowperthwaite,eng ENG,DFMF,Barrow,23,1992,24,21,1829,20.3,1,0,1,1,0,0,1,1,0.05,0.00,0.05,0.05,0.05,7bea3c91
+116,Sam Cox,gy GUY,DFMF,Boreham Wood,24,1990,22,21,1782,19.8,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,d9716f2b
+117,Tom Craddock,eng ENG,FW,Guiseley,28,1986,30,11,1056,11.7,2,1,3,2,0,0,3,0,0.17,0.09,0.26,0.17,0.26,3bfd4247
+118,Jordan Cranston,wls WAL,DFMF,Gateshead,21,1993,23,23,2028,22.5,1,1,2,1,0,0,3,0,0.04,0.04,0.09,0.04,0.09,44ebf2e2
+119,Jordan Cranston,wls WAL,DFMF,Cheltenham,21,1993,15,8,796,8.8,0,2,2,0,0,0,1,0,0.00,0.23,0.23,0.00,0.23,44ebf2e2
+120,Harry Crawford,ie IRL,FW,Boreham Wood,23,1991,10,2,360,4.0,3,0,3,3,0,0,1,0,0.75,0.00,0.75,0.75,0.75,2a1683b9
+121,Harry Crawford,ie IRL,FW,Dover Athletic,23,1991,6,0,67,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,2a1683b9
+122,Max Crocombe,nz NZL,GK,Southport,21,1993,25,25,2250,25.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,fdf47077
+123,Michael Crowe,wls WAL,GK,Braintree Town,19,1995,6,6,540,6.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,4a88753e
+124,Ryan Crowther,eng ENG,MF,Altrincham,26,1988,31,19,1661,18.5,2,4,6,2,0,0,3,0,0.11,0.22,0.33,0.11,0.33,7b9482fb
+125,Adam Cunnington,eng ENG,FW,Woking,27,1987,3,3,225,2.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,eea4ec90
+126,Adam Cunnington,eng ENG,FW,Bromley,27,1987,20,19,1560,17.3,5,4,9,5,0,0,4,0,0.29,0.23,0.52,0.29,0.52,eea4ec90
+127,Tom Dallison,eng ENG,DF,Braintree Town,19,1996,4,4,360,4.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,a782215c
+128,Kadell Daniel,gy GUY,MF,Welling United,21,1994,16,11,1028,11.4,3,1,4,3,0,0,1,0,0.26,0.09,0.35,0.26,0.35,37f7cf8a
+129,Kadell Daniel,gy GUY,MF,Woking,21,1994,21,9,964,10.7,3,2,5,3,0,0,1,0,0.28,0.19,0.47,0.28,0.47,37f7cf8a
+130,Ben Davies,eng ENG,DF,Southport,19,1995,9,9,810,9.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,c9009a1f
+131,Callum Davies,eng ENG,DF,Bromley,22,1993,1,1,45,0.5,1,0,1,1,0,0,0,0,2.00,0.00,2.00,2.00,2.00,3f0a8fbf
+132,Callum Davies,eng ENG,DF,Eastleigh,22,1993,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3f0a8fbf
+133,Scott Davies,eng ENG,GK,Tranmere Rovers,28,1987,45,45,4050,45.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,bdf43e41
+134,Adam Dawson,eng ENG,MF,Tranmere Rovers,22,1992,9,8,669,7.4,0,1,1,0,0,0,1,0,0.00,0.13,0.13,0.00,0.13,0043fdf3
+135,Adam Dawson,eng ENG,MF,Harriers,22,1992,8,8,720,8.0,1,1,2,1,0,0,1,0,0.12,0.12,0.25,0.12,0.25,0043fdf3
+136,James Dayton,eng ENG,MF,Cheltenham,26,1988,22,13,1073,11.9,2,1,3,2,0,0,2,0,0.17,0.08,0.25,0.17,0.25,d81b93e0
+137,Tim Deasy,eng ENG,GK,Altrincham,29,1985,41,41,3674,40.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,a98632d0
+138,Benjamin van den Broek,nz NZL,MF,Barrow,27,1987,10,6,507,5.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,cc51ea00
+139,Kristian Dennis,eng ENG,FW,Macclesfield,25,1990,39,32,2951,32.8,22,0,22,20,2,3,5,0,0.67,0.00,0.67,0.61,0.61,e7b25e72
+140,Louis Dennis,eng ENG,DFFW,Bromley,22,1992,23,13,1321,14.7,5,1,6,5,0,0,1,0,0.34,0.07,0.41,0.34,0.41,5f7faece
+141,Joe Devera,eng ENG,DF,Boreham Wood,28,1987,27,26,2302,25.6,1,1,2,1,0,0,1,0,0.04,0.04,0.08,0.04,0.08,30d05221
+142,Nicky Deverdics,eng ENG,DFMF,Dover Athletic,27,1987,45,45,4050,45.0,14,17,31,8,6,7,3,0,0.31,0.38,0.69,0.18,0.56,c68cbb16
+143,Tony Diagne,fr FRA,DF,Macclesfield,24,1990,32,25,2212,24.6,2,1,3,2,0,0,2,0,0.08,0.04,0.12,0.08,0.12,327a004a
+144,Robert Dickie,eng ENG,DF,Cheltenham,19,1996,27,26,2377,26.4,3,3,6,3,0,0,6,0,0.11,0.11,0.23,0.11,0.23,c7dfc411
+145,Liam Dickinson,eng ENG,FW,Guiseley,29,1985,31,12,1276,14.2,6,1,7,4,2,3,6,0,0.42,0.07,0.49,0.28,0.35,496a1d0f
+146,Craig Disley,eng ENG,MF,Grimsby Town,33,1981,43,42,3763,41.8,6,6,12,6,0,0,9,0,0.14,0.14,0.29,0.14,0.29,90db9266
+147,Scott Doe,eng ENG,DF,Boreham Wood,26,1988,45,45,4005,44.5,3,0,3,3,0,0,2,0,0.07,0.00,0.07,0.07,0.07,60d0b4e2
+148,Michael Donohue,eng ENG,MF,Barrow,17,1997,6,6,437,4.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,91a6a9c3
+149,Aaron Downes,au AUS,DF,Cheltenham,30,1985,28,28,2487,27.6,5,1,6,5,0,0,4,0,0.18,0.04,0.22,0.18,0.22,b6ededcd
+150,Steven Drench,eng ENG,GK,Guiseley,29,1985,37,37,3330,37.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,4414c61f
+151,Andy Drury,eng ENG,DFMF,Eastleigh,31,1983,35,33,2947,32.7,8,4,12,8,0,0,4,0,0.24,0.12,0.37,0.24,0.37,085497ac
+152,Anthony Dudley,eng ENG,FW,Guiseley,19,1996,16,16,1312,14.6,7,0,7,7,0,0,1,0,0.48,0.00,0.48,0.48,0.48,0fc2b676
+153,Calum Dyson,eng ENG,FW,Chester,18,1996,4,2,196,2.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,eff4c903
+154,Danny East,eng ENG,DFMF,Grimsby Town,23,1991,25,19,1817,20.2,0,1,1,0,0,0,2,0,0.00,0.05,0.05,0.00,0.05,0e57c017
+155,Anthony Edgar,eng ENG,MF,Braintree Town,24,1990,21,4,539,6.0,2,1,3,2,0,0,2,0,0.33,0.17,0.50,0.33,0.50,e7d76342
+156,Preston Edwards,eng ENG,GK,Boreham Wood,25,1989,6,6,540,6.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,6927e0f8
+157,Moses Emmanuel,eng ENG,FWMF,Bromley,26,1989,43,41,3520,39.1,20,8,28,18,2,2,2,0,0.51,0.20,0.72,0.46,0.66,6f9c376a
+158,Connor Essam,eng ENG,DFMF,Dover Athletic,23,1992,8,4,398,4.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,4df2d69b
+159,Rob Evans,wls WAL,MF,Wrexham,20,1995,44,41,3540,39.3,3,0,3,3,0,0,8,0,0.08,0.00,0.08,0.08,0.08,426283e5
+160,Will Evans,eng ENG,DFMF,Eastleigh,23,1991,34,32,2924,32.5,1,0,1,1,0,0,6,0,0.03,0.00,0.03,0.03,0.03,f74c4167
+161,Waide Fairhurst,eng ENG,FW,Torquay United,26,1989,3,0,74,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0d5e3f59
+162,Waide Fairhurst,eng ENG,FW,FC Halifax Town,26,1989,8,3,303,3.4,0,3,3,0,0,0,0,0,0.00,0.89,0.89,0.00,0.89,0d5e3f59
+163,Ousmane Fané,fr FRA,MF,Harriers,21,1993,20,20,1789,19.9,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,bcb5e539
+164,Matthias Fanimo,eng ENG,MF,Eastleigh,21,1994,8,2,221,2.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,90798816
+165,Paul Farman,eng ENG,GK,Lincoln City,25,1989,45,45,4050,45.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,69625393
+166,Bayan Fenwick,eng ENG,FW,Torquay United,21,1993,7,4,468,5.2,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,f40ffb00
+167,Scott Fenwick,eng ENG,FW,Tranmere Rovers,25,1990,3,0,61,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,6398390f
+168,James Ferry,eng ENG,MF,Welling United,18,1997,7,7,615,6.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,15caf25c
+169,Alex Fisher,eng ENG,FW,Torquay United,25,1990,21,16,1480,16.4,5,0,5,5,0,0,1,0,0.30,0.00,0.30,0.30,0.30,58686521
+170,Jonathan Flatt,eng ENG,GK,Cheltenham,20,1994,10,10,900,10.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,372ef237
+171,Ross Flitney,eng ENG,GK,Eastleigh,31,1984,30,30,2670,29.7,0,0,0,0,0,0,3,1,0.00,0.00,0.00,0.00,0.00,15817cc2
+172,Luke Foster,eng ENG,DF,Southport,29,1985,29,29,2535,28.2,2,0,2,2,0,0,5,1,0.07,0.00,0.07,0.07,0.07,77e6a4c1
+173,Lee Fowler,wls WAL,MF,Wrexham,32,1983,18,11,947,10.5,3,2,5,3,0,0,1,0,0.29,0.19,0.48,0.29,0.48,593e18b1
+174,Andrew Fox,eng ENG,DF,Harriers,22,1993,6,6,535,5.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,681d6136
+175,Zaine Francis-Angol,ag ATG,DFMF,Harriers,22,1993,26,23,2036,22.6,1,0,1,1,0,0,0,0,0.04,0.00,0.04,0.04,0.04,53f11d99
+176,Elliott Frear,eng ENG,MF,Forest Green,24,1990,46,43,3738,41.5,5,12,17,5,0,0,0,0,0.12,0.29,0.41,0.12,0.41,d35e3468
+177,Matt Fry,eng ENG,DF,Braintree Town,24,1990,27,26,2311,25.7,0,1,1,0,0,0,4,1,0.00,0.04,0.04,0.00,0.04,3ae5e618
+178,Ali Fuseini,gh GHA,MF,Bromley,26,1988,41,37,3318,36.9,3,3,6,3,0,0,5,0,0.08,0.08,0.16,0.08,0.16,48e7398b
+179,Jamal Fyfield,eng ENG,DFMF,Wrexham,26,1989,43,41,3747,41.6,0,2,2,0,0,0,7,2,0.00,0.05,0.05,0.00,0.05,321a93d5
+180,Ian Gayle,jm JAM,DF,Welling United,22,1992,16,16,1350,15.0,2,0,2,2,0,0,2,0,0.13,0.00,0.13,0.13,0.13,daecaa0a
+181,Exodus Geohaghon,eng ENG,DFMF,Torquay United,30,1985,18,16,1407,15.6,1,0,1,1,0,0,3,0,0.06,0.00,0.06,0.06,0.06,5d9b17f8
+182,Jason Gilchrist,eng ENG,FW,Chester,20,1994,2,0,67,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,b1d5e363
+183,Josh Gillies,eng ENG,MF,Gateshead,25,1990,23,21,1815,20.2,4,5,9,3,1,1,1,0,0.20,0.25,0.45,0.15,0.40,f51ce0a3
+184,Josh Ginnelly,eng ENG,FWMF,Altrincham,18,1997,20,19,1723,19.1,5,2,7,5,0,0,2,0,0.26,0.10,0.37,0.26,0.37,c6bc201b
+185,Matt Glennon,eng ENG,GK,FC Halifax Town,36,1978,20,20,1800,20.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,1067a248
+186,Arthur Gnahoua,eng ENG,FWMF,Harriers,22,1992,16,14,1249,13.9,4,2,6,4,0,0,0,0,0.29,0.14,0.43,0.29,0.43,7440346f
+187,John Goddard,eng ENG,MF,Woking,22,1993,41,40,3421,38.0,17,5,22,16,1,1,5,0,0.45,0.13,0.58,0.42,0.55,a1ef5b63
+188,Bradley Goldberg,eng ENG,FW,Bromley,21,1993,32,17,1708,19.0,5,2,7,5,0,1,0,0,0.26,0.11,0.37,0.26,0.37,de6f99f7
+189,Rohdell Gordon,eng ENG,MF,Bromley,19,1996,15,11,1023,11.4,1,1,2,1,0,0,1,0,0.09,0.09,0.18,0.09,0.18,a2ea38fe
+190,Josh Gowling,eng ENG,DF,Grimsby Town,31,1983,37,37,3217,35.7,2,1,3,2,0,0,8,1,0.06,0.03,0.08,0.06,0.08,4f8b99a4
+191,Simon Grand,eng ENG,DF,Barrow,31,1984,40,37,3469,38.5,2,1,3,2,0,0,7,0,0.05,0.03,0.08,0.05,0.08,d179e8f1
+192,James Gray,nir NIR,FW,Wrexham,23,1992,27,15,1458,16.2,7,0,7,6,1,1,2,0,0.43,0.00,0.43,0.37,0.37,5346d794
+193,Mike Green,eng ENG,DFMF,Eastleigh,26,1989,34,22,2164,24.0,0,1,1,0,0,0,2,1,0.00,0.04,0.04,0.00,0.04,72013161
+194,Adam Griffin,eng ENG,DFMF,Altrincham,30,1984,44,44,3833,42.6,0,2,2,0,0,0,8,0,0.00,0.05,0.05,0.00,0.05,41c2028d
+195,Anthony Griffith,ms MSR,MF,Altrincham,28,1986,1,0,6,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,28115e03
+196,Russell Griffiths,eng ENG,GK,FC Halifax Town,19,1996,1,1,35,0.4,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,691bd160
+197,Scott Griffiths,eng ENG,DF,Woking,29,1985,3,3,251,2.8,0,1,1,0,0,0,0,0,0.00,0.36,0.36,0.00,0.36,e7ec129d
+198,Ashley Grimes,eng ENG,MF,Barrow,28,1986,17,8,726,8.1,1,0,1,1,0,1,1,0,0.12,0.00,0.12,0.12,0.12,f58317ab
+199,Jamie Grimes,eng ENG,DFMF,Dover Athletic,24,1990,31,26,2410,26.8,2,2,4,2,0,0,1,0,0.07,0.07,0.15,0.07,0.15,97a7d953
+200,Kurtis Guthrie,eng ENG,FW,Forest Green,22,1993,40,28,2605,28.9,11,5,16,11,0,0,7,0,0.38,0.17,0.55,0.38,0.55,7fe7249d
+201,Sam Habergham,eng ENG,DFFW,Braintree Town,23,1992,45,45,3925,43.6,0,0,0,0,0,0,6,0,0.00,0.00,0.00,0.00,0.00,45bbf59f
+202,Asa Hall,eng ENG,DFMF,Cheltenham,28,1986,34,18,1708,19.0,2,3,5,2,0,0,3,0,0.11,0.16,0.26,0.11,0.26,f6312f3d
+203,Danny Hall,eng ENG,DF,Guiseley,31,1983,12,11,933,10.4,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,a13180ee
+204,Andy Halls,eng ENG,DF,Macclesfield,23,1992,41,39,3419,38.0,0,1,1,0,0,0,10,1,0.00,0.03,0.03,0.00,0.03,1ad6c55a
+205,CJ Hamilton,ie IRL,FWMF,Gateshead,20,1995,25,21,1988,22.1,2,5,7,2,0,0,0,0,0.09,0.23,0.32,0.09,0.32,63ffd16e
+206,CJ Hamilton,ie IRL,FWMF,FC Halifax Town,20,1995,9,6,571,6.3,3,1,4,3,0,0,0,0,0.47,0.16,0.63,0.47,0.63,63ffd16e
+207,Joe Hanks,eng ENG,MF,Cheltenham,20,1995,1,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,16497dad
+208,Ross Hannah,eng ENG,FW,Chester,29,1986,42,40,3539,39.3,22,3,25,20,2,2,4,0,0.56,0.08,0.64,0.51,0.58,07eeb21b
+209,Dan Harding,eng ENG,DF,Eastleigh,31,1983,31,30,2418,26.9,0,1,1,0,0,0,1,0,0.00,0.04,0.04,0.00,0.04,f0ccb090
+210,Marcus Harness,eng ENG,FWMF,Aldershot Town,19,1996,2,0,32,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,90e9ca3d
+211,Shaun Harrad,eng ENG,FW,Torquay United,30,1984,18,15,1269,14.1,3,1,4,3,0,0,3,0,0.21,0.07,0.28,0.21,0.28,7df0cd65
+212,Cian Harries,wls WAL,DFMF,Cheltenham,18,1997,1,0,10,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,6ee0d5eb
+213,Jay Harris,eng ENG,DFMF,Tranmere Rovers,28,1987,41,40,3574,39.7,3,3,6,3,0,0,14,0,0.08,0.08,0.15,0.08,0.15,1fafe92d
+214,Callum Hassan,eng ENG,FW,Harriers,22,1993,3,2,199,2.2,1,0,1,1,0,0,1,0,0.45,0.00,0.45,0.45,0.45,dc8507a2
+215,Will Hatfield,eng ENG,MF,Guiseley,23,1991,38,36,3328,37.0,3,3,6,3,0,0,5,0,0.08,0.08,0.16,0.08,0.16,4c9e10ea
+216,Sam Hatton,eng ENG,DFMF,Aldershot Town,27,1988,30,21,1712,19.0,4,2,6,3,1,1,2,0,0.21,0.11,0.32,0.16,0.26,24e5dc19
+217,Gianluca Havern,eng ENG,DF,Altrincham,26,1988,31,30,2655,29.5,0,1,1,0,0,0,5,1,0.00,0.03,0.03,0.00,0.03,0d46c126
+218,Terry Hawkridge,eng ENG,MF,Lincoln City,25,1990,38,34,2908,32.3,1,11,12,1,0,0,2,0,0.03,0.34,0.37,0.03,0.37,b9735ef8
+219,Andy Haworth,eng ENG,MF,Barrow,26,1988,37,32,2714,30.2,3,5,8,3,0,0,5,0,0.10,0.17,0.27,0.10,0.27,8e055808
+220,Danny Haynes,eng ENG,FWMF,Boreham Wood,27,1988,8,6,435,4.8,2,0,2,2,0,0,1,0,0.41,0.00,0.41,0.41,0.41,44b31c52
+221,Liam Hearn,eng ENG,FW,Barrow,29,1985,1,1,79,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,77951f1d
+222,Liam Hearn,eng ENG,FW,Lincoln City,29,1985,20,13,1036,11.5,10,1,11,10,0,0,1,0,0.87,0.09,0.96,0.87,0.96,77951f1d
+223,Conor Henderson,eng ENG,MF,Grimsby Town,23,1991,3,1,114,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,5f74f8f6
+224,Ben Heneghan,eng ENG,DF,Chester,21,1993,43,42,3578,39.8,2,2,4,2,0,0,7,1,0.05,0.05,0.10,0.05,0.10,846ac45b
+225,Simon Heslop,eng ENG,MF,Torquay United,28,1987,20,19,1599,17.8,0,1,1,0,0,0,3,1,0.00,0.06,0.06,0.00,0.06,360899d6
+226,Simon Heslop,eng ENG,MF,Wrexham,28,1987,20,20,1704,18.9,3,1,4,3,0,0,5,0,0.16,0.05,0.21,0.16,0.21,360899d6
+227,Steven Hewitt,eng ENG,MF,Chester,21,1993,2,1,74,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,c78e1903
+228,Steven Hewitt,eng ENG,MF,Southport,21,1993,12,5,526,5.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,c78e1903
+229,Michael Higdon,eng ENG,FW,Tranmere Rovers,31,1983,9,8,648,7.2,2,0,2,2,0,0,1,0,0.28,0.00,0.28,0.28,0.28,580fac60
+230,Matt Hill,eng ENG,DF,Tranmere Rovers,34,1981,31,31,2790,31.0,1,1,2,1,0,0,4,0,0.03,0.03,0.06,0.03,0.06,c1151f6b
+231,Patrick Hoban,ie IRL,FW,Grimsby Town,24,1991,10,8,640,7.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,f934cffd
+232,Elliot Hodge,,,Lincoln City,19,1996,8,5,411,4.6,0,2,2,0,0,0,0,0,0.00,0.44,0.44,0.00,0.44,6bdcbfaa
+233,Jared Hodgkiss,eng ENG,DF,Harriers,28,1986,43,40,3584,39.8,0,5,5,0,0,0,3,0,0.00,0.13,0.13,0.00,0.13,0ce6f935
+234,Liam Hogan,eng ENG,DFMF,Tranmere Rovers,26,1989,18,17,1401,15.6,2,0,2,2,0,0,1,0,0.13,0.00,0.13,0.13,0.13,7a5e2895
+235,Darren Holden,eng ENG,DF,Gateshead,21,1993,7,5,435,4.8,0,1,1,0,0,0,0,0,0.00,0.21,0.21,0.00,0.21,ea4f1e83
+236,Dan Holman,eng ENG,FW,Cheltenham,25,1990,18,18,1620,18.0,16,3,19,15,1,1,4,0,0.89,0.17,1.06,0.83,1.00,bb1ae2c6
+237,Dan Holman,eng ENG,FW,Woking,25,1990,26,26,2187,24.3,14,2,16,14,0,0,1,0,0.58,0.08,0.66,0.58,0.66,bb1ae2c6
+238,Marcus Holness,eng ENG,DF,Tranmere Rovers,26,1988,4,1,161,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,90f554c6
+239,Marcus Holness,eng ENG,DF,Altrincham,26,1988,14,14,1260,14.0,1,1,2,1,0,0,3,0,0.07,0.07,0.14,0.07,0.14,90f554c6
+240,Chris Holroyd,eng ENG,FW,Macclesfield,28,1986,42,39,3417,38.0,1,8,9,1,0,0,1,0,0.03,0.21,0.24,0.03,0.24,667b7110
+241,George Honeyman,eng ENG,MF,Gateshead,20,1994,9,6,633,7.0,1,0,1,1,0,0,1,0,0.14,0.00,0.14,0.14,0.14,84afeaff
+242,Evan Horwood,eng ENG,DF,Grimsby Town,29,1986,11,11,985,10.9,0,2,2,0,0,0,1,0,0.00,0.18,0.18,0.00,0.18,3e9ca1a1
+243,Callum Howe,eng ENG,DFFW,Lincoln City,21,1994,27,27,2430,27.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,a121920f
+244,Luke Howell,eng ENG,DFMF,Boreham Wood,28,1987,37,32,2713,30.1,6,0,6,6,0,0,1,0,0.20,0.00,0.20,0.20,0.20,7467a32a
+245,Kyle Howkins,eng ENG,DF,Harriers,19,1996,8,8,720,8.0,1,0,1,1,0,0,1,0,0.12,0.00,0.12,0.12,0.12,c52c7ff9
+246,Connor Hughes,eng ENG,MF,FC Halifax Town,22,1993,33,7,1227,13.6,4,1,5,4,0,0,1,0,0.29,0.07,0.37,0.29,0.37,b0a6020b
+247,Jeff Hughes,nir NIR,DFMF,Tranmere Rovers,30,1985,18,18,1522,16.9,1,1,2,1,0,0,3,0,0.06,0.06,0.12,0.06,0.12,f38f0c25
+248,Johnny Hunt,wls WAL,DFMF,Chester,24,1990,44,43,3933,43.7,2,2,4,2,0,0,3,0,0.05,0.05,0.09,0.05,0.09,10198da1
+249,James Hurst,eng ENG,DF,Torquay United,23,1992,17,17,1456,16.2,7,3,10,7,0,0,5,0,0.43,0.19,0.62,0.43,0.62,a59de39b
+250,James Hurst,eng ENG,DF,Guiseley,23,1992,18,18,1563,17.4,2,1,3,2,0,0,3,1,0.12,0.06,0.17,0.12,0.17,a59de39b
+251,Michael Ihiekwe,eng ENG,DF,Tranmere Rovers,22,1992,35,34,3010,33.4,2,2,4,2,0,0,3,0,0.06,0.06,0.12,0.06,0.12,d9524d3b
+252,Kayden Jackson,eng ENG,FWMF,Wrexham,21,1994,36,17,1796,20.0,4,8,12,4,0,0,0,0,0.20,0.40,0.60,0.20,0.60,4cb3b5a7
+253,Marlon Jackson,eng ENG,FWMF,Tranmere Rovers,24,1990,11,2,315,3.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,4188994a
+254,Shwan Jalal,iq IRQ,GK,Macclesfield,31,1983,37,37,3229,35.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,430a53c8
+255,Kingsley James,eng ENG,DFMF,FC Halifax Town,23,1992,46,46,4091,45.5,7,6,13,6,1,1,6,0,0.15,0.13,0.29,0.13,0.26,514e7935
+256,Shaun Jeffers,eng ENG,FW,Woking,23,1992,1,1,29,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,c95e9f51
+257,Ben Jefford,eng ENG,DF,Forest Green,20,1994,2,1,105,1.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,a929de91
+258,Ben Jefford,eng ENG,DF,Welling United,20,1994,25,24,2168,24.1,0,2,2,0,0,0,4,0,0.00,0.08,0.08,0.00,0.08,a929de91
+259,Anthony Jeffrey,gy GUY,FWMF,Boreham Wood,20,1994,20,14,1296,14.4,1,2,3,1,0,0,3,0,0.07,0.14,0.21,0.07,0.21,5e7602a2
+260,Anthony Jeffrey,gy GUY,FWMF,Forest Green,20,1994,4,1,96,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,5e7602a2
+261,Connor Jennings,eng ENG,FWMF,Wrexham,23,1991,45,45,4010,44.6,14,12,26,9,5,6,9,0,0.31,0.27,0.58,0.20,0.47,e4f433e5
+262,James Jennings,eng ENG,DF,Forest Green,27,1987,31,30,2590,28.8,6,0,6,6,0,0,7,0,0.21,0.00,0.21,0.21,0.21,77064a6a
+263,Ryan Jennings,eng ENG,FW,Cheltenham,20,1995,9,6,511,5.7,0,1,1,0,0,0,0,0,0.00,0.18,0.18,0.00,0.18,833dc1c8
+264,Ryan Jennings,eng ENG,FW,Grimsby Town,20,1995,9,3,393,4.4,0,1,1,0,0,0,1,0,0.00,0.23,0.23,0.00,0.23,833dc1c8
+265,Steve Jennings,eng ENG,MF,Tranmere Rovers,30,1984,42,40,3659,40.7,2,1,3,2,0,0,11,0,0.05,0.02,0.07,0.05,0.07,a747de3b
+266,Danny Johnson,eng ENG,FW,Gateshead,22,1993,36,20,1875,20.8,13,2,15,13,0,0,2,0,0.62,0.10,0.72,0.62,0.72,fb8c7c98
+267,Oli Johnson,eng ENG,FW,Guiseley,27,1987,12,5,478,5.3,2,0,2,2,0,0,0,0,0.38,0.00,0.38,0.38,0.38,e01a4c75
+268,Sam Johnson,eng ENG,GK,FC Halifax Town,22,1992,25,25,2250,25.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,a8fe5f70
+269,Alex Jones,eng ENG,FW,Grimsby Town,20,1994,4,3,235,2.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,018961c6
+270,Andrai Jones,eng ENG,DF,Southport,23,1992,20,15,1339,14.9,0,1,1,0,0,0,2,2,0.00,0.07,0.07,0.00,0.07,d47f08d3
+271,Darren Jones,eng ENG,DF,Forest Green,31,1983,10,8,689,7.7,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,15ad43ac
+272,Gary Jones,eng ENG,MF,Southport,38,1977,43,43,3714,41.3,5,2,7,4,1,2,2,1,0.12,0.05,0.17,0.10,0.15,0f95466a
+273,Alan Julian,nir NIR,GK,Bromley,32,1983,32,32,2880,32.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,6634408e
+274,Clovis Kamdjo,cm CMR,DFMF,Forest Green,24,1990,4,0,34,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,dc2f2359
+275,Clovis Kamdjo,cm CMR,DFMF,Boreham Wood,24,1990,31,28,2499,27.8,3,4,7,3,0,0,3,0,0.11,0.14,0.25,0.11,0.25,dc2f2359
+276,Ibrahim Kargbo,sl SLE,DFMF,Welling United,33,1982,10,10,900,10.0,0,1,1,0,0,0,1,0,0.00,0.10,0.10,0.00,0.10,e8a6aab2
+277,Scott Kashket,eng ENG,FWMF,Welling United,19,1996,7,6,530,5.9,0,2,2,0,0,1,0,0,0.00,0.34,0.34,0.00,0.34,6b5ec72d
+278,Michael Kay,eng ENG,DF,Chester,25,1989,12,9,892,9.9,1,0,1,1,0,0,3,0,0.10,0.00,0.10,0.10,0.10,68fdb9a3
+279,Marcus Kelly,eng ENG,MF,Forest Green,29,1986,29,18,1889,21.0,0,2,2,0,0,0,3,1,0.00,0.10,0.10,0.00,0.10,a9c9e0ba
+280,Jimmy Keohane,ie IRL,DFMF,Woking,24,1991,15,7,751,8.3,2,0,2,2,0,0,2,0,0.24,0.00,0.24,0.24,0.24,76b2019e
+281,Chris Kettings,sct SCO,GK,Bromley,22,1992,14,14,1260,14.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,7fc20518
+282,Otis Khan,pk PAK,DFFW,Barrow,19,1995,8,6,617,6.9,4,1,5,4,0,0,0,0,0.58,0.15,0.73,0.58,0.73,013a61ae
+283,Brendan Kiernan,eng ENG,FWMF,Bromley,22,1992,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,7b3ca119
+284,Tom King,wls WAL,GK,Braintree Town,20,1995,16,16,1440,16.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,5791b997
+285,Tom King,wls WAL,GK,Welling United,20,1995,20,20,1800,20.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,5791b997
+286,Lewis Kinsella,eng ENG,DF,Harriers,20,1994,13,13,1170,13.0,0,2,2,0,0,0,3,0,0.00,0.15,0.15,0.00,0.15,fd58113c
+287,Jake Kirby,eng ENG,MF,Tranmere Rovers,21,1994,15,9,765,8.5,3,1,4,3,0,0,0,0,0.35,0.12,0.47,0.35,0.47,06c1e972
+288,Calum Kitscha,eng ENG,GK,Cheltenham,22,1993,1,0,15,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,23b998c6
+289,Paddy Lacey,eng ENG,MF,Barrow,22,1993,23,20,1753,19.5,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,c9449d8a
+290,Ross Lafayette,eng ENG,FW,Eastleigh,28,1987,22,13,1122,12.5,4,2,6,4,0,0,3,0,0.32,0.16,0.48,0.32,0.48,7eff29c1
+291,Ross Lafayette,eng ENG,FW,Aldershot Town,28,1987,16,13,1171,13.0,2,3,5,1,1,1,4,0,0.15,0.23,0.38,0.08,0.31,7eff29c1
+292,Kelvin Langmead,eng ENG,DFMF,Harriers,30,1985,39,39,3465,38.5,3,1,4,3,0,0,0,0,0.08,0.03,0.10,0.08,0.10,bf1ea24d
+293,Damon Lathrope,eng ENG,MF,Aldershot Town,25,1989,21,18,1603,17.8,1,0,1,1,0,0,5,0,0.06,0.00,0.06,0.06,0.06,4138f0a8
+294,James Lawrie,nir NIR,FW,Altrincham,24,1990,43,38,3447,38.3,4,5,9,4,0,0,3,0,0.10,0.13,0.23,0.10,0.23,b9d4a527
+295,Scott Leather,eng ENG,DF,Altrincham,22,1992,44,41,3799,42.2,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,89658fa7
+296,Harry Lee,eng ENG,MF,Welling United,20,1995,30,29,2548,28.3,0,2,2,0,0,0,4,0,0.00,0.07,0.07,0.00,0.07,efbc8f3a
+297,Paul Lewis,eng ENG,MF,Macclesfield,20,1994,25,23,1884,20.9,5,2,7,5,0,0,5,1,0.24,0.10,0.33,0.24,0.33,140fb136
+298,Danny Livesey,eng ENG,DF,Barrow,30,1984,39,39,3311,36.8,3,1,4,3,0,0,2,1,0.08,0.03,0.11,0.08,0.11,3f27e09e
+299,Ryan Lloyd,eng ENG,MF,Chester,21,1994,22,21,1807,20.1,0,2,2,0,0,0,0,0,0.00,0.10,0.10,0.00,0.10,4d64dde6
+300,Adam Lockwood,eng ENG,DF,Guiseley,33,1981,26,24,2140,23.8,0,0,0,0,0,0,2,1,0.00,0.00,0.00,0.00,0.00,b119313d
+301,Joel Logan,eng ENG,FWMF,Wrexham,20,1995,3,0,74,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,9606ccb8
+302,Kevin Lokko,eng ENG,DFMF,Welling United,19,1995,38,36,3262,36.2,1,1,2,1,0,0,2,0,0.03,0.03,0.06,0.03,0.06,248c483c
+303,Sean Long,ie IRL,DFMF,Braintree Town,20,1995,9,9,810,9.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,ebfab2ea
+304,Keith Lowe,eng ENG,DFMF,Harriers,29,1985,20,20,1800,20.0,2,0,2,2,0,0,0,0,0.10,0.00,0.10,0.10,0.10,d3450d55
+305,Jamie Lucas,wls WAL,FW,Boreham Wood,19,1995,24,19,1452,16.1,7,0,7,7,0,0,0,0,0.43,0.00,0.43,0.43,0.43,6295b3f3
+306,Angus MacDonald,eng ENG,DF,Torquay United,22,1992,41,41,3690,41.0,2,1,3,2,0,0,9,0,0.05,0.02,0.07,0.05,0.07,9ca3f7e4
+307,Charlie MacDonald,eng ENG,FW,Boreham Wood,34,1981,18,12,1060,11.8,1,0,1,1,0,0,0,0,0.08,0.00,0.08,0.08,0.08,bf812107
+308,Shaun MacDonald,wls WAL,MF,Gateshead,27,1988,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,fdcff59c
+309,Jack Mackreth,eng ENG,MF,Tranmere Rovers,23,1992,8,1,185,2.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0d8d60c2
+310,Jack Mackreth,eng ENG,MF,Grimsby Town,23,1992,15,5,524,5.8,1,2,3,1,0,0,1,0,0.17,0.34,0.52,0.17,0.52,0d8d60c2
+311,Sam Magri,mt MLT,DF,Dover Athletic,21,1994,43,42,3629,40.3,0,4,4,0,0,0,8,0,0.00,0.10,0.10,0.00,0.10,b6911e8f
+312,Craig Mahon,ie IRL,FWMF,Chester,26,1989,39,20,2090,23.2,1,0,1,1,0,0,2,0,0.04,0.00,0.04,0.04,0.04,35079abb
+313,Andrew Mangan,eng ENG,FW,Tranmere Rovers,28,1986,22,16,1524,16.9,7,0,7,6,1,2,2,0,0.41,0.00,0.41,0.35,0.35,e1a7101a
+314,Jonny Margetts,eng ENG,FW,Tranmere Rovers,21,1993,10,6,471,5.2,2,0,2,2,0,0,1,0,0.38,0.00,0.38,0.38,0.38,83c4ff98
+315,Jonny Margetts,eng ENG,FW,Southport,21,1993,3,3,217,2.4,2,0,2,2,0,0,0,0,0.83,0.00,0.83,0.83,0.83,83c4ff98
+316,Jonny Margetts,eng ENG,FW,Altrincham,21,1993,6,6,496,5.5,2,1,3,2,0,0,0,0,0.36,0.18,0.54,0.36,0.54,83c4ff98
+317,George Maris,eng ENG,DFFW,Guiseley,19,1996,7,7,539,6.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3e189b2b
+318,John Marsden,eng ENG,FW,Macclesfield,22,1992,2,0,24,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,e306d054
+319,Liam Marsden,eng ENG,DF,Guiseley,20,1994,1,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,6eaae9bd
+320,Tyrone Marsh,eng ENG,FWMF,Torquay United,21,1993,18,11,1000,11.1,7,0,7,6,1,1,0,1,0.63,0.00,0.63,0.54,0.54,f1f16eb4
+321,Tyrone Marsh,eng ENG,FWMF,Dover Athletic,21,1993,8,1,186,2.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,f1f16eb4
+322,Keanu Marsh-Brown,gy GUY,MF,Forest Green,22,1992,43,37,3126,34.7,8,7,15,8,0,0,6,0,0.23,0.20,0.43,0.23,0.43,7d9d4111
+323,Marcus Marshall,eng ENG,FWMF,Grimsby Town,25,1989,16,3,481,5.3,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,396e86a2
+324,James Marwood,eng ENG,FW,Gateshead,25,1990,10,5,544,6.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,70bcb39c
+325,Jonny Maxted,eng ENG,GK,Forest Green,21,1993,20,20,1800,20.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,9fe4988d
+326,Luke Maxwell,eng ENG,MF,Harriers,18,1997,37,33,2815,31.3,2,1,3,2,0,0,8,1,0.06,0.03,0.10,0.06,0.10,f0ec322b
+327,Ben May,eng ENG,FW,Bromley,31,1984,16,6,629,7.0,2,0,2,2,0,0,0,0,0.29,0.00,0.29,0.29,0.29,2f6be4c5
+328,Lois Maynard,kn SKN,DFMF,Tranmere Rovers,26,1989,35,31,2728,30.3,4,4,8,4,0,0,5,1,0.13,0.13,0.26,0.13,0.26,2159f3c1
+329,Jamie McCombe,eng ENG,DF,Lincoln City,32,1983,8,8,692,7.7,2,1,3,2,0,0,0,0,0.26,0.13,0.39,0.26,0.39,759d755b
+330,John McCombe,eng ENG,DF,Macclesfield,30,1985,12,11,1000,11.1,1,0,1,1,0,0,2,0,0.09,0.00,0.09,0.09,0.09,e08a32db
+331,Jamie McDonagh,nir NIR,FW,Chester,19,1996,1,0,28,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,33d2c55a
+332,Shaq McDonald,eng ENG,FW,FC Halifax Town,20,1995,15,4,481,5.3,2,0,2,2,0,0,0,0,0.37,0.00,0.37,0.37,0.37,78fd92fb
+333,Sean McGinty,ie IRL,DF,Aldershot Town,21,1993,24,24,2158,24.0,1,0,1,1,0,0,5,0,0.04,0.00,0.04,0.04,0.04,b63bd588
+334,James McKeown,ie IRL,GK,Grimsby Town,26,1989,45,45,4050,45.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,5641c7c6
+335,Patrick McLaughlin,nir NIR,DFMF,Gateshead,24,1991,35,31,2589,28.8,4,3,7,4,0,0,2,1,0.14,0.10,0.24,0.14,0.24,303fbb6c
+336,Scott McManus,eng ENG,DFMF,FC Halifax Town,26,1989,43,42,3729,41.4,1,4,5,1,0,0,2,0,0.02,0.10,0.12,0.02,0.12,fc888557
+337,Steve McNulty,eng ENG,DF,Tranmere Rovers,31,1983,27,27,2308,25.6,1,0,1,1,0,0,3,0,0.04,0.00,0.04,0.04,0.04,ec321650
+338,James McQuilkin,nir NIR,MF,Harriers,26,1989,20,13,1251,13.9,6,6,12,6,0,0,1,0,0.43,0.43,0.86,0.43,0.86,c7e3bdd4
+339,Lindon Meikle,eng ENG,FWMF,Macclesfield,27,1988,6,2,320,3.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,15d3580a
+340,Adam Mekki,eng ENG,MF,Tranmere Rovers,23,1991,39,28,2639,29.3,4,6,10,3,1,1,3,0,0.14,0.20,0.34,0.10,0.31,e05b44c3
+341,David Mellor,eng ENG,DFMF,Barrow,22,1993,20,17,1451,16.1,0,1,1,0,0,0,3,1,0.00,0.06,0.06,0.00,0.06,b11b581d
+342,Jack Midson,eng ENG,FW,Eastleigh,31,1983,38,20,1884,20.9,0,1,1,0,0,0,3,0,0.00,0.05,0.05,0.00,0.05,591dbfb9
+343,Ian Miller,eng ENG,DF,Braintree Town,31,1983,1,0,31,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,33f87705
+344,Ricky Miller,eng ENG,FW,Dover Athletic,26,1989,45,45,3709,41.2,20,7,27,20,0,0,5,0,0.49,0.17,0.66,0.49,0.66,7d137006
+345,Tommy Miller,eng ENG,MF,FC Halifax Town,36,1979,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0ad6e1dc
+346,Lee Minshull,eng ENG,MF,Bromley,29,1985,29,27,2310,25.7,1,1,2,1,0,0,2,1,0.04,0.04,0.08,0.04,0.08,455192cd
+347,Ricky Modeste,gd GRN,FW,Dover Athletic,27,1988,29,24,2139,23.8,5,7,12,5,0,0,6,0,0.21,0.29,0.50,0.21,0.50,38e7be8a
+348,Kaid Mohamed,wls WAL,FWMF,Eastleigh,31,1984,5,3,325,3.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,cbbf058e
+349,Andy Monkhouse,eng ENG,FWMF,Grimsby Town,34,1980,38,38,3039,33.8,6,6,12,6,0,0,3,0,0.18,0.18,0.36,0.18,0.36,e23797e6
+350,Graeme Montgomery,eng ENG,MF,Boreham Wood,27,1988,11,10,909,10.1,2,0,2,2,0,0,1,0,0.20,0.00,0.20,0.20,0.20,069cd0e0
+351,Brendan Moore,us USA,GK,Torquay United,23,1992,12,12,1080,12.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,1af7b365
+352,Kieffer Moore,wls WAL,DFFW,Forest Green,22,1992,16,7,728,8.1,2,0,2,2,0,0,2,0,0.25,0.00,0.25,0.25,0.25,01ce9e70
+353,Amari Morgan-Smith,eng ENG,FWMF,Cheltenham,26,1989,27,21,1885,20.9,5,1,6,5,0,0,3,0,0.24,0.05,0.29,0.24,0.29,6f7788d7
+354,Junior Morias,eng ENG,FWMF,Boreham Wood,20,1995,29,8,1057,11.7,2,1,3,2,0,0,1,0,0.17,0.09,0.26,0.17,0.26,31eec725
+355,Dylan Mottley-Henry,eng ENG,MF,Altrincham,17,1997,5,1,131,1.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,972a8f07
+356,Jack Muldoon,eng ENG,FWMF,Lincoln City,26,1989,46,45,3761,41.8,9,5,14,9,0,0,9,0,0.22,0.12,0.34,0.22,0.34,088e1392
+357,Jack Munns,eng ENG,MF,Cheltenham,21,1993,42,31,2668,29.6,8,13,21,7,1,1,3,0,0.27,0.44,0.71,0.24,0.67,3d1fac7e
+358,Jordan Murphy,eng ENG,FW,Harriers,19,1996,7,7,508,5.6,2,1,3,2,0,0,0,0,0.35,0.18,0.53,0.35,0.53,4f17b181
+359,Tom Murphy,eng ENG,FW,Dover Athletic,23,1991,21,6,750,8.3,1,1,2,1,0,0,0,0,0.12,0.12,0.24,0.12,0.24,35c2e6dd
+360,Keiran Murtagh,ag ATG,DFMF,Woking,26,1988,38,31,2803,31.1,4,3,7,4,0,0,8,1,0.13,0.10,0.22,0.13,0.22,56f56fa6
+361,Adam Newton,kn SKN,DFMF,Woking,34,1980,1,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,4718c54c
+362,Sean Newton,eng ENG,DF,Wrexham,26,1988,46,46,4140,46.0,6,3,9,6,0,0,8,0,0.13,0.07,0.20,0.13,0.20,19680057
+363,Kevin Nicholson,eng ENG,DF,Torquay United,34,1980,16,16,1337,14.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0bc7b89e
+364,Jon Nolan,eng ENG,MF,Grimsby Town,23,1992,18,17,1533,17.0,4,1,5,4,0,0,1,0,0.23,0.06,0.29,0.23,0.29,c29ec816
+365,Jon Nolan,eng ENG,MF,Lincoln City,23,1992,7,6,549,6.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,c29ec816
+366,Jon Nolan,eng ENG,MF,Wrexham,23,1992,6,3,310,3.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,c29ec816
+367,Liam Nolan,nir NIR,MF,Southport,20,1994,42,35,3325,36.9,2,0,2,2,0,0,0,0,0.05,0.00,0.05,0.05,0.05,b1adf20b
+368,Oliver Norburn,gd GRN,MF,Guiseley,22,1992,20,17,1425,15.8,3,4,7,3,0,0,1,0,0.19,0.25,0.44,0.19,0.44,99666073
+369,Will Norris,eng ENG,GK,Braintree Town,21,1993,24,24,2160,24.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,c73ada83
+370,James Norwood,eng ENG,FWMF,Tranmere Rovers,24,1990,38,36,3277,36.4,19,4,23,12,7,7,8,0,0.52,0.11,0.63,0.33,0.44,f01b35ea
+371,Andrija Novakovich,us USA,FW,Cheltenham,18,1996,4,1,143,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,a7d0bd3c
+372,Aristote Nsiala,cd COD,DF,Grimsby Town,23,1992,39,36,3268,36.3,1,1,2,1,0,0,5,0,0.03,0.03,0.06,0.03,0.06,e9f39c42
+373,Ben Nunn,eng ENG,DF,Boreham Wood,25,1989,26,23,2087,23.2,0,1,1,0,0,0,1,0,0.00,0.04,0.04,0.00,0.04,f96e9240
+374,Keil O'Brien,eng ENG,DF,FC Halifax Town,24,1990,6,6,426,4.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3f7fc2eb
+375,Mark O'Brien,ie IRL,DF,Southport,22,1992,7,7,630,7.0,1,0,1,1,0,0,1,0,0.14,0.00,0.14,0.14,0.14,b114b74c
+376,Aaron O'Connor,eng ENG,FW,Forest Green,31,1983,20,13,1116,12.4,9,1,10,8,1,2,2,0,0.73,0.08,0.81,0.65,0.73,6b1109ca
+377,Josh O'Hanlon,ie IRL,FW,Chester,19,1995,2,2,139,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,af0e8f6c
+378,Josh O'Keefe,ie IRL,MF,Altrincham,26,1988,27,16,1499,16.7,1,0,1,1,0,0,7,1,0.06,0.00,0.06,0.06,0.06,72310255
+379,Max O'Leary,ie IRL,GK,Harriers,18,1996,5,5,450,5.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,a77c1ce8
+380,Daniel O'Shaughnessy,fi FIN,DF,Braintree Town,20,1994,1,0,45,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3eeec655
+381,Joe Oastler,eng ENG,DFMF,Aldershot Town,25,1990,12,12,1080,12.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,e1433105
+382,Afolabi Obafemi,eng ENG,FW,Welling United,20,1994,12,4,460,5.1,2,0,2,2,0,0,0,0,0.39,0.00,0.39,0.39,0.39,5378e5b9
+383,Yemi Odubade,ng NGA,FW,Eastleigh,31,1984,40,22,2082,23.1,5,3,8,5,0,0,2,0,0.22,0.13,0.35,0.22,0.35,c8e01499
+384,Luke Oliver,eng ENG,DF,Aldershot Town,31,1984,18,14,1327,14.7,0,1,1,0,0,0,2,0,0.00,0.07,0.07,0.00,0.07,b2609dc2
+385,Michael Onovwigun,eng ENG,MF,Gateshead,19,1996,3,1,89,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3b539105
+386,Ben Parker,eng ENG,DF,Guiseley,27,1987,20,18,1574,17.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,78a5dadd
+387,Jon Parkin,eng ENG,DFFW,Forest Green,33,1981,39,30,2550,28.3,13,7,20,10,3,6,6,0,0.46,0.25,0.71,0.35,0.60,e8ec19c2
+388,Andy Parry,eng ENG,DF,Barrow,23,1991,17,17,1485,16.5,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,2a253b20
+389,Andy Parry,eng ENG,DF,Altrincham,23,1991,10,10,874,9.7,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,2a253b20
+390,Danny Parslow,wls WAL,DF,Cheltenham,29,1985,46,46,4139,46.0,2,1,3,2,0,0,2,0,0.04,0.02,0.07,0.04,0.07,3a0d3acb
+391,Joe Partington,wls WAL,DFMF,Eastleigh,25,1990,43,43,3825,42.5,2,2,4,2,0,0,5,0,0.05,0.05,0.09,0.05,0.09,902e61f7
+392,Omari Patrick,eng ENG,FWMF,Harriers,19,1996,18,6,639,7.1,0,1,1,0,0,0,0,0,0.00,0.14,0.14,0.00,0.14,fd7991f9
+393,Matty Pattison,za RSA,MF,Gateshead,28,1986,26,19,1670,18.6,0,3,3,0,0,0,1,0,0.00,0.16,0.16,0.00,0.16,5a34dfe5
+394,Alfie Pavey,eng ENG,FW,Aldershot Town,19,1995,15,7,668,7.4,2,0,2,2,0,0,1,0,0.27,0.00,0.27,0.27,0.27,ddf544a8
+395,Josh Payne,eng ENG,MF,Eastleigh,24,1990,38,32,2947,32.7,4,4,8,3,1,1,5,1,0.12,0.12,0.24,0.09,0.21,de015490
+396,Stefan Payne,eng ENG,FW,Dover Athletic,23,1991,42,42,3557,39.5,18,8,26,18,0,0,5,2,0.46,0.20,0.66,0.46,0.66,78877135
+397,Shaun Pearson,eng ENG,DFMF,Grimsby Town,26,1989,29,21,1967,21.9,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,37ee52da
+398,Harry Pell,eng ENG,MF,Cheltenham,23,1991,39,34,3082,34.2,7,1,8,7,0,0,12,1,0.20,0.03,0.23,0.20,0.23,3924d508
+399,Richard Peniket,wls WAL,FW,FC Halifax Town,22,1993,17,12,920,10.2,0,1,1,0,0,0,2,0,0.00,0.10,0.10,0.00,0.10,051f4dcf
+400,Mike Phenix,eng ENG,FW,Southport,26,1989,36,33,2768,30.8,5,3,8,5,0,0,8,1,0.16,0.10,0.26,0.16,0.26,8b13adeb
+401,Dillon Phillips,eng ENG,GK,Cheltenham,20,1995,36,36,3225,35.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,d0330b1d
+402,Jimmy Phillips,eng ENG,MF,Altrincham,25,1989,4,2,167,1.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0d41fb5f
+403,Jimmy Phillips,eng ENG,MF,Gateshead,25,1989,19,14,1201,13.3,3,1,4,3,0,0,0,0,0.22,0.07,0.30,0.22,0.30,0d41fb5f
+404,Jimmy Phillips,eng ENG,MF,Macclesfield,25,1989,3,1,120,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0d41fb5f
+405,Mark Phillips,eng ENG,DF,Braintree Town,33,1982,39,38,3427,38.1,1,0,1,1,0,0,6,0,0.03,0.00,0.03,0.03,0.03,bf1c0430
+406,Danny Pilkington,eng ENG,MF,Barrow,25,1990,24,14,1292,14.4,1,6,7,1,0,0,1,0,0.07,0.42,0.49,0.07,0.49,da654286
+407,George Pilkington,eng ENG,DF,Macclesfield,33,1981,40,39,3541,39.3,0,2,2,0,0,0,3,0,0.00,0.05,0.05,0.00,0.05,61dddd00
+408,Steve Pinau,fr FRA,FW,Bromley,27,1988,3,3,245,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,287ef07c
+409,Mitchell Pinnock,eng ENG,FWMF,Dover Athletic,20,1994,2,0,42,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,8a76b623
+410,David Pipe,wls WAL,DFMF,Forest Green,31,1983,30,22,2110,23.4,1,2,3,1,0,0,3,0,0.04,0.09,0.13,0.04,0.13,ae3183d0
+411,Jon-Paul Pittman,eng ENG,FWMF,Grimsby Town,28,1986,28,8,857,9.5,5,0,5,5,0,0,2,0,0.53,0.00,0.53,0.53,0.53,3a3f2786
+412,Michael Poke,eng ENG,GK,Eastleigh,29,1985,12,12,1024,11.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,6fc41e28
+413,Godfrey Poku,eng ENG,MF,Woking,25,1990,18,6,654,7.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,1fd3af92
+414,George Porter,eng ENG,FWMF,Welling United,23,1992,29,23,2069,23.0,1,2,3,1,0,0,4,0,0.04,0.09,0.13,0.04,0.13,35d00566
+415,Max Porter,eng ENG,MF,Bromley,28,1987,10,7,686,7.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,61a0d0a9
+416,Jack Powell,eng ENG,DFMF,Braintree Town,21,1994,7,3,269,3.0,0,1,1,0,0,0,0,0,0.00,0.33,0.33,0.00,0.33,be3c83a5
+417,Alan Power,ie IRL,MF,Lincoln City,27,1988,38,32,2924,32.5,3,3,6,3,0,1,7,0,0.09,0.09,0.18,0.09,0.18,b773f1af
+418,Joe Quigley,ie IRL,FWMF,Woking,18,1996,19,15,1302,14.5,5,3,8,5,0,0,0,0,0.35,0.21,0.55,0.35,0.55,0e9e2dd4
+419,Joe Quigley,ie IRL,FWMF,Wrexham,18,1996,4,2,213,2.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,0e9e2dd4
+420,Joe Quigley,ie IRL,FWMF,Torquay United,18,1996,10,8,575,6.4,1,1,2,1,0,0,0,0,0.16,0.16,0.31,0.16,0.31,0e9e2dd4
+421,Danny Racchi,eng ENG,DFMF,Torquay United,27,1987,14,12,1059,11.8,0,1,1,0,0,0,3,0,0.00,0.08,0.08,0.00,0.08,7b56470e
+422,Danny Racchi,eng ENG,DFMF,FC Halifax Town,27,1987,4,3,222,2.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,7b56470e
+423,Aarran Racine,eng ENG,DF,Forest Green,23,1991,41,41,3674,40.8,1,0,1,1,0,0,8,1,0.02,0.00,0.02,0.02,0.02,15c5415d
+424,Andy Rafferty,eng ENG,GK,Dover Athletic,27,1988,12,12,1080,12.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0db5315d
+425,Sean Raggett,eng ENG,DF,Dover Athletic,22,1993,43,43,3841,42.7,4,0,4,4,0,0,8,0,0.09,0.00,0.09,0.09,0.09,5dd438af
+426,Nathan Ralph,eng ENG,DF,Aldershot Town,22,1993,12,9,880,9.8,1,0,1,1,0,0,1,0,0.10,0.00,0.10,0.10,0.10,2dec3014
+427,Simon Ramsden,eng ENG,DF,Gateshead,33,1981,24,24,2060,22.9,1,1,2,1,0,0,2,0,0.04,0.04,0.09,0.04,0.09,72a4fdf2
+428,Michael Rankine,eng ENG,FW,Altrincham,30,1985,40,30,2722,30.2,12,3,15,9,3,3,3,0,0.40,0.10,0.50,0.30,0.40,7fd7cfc3
+429,Giorgio Rasulo,eng ENG,FWMF,Aldershot Town,18,1997,11,11,848,9.4,1,0,1,1,0,0,0,0,0.11,0.00,0.11,0.11,0.11,16ba7ce1
+430,Josh Rees,eng ENG,DFFW,Torquay United,21,1993,18,16,1348,15.0,0,2,2,0,0,0,0,0,0.00,0.13,0.13,0.00,0.13,89dd9814
+431,Craig Reid,eng ENG,FW,Lincoln City,29,1985,2,2,152,1.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,b0f57e90
+432,Craig Reid,eng ENG,FW,Harriers,29,1985,4,1,143,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,b0f57e90
+433,Paul Reid,eng ENG,DF,Eastleigh,33,1982,22,21,1776,19.7,0,1,1,0,0,0,2,1,0.00,0.05,0.05,0.00,0.05,b4ca388e
+434,Scott Rendell,eng ENG,FW,Woking,28,1986,1,1,40,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,2c88b447
+435,Matt Rhead,eng ENG,FW,Lincoln City,31,1984,43,41,3692,41.0,20,7,27,15,5,6,8,0,0.49,0.17,0.66,0.37,0.54,1c562064
+436,Tom Richards,eng ENG,DF,Aldershot Town,20,1994,25,12,1285,14.3,1,0,1,1,0,0,0,0,0.07,0.00,0.07,0.07,0.07,0f559f21
+437,Simon Richman,eng ENG,MF,Altrincham,25,1990,37,35,2930,32.6,0,1,1,0,0,0,3,0,0.00,0.03,0.03,0.00,0.03,f3eb2d66
+438,Mark Ricketts,eng ENG,DFMF,Woking,30,1984,36,36,3127,34.7,0,0,0,0,0,0,7,0,0.00,0.00,0.00,0.00,0.00,427ca539
+439,Liam Ridehalgh,eng ENG,DFMF,Tranmere Rovers,24,1991,26,25,2044,22.7,1,3,4,1,0,0,2,0,0.04,0.13,0.18,0.04,0.18,d7be605e
+440,Steven Rigg,eng ENG,FW,Barrow,23,1992,1,0,7,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,61c9233e
+441,Martin Riley,eng ENG,DF,Tranmere Rovers,28,1986,16,12,1240,13.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,277e4f8c
+442,James Roberts,eng ENG,FW,Chester,19,1996,6,6,353,3.9,1,0,1,1,0,0,0,0,0.25,0.00,0.25,0.25,0.25,54d069b3
+443,Kevin Roberts,eng ENG,DFMF,FC Halifax Town,25,1989,39,38,3248,36.1,0,2,2,0,0,0,7,1,0.00,0.06,0.06,0.00,0.06,b343f070
+444,Gregor Robertson,sct SCO,DF,Grimsby Town,31,1984,24,21,1828,20.3,0,2,2,0,0,0,1,0,0.00,0.10,0.10,0.00,0.10,caca17a2
+445,Joe Robinson,eng ENG,DF,Woking,18,1996,6,5,484,5.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,10ecc278
+446,Matt Robinson,eng ENG,DFMF,Woking,21,1994,26,24,2094,23.3,2,4,6,2,0,0,3,0,0.09,0.17,0.26,0.09,0.26,ac487578
+447,Matt Robinson,eng ENG,DFMF,Grimsby Town,21,1994,7,6,448,5.0,1,1,2,1,0,0,1,0,0.20,0.20,0.40,0.20,0.40,ac487578
+448,Louis Robles,eng ENG,FW,Macclesfield,18,1996,1,0,11,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3677e595
+449,Marek Rodák,sk SVK,GK,Welling United,18,1996,17,17,1530,17.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,17acc2ed
+450,Paul Rodgers,eng ENG,DF,Bromley,25,1989,21,14,1216,13.5,1,1,2,1,0,0,3,1,0.07,0.07,0.15,0.07,0.15,a303ec2b
+451,John Rooney,eng ENG,DFFW,Chester,24,1990,41,36,3225,35.8,10,15,25,9,1,3,4,0,0.28,0.42,0.70,0.25,0.67,94f9f696
+452,Gavin Rothery,eng ENG,MF,Guiseley,27,1987,33,20,1930,21.4,1,2,3,1,0,0,4,1,0.05,0.09,0.14,0.05,0.14,b8ea6837
+453,Daniel Rowe,eng ENG,DFMF,Barrow,19,1995,3,3,266,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,9c9bd515
+454,Danny Rowe,eng ENG,MF,Macclesfield,23,1992,41,30,2664,29.6,5,7,12,5,0,0,1,0,0.17,0.24,0.41,0.17,0.41,4f6203ea
+455,James Rowe,eng ENG,DFMF,Cheltenham,23,1991,28,12,1213,13.5,1,4,5,1,0,0,2,0,0.07,0.30,0.37,0.07,0.37,bbb591f0
+456,Lathaniel Rowe-Turner,eng ENG,DF,Harriers,25,1989,19,15,1413,15.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,9fb3237c
+457,Sam Russell,eng ENG,GK,Gateshead,32,1982,44,44,3960,44.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,20ea1349
+458,Paul Rutherford,eng ENG,DFMF,Southport,28,1987,40,32,2725,30.3,2,4,6,2,0,0,1,0,0.07,0.13,0.20,0.07,0.20,9d9dd0cb
+459,Jack Ryan,eng ENG,FW,Southport,19,1996,13,1,201,2.2,1,0,1,1,0,0,1,0,0.45,0.00,0.45,0.45,0.45,17a6dc72
+460,Brian Saah,eng ENG,DF,Woking,28,1986,42,42,3708,41.2,1,0,1,1,0,0,3,1,0.02,0.00,0.02,0.02,0.02,fe86db6b
+461,Kieran Sadlier,ie IRL,FWMF,FC Halifax Town,20,1994,8,5,529,5.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,a2c16128
+462,Delano Sam-Yorke,eng ENG,FW,Forest Green,26,1989,16,1,324,3.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,6d2b9fee
+463,Delano Sam-Yorke,eng ENG,FW,Boreham Wood,26,1989,16,8,839,9.3,1,0,1,1,0,0,1,0,0.11,0.00,0.11,0.11,0.11,6d2b9fee
+464,Georgios Samaras,gr GRE,FWMF,Lincoln City,30,1985,13,6,617,6.9,2,0,2,2,0,0,0,0,0.29,0.00,0.29,0.29,0.29,1b77cb6a
+465,Jack Sampson,eng ENG,FW,Macclesfield,22,1993,39,31,2731,30.3,3,2,5,3,0,0,5,0,0.10,0.07,0.16,0.10,0.16,d3b4f4ed
+466,Jack Saville,eng ENG,DF,Aldershot Town,24,1991,24,21,1812,20.1,1,0,1,1,0,0,3,0,0.05,0.00,0.05,0.05,0.05,905ec14a
+467,Ibra Sekajja,eng ENG,FW,Braintree Town,22,1992,2,0,11,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,b1bfebc3
+468,Sandro Semedo,pt POR,MF,Welling United,18,1996,3,2,140,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,d4f020ff
+469,Ricky Shakes,gy GUY,DFMF,Boreham Wood,30,1985,45,41,3660,40.7,2,4,6,2,0,0,3,0,0.05,0.10,0.15,0.05,0.15,990b642c
+470,Ian Sharps,eng ENG,DF,Chester,34,1980,33,32,2721,30.2,1,0,1,1,0,0,6,0,0.03,0.00,0.03,0.03,0.03,111d207f
+471,Jon Shaw,eng ENG,FW,Gateshead,31,1983,35,23,1957,21.7,3,0,3,3,0,0,1,0,0.14,0.00,0.14,0.14,0.14,341f6ba5
+472,Tom Shaw,eng ENG,MF,Chester,28,1986,40,35,3119,34.7,4,2,6,4,0,0,7,0,0.12,0.06,0.17,0.12,0.17,33902345
+473,Emile Sinclair,eng ENG,FW,Guiseley,27,1987,11,7,603,6.7,2,1,3,2,0,0,0,0,0.30,0.15,0.45,0.30,0.45,cf6214ef
+474,Rob Sinclair,eng ENG,MF,Forest Green,25,1989,37,37,3108,34.5,0,0,0,0,0,0,2,1,0.00,0.00,0.00,0.00,0.00,7d4bcd00
+475,Jordan Sinnott,eng ENG,MF,Altrincham,21,1994,44,42,3766,41.8,3,7,10,3,0,0,3,0,0.07,0.17,0.24,0.07,0.24,28e15292
+476,Adam Smith,eng ENG,MF,Guiseley,30,1985,11,8,756,8.4,0,2,2,0,0,0,0,0,0.00,0.24,0.24,0.00,0.24,8d2b83b5
+477,Adam Smith,eng ENG,MF,Wrexham,30,1985,12,2,294,3.3,1,0,1,1,0,0,0,0,0.31,0.00,0.31,0.31,0.31,8d2b83b5
+478,Alex Smith,eng ENG,DF,Woking,23,1991,7,3,218,2.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,1c8af6eb
+479,Jonny Smith,eng ENG,FWMF,Wrexham,18,1997,1,0,10,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,4a20310b
+480,Manny Smith,eng ENG,DF,Wrexham,26,1988,44,44,3960,44.0,1,4,5,1,0,0,4,0,0.02,0.09,0.11,0.02,0.11,8b23fc58
+481,Martin Smith,eng ENG,MF,Gateshead,19,1995,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,3d1b7d22
+482,Nathan Smith,eng ENG,DF,Torquay United,19,1996,39,39,3390,37.7,2,0,2,2,0,0,2,1,0.05,0.00,0.05,0.05,0.05,62d6f536
+483,Phil Smith,eng ENG,GK,Aldershot Town,35,1979,39,39,3408,37.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,1e436f8f
+484,Dean Snedker,eng ENG,GK,Harriers,20,1994,30,30,2700,30.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,185cc74e
+485,Matt Sparrow,eng ENG,MF,Lincoln City,33,1981,27,22,1874,20.8,0,2,2,0,0,0,8,0,0.00,0.10,0.10,0.00,0.10,7b8ae0ae
+486,Fabian Spiess,de GER,GK,Torquay United,21,1994,17,17,1469,16.3,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,d94e32df
+487,Kieron St Aimie,eng ENG,FW,Welling United,26,1989,2,1,72,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,bd996a87
+488,Craig Stanley,eng ENG,MF,Lincoln City,32,1983,29,26,2127,23.6,2,0,2,2,0,0,3,0,0.08,0.00,0.08,0.08,0.08,96e38c06
+489,David Stephens,wls WAL,DFMF,Boreham Wood,23,1991,18,18,1620,18.0,1,0,1,1,0,0,2,0,0.06,0.00,0.06,0.06,0.06,3afd5b32
+490,Jim Stevenson,eng ENG,MF,Aldershot Town,23,1992,45,38,3441,38.2,5,3,8,5,0,0,4,0,0.13,0.08,0.21,0.13,0.21,42d9ae2a
+491,Jordan Stewart,nir NIR,MF,Grimsby Town,20,1995,2,1,116,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,0cb1e4aa
+492,Cole Stockton,eng ENG,FW,Tranmere Rovers,21,1994,6,4,310,3.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,d42bffd4
+493,Cole Stockton,eng ENG,FW,Southport,21,1994,10,10,814,9.0,3,0,3,3,0,0,1,0,0.33,0.00,0.33,0.33,0.33,d42bffd4
+494,Kyle Storer,eng ENG,DFMF,Cheltenham,28,1987,46,46,3998,44.4,3,4,7,3,0,0,6,0,0.07,0.09,0.16,0.07,0.16,321f4b47
+495,Anthony Straker,gd GRN,DFMF,Grimsby Town,26,1988,2,0,41,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,a441f92b
+496,Ben Strevens,eng ENG,FWMF,Eastleigh,35,1980,31,27,2455,27.3,6,0,6,5,1,2,7,2,0.22,0.00,0.22,0.18,0.18,e86e0364
+497,Reece Styche,gi GIB,FW,Harriers,26,1989,17,14,1158,12.9,4,0,4,3,1,1,3,1,0.31,0.00,0.31,0.23,0.23,fcc9bb3f
+498,Reece Styche,gi GIB,FW,Macclesfield,26,1989,15,8,677,7.5,4,1,5,4,0,0,2,0,0.53,0.13,0.66,0.53,0.66,fcc9bb3f
+499,Chris Sutherland,eng ENG,MF,Macclesfield,19,1995,8,2,263,2.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,ed47d98d
+500,Ritchie Sutton,eng ENG,DFMF,Tranmere Rovers,29,1986,25,20,1917,21.3,1,0,1,1,0,0,1,1,0.05,0.00,0.05,0.05,0.05,958a4d19
+501,Ritchie Sutton,eng ENG,DFMF,Barrow,29,1986,10,10,836,9.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,958a4d19
+502,David Symington,eng ENG,DFMF,Barrow,21,1994,27,21,1983,22.0,1,2,3,1,0,0,2,0,0.05,0.09,0.14,0.05,0.14,a880597d
+503,Sammie Szmodics,ie IRL,FWMF,Braintree Town,19,1995,3,3,270,3.0,2,0,2,2,0,0,1,0,0.67,0.00,0.67,0.67,0.67,39944392
+504,Richard Tait,sct SCO,DFMF,Grimsby Town,25,1989,37,33,2999,33.3,0,2,2,0,0,0,5,0,0.00,0.06,0.06,0.00,0.06,22bbfa5b
+505,Rhys Taylor,wls WAL,GK,Wrexham,25,1990,27,27,2430,27.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,f093c55a
+506,Gary Taylor-Fletcher,eng ENG,FWMF,Tranmere Rovers,34,1981,21,15,1215,13.5,2,4,6,2,0,0,0,0,0.15,0.30,0.44,0.15,0.44,62c612b8
+507,Greg Tempest,nir NIR,MF,Lincoln City,21,1993,20,17,1413,15.7,0,4,4,0,0,0,0,0,0.00,0.25,0.25,0.00,0.25,e927adc9
+508,Matty Templeton,eng ENG,DF,Macclesfield,18,1996,1,0,14,0.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,6ebaa6ef
+509,Aswad Thomas,eng ENG,DF,Dover Athletic,25,1989,24,21,1957,21.7,1,0,1,1,0,0,4,0,0.05,0.00,0.05,0.05,0.05,c898de36
+510,Dan Thomas,eng ENG,GK,Aldershot Town,23,1991,9,7,732,8.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,553434ab
+511,Terell Thomas,lc LCA,DF,Woking,19,1995,12,11,934,10.4,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,d41d3d7b
+512,Josh Thompson,eng ENG,DF,Southport,24,1991,37,36,3264,36.3,2,0,2,2,0,0,5,1,0.06,0.00,0.06,0.06,0.06,6af0b0bd
+513,Tony Thompson,eng ENG,GK,Chester,20,1994,12,12,1080,12.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,4593884f
+514,Zac Thompson,eng ENG,DFMF,Guiseley,22,1993,11,9,612,6.8,0,1,1,0,0,0,1,0,0.00,0.15,0.15,0.00,0.15,b8bf3082
+515,Mustafa Tiryaki,tr TUR,FW,Boreham Wood,28,1987,8,6,501,5.6,1,0,1,1,0,0,1,0,0.18,0.00,0.18,0.18,0.18,9d54ab14
+516,Chris Todd,wls WAL,DF,Eastleigh,33,1981,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,cb5e69fc
+517,Ben Tomlinson,eng ENG,FW,Barrow,25,1989,14,11,977,10.9,4,0,4,4,0,0,3,0,0.37,0.00,0.37,0.37,0.37,10c3f212
+518,Ben Tomlinson,eng ENG,FW,Grimsby Town,25,1989,7,5,443,4.9,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,10c3f212
+519,Ben Tomlinson,eng ENG,FW,Tranmere Rovers,25,1989,10,5,543,6.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,10c3f212
+520,Kevin Toner,ie IRL,DF,Harriers,19,1996,6,6,512,5.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,e2910435
+521,Dale Tonge,eng ENG,DFMF,Chester,30,1985,3,1,131,1.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,e90a065f
+522,Conor Townsend,eng ENG,DFMF,Grimsby Town,22,1993,9,9,768,8.5,1,0,1,1,0,0,2,0,0.12,0.00,0.12,0.12,0.12,4dc4f138
+523,Matt Tubbs,eng ENG,FW,Eastleigh,31,1984,16,14,1221,13.6,2,2,4,1,1,1,1,0,0.15,0.15,0.29,0.07,0.22,49e3c453
+524,Aaron Tumwa,ag ATG,DF,Bromley,21,1993,5,2,175,1.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,7e78d937
+525,Jamie Turley,eng ENG,DF,Eastleigh,25,1990,35,34,2910,32.3,1,0,1,1,0,0,6,1,0.03,0.00,0.03,0.03,0.03,db4f9d59
+526,Paul Turnbull,eng ENG,DFMF,Macclesfield,26,1989,38,31,2811,31.2,1,4,5,1,0,0,4,0,0.03,0.13,0.16,0.03,0.16,cbb0fa01
+527,Iain Turner,sct SCO,GK,Tranmere Rovers,31,1984,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,bab68c3c
+528,Rhys Turner,eng ENG,FW,Macclesfield,20,1995,2,1,41,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,1917b82a
+529,Shaun Tuton,eng ENG,FW,FC Halifax Town,23,1991,27,24,2050,22.8,10,3,13,10,0,0,4,0,0.44,0.13,0.57,0.44,0.57,68c4cd4e
+530,Lee Vaughan,eng ENG,DFMF,Tranmere Rovers,29,1986,24,24,2135,23.7,2,1,3,2,0,0,4,0,0.08,0.04,0.13,0.08,0.13,74e52cd6
+531,Lee Vaughan,eng ENG,DFMF,Cheltenham,29,1986,10,2,269,3.0,0,1,1,0,0,0,1,0,0.00,0.33,0.33,0.00,0.33,74e52cd6
+532,Aman Verma,eng ENG,MF,Torquay United,28,1987,23,20,1706,19.0,1,1,2,1,0,0,2,0,0.05,0.05,0.11,0.05,0.11,b5121767
+533,Aman Verma,eng ENG,MF,Harriers,28,1987,14,11,1040,11.6,2,0,2,2,0,0,0,0,0.17,0.00,0.17,0.17,0.17,b5121767
+534,Javan Vidal,eng ENG,DFMF,Wrexham,26,1989,23,20,1668,18.5,2,2,4,2,0,0,4,0,0.11,0.11,0.22,0.11,0.22,4e5fd238
+535,Mauro Vilhete,st STP,DFMF,Boreham Wood,22,1993,9,6,541,6.0,1,0,1,1,0,0,1,0,0.17,0.00,0.17,0.17,0.17,a2fece58
+536,Dominic Vose,eng ENG,MF,Wrexham,21,1993,28,26,2200,24.4,10,8,18,8,2,2,4,0,0.41,0.33,0.74,0.33,0.65,277f04f8
+537,Charlie Walker,eng ENG,FW,Aldershot Town,25,1990,40,31,2768,30.8,14,1,15,14,0,0,3,0,0.46,0.03,0.49,0.46,0.49,293e3709
+538,Jason Walker,eng ENG,FW,Barrow,31,1984,34,20,1895,21.1,11,3,14,6,5,6,5,0,0.52,0.14,0.66,0.28,0.43,1028d894
+539,Jeremy Walker,au AUS,DF,Braintree Town,21,1993,4,0,30,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,b85c7674
+540,Mitch Walker,eng ENG,GK,Dover Athletic,23,1991,34,34,3060,34.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,996f0539
+541,Alex Wall,eng ENG,FW,Bromley,24,1990,18,9,855,9.5,3,3,6,3,0,0,4,0,0.32,0.32,0.63,0.32,0.63,867b467d
+542,Andy Warrington,eng ENG,GK,Grimsby Town,39,1976,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,f5781c7e
+543,Luke Waterfall,eng ENG,DFMF,Lincoln City,25,1990,36,35,3128,34.8,6,0,6,6,0,0,3,1,0.17,0.00,0.17,0.17,0.17,6ece557a
+544,Billy Waters,eng ENG,FWMF,Cheltenham,20,1994,37,18,1777,19.7,11,2,13,11,0,0,1,0,0.56,0.10,0.66,0.56,0.66,19dc8fb7
+545,Sam Wedgbury,eng ENG,DFMF,Forest Green,26,1989,38,34,3056,34.0,0,5,5,0,0,0,10,1,0.00,0.15,0.15,0.00,0.15,cbcbb666
+546,Ricky Wellard,eng ENG,MF,Welling United,27,1988,28,23,2096,23.3,1,2,3,1,0,0,2,0,0.04,0.09,0.13,0.04,0.13,b4c2c3f4
+547,Craig Westcarr,eng ENG,FWMF,Southport,30,1985,11,4,515,5.7,2,1,3,2,0,0,0,0,0.35,0.17,0.52,0.35,0.52,7bcd714b
+548,Matthew Whichelow,ms MSR,MF,Boreham Wood,23,1991,9,2,280,3.1,1,1,2,1,0,0,0,0,0.32,0.32,0.64,0.32,0.64,82c2fc8a
+549,Danny Whitaker,eng ENG,MF,Macclesfield,34,1980,44,43,3817,42.4,7,9,16,5,2,2,4,0,0.17,0.21,0.38,0.12,0.33,d8f87eb0
+550,Harry White,eng ENG,FW,Harriers,20,1994,7,7,539,6.0,3,1,4,2,1,1,0,0,0.50,0.17,0.67,0.33,0.50,0dbf1455
+551,Harry White,eng ENG,FW,Boreham Wood,20,1994,8,7,624,6.9,2,1,3,2,0,0,1,0,0.29,0.14,0.43,0.29,0.43,0dbf1455
+552,Danny Whitehead,eng ENG,DFFW,Macclesfield,21,1993,36,31,2695,29.9,6,3,9,6,0,0,1,0,0.20,0.10,0.30,0.20,0.30,c99e9b5d
+553,Billy Whitehouse,eng ENG,MF,FC Halifax Town,19,1996,2,2,135,1.5,1,0,1,1,0,0,0,0,0.67,0.00,0.67,0.67,0.67,c3dbc591
+554,Elliott Whitehouse,eng ENG,MF,FC Halifax Town,21,1993,4,3,241,2.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,14f86115
+555,Ben Whitfield,eng ENG,FWMF,Harriers,19,1996,29,28,2426,27.0,6,9,15,6,0,0,0,0,0.22,0.33,0.56,0.22,0.56,219a9cc0
+556,Alex Whitmore,eng ENG,DFMF,Gateshead,19,1995,19,19,1662,18.5,2,1,3,2,0,0,3,0,0.11,0.05,0.16,0.11,0.16,a5d52702
+557,Alex Whitmore,eng ENG,DFMF,Chester,19,1995,5,5,450,5.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,a5d52702
+558,Alex Whittle,eng ENG,DFMF,Southport,22,1993,7,6,527,5.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,d8c93f7e
+559,Courtney Wildin,ag ATG,DF,Lincoln City,19,1996,4,1,144,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,e7bd1de9
+560,Brett Williams,eng ENG,FW,Forest Green,27,1987,22,6,637,7.1,4,1,5,4,0,0,0,0,0.57,0.14,0.71,0.57,0.71,6ff16e59
+561,George Williams,eng ENG,DFMF,Barrow,22,1993,15,15,1329,14.8,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,f977a94c
+562,Jordan Williams,eng ENG,FWMF,Barrow,22,1992,19,19,1704,18.9,3,4,7,3,0,0,4,0,0.16,0.21,0.37,0.16,0.37,50326d32
+563,Steve Williams,eng ENG,DF,Barrow,28,1987,19,16,1273,14.1,2,0,2,2,0,0,1,1,0.14,0.00,0.14,0.14,0.14,965b0242
+564,Robbie Willmott,eng ENG,MF,Eastleigh,25,1990,1,0,21,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,d9dbb4a3
+565,Bradley Wood,eng ENG,DF,Lincoln City,23,1991,40,39,3420,38.0,1,6,7,1,0,0,11,2,0.03,0.16,0.18,0.03,0.18,5c53becd
+566,Danny Woodards,eng ENG,DFMF,Boreham Wood,31,1983,39,38,3306,36.7,0,5,5,0,0,0,2,0,0.00,0.14,0.14,0.00,0.14,4d8145db
+567,Luke Woodland,ph PHI,MF,Chester,20,1995,1,0,16,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,b1325d78
+568,Alex Woodyard,eng ENG,MF,Braintree Town,22,1993,44,44,3920,43.6,1,0,1,1,0,0,0,1,0.02,0.00,0.02,0.02,0.02,f9daf48b
+569,Kyle Wootton,eng ENG,DFFW,Lincoln City,18,1996,5,1,171,1.9,1,0,1,1,0,0,0,0,0.53,0.00,0.53,0.53,0.53,1ecff6e9
+570,Andre Wright,eng ENG,FW,Harriers,18,1996,12,4,457,5.1,1,1,2,1,0,0,0,0,0.20,0.20,0.39,0.20,0.39,66cf52c3
+571,Andre Wright,eng ENG,FW,Torquay United,18,1996,22,10,1174,13.0,3,2,5,3,0,0,0,0,0.23,0.15,0.38,0.23,0.38,66cf52c3
+572,Andrew Wright,eng ENG,DFMF,Southport,30,1985,38,35,3112,34.6,3,2,5,3,0,0,7,0,0.09,0.06,0.14,0.09,0.14,4502998a
+573,Daniel Wright,eng ENG,DFFW,Cheltenham,30,1984,43,43,3723,41.4,22,10,32,15,7,8,1,0,0.53,0.24,0.77,0.36,0.60,7368f3af
+574,Nicky Wroe,eng ENG,MF,FC Halifax Town,29,1985,30,30,2635,29.3,3,0,3,3,0,0,6,0,0.10,0.00,0.10,0.10,0.10,71b0ec2b
+575,Tom Wynter,eng ENG,DF,Dover Athletic,25,1990,4,0,56,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,47aaa05d
+576,Ismail Yakubu,eng ENG,DF,Woking,30,1985,6,6,536,6.0,1,0,1,1,0,0,0,0,0.17,0.00,0.17,0.17,0.17,064abc7c
+577,Ashley Yeoman,,FW,Torquay United,23,1992,4,0,28,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,f506284d
+578,Luke Young,eng ENG,DFMF,Torquay United,22,1993,8,4,410,4.6,1,2,3,1,0,0,1,0,0.22,0.44,0.66,0.22,0.66,34271322
+579,Matt Young,eng ENG,DF,Dover Athletic,21,1994,2,0,43,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,d488123a
+580,Matt Young,eng ENG,DF,Harriers,21,1994,8,6,490,5.4,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,d488123a
+581,Adeoye Yusuff,eng ENG,FW,Welling United,21,1994,7,6,370,4.1,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,0a1f3795
+582,Adam Saville,,,Altrincham,,,3,0,36,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Adam-Saville
+583,Adam Wrightson,,,Gateshead,,,6,2,210,2.3,0,1,1,0,0,0,0,0,0.00,0.43,0.43,0.00,0.43,Adam-Wrightson
+584,Adriano Moke,,,Wrexham,,,32,26,2093,23.3,0,1,1,0,0,0,2,0,0.00,0.04,0.04,0.00,0.04,Adriano-Moke
+585,Aidan Grant,,,Lincoln City,,,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Aidan-Grant
+586,Alex Newby,,,Barrow,,,2,0,16,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Alex-Newby
+587,Alex Palmer,,,Harriers,,,11,11,990,11.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Alex-Palmer
+588,Alex Simmons,,,Lincoln City,,,18,5,692,7.7,2,0,2,2,0,0,0,0,0.26,0.00,0.26,0.26,0.26,Alex-Simmons
+589,Alfie Walker,,,Braintree Town,,,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Alfie-Walker
+590,Andre Bennett,,,Gateshead,,,11,9,820,9.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Andre-Bennett
+591,Andrew Mills,,,Woking,,,2,0,2,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Andrew-Mills
+592,Anthony Wilson,,,Barrow,,,6,1,186,2.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Anthony-Wilson
+593,Barney Williams,,,Welling United,,,27,25,2261,25.1,0,0,0,0,0,0,2,1,0.00,0.00,0.00,0.00,0.00,Barney-Williams
+594,Ben Clappison,,,FC Halifax Town,,,2,1,103,1.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Ben-Clappison
+595,Ben Gerring,,,Torquay United,,,13,10,972,10.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Ben-Gerring
+596,Ben Pattie,,,Woking,,,9,0,109,1.2,1,0,1,1,0,0,0,0,0.83,0.00,0.83,0.83,0.83,Ben-Pattie
+597,Blaine Hudson,,,Wrexham,,,38,34,2826,31.4,4,1,5,4,0,0,1,1,0.13,0.03,0.16,0.13,0.16,Blaine-Hudson
+598,Callum Reynolds,,,Boreham Wood,,,31,28,2586,28.7,0,1,1,0,0,0,6,0,0.00,0.03,0.03,0.00,0.03,Callum-Reynolds
+599,Callum Williams,,,Altrincham,,,1,0,16,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Callum-Williams
+600,Calvin Dinsley,,,Harriers,,,9,4,385,4.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Calvin-Dinsley
+601,Cameron Norman,,,Woking,,,27,23,2074,23.0,1,0,1,1,0,0,5,0,0.04,0.00,0.04,0.04,0.04,Cameron-Norman
+602,Charlie Harris,,,Aldershot Town,,,4,2,168,1.9,1,0,1,1,0,0,0,0,0.54,0.00,0.54,0.54,0.54,Charlie-Harris
+603,Charlie Joyce,,,Southport,,,17,7,855,9.5,0,1,1,0,0,0,2,0,0.00,0.11,0.11,0.00,0.11,Charlie-Joyce
+604,Cheye Alexander,,,Aldershot Town,,,46,46,4140,46.0,2,2,4,2,0,0,6,0,0.04,0.04,0.09,0.04,0.09,Cheye-Alexander
+605,Chez Isaac,,,Braintree Town,,,38,30,2605,28.9,1,1,2,1,0,0,7,0,0.03,0.03,0.07,0.03,0.07,Chez-Isaac
+606,Chris Churchman,,,Macclesfield,,,1,0,9,0.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Chris-Churchman
+607,Chris Kinnear,,,Dover Athletic,,,11,9,854,9.5,1,0,1,1,0,0,1,0,0.11,0.00,0.11,0.11,0.11,Chris-Kinnear
+608,Conner Robinson,,,Lincoln City,,,17,4,571,6.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Conner-Robinson
+609,Conor Mccarthy,,,Southport,,,9,2,267,3.0,1,0,1,1,0,0,0,0,0.34,0.00,0.34,0.34,0.34,Conor-Mccarthy
+610,Courtney Baker-Richardson,,,Torquay United,,,36,35,3072,34.1,3,2,5,3,0,0,8,1,0.09,0.06,0.15,0.09,0.15,Courtney-Baker-Richardson
+611,Craig Baxter,,,Gateshead,,,35,32,2959,32.9,1,1,2,1,0,0,3,0,0.03,0.03,0.06,0.03,0.06,Craig-Baxter
+612,Craig Hobson,,,Chester,,,28,10,952,10.6,1,1,2,1,0,0,3,0,0.09,0.09,0.19,0.09,0.19,Craig-Hobson
+613,Damien Reeves,,,Altrincham,,,41,27,2498,27.8,8,1,9,8,0,0,2,0,0.29,0.04,0.32,0.29,0.32,Damien-Reeves
+614,Dan Atkinson,,,Guiseley,,,9,9,810,9.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Dan-Atkinson
+615,Dan Cowan,,,Macclesfield,,,19,10,1027,11.4,0,1,1,0,0,0,4,0,0.00,0.09,0.09,0.00,0.09,Dan-Cowan
+616,Dan Lavercombe,,,Torquay United,,,18,17,1592,17.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Dan-Lavercombe
+617,Dan Sweeney,,,Harriers,,,4,3,236,2.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Dan-Sweeney
+618,Dan Walker,,,Aldershot Town,,,36,26,2421,26.9,2,9,11,2,0,0,1,0,0.07,0.33,0.41,0.07,0.41,Dan-Walker
+619,Daniel Ajakaiye,,,Bromley,,,1,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Daniel-Ajakaiye
+620,Daniel O'brien,,,Chester,,,9,7,557,6.2,1,0,1,1,0,0,0,0,0.16,0.00,0.16,0.16,0.16,Daniel-Obrien
+621,Daniel O'brien,,,Wrexham,,,2,0,52,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Daniel-Obrien
+622,Daniel Sparkes,,,Braintree Town,,,36,30,2427,27.0,6,6,12,6,0,0,2,0,0.22,0.22,0.44,0.22,0.44,Daniel-Sparkes
+623,Danny Hattersley,,,FC Halifax Town,,,12,2,320,3.6,1,0,1,1,0,0,0,0,0.28,0.00,0.28,0.28,0.28,Danny-Hattersley
+624,Danny Hattersley,,,Chester,,,6,6,520,5.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Danny-Hattersley
+625,Danny Lowe,,,Guiseley,,,44,44,3960,44.0,0,3,3,0,0,0,3,0,0.00,0.07,0.07,0.00,0.07,Danny-Lowe
+626,David Fitzpatrick,,,Macclesfield,,,37,36,3274,36.4,0,1,1,0,0,0,1,0,0.00,0.03,0.03,0.00,0.03,David-Fitzpatrick
+627,Dino Fazlic,,,FC Halifax Town,,,2,1,67,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Dino-Fazlic
+628,Dino Fazlic,,,Harriers,,,5,4,379,4.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Dino-Fazlic
+629,Duane Ofori,,,Dover Athletic,,,19,6,617,6.9,1,1,2,1,0,0,6,0,0.15,0.15,0.29,0.15,0.29,Duane-Ofori
+630,Eliot Newby,,,Barrow,,,12,2,242,2.7,1,0,1,1,0,0,0,0,0.37,0.00,0.37,0.37,0.37,Eliot-Newby
+631,Elton Ngwatala,,,Harriers,,,15,12,1086,12.1,2,1,3,1,1,2,2,0,0.17,0.08,0.25,0.08,0.17,Elton-Ngwatala
+632,Evan Garnett,,,Harriers,,,16,4,557,6.2,1,1,2,1,0,0,0,0,0.16,0.16,0.32,0.16,0.32,Evan-Garnett
+633,George Mclennan,,,Cheltenham,,,38,34,3026,33.6,0,1,1,0,0,0,2,1,0.00,0.03,0.03,0.00,0.03,George-Mclennan
+634,George Obosu,,,Harriers,,,2,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,George-Obosu
+635,George Thomson,,,Chester,,,12,5,436,4.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,George-Thomson
+636,Giuseppe Sole,,,Woking,,,35,12,1411,15.7,4,4,8,4,0,0,4,0,0.26,0.26,0.51,0.26,0.51,Giuseppe-Sole
+637,Graham Hutchison,,,FC Halifax Town,,,5,5,360,4.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Graham-Hutchison
+638,Gurjit Singh,,,Harriers,,,20,11,983,10.9,4,1,5,4,0,0,0,0,0.37,0.09,0.46,0.37,0.46,Gurjit-Singh
+639,Gus Mafuta,,,Gateshead,,,31,25,2155,23.9,1,1,2,1,0,0,6,0,0.04,0.04,0.08,0.04,0.08,Gus-Mafuta
+640,Harry Hickford,,,Torquay United,,,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Harry-Hickford
+641,Harry Osborne,,,Welling United,,,14,10,835,9.3,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Harry-Osborne
+642,Jack Holland,,,Bromley,,,44,43,3877,43.1,6,2,8,6,0,0,1,0,0.14,0.05,0.19,0.14,0.19,Jack-Holland
+643,Jack Parkinson,,,Dover Athletic,,,39,36,3293,36.6,6,0,6,6,0,0,5,1,0.16,0.00,0.16,0.16,0.16,Jack-Parkinson
+644,Jai Reason,,,Eastleigh,,,43,40,3489,38.8,6,8,14,6,0,0,10,0,0.15,0.21,0.36,0.15,0.36,Jai-Reason
+645,Jake Gallagher,,,Aldershot Town,,,36,34,2979,33.1,2,3,5,2,0,0,7,3,0.06,0.09,0.15,0.06,0.15,Jake-Gallagher
+646,Jake Green,,,Harriers,,,11,3,464,5.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Jake-Green
+647,Jake Hibbs,,,FC Halifax Town,,,31,19,1925,21.4,1,0,1,1,0,0,6,0,0.05,0.00,0.05,0.05,0.05,Jake-Hibbs
+648,Jake Lawlor,,,Guiseley,,,46,44,3902,43.4,1,1,2,1,0,0,3,0,0.02,0.02,0.05,0.02,0.05,Jake-Lawlor
+649,Jake Moult,,,Altrincham,,,44,44,3858,42.9,3,2,5,1,2,2,7,0,0.07,0.05,0.12,0.02,0.07,Jake-Moult
+650,James Curtis,,,Gateshead,,,35,31,2837,31.5,1,1,2,1,0,0,5,1,0.03,0.03,0.06,0.03,0.06,James-Curtis
+651,James Russell,,,Boreham Wood,,,40,40,3600,40.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,James-Russell
+652,Jamie Spencer,,,Harriers,,,2,0,43,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Jamie-Spencer
+653,Jaydon Gibbs,,,Dover Athletic,,,5,3,247,2.7,0,2,2,0,0,0,1,0,0.00,0.73,0.73,0.00,0.73,Jaydon-Gibbs
+654,Joe Clarke,,,Harriers,,,17,16,1421,15.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Joe-Clarke
+655,Joe Gardner,,,Braintree Town,,,6,0,60,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Joe-Gardner
+656,Joe Stokes,,,Forest Green,,,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Joe-Stokes
+657,Joe Ward,,,Harriers,,,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Joe-Ward
+658,Joel Dixon,,,Barrow,,,46,46,4140,46.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Joel-Dixon
+659,Joel Swift,,,Altrincham,,,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Joel-Swift
+660,Joey Jones,,,Woking,,,43,37,3284,36.5,5,2,7,5,0,0,3,0,0.14,0.05,0.19,0.14,0.19,Joey-Jones
+661,Joey Taylor,,,Welling United,,,9,6,571,6.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Joey-Taylor
+662,Jon Viscosi,,,Southport,,,6,6,540,6.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Jon-Viscosi
+663,Jon Worsnop,,,Chester,,,34,34,3060,34.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Jon-Worsnop
+664,Jonathan Royle,,,Wrexham,,,1,1,50,0.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Jonathan-Royle
+665,Jonny Giles,,,Southport,,,4,2,205,2.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Jonny-Giles
+666,Jordan Cox,,,Braintree Town,,,2,0,43,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Jordan-Cox
+667,Jordan Higgs,,,Bromley,,,4,2,252,2.8,0,2,2,0,0,0,0,0,0.00,0.71,0.71,0.00,0.71,Jordan-Higgs
+668,Jordan Jones,,,Harriers,,,18,11,903,10.0,2,0,2,2,0,0,1,0,0.20,0.00,0.20,0.20,0.20,Jordan-Jones
+669,Jordan Porter,,,FC Halifax Town,,,1,0,55,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Jordan-Porter
+670,Jordan Tunnicliffe,,,Harriers,,,15,15,1282,14.2,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Jordan-Tunnicliffe
+671,Josh Hill,,,Boreham Wood,,,2,1,66,0.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Josh-Hill
+672,Josh Macdonald,,,FC Halifax Town,,,41,16,1641,18.2,0,5,5,0,0,0,0,0,0.00,0.27,0.27,0.00,0.27,Josh-Macdonald
+673,Josh Venney,,,Grimsby Town,,,2,0,36,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Josh-Venney
+674,Julian Banton,,,FC Halifax Town,,,9,9,765,8.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Julian-Banton
+675,Kane Richards,,,Chester,,,18,5,674,7.5,4,2,6,4,0,0,4,0,0.53,0.27,0.80,0.53,0.80,Kane-Richards
+676,Kegan Everington,,,Lincoln City,,,13,1,279,3.1,1,0,1,1,0,0,0,0,0.32,0.00,0.32,0.32,0.32,Kegan-Everington
+677,Kenny Davis,,,Braintree Town,,,44,43,3677,40.9,6,1,7,1,5,5,11,0,0.15,0.02,0.17,0.02,0.05,Kenny-Davis
+678,Kojo Awotwi,,,Welling United,,,3,0,30,0.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Kojo-Awotwi
+679,Kurtis Cumberbatch,,,Welling United,,,1,0,20,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Kurtis-Cumberbatch
+680,Lewis Noice,,,Eastleigh,,,6,4,446,5.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Lewis-Noice
+681,Liam Bellamy,,,Dover Athletic,,,25,22,1976,22.0,0,1,1,0,0,0,2,0,0.00,0.05,0.05,0.00,0.05,Liam-Bellamy
+682,Liam Gibson,,,Gateshead,,,1,1,62,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Liam-Gibson
+683,Liam Walsh,,,Wrexham,,,1,0,23,0.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Liam-Walsh
+684,Loui Fazakerley,,,Welling United,,,1,1,89,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Loui-Fazakerley
+685,Luke George,,,Chester,,,23,21,1867,20.7,1,1,2,1,0,0,4,0,0.05,0.05,0.10,0.05,0.10,Luke-George
+686,Luke Porritt,,,Guiseley,,,3,0,38,0.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Luke-Porritt
+687,Luke Saggers,,,Welling United,,,2,0,63,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Luke-Saggers
+688,Luke Wanadio,,,Welling United,,,17,11,1052,11.7,1,0,1,1,0,0,1,0,0.09,0.00,0.09,0.09,0.09,Luke-Wanadio
+689,Malachi Lavelle,,,Torquay United,,,9,3,286,3.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Malachi-Lavelle
+690,Mamadou Fofana,,,Barrow,,,9,6,563,6.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Mamadou-Fofana
+691,Mason Watkins,,,Wrexham,,,1,1,45,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Mason-Watkins
+692,Matt Challoner,,,Southport,,,35,34,2952,32.8,0,1,1,0,0,0,3,0,0.00,0.03,0.03,0.00,0.03,Matt-Challoner
+693,Matt Paine,,,Braintree Town,,,35,33,2936,32.6,2,1,3,2,0,0,8,1,0.06,0.03,0.09,0.06,0.09,Matt-Paine
+694,Max Cartwright,,,Southport,,,2,2,180,2.0,0,0,0,0,0,0,1,1,0.00,0.00,0.00,0.00,0.00,Max-Cartwright
+695,Meechak Kanda,,,Gateshead,,,1,0,23,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Meechak-Kanda
+696,Michael Chambers,,,Welling United,,,35,35,2995,33.3,1,0,1,1,0,0,3,0,0.03,0.00,0.03,0.03,0.03,Michael-Chambers
+697,Michael Cheek,,,Braintree Town,,,40,28,2427,27.0,15,0,15,15,0,0,3,0,0.56,0.00,0.56,0.56,0.56,Michael-Cheek
+698,Michael Mcentegart,,,Welling United,,,9,9,810,9.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Michael-Mcentegart
+699,Michak Stanic,,,Bromley,,,1,0,2,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Michak-Stanic
+700,Naby Diallo,,,Dover Athletic,,,10,2,193,2.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Naby-Diallo
+701,Nick Hamann,,,Woking,,,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Nick-Hamann
+702,Nicky Boshell,,,Guiseley,,,31,15,1385,15.4,4,2,6,3,1,1,3,0,0.26,0.13,0.39,0.19,0.32,Nicky-Boshell
+703,Nicky Clee,,,Altrincham,,,15,3,517,5.7,1,0,1,1,0,0,0,0,0.17,0.00,0.17,0.17,0.17,Nicky-Clee
+704,Nortei Nortey,,,Welling United,,,32,26,2526,28.1,1,1,2,1,0,0,3,0,0.04,0.04,0.07,0.04,0.07,Nortei-Nortey
+705,Pierre Joseph,,,Bromley,,,30,14,1376,15.3,2,0,2,2,0,0,1,0,0.13,0.00,0.13,0.13,0.13,Pierre-Joseph
+706,Ray Harvey,,,Barrow,,,32,21,2040,22.7,0,1,1,0,0,0,5,0,0.00,0.04,0.04,0.00,0.04,Ray-Harvey
+707,Reece Harris,,,Welling United,,,41,38,3407,37.9,2,1,3,2,0,0,4,0,0.05,0.03,0.08,0.05,0.08,Reece-Harris
+708,Reece Prestedge,,,Bromley,,,17,12,1054,11.7,2,0,2,2,0,0,3,0,0.17,0.00,0.17,0.17,0.17,Reece-Prestedge
+709,Remy Clerima,,,Braintree Town,,,27,27,2430,27.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Remy-Clerima
+710,Richard Orlu,,,Dover Athletic,,,42,42,3717,41.3,1,0,1,1,0,0,4,1,0.02,0.00,0.02,0.02,0.02,Richard-Orlu
+711,Rob Ramshaw,,,Gateshead,,,27,14,1517,16.9,1,3,4,1,0,0,1,0,0.06,0.18,0.24,0.06,0.24,Rob-Ramshaw
+712,Rob Swaine,,,Bromley,,,37,37,3177,35.3,1,2,3,1,0,0,3,0,0.03,0.06,0.08,0.03,0.08,Rob-Swaine
+713,Robbie Mcdaid,,,Lincoln City,,,16,3,486,5.4,4,0,4,4,0,0,0,0,0.74,0.00,0.74,0.74,0.74,Robbie-Mcdaid
+714,Ross White,,,Wrexham,,,5,4,359,4.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Ross-White
+715,Ryan Astles,,,Chester,,,16,16,1413,15.7,2,1,3,2,0,0,3,1,0.13,0.06,0.19,0.13,0.19,Ryan-Astles
+716,Ryan Higgins,,,Chester,,,44,41,3760,41.8,2,4,6,2,0,0,3,0,0.05,0.10,0.14,0.05,0.14,Ryan-Higgins
+717,Ryan O'reilly,,,Wrexham,,,1,0,11,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Ryan-Oreilly
+718,Ryan O'reilly,,,Barrow,,,3,1,171,1.9,0,1,1,0,0,0,0,0,0.00,0.53,0.53,0.00,0.53,Ryan-Oreilly
+719,Ryan Toulson,,,Guiseley,,,38,33,3081,34.2,0,1,1,0,0,0,4,0,0.00,0.03,0.03,0.00,0.03,Ryan-Toulson
+720,Sahr Kabba,,,Welling United,,,33,14,1423,15.8,6,1,7,6,0,0,2,0,0.38,0.06,0.44,0.38,0.44,Sahr-Kabba
+721,Sam Chaney,,,Torquay United,,,14,5,478,5.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Sam-Chaney
+722,Sam Corne,,,Welling United,,,31,31,2740,30.4,4,1,5,4,0,0,4,0,0.13,0.03,0.16,0.13,0.16,Sam-Corne
+723,Sam Grimshaw,,,Southport,,,3,0,41,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Sam-Grimshaw
+724,Sam Heathcote,,,Altrincham,,,16,9,770,8.6,1,0,1,1,0,0,2,0,0.12,0.00,0.12,0.12,0.12,Sam-Heathcote
+725,Sam Hughes,,,Chester,,,19,12,1147,12.7,2,0,2,2,0,0,1,0,0.16,0.00,0.16,0.16,0.16,Sam-Hughes
+726,Sam Smith,,,Woking,,,1,1,20,0.2,0,1,1,0,0,0,0,0,0.00,4.50,4.50,0.00,4.50,Sam-Smith
+727,Sam Walker,,,FC Halifax Town,,,17,12,944,10.5,3,2,5,3,0,0,1,0,0.29,0.19,0.48,0.29,0.48,Sam-Walker
+728,Sean Finch,,,Torquay United,,,2,0,22,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Sean-Finch
+729,Sean Francis,,,Bromley,,,31,26,2384,26.5,3,0,3,3,0,0,1,0,0.11,0.00,0.11,0.11,0.11,Sean-Francis
+730,Sean Marks,,,Braintree Town,,,32,11,1154,12.8,1,1,2,1,0,0,0,1,0.08,0.08,0.16,0.08,0.16,Sean-Marks
+731,Shaun Densmore,,,Altrincham,,,14,12,1065,11.8,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Shaun-Densmore
+732,Shepherd Murombedzi,,,Torquay United,,,19,7,794,8.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Shepherd-Murombedzi
+733,Stuart Coburn,,,Altrincham,,,5,5,450,5.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Stuart-Coburn
+734,Tashan Francis,,,Welling United,,,11,3,356,4.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Tashan-Francis
+735,Taylor Miles,,,Braintree Town,,,39,10,1222,13.6,5,0,5,5,0,0,0,0,0.37,0.00,0.37,0.37,0.37,Taylor-Miles
+736,Theo Bailey,,,Macclesfield,,,4,0,56,0.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Theo-Bailey
+737,Tom Marshall,,,Altrincham,,,4,4,356,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Tom-Marshall
+738,Tom Peers,,,Chester,,,7,0,106,1.2,1,0,1,1,0,0,0,0,0.85,0.00,0.85,0.85,0.85,Tom-Peers
+739,Tomi Adeloye,,,Welling United,,,6,4,356,4.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Tomi-Adeloye
+740,Tony Lee,,,Eastleigh,,,1,0,30,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Tony-Lee
+741,Tyrone Sterling,,,Dover Athletic,,,29,23,1929,21.4,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,Tyrone-Sterling
+742,Tyrone Williams,,,Harriers,,,18,15,1348,15.0,1,0,1,1,0,0,1,0,0.07,0.00,0.07,0.07,0.07,Tyrone-Williams
+743,Ugo Udoji,,,Bromley,,,16,14,1271,14.1,0,1,1,0,0,0,1,0,0.00,0.07,0.07,0.00,0.07,Ugo-Udoji
+744,Victor Zapata,,,Welling United,,,3,1,142,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Victor-Zapata
+745,Wayne Brooksby,,,Guiseley,,,20,15,1442,16.0,0,1,1,0,0,0,2,0,0.00,0.06,0.06,0.00,0.06,Wayne-Brooksby
+746,Wesley York,,,Wrexham,,,42,27,2547,28.3,10,5,15,10,0,0,1,0,0.35,0.18,0.53,0.35,0.53,Wesley-York
+747,Will Beesley,,,Southport,,,9,9,780,8.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Will-Beesley
+748,Xavier Vidal,,,Welling United,,,27,24,2069,23.0,4,1,5,3,1,1,5,0,0.17,0.04,0.22,0.13,0.17,Xavier-Vidal
+749,Zach Fagan,,,Welling United,,,10,8,656,7.3,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Zach-Fagan

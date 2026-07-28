@@ -1,0 +1,749 @@
+,,,,,,,Playing Time,Playing Time,Playing Time,Playing Time,Performance,Performance,Performance,Performance,Performance,Performance,Performance,Performance,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,Per 90 Minutes,,-additional
+Rk,Player,Nation,Pos,Squad,Age,Born,MP,Starts,Min,90s,Gls,Ast,G+A,G-PK,PK,PKatt,CrdY,CrdR,Gls,Ast,G+A,G-PK,G+A-PK,Matches,-9999
+1,Thelo Aasgaard,no NOR,MF,Wigan Athletic,18,2002,33,13,1295,14.4,3,2,5,3,0,0,2,0,0.21,0.14,0.35,0.21,0.35,Matches,c88a28b9
+2,Timmy Abraham,eng ENG,FW,Plymouth Argyle,19,2000,3,1,81,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,94ad5868
+3,Nicky Adams,wls WAL,MF,Northampton,33,1986,14,10,868,9.6,0,1,1,0,0,0,0,0,0.00,0.10,0.10,0.00,0.10,Matches,a1a33d78
+4,Rio Adebisi,eng ENG,DF,Crewe Alexandra,19,2000,15,11,1033,11.5,0,1,1,0,0,0,1,0,0.00,0.09,0.09,0.00,0.09,Matches,94fe66e5
+5,Hakeeb Adelakun,eng ENG,FW,Hull City,24,1996,14,11,792,8.8,3,1,4,3,0,0,1,0,0.34,0.11,0.45,0.34,0.45,Matches,042d182c
+6,Dan Agyei,gh GHA,FWMF,Oxford United,23,1997,39,11,1300,14.4,5,3,8,5,0,0,5,0,0.35,0.21,0.55,0.35,0.55,Matches,5c374509
+7,Will Aimson,eng ENG,DF,Plymouth Argyle,24,1995,40,39,3435,38.2,0,1,1,0,0,0,1,0,0.00,0.03,0.03,0.00,0.03,Matches,4f71beda
+8,Callum Ainley,eng ENG,MF,Crewe Alexandra,22,1997,22,12,1090,12.1,1,3,4,1,0,0,0,0,0.08,0.25,0.33,0.08,0.33,Matches,836e8740
+9,John Akinde,eng ENG,FW,Gillingham,31,1989,44,19,2059,22.9,7,5,12,5,2,3,5,0,0.31,0.22,0.52,0.22,0.44,Matches,93a09a47
+10,Lucas Akins,gd GRN,MFFW,Burton Albion,31,1989,45,45,3919,43.5,9,0,9,6,3,3,3,0,0.21,0.00,0.21,0.14,0.14,Matches,a8e93bd1
+11,Cheye Alexander,lc LCA,DFMF,AFC Wimbledon,25,1995,29,18,1662,18.5,0,2,2,0,0,0,2,0,0.00,0.11,0.11,0.00,0.11,Matches,9f0cfe44
+12,Thomas Allan,eng ENG,MF,Accrington,20,1999,4,1,65,0.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,e95726c1
+13,Ben Amos,eng ENG,GK,Charlton Athletic,30,1990,46,46,4140,46.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,f6799cd2
+14,Danny Amos,nir NIR,DF,Doncaster,20,1999,8,4,366,4.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,18772a6d
+15,Harry Anderson,eng ENG,FWMF,Lincoln City,23,1997,29,14,1451,16.1,3,5,8,3,0,0,0,0,0.19,0.31,0.50,0.19,0.50,Matches,c6f940ed
+16,Keshi Anderson,eng ENG,MF,Blackpool,25,1995,17,11,966,10.7,2,0,2,2,0,0,1,0,0.19,0.00,0.19,0.19,0.19,Matches,864a3eba
+17,Tom Anderson,eng ENG,DF,Doncaster,26,1993,44,44,3883,43.1,2,1,3,2,0,0,6,0,0.05,0.02,0.07,0.05,0.07,Matches,76e8c264
+18,Danny Andrew,eng ENG,DFMF,Fleetwood Town,29,1990,45,45,4024,44.7,2,1,3,2,0,0,9,0,0.04,0.02,0.07,0.04,0.07,Matches,90b57521
+19,Chuks Aneke,eng ENG,FW,Charlton Athletic,27,1993,38,11,1539,17.1,15,2,17,15,0,0,11,2,0.88,0.12,0.99,0.88,0.99,Matches,c3afe72e
+20,Rob Apter,sct SCO,MF,Blackpool,17,2003,1,0,3,0.0,0,1,1,0,0,0,0,0,0.00,30.00,30.00,0.00,30.00,Matches,1c12ee0a
+21,Theo Archibald,sct SCO,FWMF,Lincoln City,22,1998,7,0,66,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8bb20652
+22,Steve Arnold,eng ENG,GK,Northampton,30,1989,11,11,990,11.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,8c0d375b
+23,Bernard Ashley-Seal,eng ENG,FW,Northampton,21,1998,23,7,813,9.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,4f187520
+24,Ayoub Assal,eng ENG,MF,AFC Wimbledon,18,2002,14,10,858,9.5,4,2,6,4,0,0,1,0,0.42,0.21,0.63,0.42,0.63,Matches,a294d618
+25,Robert Atkinson,eng ENG,DF,Oxford United,22,1998,39,39,3426,38.1,1,0,1,1,0,0,1,1,0.03,0.00,0.03,0.03,0.03,Matches,181df6a4
+26,Jonah Ayunga,ke KEN,FW,Bristol Rovers,23,1997,30,13,1486,16.5,2,1,3,2,0,0,2,0,0.12,0.06,0.18,0.12,0.18,Matches,2fb31f60
+27,Kwadwo Baah,eng ENG,MFFW,Rochdale,17,2003,30,13,1360,15.1,3,2,5,3,0,0,7,0,0.20,0.13,0.33,0.20,0.33,Matches,f240e4f2
+28,Ellery Balcombe,eng ENG,GK,Doncaster,20,1999,15,15,1315,14.6,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,e827567f
+29,Jack Baldwin,eng ENG,DF,Bristol Rovers,27,1993,38,32,2955,32.8,1,0,1,1,0,0,6,0,0.03,0.00,0.03,0.03,0.03,Matches,8ae7c4f9
+30,Daniel Ballard,nir NIR,DF,Blackpool,20,1999,25,24,2231,24.8,2,0,2,2,0,0,3,1,0.08,0.00,0.08,0.08,0.08,Matches,38f300f3
+31,Ben Barclay,eng ENG,DFMF,Accrington,23,1996,26,23,2005,22.3,1,1,2,1,0,0,7,0,0.04,0.04,0.09,0.04,0.09,Matches,17dff2e1
+32,Brandon Barker,eng ENG,FW,Oxford United,23,1996,19,14,1161,12.9,3,4,7,3,0,0,1,0,0.23,0.31,0.54,0.23,0.54,Matches,3098c0df
+33,Charlie Barker,eng ENG,DF,Charlton Athletic,17,2003,3,3,239,2.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,0b50e7e6
+34,Kyle Barker,eng ENG,MF,Peterborough,19,2000,1,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,209b8ee5
+35,Dillon Barnes,jm JAM,GK,Burton Albion,24,1996,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,76eb782e
+36,Ryan Barnett,eng ENG,FW,Shrewsbury,20,1999,7,3,273,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,dfe6cd27
+37,Josh Barrett,ie IRL,FWMF,Bristol Rovers,22,1998,9,0,140,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0e1365b3
+38,Daniel Batty,eng ENG,MF,Hull City,22,1997,6,2,154,1.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,96c92a74
+39,Daniel Batty,eng ENG,MF,Fleetwood Town,22,1997,17,17,1436,16.0,0,2,2,0,0,0,3,0,0.00,0.13,0.13,0.00,0.13,Matches,96c92a74
+40,Mathieu Baudry,fr FRA,DF,Swindon Town,32,1988,16,15,1251,13.9,1,0,1,1,0,0,2,0,0.07,0.00,0.07,0.07,0.07,Matches,f3c2e308
+41,Nathan Baxter,eng ENG,GK,Accrington,21,1998,16,16,1386,15.4,0,1,1,0,0,0,0,0,0.00,0.06,0.06,0.00,0.06,Matches,5cfbc814
+42,Gavin Bazunu,ie IRL,GK,Rochdale,18,2002,29,29,2610,29.0,0,1,1,0,0,0,1,0,0.00,0.03,0.03,0.00,0.03,Matches,c91441dc
+43,Omar Beckles,gd GRN,DF,Crewe Alexandra,28,1991,41,37,3411,37.9,1,1,2,1,0,0,8,1,0.03,0.03,0.05,0.03,0.05,Matches,668005c9
+44,Jake Beesley,eng ENG,FW,Rochdale,23,1996,27,27,2285,25.4,6,0,6,6,0,0,3,0,0.24,0.00,0.24,0.24,0.24,Matches,71df6e0e
+45,Mark Beevers,eng ENG,DF,Peterborough,30,1989,45,45,4016,44.6,0,1,1,0,0,0,8,0,0.00,0.02,0.02,0.00,0.02,Matches,30bea884
+46,Keanan Bennetts,eng ENG,MFFW,Ipswich Town,21,1999,28,13,1197,13.3,1,0,1,1,0,0,1,0,0.08,0.00,0.08,0.08,0.08,Matches,f4c7c708
+47,Harrison Biggins,eng ENG,MF,Fleetwood Town,24,1996,10,4,395,4.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,a98a15b2
+48,Jay Bird,eng ENG,FW,MK Dons,19,2001,2,0,30,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,246e15d1
+49,Colby Bishop,eng ENG,FW,Accrington,23,1996,41,38,3408,37.9,10,5,15,10,0,1,2,0,0.26,0.13,0.40,0.26,0.40,Matches,4a7dee3b
+50,Teddy Bishop,eng ENG,MF,Ipswich Town,24,1996,36,28,2324,25.8,4,2,6,4,0,0,6,1,0.15,0.08,0.23,0.15,0.23,Matches,682f5364
+51,Will Blackmore,eng ENG,GK,Peterborough,17,2003,1,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bc964086
+52,Frazer Blake-Tracy,eng ENG,DF,Peterborough,24,1995,9,3,383,4.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d77b812f
+53,Tom Bloxham,eng ENG,FW,Shrewsbury,17,2003,4,2,148,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9c8bd93c
+54,Ben Blythe,eng ENG,DF,Doncaster,18,2002,1,0,45,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,fb0d6730
+55,Omar Bogle,eng ENG,FW,Doncaster,27,1993,17,14,1310,14.6,2,0,2,1,1,1,1,0,0.14,0.00,0.14,0.07,0.07,Matches,c334bcfc
+56,Omar Bogle,eng ENG,FW,Charlton Athletic,27,1993,17,12,852,9.5,2,1,3,2,0,0,0,0,0.21,0.11,0.32,0.21,0.32,Matches,c334bcfc
+57,Tolaji Bola,eng ENG,DF,Rochdale,21,1999,11,9,781,8.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c260bdd6
+58,Cian Bolger,ie IRL,DF,Northampton,28,1992,26,26,2314,25.7,1,0,1,1,0,0,7,0,0.04,0.00,0.04,0.04,0.04,Matches,53d53255
+59,James Bolton,eng ENG,DFMF,Portsmouth,25,1994,13,8,713,7.9,1,0,1,1,0,0,0,0,0.13,0.00,0.13,0.13,0.13,Matches,bf6fbdca
+60,Jack Bonham,ie IRL,GK,Gillingham,26,1993,44,44,3902,43.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3539472e
+61,Macauley Bonne,zw ZIM,FW,Charlton Athletic,24,1995,3,3,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9ca8b21c
+62,John Bostock,tt TRI,MF,Doncaster,28,1992,18,11,1016,11.3,0,1,1,0,0,0,1,0,0.00,0.09,0.09,0.00,0.09,Matches,46291841
+63,Michael Bostwick,eng ENG,DFMF,Burton Albion,32,1988,28,26,2383,26.5,2,2,4,2,0,0,3,0,0.08,0.08,0.15,0.08,0.15,Matches,649b0d73
+64,Morgan Boyes,wls WAL,DF,Fleetwood Town,19,2001,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1cda07f1
+65,Cohen Bramall,eng ENG,DF,Lincoln City,24,1996,17,12,1086,12.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,6cb7f041
+66,Cameron Brannagan,eng ENG,MF,Oxford United,24,1996,31,28,2626,29.2,1,2,3,1,0,1,5,0,0.03,0.07,0.10,0.03,0.10,Matches,9220e731
+67,John Brayford,eng ENG,DF,Burton Albion,32,1987,41,40,3545,39.4,4,1,5,4,0,0,3,0,0.10,0.03,0.13,0.10,0.13,Matches,bab2f2a5
+68,Liam Bridcutt,sct SCO,MF,Lincoln City,31,1989,23,22,1755,19.5,0,1,1,0,0,0,7,0,0.00,0.05,0.05,0.00,0.05,Matches,d6066695
+69,Ethan Brierley,eng ENG,MF,Rochdale,16,2003,5,1,79,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c2c5ecda
+70,Callum Brittain,eng ENG,MF,MK Dons,22,1998,4,3,292,3.2,0,1,1,0,0,0,1,0,0.00,0.31,0.31,0.00,0.31,Matches,95869fab
+71,Tom Broadbent,eng ENG,DF,Swindon Town,28,1992,18,11,1122,12.5,1,3,4,1,0,0,2,0,0.08,0.24,0.32,0.08,0.32,Matches,a58ca99d
+72,Ryan Broom,wls WAL,MF,Peterborough,23,1996,15,5,478,5.3,1,0,1,1,0,0,0,0,0.19,0.00,0.19,0.19,0.19,Matches,a6aab1d1
+73,Ryan Broom,wls WAL,MF,Burton Albion,23,1996,11,3,309,3.4,2,0,2,2,0,0,1,0,0.58,0.00,0.58,0.58,0.58,Matches,a6aab1d1
+74,Charlie Brown,eng ENG,FW,MK Dons,20,1999,20,1,344,3.8,3,0,3,3,0,0,0,0,0.78,0.00,0.78,0.78,0.78,Matches,44f87ad3
+75,Lee Brown,eng ENG,DF,Portsmouth,29,1990,32,28,2547,28.3,2,3,5,2,0,0,4,0,0.07,0.11,0.18,0.07,0.18,Matches,315f6ae9
+76,Reece Brown,eng ENG,MF,Peterborough,24,1996,38,33,2806,31.2,2,2,4,2,0,0,4,0,0.06,0.06,0.13,0.06,0.13,Matches,59dc2fe5
+77,Lee Burge,eng ENG,GK,Sunderland,27,1993,41,41,3645,40.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1393c5ac
+78,Cameron Burgess,au AUS,DF,Accrington,24,1995,44,42,3864,42.9,3,3,6,3,0,0,11,1,0.07,0.07,0.14,0.07,0.14,Matches,da61ca98
+79,Harry Burgoyne,eng ENG,GK,Shrewsbury,23,1996,18,17,1565,17.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,710d9ad1
+80,Reece Burke,eng ENG,DF,Hull City,23,1996,34,31,2874,31.9,4,1,5,4,0,0,1,1,0.13,0.03,0.16,0.13,0.16,Matches,a681b7b7
+81,Wes Burns,wls WAL,MFDF,Fleetwood Town,25,1994,33,29,2597,28.9,5,2,7,5,0,0,7,0,0.17,0.07,0.24,0.17,0.24,Matches,b3fe23c6
+82,Harrison Burrows,eng ENG,MF,Peterborough,18,2002,21,8,805,8.9,1,4,5,1,0,0,1,0,0.11,0.45,0.56,0.11,0.56,Matches,316a084b
+83,Josef Bursik,eng ENG,GK,Peterborough,20,2000,6,6,540,6.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,16b6648e
+84,Josef Bursik,eng ENG,GK,Doncaster,20,2000,10,10,900,10.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,16b6648e
+85,Matt Butcher,eng ENG,MF,Accrington,23,1997,42,39,3272,36.4,2,4,6,2,0,0,4,0,0.06,0.11,0.17,0.06,0.17,Matches,b170cfa2
+86,Andy Butler,eng ENG,DF,Doncaster,36,1983,20,20,1755,19.5,0,1,1,0,0,0,3,0,0.00,0.05,0.05,0.00,0.05,Matches,7a10f219
+87,Dan Butler,eng ENG,MFDF,Peterborough,25,1994,42,40,3444,38.3,1,6,7,1,0,0,6,0,0.03,0.16,0.18,0.03,0.18,Matches,84dd2a1f
+88,George Byers,sct SCO,MF,Portsmouth,24,1996,14,4,503,5.6,0,1,1,0,0,0,2,0,0.00,0.18,0.18,0.00,0.18,Matches,f4c20cb3
+89,Paul Caddis,sct SCO,DFMF,Swindon Town,32,1988,26,24,2083,23.1,1,3,4,1,0,0,2,0,0.04,0.13,0.17,0.04,0.17,Matches,dc478234
+90,Alex Cairns,eng ENG,GK,Fleetwood Town,27,1993,28,28,2520,28.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,1a5e36e7
+91,Panutche Camará,gw GNB,MF,Plymouth Argyle,23,1997,41,35,3089,34.3,2,3,5,2,0,0,4,1,0.06,0.09,0.15,0.06,0.15,Matches,d84a2321
+92,Nathan Cameron,eng ENG,DF,Wigan Athletic,28,1991,2,2,180,2.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,59eadf36
+93,Lee Camp,nir NIR,GK,Swindon Town,35,1984,11,11,990,11.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,df4b8b69
+94,Callum Camps,nir NIR,MFFW,Fleetwood Town,24,1995,42,36,3220,35.8,9,2,11,9,0,0,5,0,0.25,0.06,0.31,0.25,0.31,Matches,44b52781
+95,Niall Canavan,ie IRL,DF,Plymouth Argyle,29,1991,12,10,924,10.3,1,1,2,1,0,0,4,1,0.10,0.10,0.19,0.10,0.19,Matches,f7ce89e7
+96,Andy Cannon,eng ENG,MF,Portsmouth,24,1996,43,31,2758,30.6,2,3,5,2,0,0,9,0,0.07,0.10,0.16,0.07,0.16,Matches,5d7b6611
+97,Baily Cargill,eng ENG,DFMF,MK Dons,25,1995,11,7,718,8.0,1,0,1,1,0,0,1,0,0.13,0.00,0.13,0.13,0.13,Matches,6dbe8f69
+98,Hayden Carter,eng ENG,DF,Burton Albion,20,1999,24,24,2160,24.0,4,0,4,4,0,0,7,0,0.17,0.00,0.17,0.17,0.17,Matches,40f85b8f
+99,Ryan Cassidy,ie IRL,FW,Accrington,19,2001,11,5,492,5.5,2,1,3,1,1,2,1,0,0.37,0.18,0.55,0.18,0.37,Matches,0e0bf070
+100,Charlie Caton,eng ENG,FW,Shrewsbury,17,2002,3,1,75,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,aa750095
+101,Billy Chadwick,eng ENG,FWMF,Hull City,20,2000,3,0,36,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c5bf0f24
+102,Luke Chambers,eng ENG,DF,Ipswich Town,34,1985,39,39,3510,39.0,2,2,4,2,0,0,5,0,0.05,0.05,0.10,0.05,0.10,Matches,1a98bcf4
+103,Leon Chambers-Parillon,eng ENG,MF,Oxford United,18,2001,3,0,35,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6535901f
+104,Harry Chapman,eng ENG,FWMF,Shrewsbury,22,1997,23,16,1481,16.5,7,2,9,7,0,0,1,0,0.43,0.12,0.55,0.43,0.55,Matches,7768b19f
+105,Dion Charles,nir NIR,FW,Accrington,24,1995,42,42,3694,41.0,19,3,22,16,3,3,2,1,0.46,0.07,0.54,0.39,0.46,Matches,a8f0023c
+106,Ethan Chislett,eng ENG,MF,AFC Wimbledon,20,2000,27,12,1171,13.0,2,0,2,2,0,0,1,0,0.15,0.00,0.15,0.15,0.15,Matches,c5a26988
+107,Caleb Chukwuemeka,eng ENG,FW,Northampton,18,2002,22,2,544,6.0,1,1,2,1,0,0,2,0,0.17,0.17,0.33,0.17,0.33,Matches,77897dc5
+108,Sean Clare,eng ENG,MF,Burton Albion,23,1996,20,19,1562,17.4,1,3,4,1,0,0,7,0,0.06,0.17,0.23,0.06,0.23,Matches,77bf9e2f
+109,Sean Clare,eng ENG,DFFW,Oxford United,23,1996,17,10,1045,11.6,0,3,3,0,0,0,6,0,0.00,0.26,0.26,0.00,0.26,Matches,77bf9e2f
+110,Flynn Clarke,sct SCO,MF,Peterborough,19,2000,4,2,175,1.9,0,1,1,0,0,0,0,0,0.00,0.51,0.51,0.00,0.51,Matches,e0dd8dfe
+111,Leon Clarke,eng ENG,FW,Shrewsbury,35,1985,10,6,602,6.7,1,0,1,1,0,0,0,0,0.15,0.00,0.15,0.15,0.15,Matches,91c975a0
+112,Jonson Clarke-Harris,jm JAM,FW,Peterborough,26,1994,45,45,3897,43.3,31,2,33,24,7,10,4,0,0.72,0.05,0.76,0.55,0.60,Matches,260af28b
+113,Ben Close,eng ENG,MF,Portsmouth,23,1996,22,13,1105,12.3,1,0,1,1,0,0,0,0,0.08,0.00,0.08,0.08,0.08,Matches,1e8a5099
+114,Zach Clough,eng ENG,MFFW,Wigan Athletic,25,1995,13,4,345,3.8,0,1,1,0,0,0,0,0,0.00,0.26,0.26,0.00,0.26,Matches,406831ff
+115,Séamus Conneely,ie IRL,MFDF,Accrington,32,1988,38,37,3195,35.5,1,1,2,1,0,0,5,1,0.03,0.03,0.06,0.03,0.06,Matches,9c9fee3a
+116,Callum Connolly,eng ENG,DF,Fleetwood Town,22,1997,40,40,3594,39.9,2,1,3,2,0,0,7,0,0.05,0.03,0.08,0.05,0.08,Matches,39ad0b72
+117,Dion Conroy,eng ENG,DFMF,Swindon Town,24,1995,19,18,1550,17.2,0,1,1,0,0,0,4,1,0.00,0.06,0.06,0.00,0.06,Matches,c6a284e1
+118,George Cooper,eng ENG,MF,Plymouth Argyle,23,1996,12,10,871,9.7,1,2,3,1,0,0,1,0,0.10,0.21,0.31,0.10,0.31,Matches,239aa601
+119,Joel Cooper,nir NIR,MF,Oxford United,24,1996,4,0,91,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,307731e3
+120,Michael Cooper,eng ENG,GK,Plymouth Argyle,20,1999,46,46,4130,45.9,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,17186929
+121,James Coppinger,eng ENG,MF,Doncaster,39,1981,32,17,1520,16.9,4,3,7,4,0,0,2,0,0.24,0.18,0.41,0.24,0.41,Matches,181152ec
+122,David Cornell,wls WAL,GK,Ipswich Town,29,1991,10,10,900,10.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,0c9aad01
+123,Paul Coutts,sct SCO,MF,Fleetwood Town,32,1988,20,13,1141,12.7,0,2,2,0,0,0,2,0,0.00,0.16,0.16,0.00,0.16,Matches,e00c4257
+124,Lewie Coyle,eng ENG,DF,Hull City,24,1995,28,26,2255,25.1,0,3,3,0,0,0,4,0,0.00,0.12,0.12,0.00,0.12,Matches,97aba136
+125,Trae Coyle,eng ENG,FW,Gillingham,19,2001,13,3,339,3.8,2,0,2,2,0,0,0,0,0.53,0.00,0.53,0.53,0.53,Matches,e2accf9a
+126,Oliver Crankshaw,eng ENG,MFDF,Wigan Athletic,21,1998,19,2,380,4.2,1,1,2,1,0,0,2,0,0.24,0.24,0.47,0.24,0.47,Matches,dc89af95
+127,Finley Craske,eng ENG,DF,Plymouth Argyle,17,2003,1,0,4,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,96613743
+128,Liam Cross,eng ENG,DF,Northampton,17,2003,1,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ee312765
+129,Barry Crowe-Baggley,nir NIR,MF,Fleetwood Town,18,2002,2,0,26,0.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,fd01ec74
+130,Daniel Crowley,eng ENG,MFFW,Hull City,22,1997,22,6,696,7.7,0,1,1,0,0,0,0,0,0.00,0.13,0.13,0.00,0.13,Matches,0c4f30d6
+131,Dániel Csóka,hu HUN,DF,AFC Wimbledon,20,2000,20,20,1645,18.3,1,0,1,1,0,0,2,0,0.05,0.00,0.05,0.05,0.05,Matches,29942db1
+132,Jason Cummings,au AUS,FW,Shrewsbury,24,1995,11,7,692,7.7,0,1,1,0,0,0,1,0,0.00,0.13,0.13,0.00,0.13,Matches,e28fbd0e
+133,Robbie Cundy,eng ENG,DF,Gillingham,23,1997,18,18,1620,18.0,1,1,2,1,0,0,2,0,0.06,0.06,0.11,0.06,0.11,Matches,7d24aa01
+134,Taylor Curran,eng ENG,DF,Swindon Town,20,2000,11,3,471,5.2,1,0,1,1,0,0,3,0,0.19,0.00,0.19,0.19,0.19,Matches,471b3af8
+135,Mitchell Curry,eng ENG,FW,Sunderland,21,1999,1,0,16,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8c3049bb
+136,Ronan Curtis,ie IRL,MFFW,Portsmouth,24,1996,42,36,3070,34.1,10,7,17,10,0,0,8,0,0.29,0.21,0.50,0.29,0.50,Matches,c81659bd
+137,Owen Dale,eng ENG,FW,Crewe Alexandra,21,1998,43,32,2868,31.9,11,2,13,11,0,0,4,0,0.35,0.06,0.41,0.35,0.41,Matches,182b9864
+138,James Daly,eng ENG,FW,Bristol Rovers,20,2000,28,13,1212,13.5,4,1,5,4,0,0,1,0,0.30,0.07,0.37,0.30,0.37,Matches,435c44b3
+139,Colin Daniel,eng ENG,DFMF,Burton Albion,32,1988,19,17,1547,17.2,1,3,4,1,0,0,2,0,0.06,0.17,0.23,0.06,0.23,Matches,c2684852
+140,Charlie Daniels,eng ENG,MFDF,Shrewsbury,33,1986,14,14,1260,14.0,1,2,3,1,0,0,2,0,0.07,0.14,0.21,0.07,0.21,Matches,9d107085
+141,Charlie Daniels,eng ENG,DFMF,Portsmouth,33,1986,17,10,925,10.3,1,0,1,1,0,0,2,0,0.10,0.00,0.10,0.10,0.10,Matches,9d107085
+142,Donervon Daniels,ms MSR,DF,Crewe Alexandra,26,1993,15,11,897,10.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,06757dde
+143,Joshua Daniels,nir NIR,MFFW,Shrewsbury,24,1996,19,8,942,10.5,2,0,2,2,0,0,2,0,0.19,0.00,0.19,0.19,0.19,Matches,beae379a
+144,Tendayi Darikwa,zw ZIM,DF,Wigan Athletic,28,1991,26,26,2340,26.0,0,1,1,0,0,0,3,0,0.00,0.04,0.04,0.00,0.04,Matches,beecc37c
+145,Harry Darling,eng ENG,DF,MK Dons,20,1999,23,23,2070,23.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,0b0a1b58
+146,Jack Davies,eng ENG,DF,MK Dons,17,2002,1,0,14,0.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,99aeb2b0
+147,David Davis,eng ENG,MF,Shrewsbury,29,1991,21,14,1337,14.9,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,d992542e
+148,Joe Day,eng ENG,GK,Bristol Rovers,29,1990,18,18,1618,18.0,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,269e8622
+149,Siriki Dembélé,ci CIV,MFFW,Peterborough,23,1996,42,38,3373,37.5,11,10,21,11,0,0,7,0,0.29,0.27,0.56,0.29,0.56,Matches,11f54bd5
+150,Kyle Dempsey,eng ENG,MF,Gillingham,24,1995,40,40,3532,39.2,8,4,12,8,0,0,4,0,0.20,0.10,0.31,0.20,0.31,Matches,bfec5edf
+151,Jack Diamond,eng ENG,MFFW,Sunderland,20,2000,24,11,954,10.6,1,3,4,1,0,0,1,0,0.09,0.28,0.38,0.09,0.38,Matches,dfe4f773
+152,Armando Dobra,al ALB,MFFW,Ipswich Town,19,2001,17,8,883,9.8,0,1,1,0,0,0,2,0,0.00,0.10,0.10,0.00,0.10,Matches,74e88421
+153,George Dobson,eng ENG,MFDF,AFC Wimbledon,22,1997,24,22,1880,20.9,1,1,2,1,0,0,3,0,0.05,0.05,0.10,0.05,0.10,Matches,20a7d00d
+154,George Dobson,eng ENG,MF,Sunderland,22,1997,5,3,254,2.8,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,20a7d00d
+155,Greg Docherty,sct SCO,MF,Hull City,23,1996,44,44,3766,41.8,5,4,9,5,0,0,7,0,0.12,0.10,0.22,0.12,0.22,Matches,d6d15aea
+156,Joe Dodoo,eng ENG,FWMF,Wigan Athletic,25,1995,20,12,1152,12.8,4,2,6,4,0,0,2,0,0.31,0.16,0.47,0.31,0.47,Matches,beed85c7
+157,Janoi Donacien,lc LCA,DFMF,Fleetwood Town,26,1993,19,16,1474,16.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,07bd38c5
+158,Matt Done,wls WAL,DFFW,Rochdale,32,1988,37,20,1960,21.8,3,2,5,3,0,0,2,0,0.14,0.09,0.23,0.14,0.23,Matches,004bdc92
+159,Dion Donohue,wls WAL,DFMF,Swindon Town,26,1993,10,9,772,8.6,0,1,1,0,0,0,3,0,0.00,0.12,0.12,0.00,0.12,Matches,09f5d23e
+160,Stephen Dooley,nir NIR,MF,Rochdale,28,1991,31,16,1721,19.1,1,2,3,1,0,0,2,0,0.05,0.10,0.16,0.05,0.16,Matches,d4ab246d
+161,Kenneth Dougall,au AUS,MF,Blackpool,27,1993,34,32,2841,31.6,1,0,1,1,0,0,6,0,0.03,0.00,0.03,0.03,0.03,Matches,ddbeed7f
+162,Alfie Doughty,eng ENG,MFFW,Charlton Athletic,20,1999,7,7,604,6.7,1,1,2,1,0,0,1,0,0.15,0.15,0.30,0.15,0.30,Matches,bf33b257
+163,Flynn Downes,eng ENG,MF,Ipswich Town,21,1999,24,17,1667,18.5,0,0,0,0,0,0,7,1,0.00,0.00,0.00,0.00,0.00,Matches,69fdb896
+164,Paul Downing,eng ENG,DF,Portsmouth,28,1991,3,2,179,2.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,1100cd5a
+165,Andre Dozzell,eng ENG,MF,Ipswich Town,21,1999,43,42,3655,40.6,0,1,1,0,0,0,9,1,0.00,0.02,0.02,0.00,0.02,Matches,8f660142
+166,Aaron Drinan,ie IRL,FW,Ipswich Town,22,1998,22,6,732,8.1,1,0,1,1,0,0,2,0,0.12,0.00,0.12,0.12,0.12,Matches,7155295e
+167,Declan Drysdale,eng ENG,DFMF,Gillingham,20,1999,10,6,502,5.6,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,27e86656
+168,Mark Duffy,eng ENG,MFFW,Fleetwood Town,34,1985,24,8,822,9.1,0,1,1,0,0,0,4,0,0.00,0.11,0.11,0.00,0.11,Matches,d86ccbc9
+169,Max Dyche,eng ENG,DF,Northampton,17,2003,2,1,109,1.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,dfcb90c9
+170,Neal Eardley,wls WAL,DFMF,Burton Albion,31,1988,10,9,765,8.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2bb4411f
+171,Josh Earl,eng ENG,DF,Burton Albion,21,1998,8,7,619,6.9,0,1,1,0,0,0,5,1,0.00,0.15,0.15,0.00,0.15,Matches,a384ee83
+172,Simon Eastwood,eng ENG,GK,Oxford United,31,1989,13,13,1170,13.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,5ed2dc0e
+173,Tom Eaves,eng ENG,FW,Hull City,28,1992,26,6,771,8.6,4,2,6,4,0,0,2,0,0.47,0.23,0.70,0.47,0.70,Matches,377c465b
+174,Ethan Ebanks-Landell,eng ENG,DF,Shrewsbury,27,1992,41,41,3605,40.1,1,0,1,1,0,0,8,0,0.02,0.00,0.02,0.02,0.02,Matches,a2cf6cbc
+175,Josh Eccles,eng ENG,MF,Gillingham,20,2000,12,10,862,9.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,9722d36c
+176,Ryan Edmondson,eng ENG,FW,Northampton,19,2001,21,13,1197,13.3,1,1,2,1,0,0,3,0,0.08,0.08,0.15,0.08,0.15,Matches,ddf99c2a
+177,Tayo Edun,eng ENG,DFMF,Lincoln City,22,1998,41,36,3174,35.3,1,6,7,1,0,0,8,0,0.03,0.17,0.20,0.03,0.20,Matches,4ecc9246
+178,David Edwards,wls WAL,MF,Shrewsbury,34,1986,31,5,760,8.4,1,2,3,1,0,0,2,0,0.12,0.24,0.36,0.12,0.36,Matches,9961eefb
+179,Gwion Edwards,wls WAL,MFFW,Ipswich Town,27,1993,36,29,2475,27.5,6,4,10,6,0,0,6,0,0.22,0.15,0.36,0.22,0.36,Matches,9a60d8f4
+180,Joe Edwards,eng ENG,MFDF,Plymouth Argyle,29,1990,40,35,3010,33.4,6,2,8,6,0,0,10,0,0.18,0.06,0.24,0.18,0.24,Matches,a04d478f
+181,Ronnie Edwards,eng ENG,DF,Peterborough,17,2003,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,be90c4b0
+182,Ryan Edwards,au AUS,MF,Burton Albion,26,1993,42,37,3217,35.7,1,2,3,1,0,0,4,0,0.03,0.06,0.08,0.03,0.08,Matches,3791c2c6
+183,Tom Edwards,eng ENG,DF,Fleetwood Town,21,1999,11,10,856,9.5,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,1b780599
+184,Max Ehmer,eng ENG,DF,Bristol Rovers,28,1992,28,27,2343,26.0,1,1,2,1,0,0,6,0,0.04,0.04,0.08,0.04,0.08,Matches,ca4d02c3
+185,Mohamed Eisa,sd SDN,FW,Peterborough,26,1994,27,6,760,8.4,2,2,4,2,0,0,0,0,0.24,0.24,0.47,0.24,0.47,Matches,989924c1
+186,Marvin Ekpiteta,eng ENG,DF,Blackpool,24,1995,28,26,2342,26.0,2,2,4,2,0,0,4,0,0.08,0.08,0.15,0.08,0.15,Matches,9338c17e
+187,Zachary Elbouzedi,ie IRL,FWMF,Lincoln City,22,1998,2,0,16,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1a5ed92d
+188,Callum Elder,au AUS,DF,Hull City,25,1995,44,43,3820,42.4,1,10,11,1,0,0,6,0,0.02,0.24,0.26,0.02,0.26,Matches,6d53d427
+189,Elliot Embleton,eng ENG,MF,Blackpool,21,1999,18,14,1228,13.6,1,3,4,1,0,0,1,0,0.07,0.22,0.29,0.07,0.29,Matches,e8a427a3
+190,Elliot Embleton,eng ENG,MFFW,Sunderland,21,1999,9,3,342,3.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e8a427a3
+191,Josh Emmanuel,eng ENG,DF,Hull City,22,1997,28,21,2047,22.7,0,2,2,0,0,0,1,0,0.00,0.09,0.09,0.00,0.09,Matches,59160a19
+192,Niall Ennis,eng ENG,FW,Burton Albion,21,1999,9,6,526,5.8,0,1,1,0,0,0,0,0,0.00,0.17,0.17,0.00,0.17,Matches,74cae353
+193,Niall Ennis,eng ENG,FW,Plymouth Argyle,21,1999,24,18,1577,17.5,6,1,7,6,0,0,1,0,0.34,0.06,0.40,0.34,0.40,Matches,74cae353
+194,Antony Evans,eng ENG,MF,Crewe Alexandra,21,1998,14,6,643,7.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,cce7087c
+195,Ched Evans,wls WAL,FW,Fleetwood Town,31,1988,17,11,1157,12.9,5,2,7,4,1,1,3,0,0.39,0.16,0.54,0.31,0.47,Matches,bb770c52
+196,Gareth Evans,eng ENG,MF,Portsmouth,32,1988,1,1,54,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,eccc9817
+197,Lee Evans,wls WAL,MF,Wigan Athletic,26,1994,21,21,1888,21.0,2,2,4,1,1,1,2,0,0.10,0.10,0.19,0.05,0.14,Matches,8ba29cfb
+198,Owen Evans,wls WAL,GK,Wigan Athletic,23,1996,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,04bbc466
+199,Timothy Eyoma,eng ENG,DF,Lincoln City,20,2000,39,34,2903,32.3,1,0,1,1,0,0,5,0,0.03,0.00,0.03,0.03,0.03,Matches,449949f4
+200,Akin Famewo,eng ENG,DF,Charlton Athletic,21,1998,22,20,1786,19.8,0,1,1,0,0,0,1,0,0.00,0.05,0.05,0.00,0.05,Matches,9d9a71c1
+201,Rhys Fenlon,eng ENG,MF,Accrington,18,2001,2,0,30,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,74d7c150
+202,Sam Finley,eng ENG,MF,Fleetwood Town,27,1992,29,19,1689,18.8,3,1,4,3,0,0,5,0,0.16,0.05,0.21,0.16,0.21,Matches,f2d69174
+203,Oliver Finney,eng ENG,MF,Crewe Alexandra,22,1997,26,19,1688,18.8,7,2,9,6,1,1,2,0,0.37,0.11,0.48,0.32,0.43,Matches,59c83e71
+204,Andy Fisher,eng ENG,GK,MK Dons,22,1998,39,39,3510,39.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,d0254cd8
+205,Tom Flanagan,nir NIR,DF,Sunderland,28,1992,16,14,1257,14.0,0,1,1,0,0,0,0,1,0.00,0.07,0.07,0.00,0.07,Matches,3419ab84
+206,Brandon Fleming,eng ENG,DF,Hull City,20,1999,3,3,263,2.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3708655f
+207,Jordan Flores,eng ENG,DFMF,Hull City,24,1995,3,0,45,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,469be117
+208,Mike Fondop-Talom,cm CMR,FW,Burton Albion,26,1993,17,8,604,6.7,2,1,3,2,0,0,3,0,0.30,0.15,0.45,0.30,0.45,Matches,da18e5b2
+209,Anthony Forde,ie IRL,MFDF,Oxford United,26,1993,35,18,1850,20.6,1,4,5,1,0,0,2,0,0.05,0.19,0.24,0.05,0.24,Matches,2d139834
+210,Tyrese Fornah,sl SLE,MF,Plymouth Argyle,20,1999,39,34,2929,32.5,0,3,3,0,0,0,7,0,0.00,0.09,0.09,0.00,0.09,Matches,205f2e2a
+211,Jake Forster-Caskey,eng ENG,MF,Charlton Athletic,26,1994,34,32,2673,29.7,5,3,8,5,0,0,6,0,0.17,0.10,0.27,0.17,0.27,Matches,e9ec272c
+212,Marlon Fossey,us USA,DF,Shrewsbury,21,1998,7,6,514,5.7,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,c7b9e548
+213,Ben Fox,eng ENG,DFMF,Burton Albion,22,1998,9,5,493,5.5,0,1,1,0,0,0,1,0,0.00,0.18,0.18,0.00,0.18,Matches,c62f13f2
+214,Danny Fox,sct SCO,DF,Wigan Athletic,34,1986,2,2,180,2.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,857ec97f
+215,Scott Fraser,sct SCO,MFFW,MK Dons,25,1995,44,41,3583,39.8,14,5,19,5,9,9,2,0,0.35,0.13,0.48,0.13,0.25,Matches,2db9256a
+216,John Freeman,eng ENG,MF,MK Dons,18,2001,4,0,23,0.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,dc5d2075
+217,Kieron Freeman,wls WAL,DF,Swindon Town,28,1992,2,2,161,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c13c24c8
+218,Joe Fryer,eng ENG,GK,Swindon Town,24,1995,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2b51ae78
+219,Zeki Fryers,eng ENG,DF,Swindon Town,27,1992,10,9,705,7.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,f58d6213
+220,Jordan Gabriel,eng ENG,DF,Blackpool,21,1998,27,18,1688,18.8,0,1,1,0,0,0,4,0,0.00,0.05,0.05,0.00,0.05,Matches,5d3ec9c5
+221,Owen Gallacher,sct SCO,DF,Burton Albion,21,1999,9,5,483,5.4,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,c0c6a61a
+222,Luke Garbutt,eng ENG,DF,Blackpool,27,1993,31,25,2261,25.1,4,3,7,4,0,0,3,0,0.16,0.12,0.28,0.16,0.28,Matches,41017ad5
+223,Dan Gardner,eng ENG,MF,Wigan Athletic,30,1990,36,20,1874,20.8,1,5,6,1,0,0,1,0,0.05,0.24,0.29,0.05,0.29,Matches,91cd24fc
+224,Gerard Garner,eng ENG,FW,Fleetwood Town,21,1998,17,11,1002,11.1,3,1,4,3,0,0,0,0,0.27,0.09,0.36,0.27,0.36,Matches,6b337618
+225,Joe Garner,eng ENG,FW,Wigan Athletic,32,1988,11,11,979,10.9,3,0,3,2,1,1,3,0,0.28,0.00,0.28,0.18,0.18,Matches,adb9f204
+226,Ben Garratt,eng ENG,GK,Burton Albion,26,1994,28,28,2520,28.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d662144e
+227,Jordan Garrick,eng ENG,FWMF,Swindon Town,22,1998,19,13,1280,14.2,2,3,5,2,0,0,0,0,0.14,0.21,0.35,0.14,0.35,Matches,eacc267b
+228,Liam Gibbs,eng ENG,MF,Ipswich Town,17,2002,1,1,63,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,e4b6d914
+229,Alex Gilbey,eng ENG,MF,Charlton Athletic,25,1994,23,18,1610,17.9,3,2,5,3,0,0,10,0,0.17,0.11,0.28,0.17,0.28,Matches,b97f0be7
+230,Ciaran Gilligan,eng ENG,MF,Burton Albion,18,2002,18,13,1218,13.5,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,0915721c
+231,Ben Gladwin,eng ENG,MF,MK Dons,28,1992,26,12,1142,12.7,2,3,5,2,0,0,4,0,0.16,0.24,0.39,0.16,0.39,Matches,e957399e
+232,Scott Golbourne,eng ENG,DF,Shrewsbury,32,1988,10,6,499,5.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,aefb8831
+233,Madger Gomes,es ESP,MF,Doncaster,23,1997,22,11,1037,11.5,3,1,4,3,0,0,2,0,0.26,0.09,0.35,0.26,0.35,Matches,60e414ea
+234,Lynden Gooch,us USA,MFFW,Sunderland,24,1995,38,26,2383,26.5,4,9,13,4,0,0,4,0,0.15,0.34,0.49,0.15,0.49,Matches,1ea00b03
+235,Sean Goss,nir NIR,MF,Shrewsbury,24,1995,20,15,1281,14.2,3,1,4,3,0,0,1,0,0.21,0.07,0.28,0.21,0.28,Matches,e45e5af2
+236,Robbie Gotts,eng ENG,DFMF,Lincoln City,20,1999,7,4,371,4.1,0,1,1,0,0,0,0,0,0.00,0.24,0.24,0.00,0.24,Matches,412bc5cc
+237,Danny Graham,eng ENG,FW,Sunderland,34,1985,14,3,434,4.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7d7bdee6
+238,Jordan Graham,eng ENG,MFFW,Gillingham,25,1995,39,36,3284,36.5,12,7,19,8,4,5,2,0,0.33,0.19,0.52,0.22,0.41,Matches,79fa0adc
+239,Anthony Grant,jm JAM,MFDF,Swindon Town,33,1987,33,31,2756,30.6,3,0,3,3,0,0,3,0,0.10,0.00,0.10,0.10,0.10,Matches,79b041fa
+240,Conor Grant,eng ENG,MF,Plymouth Argyle,25,1995,38,34,2820,31.3,5,10,15,5,0,0,0,0,0.16,0.32,0.48,0.16,0.48,Matches,c03c8acd
+241,Conor Grant,ie IRL,MF,Rochdale,19,2001,20,16,1225,13.6,1,0,1,1,0,0,0,0,0.07,0.00,0.07,0.07,0.07,Matches,455b99db
+242,Joel Grant,jm JAM,MF,Swindon Town,32,1987,20,9,925,10.3,2,0,2,2,0,0,0,0,0.19,0.00,0.19,0.19,0.19,Matches,dc90d045
+243,Jorge Grant,eng ENG,MFFW,Lincoln City,25,1994,36,35,3110,34.6,13,7,20,3,10,13,9,0,0.38,0.20,0.58,0.09,0.29,Matches,0bc6be20
+244,Josh Grant,eng ENG,MF,Bristol Rovers,21,1998,32,31,2764,30.7,1,0,1,1,0,0,5,0,0.03,0.00,0.03,0.03,0.03,Matches,9672abe8
+245,Joe Grayson,eng ENG,MF,Oxford United,21,1999,4,1,83,0.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d401981c
+246,AJ Greaves,eng ENG,MFDF,Doncaster,19,2000,10,4,374,4.2,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,9ac6f6f4
+247,Jacob Greaves,eng ENG,DF,Hull City,19,2000,39,39,3509,39.0,0,1,1,0,0,0,3,0,0.00,0.03,0.03,0.00,0.03,Matches,1f169636
+248,Regan Griffiths,eng ENG,MF,Crewe Alexandra,20,2000,2,0,13,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9badbf3f
+249,Will Grigg,nir NIR,FW,MK Dons,29,1991,20,14,1221,13.6,8,3,11,8,0,0,0,0,0.59,0.22,0.81,0.59,0.81,Matches,35ac6cc1
+250,Will Grigg,nir NIR,FW,Sunderland,29,1991,9,4,375,4.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,35ac6cc1
+251,Jonathan Grounds,eng ENG,DF,Swindon Town,32,1988,31,27,2445,27.2,0,1,1,0,0,0,11,0,0.00,0.04,0.04,0.00,0.04,Matches,21a02da8
+252,Nesta Guinness-Walker,eng ENG,DFMF,AFC Wimbledon,20,1999,31,25,2233,24.8,1,2,3,1,0,0,4,0,0.04,0.08,0.12,0.04,0.12,Matches,9e724c44
+253,Chris Gunter,wls WAL,DF,Charlton Athletic,31,1989,36,31,2912,32.4,1,2,3,1,0,0,4,0,0.03,0.06,0.09,0.03,0.09,Matches,303a53e1
+254,Robert Hall,eng ENG,FW,Oxford United,26,1993,9,1,119,1.3,0,2,2,0,0,0,0,0,0.00,1.51,1.51,0.00,1.51,Matches,89602ebf
+255,Brad Halliday,eng ENG,DF,Doncaster,25,1995,37,34,3117,34.6,1,0,1,1,0,0,5,0,0.03,0.00,0.03,0.03,0.03,Matches,9fc6318b
+256,Tom Hamer,eng ENG,DF,Burton Albion,20,1999,21,20,1829,20.3,3,2,5,3,0,0,0,0,0.15,0.10,0.25,0.15,0.25,Matches,cc972962
+257,CJ Hamilton,ie IRL,FWMF,Blackpool,25,1995,22,19,1740,19.3,5,3,8,5,0,0,0,0,0.26,0.16,0.41,0.26,0.41,Matches,63ffd16e
+258,Ethan Hamilton,sct SCO,MF,Peterborough,21,1998,34,13,1352,15.0,0,0,0,0,0,0,4,1,0.00,0.00,0.00,0.00,0.00,Matches,429f107b
+259,Brandon Hanlan,eng ENG,FW,Bristol Rovers,23,1997,44,40,3430,38.1,7,2,9,5,2,3,3,0,0.18,0.05,0.24,0.13,0.18,Matches,e58d5a69
+260,Jamie Hanson,eng ENG,DFMF,Oxford United,24,1995,24,9,1012,11.2,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,b42e9022
+261,Ryan Hardie,sct SCO,FW,Plymouth Argyle,23,1997,43,26,2342,26.0,5,6,11,5,0,0,3,0,0.19,0.23,0.42,0.19,0.42,Matches,7cd95992
+262,Josh Hare,eng ENG,MFDF,Bristol Rovers,25,1994,19,14,1172,13.0,0,1,1,0,0,0,2,0,0.00,0.08,0.08,0.00,0.08,Matches,271332b3
+263,Cameron Hargreaves,eng ENG,MF,Bristol Rovers,21,1998,13,3,362,4.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,acdec532
+264,Marcus Harness,eng ENG,MFFW,Portsmouth,24,1996,46,42,3600,40.0,7,8,15,7,0,0,8,0,0.17,0.20,0.37,0.17,0.37,Matches,90e9ca3d
+265,Cian Harries,wls WAL,DF,Bristol Rovers,23,1997,28,26,2281,25.3,0,1,1,0,0,0,5,0,0.00,0.04,0.04,0.00,0.04,Matches,6ee0d5eb
+266,Michael Harriman,ie IRL,DFMF,Northampton,27,1992,30,22,2126,23.6,0,1,1,0,0,0,2,0,0.00,0.04,0.04,0.00,0.04,Matches,4c3e2fd0
+267,Ellis Harrison,wls WAL,FW,Portsmouth,26,1994,25,11,1203,13.4,4,0,4,1,3,3,3,0,0.30,0.00,0.30,0.07,0.07,Matches,c9408be8
+268,Shayon Harrison,eng ENG,FWMF,AFC Wimbledon,23,1997,1,0,9,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,05cc2317
+269,Josh Harrop,eng ENG,MF,Ipswich Town,24,1995,15,3,374,4.2,0,1,1,0,0,0,1,1,0.00,0.24,0.24,0.00,0.24,Matches,00e1cf8f
+270,Anthony Hartigan,eng ENG,MF,AFC Wimbledon,20,2000,15,8,877,9.7,0,1,1,0,0,0,1,0,0.00,0.10,0.10,0.00,0.10,Matches,515a62bb
+271,Daniel Harvie,sct SCO,MF,MK Dons,22,1998,31,18,1655,18.4,3,3,6,3,0,0,7,0,0.16,0.16,0.33,0.16,0.33,Matches,2856fd7f
+272,Lirak Hasani,eng ENG,MF,Doncaster,18,2002,2,0,21,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,01dae66b
+273,Oliver Hawkins,eng ENG,FW,Ipswich Town,28,1992,20,8,844,9.4,1,2,3,1,0,0,1,0,0.11,0.21,0.32,0.11,0.32,Matches,38c59353
+274,Kane Hemmings,eng ENG,FW,Burton Albion,28,1992,36,26,2463,27.4,15,2,17,15,0,0,7,0,0.55,0.07,0.62,0.55,0.62,Matches,7cdcd959
+275,Ben Heneghan,eng ENG,DF,AFC Wimbledon,26,1993,23,20,1738,19.3,2,1,3,2,0,0,4,1,0.10,0.05,0.16,0.10,0.16,Matches,846ac45b
+276,James Henry,eng ENG,MFFW,Oxford United,31,1989,37,34,2834,31.5,7,9,16,7,0,1,4,1,0.22,0.29,0.51,0.22,0.51,Matches,c354b50c
+277,Tom Hewlett,eng ENG,FW,Burton Albion,18,2001,1,0,4,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0faa2c8e
+278,Scott High,sct SCO,MFDF,Shrewsbury,19,2001,12,8,705,7.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,b8ec3525
+279,James Hill,eng ENG,DF,Fleetwood Town,18,2002,28,24,2198,24.4,0,1,1,0,0,0,2,0,0.00,0.04,0.04,0.00,0.04,Matches,69942fb3
+280,Joe Hilton,eng ENG,GK,Fleetwood Town,20,1999,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,0e18acc5
+281,Jordy Hiwula,eng ENG,FW,Portsmouth,25,1994,9,1,198,2.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f6121039
+282,Harrison Holgate,eng ENG,DF,Fleetwood Town,19,2000,18,13,1204,13.4,0,1,1,0,0,0,1,0,0.00,0.07,0.07,0.00,0.07,Matches,c485304b
+283,Bradley Holmes,eng ENG,FW,Blackpool,17,2002,5,1,89,1.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,73a687d8
+284,Ricky Holmes,eng ENG,FW,Northampton,33,1987,9,5,407,4.5,1,0,1,1,0,0,1,0,0.22,0.00,0.22,0.22,0.22,Matches,27650ab0
+285,Tomáš Holý,cz CZE,GK,Ipswich Town,28,1991,36,36,3240,36.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,66eb6bca
+286,George Honeyman,eng ENG,MF,Hull City,25,1994,42,42,3569,39.7,4,13,17,4,0,0,12,0,0.10,0.33,0.43,0.10,0.43,Matches,84afeaff
+287,Hallam Hope,bb BRB,FWMF,Swindon Town,26,1994,32,18,1798,20.0,5,4,9,5,0,0,3,0,0.25,0.20,0.45,0.25,0.45,Matches,b7fc4922
+288,Harrison Hopper,eng ENG,MF,Rochdale,19,2000,1,0,6,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,57b6f30e
+289,Tom Hopper,eng ENG,FW,Lincoln City,26,1993,39,33,2970,33.0,7,4,11,7,0,0,1,0,0.21,0.12,0.33,0.21,0.33,Matches,ad8a7344
+290,Fraser Horsfall,eng ENG,DF,Northampton,23,1996,40,37,3431,38.1,3,0,3,3,0,0,4,0,0.08,0.00,0.08,0.08,0.08,Matches,fc95fd6e
+291,Branden Horton,eng ENG,DF,Doncaster,19,2000,11,9,781,8.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,12144137
+292,Sam Hoskins,eng ENG,FWMF,Northampton,27,1993,46,44,3986,44.3,8,5,13,5,3,4,7,0,0.18,0.11,0.29,0.11,0.23,Matches,7292e67b
+293,Jordan Houghton,eng ENG,MF,MK Dons,24,1995,19,9,938,10.4,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,9976d562
+294,Ramirez Howarth,eng ENG,MFFW,Lincoln City,22,1997,11,4,359,4.0,1,0,1,1,0,0,0,0,0.25,0.00,0.25,0.25,0.25,Matches,7a03a582
+295,Mark Hughes,eng ENG,DF,Accrington,33,1986,36,36,3180,35.3,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,Matches,5f4b1c49
+296,Sam Hughes,eng ENG,DF,Burton Albion,23,1997,14,14,1116,12.4,2,1,3,2,0,0,3,1,0.16,0.08,0.24,0.16,0.24,Matches,286f5a8e
+297,Denver Hume,eng ENG,MFDF,Sunderland,23,1996,23,19,1710,19.0,1,2,3,1,0,0,1,0,0.05,0.11,0.16,0.05,0.16,Matches,f2c206d4
+298,Stephen Humphrys,eng ENG,FW,Rochdale,22,1997,29,24,2124,23.6,10,3,13,9,1,1,3,0,0.42,0.13,0.55,0.38,0.51,Matches,a9701870
+299,Rob Hunt,eng ENG,DF,Swindon Town,25,1995,19,13,1253,13.9,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,0d4e5b6f
+300,James Husband,eng ENG,DF,Blackpool,26,1994,27,24,2037,22.6,0,1,1,0,0,0,3,2,0.00,0.04,0.04,0.00,0.04,Matches,33e2d513
+301,Reece Hutchinson,eng ENG,DF,Burton Albion,20,2000,1,0,5,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,3c6782fc
+302,Emyr Huws,wls WAL,MF,Ipswich Town,26,1993,9,6,518,5.8,1,0,1,1,0,0,0,0,0.17,0.00,0.17,0.17,0.17,Matches,c884e3af
+303,Ellis Iandolo,eng ENG,DFMF,Swindon Town,22,1997,8,5,375,4.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,87d2302b
+304,Dejan Iliev,mk MKD,GK,Shrewsbury,25,1995,3,3,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7a1e9ed4
+305,Brooklyn Ilunga,eng ENG,FW,MK Dons,16,2003,1,0,22,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ba9f861a
+306,Matt Ingram,eng ENG,GK,Hull City,26,1993,38,38,3420,38.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6f9dcb31
+307,Ryan Inniss,eng ENG,DF,Charlton Athletic,25,1995,13,12,1064,11.8,1,0,1,1,0,0,4,1,0.08,0.00,0.08,0.08,0.08,Matches,600ae8cb
+308,Anssi Jaakkola,fi FIN,GK,Bristol Rovers,33,1987,21,21,1890,21.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,e6312835
+309,William Jääskeläinen,fi FIN,GK,Crewe Alexandra,22,1998,31,31,2790,31.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,dd6814d1
+310,Adam Jackson,eng ENG,DF,Lincoln City,26,1994,28,27,2363,26.3,1,1,2,1,0,0,6,1,0.04,0.04,0.08,0.04,0.08,Matches,aab8c9af
+311,Kayden Jackson,eng ENG,FWMF,Ipswich Town,26,1994,25,12,1111,12.3,1,1,2,1,0,0,3,1,0.08,0.08,0.16,0.08,0.16,Matches,4cb3b5a7
+312,Ryan Jackson,eng ENG,DF,Gillingham,30,1990,43,43,3810,42.3,0,4,4,0,0,0,5,0,0.00,0.09,0.09,0.00,0.09,Matches,904f53f7
+313,Michael Jacobs,eng ENG,MF,Portsmouth,28,1991,20,12,1022,11.4,2,3,5,2,0,0,1,0,0.18,0.26,0.44,0.18,0.44,Matches,d402b7ec
+314,Diallang Jaiyesimi,eng ENG,MFFW,Swindon Town,22,1998,18,15,1382,15.4,4,3,7,3,1,1,4,0,0.26,0.20,0.46,0.20,0.39,Matches,3bdb5711
+315,Diallang Jaiyesimi,eng ENG,FWMF,Charlton Athletic,22,1998,14,7,637,7.1,1,2,3,1,0,0,1,0,0.14,0.28,0.42,0.14,0.42,Matches,3bdb5711
+316,Reece James,eng ENG,MFDF,Doncaster,26,1993,43,42,3631,40.3,7,2,9,7,0,0,7,0,0.17,0.05,0.22,0.17,0.22,Matches,5bc2f6ca
+317,Tom James,wls WAL,DFMF,Wigan Athletic,24,1996,20,20,1800,20.0,3,0,3,3,0,0,3,0,0.15,0.00,0.15,0.15,0.15,Matches,4007ea81
+318,Luke Jephcott,wls WAL,FW,Plymouth Argyle,20,2000,41,31,2619,29.1,16,0,16,14,2,2,1,0,0.55,0.00,0.55,0.48,0.48,Matches,8c1384c9
+319,Cameron Jerome,eng ENG,FW,MK Dons,33,1986,34,28,2350,26.1,13,4,17,13,0,0,6,0,0.50,0.15,0.65,0.50,0.65,Matches,680fb5ee
+320,Cameron John,eng ENG,DF,Doncaster,20,1999,31,21,1916,21.3,2,1,3,2,0,0,0,0,0.09,0.05,0.14,0.09,0.14,Matches,6c753e99
+321,Tyreece John-Jules,eng ENG,FW,Doncaster,19,2001,18,13,1171,13.0,5,3,8,5,0,0,0,0,0.38,0.23,0.61,0.38,0.61,Matches,247e5cfc
+322,Brennan Johnson,wls WAL,FWMF,Lincoln City,19,2001,40,38,3307,36.7,10,6,16,9,1,1,9,0,0.27,0.16,0.44,0.24,0.41,Matches,0cd31129
+323,Callum Johnson,eng ENG,DF,Portsmouth,23,1996,40,39,3468,38.5,0,2,2,0,0,0,4,0,0.00,0.05,0.05,0.00,0.05,Matches,a2f8e4a0
+324,Darnell Johnson,eng ENG,DF,Wigan Athletic,21,1998,10,10,855,9.5,0,1,1,0,0,0,0,0,0.00,0.11,0.11,0.00,0.11,Matches,8eaf6aea
+325,Darnell Johnson,eng ENG,DF,AFC Wimbledon,21,1998,11,11,923,10.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,8eaf6aea
+326,Lewis Johnson,eng ENG,FW,MK Dons,16,2004,4,0,74,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,cfc39939
+327,Travis Johnson,eng ENG,DF,Crewe Alexandra,19,2000,7,6,583,6.5,0,1,1,0,0,0,3,0,0.00,0.15,0.15,0.00,0.15,Matches,65fcc044
+328,Tyreke Johnson,eng ENG,FW,Gillingham,21,1998,7,1,165,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4701e130
+329,George Johnston,sct SCO,DFMF,Wigan Athletic,21,1998,22,19,1722,19.1,1,1,2,1,0,0,1,0,0.05,0.05,0.10,0.05,0.10,Matches,710d9a8e
+330,Charlie Jolley,eng ENG,FW,Wigan Athletic,19,2001,2,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ed807659
+331,Alex Jones,eng ENG,FW,Northampton,25,1994,9,4,317,3.5,1,0,1,1,0,0,0,0,0.28,0.00,0.28,0.28,0.28,Matches,018961c6
+332,Alfie Jones,ca CAN,DFMF,Hull City,22,1997,31,27,2401,26.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,e5c107a1
+333,Billy Jones,eng ENG,DF,Crewe Alexandra,33,1987,3,3,270,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,aa3cb1ad
+334,Callum Jones,wls WAL,MF,Hull City,19,2001,1,0,3,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a9d5c771
+335,James Jones,sct SCO,MF,Lincoln City,24,1996,36,28,2659,29.5,1,5,6,1,0,0,8,0,0.03,0.17,0.20,0.03,0.20,Matches,713d009d
+336,Jamie Jones,eng ENG,GK,Wigan Athletic,31,1989,45,45,4050,45.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,8bba5887
+337,Jordan Jones,nir NIR,MF,Sunderland,25,1994,19,11,997,11.1,3,4,7,3,0,0,1,0,0.27,0.36,0.63,0.27,0.63,Matches,d2bf42ba
+338,Lloyd Jones,eng ENG,DF,Northampton,24,1995,27,27,2430,27.0,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,cda3eb58
+339,Louis Jones,eng ENG,GK,Doncaster,21,1998,14,13,1205,13.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c58bcf0d
+340,Ricky-Jade Jones,eng ENG,FW,Peterborough,19,2001,15,1,228,2.5,1,1,2,1,0,0,0,0,0.39,0.39,0.79,0.39,0.79,Matches,0e777d45
+341,Kyle Joseph,sct SCO,FW,Wigan Athletic,18,2001,18,12,1113,12.4,5,1,6,5,0,0,0,0,0.40,0.08,0.49,0.40,0.49,Matches,e9d29bb8
+342,Alan Judge,ie IRL,MFFW,Ipswich Town,31,1988,34,29,2521,28.0,4,2,6,4,0,0,4,0,0.14,0.07,0.21,0.14,0.21,Matches,3d9ef282
+343,Zak Jules,sct SCO,DFMF,MK Dons,23,1997,20,15,1323,14.7,1,0,1,1,0,0,1,0,0.07,0.00,0.07,0.07,0.07,Matches,0a143120
+344,Sullay Kaikai,sl SLE,MFFW,Blackpool,24,1995,36,33,2649,29.4,7,8,15,7,0,0,5,0,0.24,0.27,0.51,0.24,0.51,Matches,fc166e49
+345,Paul Kalambayi,eng ENG,DF,AFC Wimbledon,21,1999,14,10,984,10.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d1b37f9d
+346,Idris Kanu,sl SLE,MFFW,Peterborough,20,1999,17,7,738,8.2,2,0,2,2,0,0,0,0,0.24,0.00,0.24,0.24,0.24,Matches,23c98036
+347,David Kasumu,eng ENG,MF,MK Dons,20,1999,24,20,1722,19.1,0,1,1,0,0,0,13,0,0.00,0.05,0.05,0.00,0.05,Matches,9af82a9f
+348,Will Keane,ie IRL,MFFW,Wigan Athletic,27,1993,32,25,2150,23.9,11,4,15,9,2,2,3,0,0.46,0.17,0.63,0.38,0.54,Matches,fc7f8f87
+349,Liam Kelly,ie IRL,MF,Oxford United,24,1995,26,21,1598,17.8,0,2,2,0,0,0,5,0,0.00,0.11,0.11,0.00,0.11,Matches,b50f7d40
+350,Daniel Kemp,eng ENG,FWMF,Blackpool,21,1999,8,3,265,2.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,82362769
+351,Myles Kenlock,eng ENG,DF,Ipswich Town,23,1996,21,17,1605,17.8,0,3,3,0,0,0,6,0,0.00,0.17,0.17,0.00,0.17,Matches,e1cfdc48
+352,Frankie Kent,eng ENG,DF,Peterborough,24,1995,45,45,4017,44.6,1,1,2,1,0,0,9,0,0.02,0.02,0.04,0.02,0.04,Matches,151cc732
+353,Richard Keogh,ie IRL,DF,MK Dons,33,1986,18,17,1538,17.1,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,d07b5d5a
+354,Jimmy Keohane,ie IRL,DFMF,Rochdale,29,1991,44,40,3650,40.6,10,2,12,10,0,0,2,0,0.25,0.05,0.30,0.25,0.30,Matches,76b2019e
+355,Alfie Kilgour,eng ENG,DF,Bristol Rovers,22,1998,35,33,2975,33.1,1,0,1,1,0,0,2,0,0.03,0.00,0.03,0.03,0.03,Matches,a898d8eb
+356,Peter Kioso,cd COD,DFMF,Northampton,21,1998,21,21,1837,20.4,3,1,4,3,0,0,6,0,0.15,0.05,0.20,0.15,0.20,Matches,40920f01
+357,Charlie Kirk,eng ENG,FW,Crewe Alexandra,22,1997,42,41,3520,39.1,6,8,14,6,0,1,3,0,0.15,0.20,0.36,0.15,0.36,Matches,2b90ec3a
+358,Ali Koiki,eng ENG,MF,Bristol Rovers,20,1999,10,3,325,3.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,82726be5
+359,Ricky Korboa,eng ENG,FW,Northampton,23,1996,16,5,630,7.0,2,0,2,2,0,0,1,0,0.29,0.00,0.29,0.29,0.29,Matches,3cf0a771
+360,Matej Kovar,cz CZE,GK,Swindon Town,20,2000,18,18,1620,18.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bc67a0e1
+361,Ethan Laird,eng ENG,MF,MK Dons,19,2001,24,23,1837,20.4,0,3,3,0,0,0,5,0,0.00,0.15,0.15,0.00,0.15,Matches,8267f8d4
+362,Olly Lancashire,eng ENG,DF,Crewe Alexandra,31,1988,22,20,1778,19.8,1,0,1,1,0,0,2,0,0.05,0.00,0.05,0.05,0.05,Matches,fae0e3e3
+363,Callum Lang,eng ENG,MFFW,Wigan Athletic,21,1998,23,22,1935,21.5,9,1,10,9,0,0,3,0,0.42,0.05,0.47,0.42,0.47,Matches,8df5f70b
+364,Jack Lankester,eng ENG,MFFW,Ipswich Town,20,2000,17,7,778,8.6,2,1,3,2,0,0,2,0,0.23,0.12,0.35,0.23,0.35,Matches,633151fb
+365,George Lapslie,eng ENG,MF,Charlton Athletic,22,1997,2,1,64,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a752321e
+366,Ryan Law,eng ENG,DFMF,Plymouth Argyle,20,1999,4,4,360,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,c871fdb0
+367,Steven Lawless,sct SCO,MFFW,Burton Albion,29,1991,16,8,781,8.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4135892a
+368,Grant Leadbitter,eng ENG,MF,Sunderland,34,1986,40,30,2756,30.6,7,1,8,3,4,5,6,0,0.23,0.03,0.26,0.10,0.13,Matches,516f7fc1
+369,Luke Leahy,eng ENG,MFDF,Bristol Rovers,27,1992,38,37,3247,36.1,7,3,10,4,3,4,6,0,0.19,0.08,0.28,0.11,0.19,Matches,6606e7de
+370,Elliot Lee,eng ENG,FWMF,Oxford United,25,1994,18,15,1186,13.2,6,2,8,6,0,0,1,0,0.46,0.15,0.61,0.46,0.61,Matches,e5192234
+371,Olly Lee,eng ENG,MF,Gillingham,29,1991,25,19,1525,16.9,5,2,7,5,0,0,0,0,0.30,0.12,0.41,0.30,0.41,Matches,681971b6
+372,Daníel Leó Grétarsson,is ISL,DF,Blackpool,24,1995,12,11,1006,11.2,0,1,1,0,0,0,1,0,0.00,0.09,0.09,0.00,0.09,Matches,d16013d7
+373,Jayson Leutwiler,ca CAN,GK,Fleetwood Town,31,1989,16,16,1440,16.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,a17ff7d6
+374,Dylan Levitt,wls WAL,MF,Charlton Athletic,19,2000,3,3,204,2.3,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,b12d5243
+375,Dean Lewington,eng ENG,DF,MK Dons,36,1984,43,43,3861,42.9,0,0,0,0,0,0,7,0,0.00,0.00,0.00,0.00,0.00,Matches,2dc5fc1c
+376,Adam Lewis,eng ENG,MFDF,Plymouth Argyle,20,1999,20,9,866,9.6,1,2,3,1,0,0,3,0,0.10,0.21,0.31,0.10,0.31,Matches,accd672a
+377,Keane Lewis-Potter,eng ENG,FWMF,Hull City,19,2001,43,33,2993,33.3,13,5,18,13,0,0,6,0,0.39,0.15,0.54,0.39,0.54,Matches,41f08ac8
+378,Ben Liddle,eng ENG,MF,Bristol Rovers,21,1998,3,1,109,1.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,64038cd5
+379,Chris Lines,eng ENG,MF,Northampton,34,1985,4,1,113,1.3,1,0,1,1,0,0,0,0,0.80,0.00,0.80,0.80,0.80,Matches,d10c76c1
+380,Mark Little,eng ENG,MF,Bristol Rovers,31,1988,5,2,208,2.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,42c64f3e
+381,Jason Lokilo,be BEL,MF,Doncaster,21,1998,32,13,1473,16.4,1,3,4,1,0,1,2,0,0.06,0.18,0.24,0.06,0.24,Matches,fad4d5e8
+382,Klaidi Lolos,gr GRE,FWMF,Plymouth Argyle,18,2001,8,0,114,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a75a81bd
+383,Adam Long,eng ENG,DF,Wigan Athletic,19,2000,13,10,897,10.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,2b179a40
+384,George Long,eng ENG,GK,Hull City,26,1993,8,8,720,8.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,754e3f2d
+385,Sam Long,eng ENG,DF,Oxford United,25,1995,36,35,3034,33.7,6,4,10,6,0,0,3,0,0.18,0.12,0.30,0.18,0.30,Matches,287fb669
+386,Ryan Longman,eng ENG,FWMF,AFC Wimbledon,19,2000,44,35,3214,35.7,8,2,10,8,0,0,1,0,0.22,0.06,0.28,0.22,0.28,Matches,9af7cc6d
+387,Donald Love,sct SCO,MFDF,Shrewsbury,25,1994,14,12,966,10.7,0,1,1,0,0,0,3,0,0.00,0.09,0.09,0.00,0.09,Matches,160599ed
+388,Tom Lowery,eng ENG,MF,Crewe Alexandra,22,1997,37,30,2640,29.3,3,8,11,3,0,0,4,0,0.10,0.27,0.37,0.10,0.37,Matches,5b4209b0
+389,Beryly Lubala,cd COD,FWMF,Blackpool,22,1998,12,5,418,4.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,6eea508b
+390,Joe Lumley,eng ENG,GK,Doncaster,25,1995,8,8,720,8.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bdf3a08e
+391,Joe Lumley,eng ENG,GK,Gillingham,25,1995,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bdf3a08e
+392,Matty Lund,nir NIR,MFFW,Rochdale,29,1990,32,28,2503,27.8,11,5,16,10,1,1,10,0,0.40,0.18,0.58,0.36,0.54,Matches,67f4129a
+393,Josh Lundstram,eng ENG,DFMF,Crewe Alexandra,21,1999,4,0,69,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,62156ac0
+394,Jordan Lyden,au AUS,MF,Swindon Town,24,1996,14,11,887,9.9,0,1,1,0,0,0,3,0,0.00,0.10,0.10,0.00,0.10,Matches,f246a2a8
+395,Jay Lynch,eng ENG,GK,Rochdale,27,1993,17,17,1530,17.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,30dae828
+396,Ian Maatsen,nl NED,DFMF,Charlton Athletic,18,2002,34,31,2788,31.0,1,3,4,1,0,0,9,0,0.03,0.10,0.13,0.03,0.13,Matches,cab9634e
+397,Alex MacDonald,sct SCO,MF,Gillingham,30,1990,37,22,1930,21.4,1,1,2,1,0,0,4,1,0.05,0.05,0.09,0.05,0.09,Matches,1c3a435a
+398,Craig MacGillivray,sct SCO,GK,Portsmouth,27,1993,46,46,4140,46.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,97090f78
+399,Lewis Macleod,sct SCO,MF,Plymouth Argyle,26,1994,15,10,787,8.7,0,1,1,0,0,0,3,0,0.00,0.11,0.11,0.00,0.11,Matches,e22e95c6
+400,Paddy Madden,ie IRL,FWMF,Fleetwood Town,30,1990,32,24,2220,24.7,7,4,11,7,0,0,6,0,0.28,0.16,0.45,0.28,0.45,Matches,9c708676
+401,Marcus Maddison,eng ENG,MFFW,Charlton Athletic,26,1993,8,4,382,4.2,1,0,1,1,0,0,2,0,0.24,0.00,0.24,0.24,0.24,Matches,00458f4e
+402,Gary Madine,eng ENG,FW,Blackpool,29,1990,21,15,1385,15.4,4,1,5,4,0,0,3,0,0.26,0.06,0.32,0.26,0.32,Matches,e3e6502a
+403,Josh Magennis,nir NIR,FW,Hull City,29,1990,40,29,2533,28.1,18,5,23,15,3,3,1,0,0.64,0.18,0.82,0.53,0.71,Matches,0b40ae38
+404,Christian Maghoma,cd COD,DF,Gillingham,22,1997,4,4,360,4.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,0d824513
+405,Chris Maguire,sct SCO,FWMF,Sunderland,31,1989,33,11,1302,14.5,5,5,10,2,3,3,2,0,0.35,0.35,0.69,0.14,0.48,Matches,f5a71789
+406,Joe Maguire,eng ENG,DFMF,Accrington,24,1996,5,5,450,5.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,04251f39
+407,Curtis Main,eng ENG,FW,Shrewsbury,28,1992,20,14,1254,13.9,2,2,4,1,1,1,3,0,0.14,0.14,0.29,0.07,0.22,Matches,cfd8f4d3
+408,Michael Mancienne,sc SEY,MFDF,Burton Albion,32,1988,17,14,1220,13.6,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,2db3ae0a
+409,Mikael Mandron,fr FRA,FW,Crewe Alexandra,25,1994,42,36,3154,35.0,11,3,14,11,0,0,2,0,0.31,0.09,0.40,0.31,0.40,Matches,47a26e7c
+410,Lewis Mansell,eng ENG,FW,Accrington,22,1997,2,0,61,0.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,09dc9ae2
+411,John Marquis,eng ENG,FW,Portsmouth,28,1992,41,35,3135,34.8,16,7,23,14,2,4,6,1,0.46,0.20,0.66,0.40,0.60,Matches,e66b6ae0
+412,Mark Marshall,eng ENG,MFFW,Northampton,33,1987,29,18,1533,17.0,1,6,7,1,0,0,1,0,0.06,0.35,0.41,0.06,0.41,Matches,8ca136e8
+413,Joe Martin,eng ENG,DFMF,Northampton,31,1988,6,5,411,4.6,0,0,0,0,0,0,4,2,0.00,0.00,0.00,0.00,0.00,Matches,cad49722
+414,Pablo Martinez,wls WAL,MF,Bristol Rovers,19,2000,8,8,707,7.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,08493f30
+415,Joe Mason,ie IRL,FW,MK Dons,29,1991,24,12,1205,13.4,5,1,6,5,0,0,1,0,0.37,0.07,0.45,0.37,0.45,Matches,9d998751
+416,Niall Mason,eng ENG,DF,Peterborough,23,1997,26,6,798,8.9,1,2,3,1,0,0,1,0,0.11,0.23,0.34,0.11,0.34,Matches,c6b36b88
+417,Gavin Massey,eng ENG,MFDF,Wigan Athletic,27,1992,16,13,1121,12.5,0,2,2,0,0,0,6,0,0.00,0.16,0.16,0.00,0.16,Matches,2d20498b
+418,Conor Masterson,ie IRL,DF,Swindon Town,21,1998,5,5,400,4.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,db975607
+419,Jay Matete,eng ENG,MF,Fleetwood Town,19,2001,7,3,212,2.4,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,7748a7c5
+420,Luke Matheson,eng ENG,DF,Ipswich Town,16,2003,2,2,180,2.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,2b1d5481
+421,Adam Matthews,wls WAL,DF,Charlton Athletic,28,1992,27,22,1931,21.5,0,2,2,0,0,0,0,0,0.00,0.09,0.09,0.00,0.09,Matches,d8bffa70
+422,Archie Matthews,eng ENG,GK,Swindon Town,18,2001,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,412bed19
+423,Remi Matthews,eng ENG,GK,Sunderland,26,1994,6,5,495,5.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,27f4f772
+424,Chris Maxwell,wls WAL,GK,Blackpool,30,1990,43,43,3870,43.0,0,1,1,0,0,0,2,0,0.00,0.02,0.02,0.00,0.02,Matches,609f9b60
+425,Thomas Mayer,at AUT,FW,Hull City,24,1995,6,1,163,1.8,0,1,1,0,0,0,1,0,0.00,0.55,0.55,0.00,0.55,Matches,934db834
+426,Danny Mayor,eng ENG,MF,Plymouth Argyle,29,1990,44,44,3898,43.3,1,3,4,1,0,0,5,1,0.02,0.07,0.09,0.02,0.09,Matches,71e01c7f
+427,Sean McConville,eng ENG,MFFW,Accrington,31,1989,31,26,2380,26.4,1,6,7,1,0,0,4,1,0.04,0.23,0.26,0.04,0.26,Matches,6d1c00a8
+428,Luke McCormick,eng ENG,GK,Plymouth Argyle,36,1983,2,0,10,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a658c3df
+429,Luke McCormick,eng ENG,MF,Bristol Rovers,21,1999,39,36,2999,33.3,6,2,8,6,0,0,11,1,0.18,0.06,0.24,0.18,0.24,Matches,edd9f53f
+430,Josh McEachran,eng ENG,MF,MK Dons,27,1993,14,11,784,8.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,48565585
+431,Callum McFadzean,sct SCO,DF,Sunderland,26,1994,25,21,1829,20.3,1,3,4,1,0,0,3,0,0.05,0.15,0.20,0.05,0.20,Matches,b2624d6a
+432,Brett McGavin,eng ENG,MF,Ipswich Town,20,1999,5,4,372,4.1,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,f0094deb
+433,Aiden McGeady,ie IRL,MFFW,Sunderland,34,1986,29,28,2326,25.8,4,14,18,4,0,0,4,0,0.15,0.54,0.70,0.15,0.70,Matches,c7df693b
+434,Conor McGrandles,sct SCO,MF,Lincoln City,24,1995,39,35,3002,33.4,5,2,7,5,0,0,10,0,0.15,0.06,0.21,0.15,0.21,Matches,6e92d06e
+435,Marcus McGuane,eng ENG,MFFW,Oxford United,21,1999,15,13,987,11.0,0,3,3,0,0,0,1,0,0.00,0.27,0.27,0.00,0.27,Matches,781b698a
+436,Mark McGuinness,ie IRL,DF,Ipswich Town,19,2001,24,23,2090,23.2,1,0,1,1,0,0,2,0,0.04,0.00,0.04,0.04,0.04,Matches,0fae1880
+437,Harry McHugh,eng ENG,FW,Wigan Athletic,17,2002,1,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d975215f
+438,Barrie McKay,sct SCO,MFFW,Fleetwood Town,25,1994,26,15,1401,15.6,2,4,6,2,0,0,0,0,0.13,0.26,0.39,0.13,0.39,Matches,68d4ebfe
+439,Robbie McKenzie,eng ENG,MFDF,Gillingham,21,1998,33,17,1696,18.8,1,1,2,1,0,0,4,0,0.05,0.05,0.11,0.05,0.11,Matches,25256366
+440,Conor McLaughlin,nir NIR,DF,Sunderland,29,1991,25,22,1835,20.4,0,1,1,0,0,0,4,0,0.00,0.05,0.05,0.00,0.05,Matches,179055e8
+441,Ryan McLaughlin,nir NIR,DFMF,Rochdale,25,1994,34,23,2268,25.2,0,1,1,0,0,0,5,0,0.00,0.04,0.04,0.00,0.04,Matches,98f9400a
+442,Sean McLoughlin,ie IRL,DF,Hull City,23,1996,3,0,3,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,315eb8f6
+443,Shane McLoughlin,ie IRL,MF,AFC Wimbledon,23,1997,38,23,2242,24.9,1,4,5,1,0,0,6,0,0.04,0.16,0.20,0.04,0.20,Matches,d1141a85
+444,James McNulty,sct SCO,DF,Rochdale,35,1985,17,9,857,9.5,0,0,0,0,0,0,0,1,0.00,0.00,0.00,0.00,0.00,Matches,de5e12e7
+445,Paul McShane,ie IRL,DF,Rochdale,34,1986,19,18,1498,16.6,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,5785993d
+446,Shaun McWilliams,eng ENG,MF,Northampton,21,1998,32,30,2355,26.2,0,0,0,0,0,0,10,1,0.00,0.00,0.00,0.00,0.00,Matches,6a8c0786
+447,Zech Medley,eng ENG,DF,Gillingham,20,2000,12,11,1035,11.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,692e9958
+448,Tom Mehew,eng ENG,MF,Bristol Rovers,19,2001,1,0,11,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8ea148d9
+449,Max Melbourne,eng ENG,DF,Lincoln City,21,1998,8,1,139,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7ad65188
+450,Jacob Mellis,eng ENG,MF,Gillingham,29,1991,8,7,516,5.7,1,0,1,1,0,0,0,0,0.17,0.00,0.17,0.17,0.17,Matches,827c05db
+451,Christopher Merrie,eng ENG,MF,Wigan Athletic,21,1998,26,24,2087,23.2,0,1,1,0,0,0,4,0,0.00,0.04,0.04,0.00,0.04,Matches,10dfd703
+452,Liam Millar,ca CAN,FWMF,Charlton Athletic,20,1999,27,23,1976,22.0,3,6,9,3,0,0,2,0,0.14,0.27,0.41,0.14,0.41,Matches,983515f8
+453,Matthew Millar,au AUS,MF,Shrewsbury,23,1996,9,9,764,8.5,1,0,1,1,0,0,0,0,0.12,0.00,0.12,0.12,0.12,Matches,6aaefd39
+454,Mickel Miller,eng ENG,FW,Northampton,24,1995,12,11,790,8.8,0,2,2,0,0,0,2,0,0.00,0.23,0.23,0.00,0.23,Matches,74f8ffa2
+455,Joseph Mills,eng ENG,DFMF,Northampton,30,1989,27,27,2230,24.8,0,4,4,0,0,0,5,0,0.00,0.16,0.16,0.00,0.16,Matches,7f725b83
+456,Christopher Missilou,cg CGO,MF,Northampton,28,1992,15,11,907,10.1,1,1,2,1,0,0,3,0,0.10,0.10,0.20,0.10,0.20,Matches,2206fb53
+457,Christopher Missilou,cg CGO,MF,Swindon Town,28,1992,11,8,637,7.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2206fb53
+458,Demetri Mitchell,eng ENG,MFDF,Blackpool,23,1997,32,13,1563,17.4,1,1,2,1,0,0,0,0,0.06,0.06,0.12,0.06,0.12,Matches,c286f3c2
+459,Jonathan Mitchell,eng ENG,GK,Northampton,25,1994,35,35,3150,35.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,ec4a766a
+460,Jayden Mitchell-Lawson,eng ENG,FWMF,Bristol Rovers,20,1999,5,3,272,3.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,eb5efdc7
+461,Haji Mnoga,tz TAN,DFMF,Portsmouth,18,2002,5,3,177,2.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,467bc3c3
+462,Lewis Montsma,nl NED,DF,Lincoln City,22,1998,40,38,3433,38.1,5,0,5,5,0,0,6,0,0.13,0.00,0.13,0.13,0.13,Matches,5a214fbf
+463,Byron Moore,eng ENG,MF,Plymouth Argyle,31,1988,38,16,1854,20.6,1,2,3,1,0,0,1,0,0.05,0.10,0.15,0.05,0.15,Matches,58438192
+464,Elliott Moore,eng ENG,DF,Oxford United,23,1997,46,46,4140,46.0,5,4,9,5,0,0,5,0,0.11,0.09,0.20,0.11,0.20,Matches,328bcff5
+465,Stuart Moore,eng ENG,GK,Blackpool,25,1994,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c2a02cf6
+466,Albie Morgan,eng ENG,MF,Charlton Athletic,20,2000,28,14,1428,15.9,1,3,4,1,0,0,7,1,0.06,0.19,0.25,0.06,0.25,Matches,f2893f70
+467,David Morgan,nir NIR,MF,Accrington,26,1994,16,9,949,10.5,0,3,3,0,0,0,5,0,0.00,0.28,0.28,0.00,0.28,Matches,3f407161
+468,Aaron Morley,eng ENG,MF,Rochdale,20,2000,44,39,3490,38.8,3,6,9,3,0,0,0,0,0.08,0.15,0.23,0.08,0.23,Matches,dd17696c
+469,Bryn Morris,eng ENG,MF,Portsmouth,24,1996,9,5,451,5.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,f472d985
+470,Bryn Morris,eng ENG,MF,Northampton,24,1996,22,19,1789,19.9,0,0,0,0,0,0,5,0,0.00,0.00,0.00,0.00,0.00,Matches,f472d985
+471,Carlton Morris,eng ENG,FW,MK Dons,24,1995,18,14,1344,14.9,3,1,4,3,0,0,2,0,0.20,0.07,0.27,0.20,0.27,Matches,2da834f1
+472,Josh Morris,eng ENG,MFFW,Fleetwood Town,28,1991,24,14,1190,13.2,0,3,3,0,0,1,2,0,0.00,0.23,0.23,0.00,0.23,Matches,6449a543
+473,Shayden Morris,eng ENG,MF,Fleetwood Town,18,2001,5,1,140,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1998a211
+474,Callum Morton,eng ENG,FW,Lincoln City,20,2000,17,11,1063,11.8,2,0,2,2,0,0,2,0,0.17,0.00,0.17,0.17,0.17,Matches,cb006b7e
+475,James Morton,eng ENG,MF,Gillingham,20,1999,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,c6d70d1e
+476,John Mousinho,eng ENG,DF,Oxford United,34,1986,7,1,116,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,ea49ad8f
+477,Charlie Mulgrew,sct SCO,DF,Fleetwood Town,34,1986,23,22,1879,20.9,1,0,1,1,0,0,0,1,0.05,0.00,0.05,0.05,0.05,Matches,0ab91559
+478,Luke Murphy,eng ENG,MF,Crewe Alexandra,30,1989,40,29,2560,28.4,0,2,2,0,0,0,4,0,0.00,0.07,0.07,0.00,0.07,Matches,fb73ffeb
+479,Kal Naismith,sct SCO,MFDF,Wigan Athletic,28,1992,12,12,1038,11.5,2,1,3,2,0,0,1,0,0.17,0.09,0.26,0.17,0.26,Matches,d3ccb0ea
+480,Adler Nascimento,pt POR,FW,Peterborough,15,2004,1,0,16,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,de497d7d
+481,Tom Naylor,eng ENG,MF,Portsmouth,29,1991,46,46,4112,45.7,6,0,6,6,0,0,7,0,0.13,0.00,0.13,0.13,0.13,Matches,d3e47002
+482,Dan Neil,eng ENG,MF,Sunderland,18,2001,2,0,2,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a47ad0f5
+483,Alex Newby,eng ENG,MFFW,Rochdale,24,1995,38,27,2476,27.5,6,4,10,5,1,1,1,0,0.22,0.15,0.36,0.18,0.33,Matches,9f297afa
+484,Perry Ng,eng ENG,DF,Crewe Alexandra,24,1996,15,15,1350,15.0,1,0,1,1,0,0,3,0,0.07,0.00,0.07,0.07,0.07,Matches,920afe91
+485,Lee Nicholls,eng ENG,GK,MK Dons,27,1992,7,7,630,7.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b105cebe
+486,Sam Nicholson,sct SCO,MFFW,Bristol Rovers,25,1995,30,22,1949,21.7,6,3,9,6,0,0,2,0,0.28,0.14,0.42,0.28,0.42,Matches,8c8ac996
+487,Rasmus Nicolaisen,dk DEN,DF,Portsmouth,23,1997,21,12,1266,14.1,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,3f319bb9
+488,Will Nightingale,eng ENG,DFMF,AFC Wimbledon,24,1995,32,29,2704,30.0,2,1,3,2,0,0,3,0,0.07,0.03,0.10,0.07,0.10,Matches,3b3b80b2
+489,Jon Nolan,eng ENG,MF,Ipswich Town,28,1992,13,11,860,9.6,3,0,3,3,0,0,1,1,0.31,0.00,0.31,0.31,0.31,Matches,c29ec816
+490,Sam Nombe,eng ENG,FW,MK Dons,21,1998,4,2,164,1.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7010570a
+491,Oliver Norburn,gd GRN,MF,Shrewsbury,27,1992,39,37,3250,36.1,4,1,5,1,3,4,12,0,0.11,0.03,0.14,0.03,0.06,Matches,99666073
+492,James Norwood,eng ENG,FW,Ipswich Town,29,1990,26,19,1559,17.3,9,3,12,8,1,3,5,0,0.52,0.17,0.69,0.46,0.64,Matches,f01b35ea
+493,Michael Nottingham,kn SKN,DF,Blackpool,31,1989,3,3,231,2.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,935def71
+494,Michael Nottingham,kn SKN,DFMF,Accrington,31,1989,42,41,3664,40.7,4,0,4,4,0,0,3,0,0.10,0.00,0.10,0.10,0.10,Matches,935def71
+495,Frank Nouble,eng ENG,FW,Plymouth Argyle,28,1991,24,12,1218,13.5,1,1,2,1,0,0,5,0,0.07,0.07,0.15,0.07,0.15,Matches,0a8e46da
+496,Aristote Nsiala,cd COD,DF,Ipswich Town,28,1992,27,27,2410,26.8,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,e9f39c42
+497,Joe Nuttall,eng ENG,FW,Northampton,23,1997,1,0,37,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,fd357b13
+498,Tristan Nydam,eng ENG,MF,Ipswich Town,20,1999,1,0,29,0.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6715ef2b
+499,Aiden O'Brien,ie IRL,FW,Sunderland,26,1993,32,22,1886,21.0,4,1,5,4,0,0,3,0,0.19,0.05,0.24,0.19,0.24,Matches,c5cc1b13
+500,Charlie O'Connell,eng ENG,DFMF,Peterborough,17,2002,1,0,8,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8d4e6ee2
+501,Eoghan O'Connell,ie IRL,DF,Rochdale,24,1995,39,39,3391,37.7,1,1,2,1,0,0,8,0,0.03,0.03,0.05,0.03,0.05,Matches,9e7e28ff
+502,Thomas O'Connor,ie IRL,DFMF,Gillingham,21,1999,34,27,2336,26.0,0,1,1,0,0,0,2,0,0.00,0.04,0.04,0.00,0.04,Matches,5f4e6a9e
+503,Kieran O'Hara,ie IRL,GK,Burton Albion,24,1996,17,17,1530,17.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,80cbe60b
+504,Warren O'Hora,ie IRL,DF,MK Dons,21,1999,31,31,2740,30.4,2,1,3,2,0,0,2,0,0.07,0.03,0.10,0.07,0.10,Matches,c73f66ae
+505,Stuart O'Keefe,eng ENG,MF,Gillingham,29,1991,24,18,1584,17.6,0,0,0,0,0,0,13,0,0.00,0.00,0.00,0.00,0.00,Matches,d0f8d154
+506,Luke O'Neill,eng ENG,DF,AFC Wimbledon,28,1991,28,24,1951,21.7,0,4,4,0,0,0,2,0,0.00,0.18,0.18,0.00,0.18,Matches,0b8720ce
+507,Luke O'Nien,eng ENG,DFMF,Sunderland,25,1994,38,34,3049,33.9,2,0,2,2,0,0,9,1,0.06,0.00,0.06,0.06,0.06,Matches,8092d497
+508,Matt O'Riley,dk DEN,MF,MK Dons,19,2000,23,22,1869,20.8,3,2,5,3,0,0,1,0,0.14,0.10,0.24,0.14,0.24,Matches,fb495bb8
+509,John-Joe O'Toole,ie IRL,DF,Burton Albion,31,1988,16,12,1139,12.7,1,0,1,1,0,0,3,1,0.08,0.00,0.08,0.08,0.08,Matches,17d223c5
+510,Emeka Obi,ng NGA,DF,Wigan Athletic,19,2001,4,3,339,3.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,abfea42c
+511,Jordan Obita,ug UGA,FWMF,Oxford United,26,1993,12,6,563,6.3,1,0,1,1,0,0,2,0,0.16,0.00,0.16,0.16,0.16,Matches,5f099d70
+512,Akin Odimayo,eng ENG,DFMF,Swindon Town,20,1999,30,25,2260,25.1,0,1,1,0,0,0,5,0,0.00,0.04,0.04,0.00,0.04,Matches,1610fef3
+513,Abraham Odoh,eng ENG,FWMF,Rochdale,20,2000,2,0,20,0.2,0,1,1,0,0,0,0,0,0.00,4.50,4.50,0.00,4.50,Matches,42ae3aab
+514,Luke Offord,eng ENG,DF,Crewe Alexandra,20,1999,28,27,2350,26.1,1,0,1,1,0,0,6,0,0.04,0.00,0.04,0.04,0.04,Matches,99286336
+515,Nathanael Ogbeta,eng ENG,MFDF,Shrewsbury,19,2001,25,25,2224,24.7,2,2,4,2,0,0,2,0,0.08,0.08,0.16,0.08,0.16,Matches,e8570430
+516,Connor Ogilvie,eng ENG,DF,Gillingham,24,1996,45,45,4042,44.9,4,4,8,4,0,0,5,1,0.09,0.09,0.18,0.09,0.18,Matches,c096c77f
+517,Abu Ogogo,eng ENG,MF,Bristol Rovers,30,1989,3,3,200,2.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,301feb7a
+518,Funso Ojo,be BEL,MF,Wigan Athletic,28,1991,23,23,2061,22.9,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,f0dce158
+519,Fejiri Okenabirhie,ng NGA,FWMF,Doncaster,24,1996,39,30,2794,31.0,11,3,14,11,0,0,2,0,0.35,0.10,0.45,0.35,0.45,Matches,7b95d542
+520,Jaakko Oksanen,fi FIN,MFFW,AFC Wimbledon,19,2000,27,12,1236,13.7,0,1,1,0,0,0,2,0,0.00,0.07,0.07,0.00,0.07,Matches,82b13dde
+521,Vadaine Oliver,eng ENG,FW,Gillingham,28,1991,43,39,3409,37.9,17,6,23,17,0,0,5,0,0.45,0.16,0.61,0.45,0.61,Matches,b00ec28d
+522,Tyrese Omotoye,be BEL,FW,Swindon Town,17,2002,7,1,182,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4ea75e87
+523,Jerome Opoku,gh GHA,DF,Plymouth Argyle,21,1998,33,30,2625,29.2,1,0,1,1,0,0,12,1,0.03,0.00,0.03,0.03,0.03,Matches,091d6ee5
+524,Derick Osei Yaw,fr FRA,FW,Oxford United,21,1998,3,1,92,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,2cb9fd09
+525,Paul Osew,eng ENG,DFMF,AFC Wimbledon,19,2000,10,0,151,1.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a775d6a7
+526,Deji Oshilaja,eng ENG,DF,Charlton Athletic,27,1993,17,16,1442,16.0,1,1,2,1,0,0,6,0,0.06,0.06,0.12,0.06,0.12,Matches,515f0819
+527,Gabriel Osho,ng NGA,DF,Rochdale,21,1998,22,22,1866,20.7,1,0,1,1,0,0,2,0,0.05,0.00,0.05,0.05,0.05,Matches,cd889153
+528,Erhun Oztumer,,MFFW,Bristol Rovers,29,1991,22,10,956,10.6,0,1,1,0,0,0,2,0,0.00,0.09,0.09,0.00,0.09,Matches,327092e2
+529,Erhun Oztumer,,MF,Charlton Athletic,29,1991,2,2,121,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,327092e2
+530,Alex Palmer,eng ENG,GK,Lincoln City,23,1996,46,46,4140,46.0,0,1,1,0,0,0,1,0,0.00,0.02,0.02,0.00,0.02,Matches,6ea97fd5
+531,Matt Palmer,eng ENG,MF,Wigan Athletic,25,1995,10,10,854,9.5,0,1,1,0,0,0,0,0,0.00,0.11,0.11,0.00,0.11,Matches,ddbe0762
+532,Matt Palmer,eng ENG,MF,Swindon Town,25,1995,24,24,2089,23.2,1,0,1,1,0,0,3,0,0.04,0.00,0.04,0.04,0.04,Matches,ddbe0762
+533,Ollie Palmer,eng ENG,FWMF,AFC Wimbledon,28,1992,23,10,1024,11.4,5,2,7,5,0,0,2,0,0.44,0.18,0.62,0.44,0.62,Matches,b906ba46
+534,Josh Parker,ag ATG,MF,Burton Albion,29,1990,6,3,285,3.2,0,1,1,0,0,0,0,0,0.00,0.32,0.32,0.00,0.32,Matches,0264be98
+535,Troy Parrott,ie IRL,MFFW,Ipswich Town,18,2002,18,13,1137,12.6,2,0,2,2,0,0,0,0,0.16,0.00,0.16,0.16,0.16,Matches,4357f557
+536,Harry Parsons,eng ENG,FW,Swindon Town,17,2002,2,0,12,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a5441647
+537,Jack Payne,eng ENG,MF,Swindon Town,25,1994,43,36,3108,34.5,4,6,10,4,0,0,4,0,0.12,0.17,0.29,0.12,0.29,Matches,edfbda18
+538,Jason Pearce,eng ENG,DF,Charlton Athletic,32,1987,26,24,2141,23.8,0,2,2,0,0,0,5,1,0.00,0.08,0.08,0.00,0.08,Matches,04132c14
+539,Tom Pearce,eng ENG,DFMF,Wigan Athletic,22,1998,23,23,1974,21.9,0,3,3,0,0,0,1,0,0.00,0.14,0.14,0.00,0.14,Matches,1ba50942
+540,Matthew Pennington,eng ENG,DF,Shrewsbury,25,1994,19,18,1605,17.8,2,1,3,2,0,0,1,0,0.11,0.06,0.17,0.11,0.17,Matches,0ff967f7
+541,Harry Perritt,eng ENG,DF,Accrington,20,2000,2,0,21,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a1275e5d
+542,Alex Perry,eng ENG,MF,Wigan Athletic,22,1998,21,17,1550,17.2,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,c9313b7e
+543,Adam Phillips,eng ENG,MF,Accrington,22,1998,22,13,1330,14.8,2,0,2,2,0,0,0,0,0.14,0.00,0.14,0.14,0.14,Matches,34faec43
+544,Harry Pickering,eng ENG,DF,Crewe Alexandra,21,1998,44,44,3936,43.7,3,1,4,3,0,0,4,0,0.07,0.02,0.09,0.07,0.09,Matches,fd985c15
+545,Aaron Pierre,gd GRN,DF,Shrewsbury,27,1993,26,25,2251,25.0,4,0,4,4,0,0,7,1,0.16,0.00,0.16,0.16,0.16,Matches,a42ee10f
+546,Joe Pigott,eng ENG,FW,AFC Wimbledon,26,1993,45,45,3865,42.9,20,4,24,15,5,7,5,0,0.47,0.09,0.56,0.35,0.44,Matches,4841451d
+547,Brett Pitman,eng ENG,FW,Swindon Town,32,1988,38,27,2497,27.7,11,0,11,10,1,2,4,0,0.40,0.00,0.40,0.36,0.36,Matches,40634b28
+548,Regan Poole,wls WAL,DF,Lincoln City,22,1998,22,18,1650,18.3,0,1,1,0,0,0,2,0,0.00,0.05,0.05,0.00,0.05,Matches,5402f0de
+549,Regan Poole,wls WAL,MFDF,MK Dons,22,1998,20,14,1345,14.9,1,1,2,1,0,0,0,0,0.07,0.07,0.13,0.07,0.13,Matches,5402f0de
+550,Chris Porter,eng ENG,FW,Crewe Alexandra,36,1983,35,14,1435,15.9,6,2,8,4,2,2,0,0,0.38,0.13,0.50,0.25,0.38,Matches,2a05f837
+551,Daniel Powell,eng ENG,FW,Crewe Alexandra,29,1991,24,12,1021,11.3,1,1,2,1,0,0,0,0,0.09,0.09,0.18,0.09,0.18,Matches,852a7aa0
+552,Joe Powell,eng ENG,MF,Burton Albion,21,1998,39,23,2243,24.9,6,7,13,6,0,0,2,0,0.24,0.28,0.52,0.24,0.52,Matches,a0961a90
+553,Max Power,eng ENG,MFDF,Sunderland,27,1993,42,38,3352,37.2,5,3,8,5,0,0,4,0,0.13,0.08,0.21,0.13,0.21,Matches,62bac55a
+554,Darren Pratley,jm JAM,MFDF,Charlton Athletic,35,1985,39,33,2775,30.8,1,2,3,1,0,0,9,2,0.03,0.06,0.10,0.03,0.10,Matches,bfc3bf1b
+555,Cameron Pring,eng ENG,DF,Portsmouth,22,1998,9,6,553,6.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,01716c85
+556,Joe Pritchard,eng ENG,MF,Accrington,23,1996,28,25,2236,24.8,7,6,13,7,0,0,7,1,0.28,0.24,0.52,0.28,0.52,Matches,05f6be0b
+557,Jamie Proctor,eng ENG,FW,Wigan Athletic,28,1992,15,7,634,7.0,2,0,2,2,0,0,2,0,0.28,0.00,0.28,0.28,0.28,Matches,9c451bde
+558,Marc Pugh,eng ENG,FWMF,Shrewsbury,33,1987,8,6,448,5.0,1,3,4,1,0,0,1,0,0.20,0.60,0.80,0.20,0.80,Matches,9aacb284
+559,Ben Purrington,eng ENG,DF,Charlton Athletic,24,1996,28,19,1675,18.6,2,0,2,2,0,0,5,1,0.11,0.00,0.11,0.11,0.11,Matches,5250895c
+560,Rekeil Pyke,eng ENG,FW,Shrewsbury,22,1997,12,2,247,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4e93da96
+561,Christy Pym,eng ENG,GK,Peterborough,25,1995,40,40,3592,39.9,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,205b0dbb
+562,Stephen Quinn,ie IRL,MF,Burton Albion,34,1986,22,21,1704,18.9,1,0,1,1,0,0,6,0,0.05,0.00,0.05,0.05,0.05,Matches,9ff17f6f
+563,Luka Racic,dk DEN,DF,Northampton,21,1999,6,4,360,4.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,37e23b72
+564,Sean Raggett,eng ENG,DF,Portsmouth,27,1993,45,45,3953,43.9,3,0,3,3,0,0,5,0,0.07,0.00,0.07,0.07,0.07,Matches,5dd438af
+565,Oliver Rathbone,eng ENG,MFFW,Rochdale,23,1996,40,40,3494,38.8,3,5,8,3,0,0,7,1,0.08,0.13,0.21,0.08,0.21,Matches,a645e8c9
+566,Louis Reed,eng ENG,MF,Peterborough,23,1997,17,12,1041,11.6,0,2,2,0,0,0,2,0,0.00,0.17,0.17,0.00,0.17,Matches,391c1d38
+567,Ben Reeves,nir NIR,MF,Plymouth Argyle,28,1991,28,5,742,8.2,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,4db1f85d
+568,Callum Reilly,ie IRL,MF,AFC Wimbledon,26,1993,28,22,1895,21.1,1,1,2,1,0,0,4,0,0.05,0.05,0.09,0.05,0.09,Matches,83c43eb5
+569,Dave Richards,wls WAL,GK,Crewe Alexandra,26,1993,15,15,1350,15.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4076aa1d
+570,Taylor Richards,eng ENG,MF,Doncaster,19,2000,41,28,2633,29.3,10,5,15,10,0,0,4,0,0.34,0.17,0.51,0.34,0.51,Matches,e0243d23
+571,Gary Roberts,eng ENG,MF,Wigan Athletic,36,1984,2,2,179,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,245c2093
+572,Gary Roberts,eng ENG,MF,Accrington,36,1984,2,0,22,0.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,245c2093
+573,Haydon Roberts,eng ENG,DF,Rochdale,18,2002,26,24,2146,23.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,a731e8a0
+574,Morgan Roberts,eng ENG,MF,Northampton,19,2000,2,0,5,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,06692767
+575,Scott Robertson,sct SCO,MF,Doncaster,19,2001,15,6,543,6.0,0,1,1,0,0,0,1,0,0.00,0.17,0.17,0.00,0.17,Matches,654600fd
+576,Scott Robertson,sct SCO,MF,Gillingham,19,2001,15,11,878,9.8,0,2,2,0,0,0,3,0,0.00,0.21,0.21,0.00,0.21,Matches,654600fd
+577,Luke Robinson,sct SCO,DF,Wigan Athletic,18,2001,25,20,1893,21.0,0,1,1,0,0,0,5,0,0.00,0.05,0.05,0.00,0.05,Matches,5547e172
+578,Zach Robinson,eng ENG,FW,AFC Wimbledon,18,2002,5,0,46,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,aa2f2a0c
+579,Ethan Robson,eng ENG,MF,Blackpool,23,1996,28,15,1289,14.3,0,0,0,0,0,0,2,1,0.00,0.00,0.00,0.00,0.00,Matches,961a5164
+580,Harvey Rodgers,eng ENG,MFDF,Accrington,23,1996,28,27,2324,25.8,0,1,1,0,0,0,6,1,0.00,0.04,0.04,0.00,0.04,Matches,775bffeb
+581,Alex Rodman,eng ENG,MFFW,Bristol Rovers,33,1987,16,11,941,10.5,1,1,2,1,0,0,2,0,0.10,0.10,0.19,0.10,0.19,Matches,dbc94d15
+582,Alex Rodriguez,es ESP,MF,Oxford United,26,1993,35,28,2378,26.4,1,1,2,0,1,1,9,0,0.04,0.04,0.08,0.00,0.04,Matches,efbf3574
+583,Morgan Rogers,eng ENG,FWMF,Lincoln City,18,2002,25,23,2060,22.9,6,2,8,6,0,0,2,0,0.26,0.09,0.35,0.26,0.35,Matches,2e5915f1
+584,Jack Roles,cy CYP,MF,Burton Albion,21,1999,2,0,55,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a6915d4b
+585,Adam Roscrow,wls WAL,FW,AFC Wimbledon,25,1995,6,0,34,0.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,52ab46d8
+586,Danny Rose,eng ENG,FW,Northampton,26,1993,39,23,2102,23.4,3,2,5,3,0,0,5,0,0.13,0.09,0.21,0.13,0.21,Matches,d08e15e1
+587,Jordan Rossiter,eng ENG,MF,Fleetwood Town,23,1997,35,30,2564,28.5,1,0,1,1,0,0,5,0,0.04,0.00,0.04,0.04,0.04,Matches,0e459095
+588,Sean Roughan,ie IRL,DF,Lincoln City,16,2003,6,6,469,5.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a8100b7e
+589,Danny Rowe,eng ENG,MF,Burton Albion,28,1992,15,8,696,7.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4f6203ea
+590,Jack Rudoni,eng ENG,MFFW,AFC Wimbledon,20,2000,39,33,2725,30.3,4,3,7,4,0,0,4,0,0.13,0.10,0.23,0.13,0.23,Matches,4d395e2b
+591,Josh Ruffels,eng ENG,DF,Oxford United,26,1993,42,42,3682,40.9,6,6,12,6,0,0,1,0,0.15,0.15,0.29,0.15,0.29,Matches,01086c66
+592,Jonathan Russell,jm JAM,MF,Accrington,19,2000,25,12,1246,13.8,2,0,2,2,0,0,2,0,0.14,0.00,0.14,0.14,0.14,Matches,125ddc1e
+593,Jimmy Ryan,ie IRL,MF,Rochdale,31,1988,14,11,813,9.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,ac732ee5
+594,Ryan Rydel,eng ENG,MFDF,Fleetwood Town,19,2001,7,4,331,3.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,64516a84
+595,Stephen Sama,de GER,MF,Accrington,27,1993,4,2,151,1.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,71207b59
+596,Dominic Samuel,eng ENG,FWMF,Gillingham,26,1994,22,15,1306,14.5,3,1,4,3,0,0,4,0,0.21,0.07,0.28,0.21,0.28,Matches,65829d85
+597,Martin Samuelsen,no NOR,FWMF,Hull City,23,1997,5,0,45,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,746df5d3
+598,Max Sanders,eng ENG,MF,Lincoln City,21,1999,5,1,135,1.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4871d0e8
+599,Dion Sanderson,eng ENG,DF,Sunderland,20,1999,26,19,1846,20.5,1,0,1,1,0,0,4,0,0.05,0.00,0.05,0.05,0.05,Matches,b3fa76c5
+600,Mohammed Sangare,lr LBR,MF,Accrington,21,1998,2,1,127,1.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,184f9fb5
+601,Matija Šarkić,me MNE,GK,Shrewsbury,23,1997,26,26,2305,25.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a89e7b29
+602,Oliver Šarkić,me MNE,MF,Blackpool,23,1997,5,1,87,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,9f71b43a
+603,Harvey Saunders,eng ENG,FWMF,Fleetwood Town,23,1997,21,6,507,5.6,3,1,4,3,0,0,1,0,0.53,0.18,0.71,0.53,0.71,Matches,1022b2a6
+604,Toby Savin,ga GAB,GK,Accrington,20,2000,31,30,2754,30.6,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,2eac1788
+605,Ronnie Schwartz,dk DEN,FW,Charlton Athletic,30,1989,16,3,400,4.4,1,0,1,1,0,1,0,0,0.23,0.00,0.23,0.23,0.23,Matches,e9e1dd62
+606,James Scott,sct SCO,FW,Hull City,19,2000,18,3,380,4.2,1,0,1,1,0,0,0,0,0.24,0.00,0.24,0.24,0.24,Matches,e287b1d1
+607,Josh Scowen,eng ENG,MF,Sunderland,27,1993,43,35,3174,35.3,1,1,2,1,0,0,6,0,0.03,0.03,0.06,0.03,0.06,Matches,60c484d0
+608,Anthony Scully,ie IRL,FWMF,Lincoln City,21,1999,40,22,2158,24.0,11,4,15,11,0,1,1,0,0.46,0.17,0.63,0.46,0.63,Matches,c5e438de
+609,Thomas Scully,eng ENG,MF,Accrington,20,1999,3,0,45,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,75da3854
+610,Freddie Sears,eng ENG,FW,Ipswich Town,30,1989,26,15,1171,13.0,1,0,1,1,0,0,1,0,0.08,0.00,0.08,0.08,0.08,Matches,07059b2e
+611,Ryan Sears,eng ENG,MFDF,Shrewsbury,21,1998,5,2,167,1.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,126bc05b
+612,Steve Seddon,eng ENG,MFDF,AFC Wimbledon,22,1997,16,15,1352,15.0,1,3,4,1,0,0,1,0,0.07,0.20,0.27,0.07,0.27,Matches,59fdf476
+613,Conor Shaughnessy,ie IRL,MF,Rochdale,24,1996,18,14,1122,12.5,1,2,3,1,0,0,0,1,0.08,0.16,0.24,0.08,0.24,Matches,94a6217d
+614,Nathan Shaw,eng ENG,MF,Blackpool,19,2000,1,0,6,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,acee3bae
+615,Alan Sheehan,ie IRL,DF,Northampton,33,1986,14,12,956,10.6,1,0,1,1,0,0,2,0,0.09,0.00,0.09,0.09,0.09,Matches,0e39bdaa
+616,Nathan Sheron,eng ENG,DFMF,Fleetwood Town,22,1997,1,0,45,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,dec9eb3d
+617,Andrew Shinnie,sct SCO,MF,Charlton Athletic,31,1989,29,18,1709,19.0,3,6,9,3,0,0,2,0,0.16,0.32,0.47,0.16,0.47,Matches,19ba2249
+618,Olamide Shodipo,ie IRL,FW,Oxford United,23,1997,39,24,2226,24.7,10,2,12,9,1,1,2,0,0.40,0.08,0.49,0.36,0.44,Matches,2688ebbf
+619,Ellis Simms,eng ENG,FW,Blackpool,19,2001,21,17,1347,15.0,8,1,9,8,0,0,1,0,0.53,0.07,0.60,0.53,0.60,Matches,26d3b5be
+620,Elliot Simoes,ao ANG,MF,Doncaster,20,1999,8,7,554,6.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,92bdd62b
+621,Tyreece Simpson,kn SKN,FW,Ipswich Town,18,2002,1,0,1,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,a9a2f0b5
+622,Josh Sims,eng ENG,MF,Doncaster,23,1997,28,20,1788,19.9,1,8,9,1,0,0,1,0,0.05,0.40,0.45,0.05,0.45,Matches,6d6f09dc
+623,Gerald Sithole,eng ENG,MF,Gillingham,17,2002,1,0,3,0.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,91d85879
+624,Cole Skuse,eng ENG,MF,Ipswich Town,34,1986,4,1,148,1.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,48a8de68
+625,Regan Slater,eng ENG,MF,Hull City,20,1999,27,11,1193,13.3,1,1,2,1,0,0,1,0,0.08,0.08,0.15,0.08,0.15,Matches,ba4d4908
+626,Callum Slattery,eng ENG,MFDF,Gillingham,21,1999,7,7,562,6.2,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,059948df
+627,Richard Smallwood,eng ENG,MF,Hull City,29,1990,27,23,1917,21.3,0,0,0,0,0,0,6,0,0.00,0.00,0.00,0.00,0.00,Matches,c2c0306f
+628,Harry Smith,eng ENG,FW,Northampton,25,1995,16,13,1169,13.0,3,0,3,3,0,0,1,0,0.23,0.00,0.23,0.23,0.23,Matches,83f19532
+629,Jonny Smith,eng ENG,MF,Burton Albion,23,1997,16,13,1181,13.1,2,4,6,2,0,0,2,0,0.15,0.30,0.46,0.15,0.46,Matches,4a20310b
+630,Jonny Smith,eng ENG,MFFW,Swindon Town,23,1997,16,13,1035,11.5,1,1,2,1,0,0,2,1,0.09,0.09,0.17,0.09,0.17,Matches,4a20310b
+631,Matthew Smith,wls WAL,MF,Doncaster,20,1999,40,37,3178,35.3,1,3,4,1,0,0,4,0,0.03,0.08,0.11,0.03,0.11,Matches,bb095d7f
+632,Matthew Smith,eng ENG,MF,Swindon Town,19,2000,24,22,2019,22.4,2,3,5,2,0,0,4,0,0.09,0.13,0.22,0.09,0.22,Matches,54b6eed9
+633,Matthew Smith,eng ENG,MF,Charlton Athletic,19,2000,8,3,309,3.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,54b6eed9
+634,Tyler Smith,eng ENG,FW,Swindon Town,21,1998,23,15,1254,13.9,7,0,7,6,1,1,1,0,0.50,0.00,0.50,0.43,0.43,Matches,c4cd16e5
+635,Paul Smyth,nir NIR,FWMF,Charlton Athletic,22,1997,14,8,713,7.9,1,2,3,1,0,0,2,0,0.13,0.25,0.38,0.13,0.38,Matches,0747000e
+636,Paul Smyth,nir NIR,MFFW,Accrington,22,1997,21,15,1326,14.7,3,1,4,3,0,0,5,0,0.20,0.07,0.27,0.20,0.27,Matches,0747000e
+637,Viv Solomon-Otabor,ng NGA,MF,Wigan Athletic,24,1996,28,25,2048,22.8,2,4,6,2,0,0,0,0,0.09,0.18,0.26,0.09,0.26,Matches,2bc711bf
+638,Matthew Sorinola,eng ENG,MF,MK Dons,19,2001,34,23,2192,24.4,1,4,5,1,0,0,8,0,0.04,0.16,0.21,0.04,0.21,Matches,ed47203f
+639,Jamie Soule,eng ENG,FW,Lincoln City,19,2000,1,0,9,0.1,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8db62560
+640,Jack Sowerby,eng ENG,MF,Northampton,25,1995,28,26,2229,24.8,0,1,1,0,0,0,5,0,0.00,0.04,0.04,0.00,0.04,Matches,ff5ba496
+641,Jordi van Stappershoef,nl NED,GK,Bristol Rovers,24,1996,8,6,542,6.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,de6b82d6
+642,Jordan Stevens,eng ENG,MFDF,Swindon Town,20,2000,13,6,694,7.7,1,1,2,1,0,0,2,0,0.13,0.13,0.26,0.13,0.26,Matches,7d3dc53e
+643,Kevin Stewart,jm JAM,MF,Blackpool,26,1993,13,10,885,9.8,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,ff674795
+644,Ross Stewart,sct SCO,FW,Sunderland,24,1996,11,2,374,4.2,2,0,2,2,0,0,1,0,0.48,0.00,0.48,0.48,0.48,Matches,18986367
+645,Jayden Stockley,eng ENG,FW,Charlton Athletic,26,1993,22,20,1724,19.2,8,2,10,8,0,1,2,0,0.42,0.10,0.52,0.42,0.52,Matches,7da19fab
+646,Sam Stubbs,eng ENG,DF,Fleetwood Town,21,1998,5,5,386,4.3,1,0,1,1,0,0,0,0,0.23,0.00,0.23,0.23,0.23,Matches,6698d985
+647,Andrew Surman,eng ENG,MF,MK Dons,33,1986,31,25,2000,22.2,2,2,4,2,0,0,1,0,0.09,0.09,0.18,0.09,0.18,Matches,7d41b619
+648,Mark Sykes,ie IRL,MFFW,Oxford United,22,1997,32,21,1887,21.0,0,2,2,0,0,0,5,1,0.00,0.10,0.10,0.00,0.10,Matches,40580929
+649,Ross Sykes,eng ENG,DFMF,Accrington,21,1999,9,9,787,8.7,1,0,1,1,0,0,3,0,0.11,0.00,0.11,0.11,0.11,Matches,4d0be953
+650,Sammie Szmodics,ie IRL,MF,Peterborough,24,1995,42,40,3343,37.1,15,6,21,15,0,0,3,0,0.40,0.16,0.57,0.40,0.57,Matches,39944392
+651,Lasse Sørensen,dk DEN,MF,MK Dons,20,1999,24,12,1056,11.7,0,2,2,0,0,0,1,0,0.00,0.17,0.17,0.00,0.17,Matches,ce9c203e
+652,Fabio Tavares,eng ENG,FW,Rochdale,19,2001,12,0,143,1.6,1,0,1,1,0,0,0,0,0.63,0.00,0.63,0.63,0.63,Matches,8e24902a
+653,Jack Taylor,ie IRL,MF,Peterborough,22,1998,36,35,3100,34.4,4,3,7,4,0,0,6,0,0.12,0.09,0.20,0.12,0.20,Matches,48eed8d5
+654,Jon Taylor,eng ENG,MF,Doncaster,28,1992,25,19,1462,16.2,4,2,6,4,0,1,1,0,0.25,0.12,0.37,0.25,0.37,Matches,e8e96ecf
+655,Matty Taylor,eng ENG,FW,Oxford United,30,1990,46,39,3226,35.8,18,4,22,18,0,0,7,0,0.50,0.11,0.61,0.50,0.61,Matches,208122ee
+656,Terry Taylor,sct SCO,MF,Burton Albion,19,2001,16,6,672,7.5,0,1,1,0,0,0,5,0,0.00,0.13,0.13,0.00,0.13,Matches,1512c4f6
+657,Dom Telford,eng ENG,FW,Plymouth Argyle,23,1996,16,2,319,3.5,1,1,2,1,0,0,0,0,0.28,0.28,0.56,0.28,0.56,Matches,f830bae5
+658,Luke Thomas,eng ENG,FWMF,Ipswich Town,21,1999,5,4,264,2.9,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,27819343
+659,Terell Thomas,lc LCA,DF,AFC Wimbledon,24,1995,19,17,1521,16.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d41d3d7b
+660,Dominic Thompson,eng ENG,DFMF,Swindon Town,20,2000,25,23,1993,22.1,0,4,4,0,0,0,7,0,0.00,0.18,0.18,0.00,0.18,Matches,235a62f8
+661,Louis Thompson,wls WAL,MF,MK Dons,25,1994,17,7,838,9.3,0,1,1,0,0,0,3,0,0.00,0.11,0.11,0.00,0.11,Matches,390a1184
+662,Nathan Thompson,eng ENG,DF,Peterborough,29,1990,39,39,3371,37.5,2,3,5,2,0,0,12,1,0.05,0.08,0.13,0.05,0.13,Matches,89a323f2
+663,Jordan Thorniley,eng ENG,DF,Blackpool,23,1996,19,17,1514,16.8,0,2,2,0,0,0,0,0,0.00,0.12,0.12,0.00,0.12,Matches,3292caee
+664,Curtis Tilt,jm JAM,DF,Wigan Athletic,28,1991,36,36,3193,35.5,3,0,3,3,0,0,8,1,0.08,0.00,0.08,0.08,0.08,Matches,ed1f0d0f
+665,Ollie Tomlinson,eng ENG,DF,Plymouth Argyle,18,2002,2,1,113,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,36ba2213
+666,Shilow Tracey,eng ENG,FW,Shrewsbury,22,1998,8,2,247,2.7,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,c7ae788a
+667,Mark Travers,ie IRL,GK,Swindon Town,21,1999,8,8,720,8.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,fe558029
+668,Connal Trueman,eng ENG,GK,Swindon Town,24,1996,4,4,360,4.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f71762fc
+669,Connal Trueman,eng ENG,GK,AFC Wimbledon,24,1996,19,19,1710,19.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,f71762fc
+670,Jack Tucker,eng ENG,DF,Gillingham,20,1999,43,42,3825,42.5,1,3,4,1,0,0,3,0,0.02,0.07,0.09,0.02,0.09,Matches,332d1480
+671,Rayhaan Tulloch,eng ENG,MF,Doncaster,19,2001,2,2,86,1.0,0,1,1,0,0,0,0,0,0.00,1.05,1.05,0.00,1.05,Matches,bddd8ba3
+672,Oliver Turton,eng ENG,DF,Blackpool,27,1992,37,33,3029,33.7,0,1,1,0,0,0,2,0,0.00,0.03,0.03,0.00,0.03,Matches,01753a47
+673,David Tutonda,eng ENG,MFDF,Bristol Rovers,24,1995,20,10,909,10.1,0,0,0,0,0,0,4,0,0.00,0.00,0.00,0.00,0.00,Matches,224422cc
+674,Scott Twine,eng ENG,MFFW,Swindon Town,21,1999,25,22,1924,21.4,7,3,10,7,0,0,4,0,0.33,0.14,0.47,0.33,0.47,Matches,5a425cab
+675,Nik Tzanev,nz NZL,GK,AFC Wimbledon,23,1996,15,15,1350,15.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,1312686b
+676,Daniel Udoh,ng NGA,FW,Shrewsbury,23,1996,39,23,2028,22.5,4,2,6,4,0,0,2,0,0.18,0.09,0.27,0.18,0.27,Matches,f9000823
+677,Ed Upson,eng ENG,MF,Bristol Rovers,30,1989,26,20,1689,18.8,1,2,3,1,0,0,6,1,0.05,0.11,0.16,0.05,0.16,Matches,de959970
+678,Tariq Uwakwe,eng ENG,MF,Accrington,20,1999,15,12,893,9.9,1,3,4,1,0,0,0,0,0.10,0.30,0.40,0.10,0.40,Matches,e4526d3a
+679,Jack Vale,wls WAL,FW,Rochdale,19,2001,3,0,46,0.5,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,6000a82f
+680,Luke Varney,eng ENG,FWMF,Burton Albion,37,1982,4,0,15,0.2,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,1757d8ed
+681,Kyle Vassell,nir NIR,FW,Fleetwood Town,27,1993,26,24,2033,22.6,4,2,6,3,1,2,1,0,0.18,0.09,0.27,0.13,0.22,Matches,1f74bb10
+682,Indiana Vassilev,us USA,FWMF,Burton Albion,19,2001,12,8,623,6.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,04e195ee
+683,Josh Vela,eng ENG,MF,Shrewsbury,26,1993,44,43,3812,42.4,3,2,5,3,0,0,12,1,0.07,0.05,0.12,0.07,0.12,Matches,dede4a42
+684,James Vennings,eng ENG,MF,Charlton Athletic,20,2000,1,1,71,0.8,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f3c5191c
+685,Charles Vernam,eng ENG,MFFW,Burton Albion,23,1996,14,11,1022,11.4,2,1,3,2,0,0,0,0,0.18,0.09,0.26,0.18,0.26,Matches,91c57997
+686,Kane Vincent-Young,gd GRN,DF,Ipswich Town,24,1996,7,6,506,5.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,b7ea0953
+687,Matty Virtue,eng ENG,MF,Blackpool,23,1997,16,11,1034,11.5,2,0,2,2,0,0,1,0,0.17,0.00,0.17,0.17,0.17,Matches,a2447ed2
+688,Jake Vokins,eng ENG,DFMF,Sunderland,20,2000,4,4,310,3.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,d484c261
+689,Brad Walker,eng ENG,MFDF,Shrewsbury,24,1996,23,15,1370,15.2,1,1,2,1,0,0,5,0,0.07,0.07,0.13,0.07,0.13,Matches,0861bc1a
+690,Sam Walker,eng ENG,GK,Blackpool,28,1991,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,06ec123a
+691,Sam Walker,eng ENG,GK,AFC Wimbledon,28,1991,12,12,1080,12.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,06ec123a
+692,Stephen Walker,eng ENG,FW,Crewe Alexandra,19,2000,11,2,281,3.1,1,0,1,1,0,0,0,0,0.32,0.00,0.32,0.32,0.32,Matches,b961d0f0
+693,Stephen Walker,eng ENG,FW,MK Dons,19,2000,12,5,422,4.7,2,0,2,2,0,0,0,0,0.43,0.00,0.43,0.43,0.43,Matches,b961d0f0
+694,Zain Walker,eng ENG,MFFW,Bristol Rovers,18,2002,11,4,375,4.2,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,aac8d8ab
+695,Kieran Wallace,eng ENG,DFMF,Burton Albion,25,1995,12,9,888,9.9,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,d83a1b10
+696,Joe Walsh,eng ENG,GK,Gillingham,18,2002,1,0,58,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,72e0ee7b
+697,Joe Walsh,wls WAL,DF,Lincoln City,28,1992,21,18,1684,18.7,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,ba177c39
+698,Matthew Warburton,eng ENG,FWMF,Northampton,28,1992,4,4,276,3.1,1,1,2,1,0,0,1,0,0.33,0.33,0.65,0.33,0.65,Matches,f4ab8a71
+699,Grant Ward,eng ENG,MF,Blackpool,25,1994,36,29,2604,28.9,1,2,3,1,0,0,3,0,0.03,0.07,0.10,0.03,0.10,Matches,1a1d5424
+700,Jed Ward,eng ENG,GK,Bristol Rovers,17,2003,1,1,90,1.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,edb2744d
+701,Joe Ward,eng ENG,MF,Peterborough,24,1995,37,35,2988,33.2,5,13,18,5,0,0,1,0,0.15,0.39,0.54,0.15,0.54,Matches,22f621af
+702,Stephen Ward,ie IRL,DFMF,Ipswich Town,34,1985,30,29,2519,28.0,0,2,2,0,0,0,3,0,0.00,0.07,0.07,0.00,0.07,Matches,3831b9fe
+703,Conor Washington,nir NIR,FW,Charlton Athletic,28,1992,36,28,2269,25.2,11,2,13,8,3,4,0,0,0.44,0.08,0.52,0.32,0.40,Matches,a20986b6
+704,Ben Watson,eng ENG,MF,Charlton Athletic,35,1985,29,24,2153,23.9,1,0,1,1,0,0,10,0,0.04,0.00,0.04,0.04,0.04,Matches,df540668
+705,Ryan Watson,eng ENG,MF,Northampton,27,1993,39,32,2992,33.2,9,0,9,9,0,0,7,0,0.27,0.00,0.27,0.27,0.27,Matches,11a3526b
+706,Kelland Watts,eng ENG,DF,Plymouth Argyle,20,1999,44,42,3628,40.3,2,0,2,2,0,0,8,0,0.05,0.00,0.05,0.05,0.05,Matches,603e4f0b
+707,Zain Westbrooke,eng ENG,MFFW,Bristol Rovers,23,1996,42,33,3036,33.7,2,6,8,2,0,0,0,0,0.06,0.18,0.24,0.06,0.24,Matches,bcbc7688
+708,Shaun Whalley,eng ENG,FW,Shrewsbury,32,1987,38,32,2804,31.2,8,5,13,8,0,0,5,0,0.26,0.16,0.42,0.26,0.42,Matches,715bc2dd
+709,Jack Whatmough,eng ENG,DF,Portsmouth,23,1996,34,32,2814,31.3,2,1,3,2,0,0,5,2,0.06,0.03,0.10,0.06,0.10,Matches,8d32206c
+710,Corey Whelan,ie IRL,DF,Wigan Athletic,22,1997,8,2,241,2.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8edb65a7
+711,Glenn Whelan,ie IRL,MF,Fleetwood Town,36,1984,23,14,1392,15.5,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,d5bd56a5
+712,Harvey White,eng ENG,MF,Portsmouth,18,2001,21,5,696,7.7,1,0,1,1,0,0,2,0,0.13,0.00,0.13,0.13,0.13,Matches,4d90ce8c
+713,Ben Whiteman,eng ENG,MF,Doncaster,24,1996,18,18,1620,18.0,5,4,9,2,3,4,3,0,0.28,0.22,0.50,0.11,0.33,Matches,7b69e7cc
+714,Gavin Whyte,nir NIR,MFFW,Hull City,24,1996,20,10,856,9.5,4,0,4,4,0,0,0,0,0.42,0.00,0.42,0.42,0.42,Matches,1100b177
+715,Jordy de Wijs,nl NED,DF,Hull City,25,1995,7,7,630,7.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,3bb5b5d2
+716,Mallik Wilks,eng ENG,FWMF,Hull City,21,1998,44,42,3662,40.7,19,8,27,16,3,3,7,0,0.47,0.20,0.66,0.39,0.59,Matches,f2639dc1
+717,Ed Williams,eng ENG,MF,Doncaster,25,1995,11,0,130,1.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,46eb393e
+718,George Williams,eng ENG,DFMF,Bristol Rovers,27,1993,26,25,2252,25.0,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,f977a94c
+719,George Williams,eng ENG,DFMF,MK Dons,27,1993,8,8,684,7.6,0,1,1,0,0,0,1,0,0.00,0.13,0.13,0.00,0.13,Matches,f977a94c
+720,Jonny Williams,wls WAL,MFFW,Charlton Athletic,26,1993,18,7,755,8.4,2,0,2,2,0,0,0,0,0.24,0.00,0.24,0.24,0.24,Matches,49b8432c
+721,Jordan Williams,wls WAL,MF,Blackpool,24,1995,10,6,604,6.7,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,bdc91db2
+722,Ro-Shaun Williams,eng ENG,DF,Shrewsbury,21,1998,40,39,3385,37.6,0,0,0,0,0,0,3,0,0.00,0.00,0.00,0.00,0.00,Matches,abcba638
+723,Ryan Williams,in IND,MFFW,Portsmouth,26,1993,41,33,2803,31.1,5,4,9,5,0,0,5,0,0.16,0.13,0.29,0.16,0.29,Matches,ae1d3932
+724,Jordan Willis,eng ENG,DF,Sunderland,25,1994,15,14,1055,11.7,0,1,1,0,0,0,1,0,0.00,0.09,0.09,0.00,0.09,Matches,b1d4d4d8
+725,Matty Willock,ms MSR,MF,Gillingham,23,1996,11,0,130,1.4,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,7e4985b2
+726,James Wilson,wls WAL,DF,Ipswich Town,31,1989,17,17,1518,16.9,2,0,2,2,0,0,2,0,0.12,0.00,0.12,0.12,0.12,Matches,77621175
+727,Carl Winchester,nir NIR,MF,Sunderland,27,1993,20,12,1080,12.0,1,0,1,1,0,0,3,0,0.08,0.00,0.08,0.08,0.08,Matches,6459ee4e
+728,Sam Winnall,eng ENG,FW,Oxford United,29,1991,24,3,643,7.1,4,1,5,4,0,0,3,0,0.56,0.14,0.70,0.56,0.70,Matches,878c2d27
+729,Ryan Wintle,eng ENG,MF,Crewe Alexandra,23,1997,43,41,3678,40.9,2,2,4,2,0,0,4,0,0.05,0.05,0.10,0.05,0.10,Matches,fb0fb628
+730,Jojo Wollacott,gh GHA,GK,Swindon Town,23,1996,2,2,180,2.0,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,06001856
+731,Harry Wood,eng ENG,FWMF,Hull City,17,2002,1,0,10,0.1,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,972f40d1
+732,Nathan Wood-Gordon,eng ENG,DF,Crewe Alexandra,18,2002,12,11,992,11.0,0,0,0,0,0,0,1,0,0.00,0.00,0.00,0.00,0.00,Matches,4ccf2d5b
+733,Ben Woodburn,wls WAL,MFFW,Blackpool,20,1999,10,3,327,3.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,8aadeaef
+734,Henry Woods,eng ENG,MF,Gillingham,20,1999,4,0,51,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,f00a562c
+735,Sam Woods,eng ENG,DF,Plymouth Argyle,21,1998,9,5,494,5.5,1,0,1,1,0,0,0,1,0.18,0.00,0.18,0.18,0.18,Matches,a62da625
+736,Alex Woodyard,eng ENG,MF,AFC Wimbledon,27,1993,40,39,3459,38.4,1,1,2,1,0,0,10,0,0.03,0.03,0.05,0.03,0.05,Matches,f9daf48b
+737,Luke Woolfenden,eng ENG,DF,Ipswich Town,21,1998,25,24,2205,24.5,1,0,1,1,0,0,3,0,0.04,0.00,0.04,0.04,0.04,Matches,e28e9bec
+738,Scott Wootton,eng ENG,DF,Wigan Athletic,28,1991,13,12,1058,11.8,1,0,1,1,0,0,2,0,0.09,0.00,0.09,0.09,0.09,Matches,6f5afaeb
+739,Scott Wootton,eng ENG,DF,Plymouth Argyle,28,1991,10,7,630,7.0,0,0,0,0,0,0,2,0,0.00,0.00,0.00,0.00,0.00,Matches,6f5afaeb
+740,Bailey Wright,au AUS,DF,Sunderland,28,1992,33,33,2931,32.6,2,0,2,2,0,0,5,0,0.06,0.00,0.06,0.06,0.06,Matches,4be70ecf
+741,Joe Wright,wls WAL,DF,Doncaster,25,1995,40,36,3196,35.5,2,1,3,2,0,0,7,0,0.06,0.03,0.08,0.06,0.08,Matches,6fbcb721
+742,Charlie Wyke,eng ENG,FW,Sunderland,27,1992,43,40,3494,38.8,25,3,28,25,0,0,3,0,0.64,0.08,0.72,0.64,0.72,Matches,c205e165
+743,Jerry Yates,eng ENG,FW,Blackpool,23,1996,44,41,3566,39.6,20,6,26,14,6,6,4,0,0.50,0.15,0.66,0.35,0.50,Matches,637047f7
+744,Ollie Younger,eng ENG,DF,Sunderland,20,1999,1,1,51,0.6,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,4b6cb4c0
+745,Jan Žambůrek,cz CZE,MF,Shrewsbury,19,2001,6,4,357,4.0,0,1,1,0,0,0,0,0,0.00,0.25,0.25,0.00,0.25,Matches,395880a4
+746,Offrande Zanzala,cg CGO,FW,Crewe Alexandra,23,1996,5,1,119,1.3,0,0,0,0,0,0,0,0,0.00,0.00,0.00,0.00,0.00,Matches,058aadb0
+747,Jack Stevens,,GK,Oxford United,,,33,33,2970,33.0,0,1,1,0,0,0,2,0,0.00,0.03,0.03,0.00,0.03,Matches,Jack-Stevens
