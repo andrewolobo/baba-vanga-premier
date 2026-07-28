@@ -29,7 +29,14 @@ def read_matches(
     resolved = resolve_seasons(
         purpose, seasons, conn=conn, unseal_reason=unseal_reason, name="store.read_matches"
     )
-    frame = _select(conn, "matches", resolved, divisions, order="match_date, match_id")
+    frame = _select(
+        conn, "matches", resolved, divisions, order="m.match_date, m.match_id",
+        # Canonical names come back alongside the ids so that nothing
+        # downstream has to carry the id mapping around.
+        select="m.*, h.canonical_name AS home_team, a.canonical_name AS away_team",
+        joins=("JOIN teams h ON h.team_id = m.home_team_id "
+               "JOIN teams a ON a.team_id = m.away_team_id"),
+    )
     frame["match_date"] = pd.to_datetime(frame["match_date"])
     return Corpus(frame, purpose, tuple(resolved), tuple(divisions))
 
@@ -46,18 +53,22 @@ def read_player_seasons(
         purpose, seasons, conn=conn, unseal_reason=unseal_reason,
         name="store.read_player_seasons",
     )
-    frame = _select(conn, "player_seasons", resolved, divisions, order="season, division, id")
+    frame = _select(
+        conn, "player_seasons", resolved, divisions, order="m.season, m.division, m.id",
+        select="m.*, t.canonical_name AS team",
+        joins="LEFT JOIN teams t ON t.team_id = m.team_id",
+    )
     return Corpus(frame, purpose, tuple(resolved), tuple(divisions))
 
 
-def _select(conn, table, seasons, divisions, *, order):
+def _select(conn, table, seasons, divisions, *, order, select="m.*", joins=""):
     if not seasons or not divisions:
         return pd.read_sql_query(f"SELECT * FROM {table} WHERE 0", conn)
     s_marks = ",".join("?" * len(seasons))
     d_marks = ",".join("?" * len(divisions))
     return pd.read_sql_query(
-        f"SELECT * FROM {table} "
-        f"WHERE season IN ({s_marks}) AND division IN ({d_marks}) ORDER BY {order}",
+        f"SELECT {select} FROM {table} m {joins} "
+        f"WHERE m.season IN ({s_marks}) AND m.division IN ({d_marks}) ORDER BY {order}",
         conn,
         params=[*seasons, *divisions],
     )

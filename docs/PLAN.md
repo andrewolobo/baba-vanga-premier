@@ -146,7 +146,7 @@ as such. Not on any critical path.
 | OPEN-3 (off-season decay) | Open | Test (c) handoff first, decide by gate in P1/P2 |
 | OPEN-4 (stakes definition) | Open | P4; as-of table reconstruction only |
 | OPEN-5 (stat coverage) | **RESOLVED — clean** | No gap; shots proxy viable everywhere E0–E3 |
-| OPEN-6 (recal pooling E1–E3) | Open | Decide by `y ~ logit(p) * division` interaction test in P3 |
+| OPEN-6 (recal pooling E1–E3) | Open, with new evidence | P0-2 found the draw deficit is +1.0 to +1.2 pts in E1/E2/E3 and **−0.22 pts (CI spans zero) in E0** — E0 differs from the rest on a measured axis before any calibration. E1–E3 look alike on this axis. Still decide by `y ~ logit(p) * division` in P3, but the prior is now "E0 separate, E1–E3 possibly poolable" |
 | OPEN-7 (market priority) | **DECIDED: both** | Same pmf; separate calibration populations |
 | OPEN-8 (serving in scope) | **DECIDED: yes** | Full stack incl. paper-trading at MVP |
 | OPEN-9 (holdout) | **DECIDED: freeze 3 seasons** | 2023-24→2025-26 sealed; enforced in the loader |
@@ -247,9 +247,29 @@ warnings outrank UI polish.
 
 ### Week 1 — P0 data spine + scaffold
 
-**Track M status (2026-07-28): scaffold, loaders, holdout guard and as-of
-harness are BUILT, tested and committed (`6c13a8e`).** 73 tests green.
-Remaining for P0: the three dispersion measurements and the τ decision.
+**Track M status (2026-07-28): P0 COMPLETE.** Scaffold, loaders, holdout guard,
+as-of harness, and all three dispersion measurements are built, tested and
+committed. 84 tests green. Results in [MEASURED_AND_CLOSED.md](MEASURED_AND_CLOSED.md):
+
+- **Totals: Poisson is correct** (1.0130, CI [0.9943, 1.0346]). Do not change
+  the family. The conclusion matches gtleague but the *mechanism does not* —
+  residual correlation is +0.0115 here against their +0.166, so English match
+  sides are close to genuinely independent rather than coupled-but-cancelling.
+- **τ decision: do NOT add the Dixon–Coles diagonal.** ρ = −0.0146 with a CI
+  containing zero; −0.000093 logloss on 1X2; and **exactly zero on O/U 2.5**,
+  structurally — all four cells τ touches have totals below the 2.5 line. The
+  draw deficit is real (+0.87 pts, CI [+0.32, +1.41]) but **entirely a lower-
+  division effect**: E0 −0.22 pts (CI spans zero), E1/E2/E3 ≈ +1.0 to +1.2.
+  That is a population fact, feeds OPEN-6 as evidence against pooling E0 with
+  the rest, and belongs to P4 as a behavioural feature, not to the pmf.
+- **Margin: the AH/correct-score veto does NOT transfer — lifted.** Ratio
+  0.9900 (CI [0.9702, 1.0095]); |margin| ≥ 5 observed 1.374% vs expected
+  1.365%, against gtleague's ~29% over-dispersion. Caveat: |margin| 3–4 is
+  mildly over-predicted (0.965/0.936), which is where AH lines actually sit, so
+  an AH head still needs calibration and its own gate.
+- One SPEC hypothesis refuted and recorded under an `ORIGINAL:` heading: the
+  apparent low-λ dispersion gradient is an artifact of stratifying on a noisy
+  λ̂, reproducible from exactly-Poisson data, and now pinned by a test.
 
 Facts established by building it, that the audits could not see:
 
@@ -308,9 +328,10 @@ Track A:
 Verify: leak canary green; τ decision written; holdout guard proven by test;
 fixtures visible in the browser.
 
-Status: leak canary green (a synthetic walk-forward over a decayed attack rate
-catches one missing filter line at every matchday); holdout guard proven by
-test including the store path; τ decision outstanding.
+Status: **all P0 criteria met.** Leak canary green (a synthetic walk-forward
+over a decayed attack rate catches one missing filter line at every matchday);
+holdout guard proven by test including the store path; coverage table committed
+(§2.1/§2.3); holdout sealed at the loader; τ decision written and closed.
 
 ### Week 2 — P1 base head + serving path
 
@@ -375,12 +396,14 @@ CLV renders); recal deciles in tolerance; **opening-weekend runbook written.**
 
 - **Results/fixtures API hardening**: paid tier or API-Football if lower-division
   live coverage disappoints.
-- **Betting-company odds feed (multi-line O/U 0.5–6.5, per SPEC dev note):
-  gated on the P0 dispersion measurements** — tail lines price off the pmf's
-  tails, exactly where mis-dispersion bites; no ladder is served until the
-  total-goals dispersion result clears, and AH/correct-score stay vetoed until
-  the margin measurement clears. The gtleague BETPAWA_FEED.md is the reference
-  implementation shape.
+- **Betting-company odds feed (multi-line O/U 0.5–6.5, per SPEC dev note).**
+  The P0 gate this was waiting on has now cleared: totals dispersion is 1.0130
+  (CI contains 1.0) and margin dispersion is 0.9900 (CI contains 1.0), so the
+  pmf is structurally sound enough to price a ladder and an AH line from.
+  Remaining caution is calibration, not family — |margin| 3–4 is over-predicted
+  by 3–6%, and the 0.5/5.5/6.5 tail lines have thin realised sample, so each
+  line needs its own reliability check before it is served. The gtleague
+  BETPAWA_FEED.md is the reference implementation shape.
 
 ## 6. Standing risks
 
@@ -388,7 +411,8 @@ CLV renders); recal deciles in tolerance; **opening-weekend runbook written.**
 | --- | --- |
 | 3-week full-stack is aggressive | Track A stays thin (no auth, no styling debt, manual-entry fallback); model discipline is never traded for UI |
 | Lineup/team-news leakage | All serving at the pre-closing information set; no lineup-derived features exist anywhere yet |
-| Fixed-corpus overfitting | Gate ledger from day one; PBO before any deployment claim; sealed holdout with loader-level guard |
+| Fixed-corpus overfitting | Gate ledger from day one (6 entries after P0); PBO before any deployment claim; sealed holdout with loader-level guard |
+| Reading structure into estimation noise | P0-1's λ-quartile gradient was a pure artifact and looked exactly like the SPEC's own hypothesis. Any stratification on a fitted quantity gets the same pure-null replication check before it is believed |
 | Live Pinnacle absence (2025-26 collapse) | CLV fallback chain PSCH → AvgCH → graded-when-CSV-lands is built into the harness, not patched later |
 | Player-ID quality at the edges | All five divisions covered (§2.3); residuals: NL slug IDs pre-2018-19 (unresolved identities), blank demographics in E1 2025-26, leading-zero IDs corrupted by numeric coercion — all handled at the loader, tested |
 | market-value snapshot leakage | Excluded from backtest paths at the loader level, same mechanism as the holdout guard |
