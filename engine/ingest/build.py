@@ -110,6 +110,30 @@ def validate(conn) -> list[str]:
         if got != want:
             failures.append(f"matches {division}: {got} rows, expected {want}")
 
+    # The same fixture must not appear twice. Row counts cannot catch a season
+    # directory that holds a copy of another season's files: the count is
+    # exactly right and every value is individually valid. That defect was live
+    # on this corpus -- data/play_history/201516 was a byte-identical copy of
+    # 201415 -- and every check above passed while a whole season was missing.
+    for date, home, away, n in conn.execute(
+        "SELECT match_date, home_team_id, away_team_id, COUNT(*) AS n FROM matches "
+        "GROUP BY match_date, home_team_id, away_team_id HAVING n > 1 LIMIT 5"
+    ):
+        failures.append(f"matches: fixture {home}v{away} on {date} appears {n} times")
+
+    # ...and each season's matches must fall inside that season's own calendar.
+    # A season labelled 2015-16 containing August 2014 fixtures is the same
+    # defect seen from the other side, and this catches it even if the copied
+    # files were only a partial overlap.
+    for season, first, last in conn.execute(
+        "SELECT season, MIN(match_date), MAX(match_date) FROM matches GROUP BY season"
+    ):
+        start_year = int(season[:4])
+        if not (f"{start_year}-07-01" <= first and last <= f"{start_year + 1}-08-31"):
+            failures.append(
+                f"matches {season}: dates run {first} to {last}, outside the season window"
+            )
+
     return failures
 
 

@@ -132,6 +132,56 @@ def test_numeric_checks_cover_both_tables():
     assert "fthg" in NUMERIC_CHECKS["matches"]
 
 
+# --- the duplicated-season defect -----------------------------------------
+
+
+def _seed_matches(conn, rows):
+    """Insert into the real migrated schema, not a convenient stand-in -- the
+    point is to exercise the check the build actually runs."""
+    conn.executemany("INSERT OR IGNORE INTO teams (team_id, canonical_name)"
+                     " VALUES (?, ?)", [(1, "Home FC"), (2, "Away FC")])
+    conn.executemany(
+        "INSERT INTO matches (season, division, match_date, home_team_id,"
+        " away_team_id, fthg, ftag, odds_era, source_file)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?, 'market', 'test')", rows,
+    )
+
+
+def test_a_repeated_fixture_is_reported(conn):
+    """`data/play_history/201516` was a byte-identical copy of `201415`, so the
+    2015-16 season was absent and 2014-15 was counted twice.
+
+    Every check that existed at the time passed: the per-division row counts
+    were exactly right, every value was individually valid, and goals per match
+    was normal. Only fixture identity catches it.
+    """
+    _seed_matches(conn, [
+        ("201415", "E0", "2014-08-16", 1, 2, 2, 1),
+        ("201516", "E0", "2014-08-16", 1, 2, 2, 1),   # the copy
+    ])
+    failures = validate(conn)
+    assert any("appears 2 times" in f for f in failures)
+
+
+def test_a_season_holding_another_seasons_dates_is_reported(conn):
+    """The same defect seen from the other side, which also catches a partial
+    overlap that leaves no exact duplicate fixture."""
+    _seed_matches(conn, [("201516", "E0", "2014-08-16", 1, 2, 2, 1)])
+    failures = validate(conn)
+    assert any("outside the season window" in f for f in failures)
+
+
+def test_a_correctly_dated_season_passes_the_window_check(conn):
+    """Seasons legitimately span two calendar years, and 2019-20 ran to July
+    2020 after the COVID suspension -- neither may be flagged."""
+    _seed_matches(conn, [
+        ("201516", "E0", "2015-08-08", 1, 2, 2, 1),
+        ("201516", "E0", "2016-05-17", 2, 1, 0, 0),
+        ("201920", "E0", "2020-07-26", 1, 2, 1, 1),
+    ])
+    assert not any("outside the season window" in f for f in validate(conn))
+
+
 # --- ledger ---------------------------------------------------------------
 
 
