@@ -65,13 +65,24 @@ def fit(
     n_teams: int,
     *,
     alpha: float = DEFAULT_ALPHA,
+    prior_att: np.ndarray | None = None,
+    prior_dfn: np.ndarray | None = None,
 ) -> PoissonFit:
     """Weighted penalised Poisson MLE.
 
     Each match contributes two observations (one per side), so the attacking
     and defensive coefficients are estimated from the same likelihood rather
     than from two separate fits.
+
+    `prior_att`/`prior_dfn` move the ridge target off zero, which is the P2
+    player prior (SPEC §3.3). A prior of zero -- the default -- is the
+    cold-start-to-league-average behaviour described above, so passing nothing
+    reproduces the pre-P2 fit exactly rather than approximately.
     """
+    m_att = np.zeros(n_teams) if prior_att is None else np.asarray(prior_att, dtype=float)
+    m_dfn = np.zeros(n_teams) if prior_dfn is None else np.asarray(prior_dfn, dtype=float)
+    if m_att.shape != (n_teams,) or m_dfn.shape != (n_teams,):
+        raise ValueError(f"prior must have one entry per team ({n_teams})")
     attacker = np.concatenate([home_idx, away_idx])
     defender = np.concatenate([away_idx, home_idx])
     is_home = np.concatenate([np.ones_like(home_idx, dtype=float),
@@ -88,14 +99,15 @@ def fit(
         eta = np.clip(eta, -20.0, 5.0)
         lam = np.exp(eta)
         nll = float(np.sum(w * (lam - y * eta)))
-        penalty = alpha * (float(att @ att) + float(dfn @ dfn))
+        off_att, off_dfn = att - m_att, dfn - m_dfn
+        penalty = alpha * (float(off_att @ off_att) + float(off_dfn @ off_dfn))
 
         resid = w * (lam - y)
         grad = np.empty_like(params)
         grad[0] = resid.sum()
         grad[1] = float(resid @ is_home)
-        grad[2:2 + n_teams] = np.bincount(attacker, resid, minlength=n_teams) + 2 * alpha * att
-        grad[2 + n_teams:] = np.bincount(defender, resid, minlength=n_teams) + 2 * alpha * dfn
+        grad[2:2 + n_teams] = np.bincount(attacker, resid, minlength=n_teams) + 2 * alpha * off_att
+        grad[2 + n_teams:] = np.bincount(defender, resid, minlength=n_teams) + 2 * alpha * off_dfn
         return nll + penalty, grad
 
     x0 = np.zeros(2 + 2 * n_teams)

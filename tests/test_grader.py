@@ -1,0 +1,199 @@
+"""Result grading and CLV.
+
+The two rules that must not be swapped, both pinned here:
+
+  bet decision  -> RAW 1/odds        (vig-inclusive; the bar to clear)
+  CLV           -> DE-VIGGED probs   (two market opinions, margin removed)
+
+Using 1/odds for CLV builds the bookmaker's margin into every grade and makes a
+flat book read as a winner. That error was live in this module during
+development, which is why it gets an explicit test rather than a comment.
+"""
+
+from __future__ import annotations
+
+import pytest
+
+from engine import db
+from services import csv_grader
+
+HEADER = ("Div,Date,HomeTeam,AwayTeam,FTHG,FTAG,FTR,"
+          "AvgH,AvgD,AvgA,Avg>2.5,Avg<2.5,"
+          "PSCH,PSCD,PSCA,AvgCH,AvgCD,AvgCA,AvgC>2.5,AvgC<2.5")
+
+# Arsenal beat Chelsea 2-1. Home closed SHORTER than we took it (1.75 vs 1.90),
+# so the market moved toward our side: positive CLV.
+ARSENAL_WIN = ("E0,15/08/2026,Arsenal,Chelsea,2,1,H,"
+               "1.90,3.80,4.20,1.95,1.90,"
+               "1.75,3.90,4.80,1.78,3.85,4.70,1.90,1.95")
+
+
+def results(*rows: str) -> str:
+    return "\n".join([HEADER, *rows]) + "\n"
+
+
+@pytest.fixture
+def conn(tmp_path):
+    connection = db.connect(tmp_path / "grade.db")
+    db.migrate(connection)
+    for i, name in enumerate(["Arsenal", "Chelsea"], start=1):
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+                           (i, name))
+    connection.execute(
+        "INSERT INTO fixtures (fixture_id, division, match_date, home_team_id,"
+        " away_team_id, avg_h, avg_d, avg_a, avg_over25, avg_under25, source_file)"
+        " VALUES (1, 'E0', '2026-08-15', 1, 2, 1.90, 3.80, 4.20, 1.95, 1.90, 'test')")
+    connection.execute(
+        "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
+        " information_set, lam_h, lam_a, p_home, p_draw, p_away, p_over25, p_under25)"
+        " VALUES (1, 1, 'v1', 'pre_close', 1.9, 0.9, 0.62, 0.20, 0.18, 0.55, 0.45)")
+    connection.commit()
+    return connection
+
+
+def _bet(conn, market="1x2", side="H", price=1.90):
+    conn.execute(
+        "INSERT INTO paper_bets (prediction_id, fixture_id, market, side, price,"
+        " price_source, model_prob, breakeven_prob, edge, expected_value, stake,"
+        " rule_version) VALUES (1, 1, ?, ?, ?, 'avg', 0.62, ?, ?, ?, 1.0, 'test')",
+        (market, side, price, 1 / price, 0.62 - 1 / price, 0.62 * price - 1))
+    conn.commit()
+
+
+# --- settlement ------------------------------------------------------------
+
+
+def test_a_winning_bet_settles_with_the_right_pnl(conn):
+    _bet(conn)
+    report = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    assert report.settled == 1
+
+    row = conn.execute("SELECT * FROM paper_bets").fetchone()
+    assert row["outcome"] == "win"
+    assert row["pnl"] == pytest.approx(0.90)      # stake 1.0 at 1.90
+    assert row["settled_at"] is not None
+
+
+def test_a_losing_bet_settles_at_minus_stake(conn):
+    _bet(conn, side="A")
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    row = conn.execute("SELECT * FROM paper_bets").fetchone()
+    assert row["outcome"] == "lose"
+    assert row["pnl"] == pytest.approx(-1.0)
+
+
+def test_over_under_settles_on_the_total_not_the_result(conn):
+    _bet(conn, market="ou25", side="over", price=1.95)   # 2-1 = 3 goals, over wins
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    assert conn.execute("SELECT outcome FROM paper_bets").fetchone()[0] == "win"
+
+    conn.execute("DELETE FROM clv_grades")
+    conn.execute("UPDATE paper_bets SET settled_at=NULL, side='under', outcome=NULL")
+    conn.commit()
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    assert conn.execute("SELECT outcome FROM paper_bets").fetchone()[0] == "lose"
+
+
+def test_grading_does_not_overwrite_the_bet_that_was_placed(conn):
+    """Grading columns are written beside the bet. The price and probability
+    that justified it must survive whatever happened next."""
+    _bet(conn)
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    row = conn.execute("SELECT * FROM paper_bets").fetchone()
+    assert row["price"] == 1.90
+    assert row["model_prob"] == 0.62
+    assert row["breakeven_prob"] == pytest.approx(1 / 1.90)
+
+
+# --- CLV -------------------------------------------------------------------
+
+
+def test_clv_uses_devigged_probabilities_not_raw_one_over_odds(conn):
+    """The error this module shipped with, pinned.
+
+    Bet at Avg 1.90/3.80/4.20 (overround ~5%), closing Pinnacle 1.75/3.90/4.80.
+    Raw 1/price would put bet_prob at 0.5263. De-vigged it is meaningfully
+    lower, because the margin is removed. If bet_prob ever equals 1/price
+    again, the margin is back in every CLV figure.
+    """
+    _bet(conn)
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    grade = conn.execute("SELECT * FROM clv_grades").fetchone()
+
+    assert grade["bet_prob"] != pytest.approx(1 / 1.90)
+    assert grade["bet_prob"] < 1 / 1.90
+    assert grade["close_prob"] != pytest.approx(1 / 1.75)
+    assert grade["close_prob"] < 1 / 1.75
+    # Both are genuine probabilities, so both sit strictly inside (0, 1).
+    assert 0.0 < grade["bet_prob"] < 1.0
+    assert 0.0 < grade["close_prob"] < 1.0
+
+
+def test_clv_is_positive_when_the_market_moves_toward_our_side(conn):
+    """We took 1.90; it closed at 1.75. Being early on a shortening price is
+    exactly what CLV is meant to detect."""
+    _bet(conn)
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    grade = conn.execute("SELECT * FROM clv_grades").fetchone()
+    assert grade["clv"] > 0
+    assert grade["clv_pct"] == pytest.approx(1.90 / 1.75 - 1)
+    assert grade["close_source"] == "PSC"
+
+
+def test_clv_is_negative_when_the_price_drifts_out(conn):
+    drifted = ARSENAL_WIN.replace("1.75,3.90,4.80", "2.20,3.60,3.40")
+    _bet(conn)
+    csv_grader.grade(conn, csv_grader.parse_results(results(drifted)))
+    grade = conn.execute("SELECT * FROM clv_grades").fetchone()
+    assert grade["clv"] < 0
+    assert grade["clv_pct"] < 0
+
+
+def test_pinnacle_is_preferred_and_the_source_is_recorded(conn):
+    """Pinnacle and the market average are different books with different
+    margins. Blending them would make a CLV series that drifts with coverage."""
+    _bet(conn)
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    assert conn.execute("SELECT close_source FROM clv_grades").fetchone()[0] == "PSC"
+
+    no_pinnacle = ARSENAL_WIN.replace("1.75,3.90,4.80", ",,")
+    conn.execute("DELETE FROM clv_grades")
+    conn.execute("UPDATE paper_bets SET settled_at=NULL")
+    conn.commit()
+    csv_grader.grade(conn, csv_grader.parse_results(results(no_pinnacle)))
+    assert conn.execute("SELECT close_source FROM clv_grades").fetchone()[0] == "AvgC"
+
+
+def test_a_bet_is_graded_only_once(conn):
+    _bet(conn)
+    first = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    conn.execute("UPDATE paper_bets SET settled_at = NULL")
+    conn.commit()
+    csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    assert first.graded == 1
+    assert conn.execute("SELECT COUNT(*) FROM clv_grades").fetchone()[0] == 1
+
+
+# --- plumbing --------------------------------------------------------------
+
+
+def test_dry_run_settles_nothing(conn):
+    _bet(conn)
+    report = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)),
+                              dry_run=True)
+    assert report.settled == 1
+    assert conn.execute("SELECT settled_at FROM paper_bets").fetchone()[0] is None
+    assert conn.execute("SELECT COUNT(*) FROM clv_grades").fetchone()[0] == 0
+
+
+def test_a_result_with_no_matching_fixture_is_ignored(conn):
+    _bet(conn)
+    other = ARSENAL_WIN.replace("15/08/2026", "22/08/2026")
+    report = csv_grader.grade(conn, csv_grader.parse_results(results(other)))
+    assert report.settled == 0
+
+
+def test_season_path_follows_the_football_season_not_the_calendar_year():
+    assert csv_grader.season_for("2026-08-15") == "2627"
+    assert csv_grader.season_for("2027-05-20") == "2627"
+    assert csv_grader.season_for("2026-06-30") == "2526"

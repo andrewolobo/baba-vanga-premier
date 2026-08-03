@@ -5,7 +5,7 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-07-28**, end of the P1 Track M session.
+Last updated **2026-08-03**, at the end of the P2 session.
 
 Companion documents, in reading order:
 `SPEC.md` (methodology authority, includes refuted parts) →
@@ -13,7 +13,9 @@ Companion documents, in reading order:
 `FINDINGS.md` (what was learned, assumed → true → changed) →
 `MEASURED_AND_CLOSED.md` (P0 results with numbers) →
 `P1_PLAN.md` (P1 pre-registration, left unedited) →
-`BASELINE.md` (P1 results and the base score).
+`BASELINE.md` (P1 results and the base score) →
+`P3_PLAN.md` / `CALIBRATION.md` (calibration, ablation, the launch decision) →
+`P2_PLAN.md` / `PLAYER_PRIOR.md` (the player prior, and why it is descoped).
 
 ---
 
@@ -24,31 +26,82 @@ Companion documents, in reading order:
 | P0 data spine        | Complete. Loaders, holdout guard, as-of harness, team bridge.        |
 | P0 dispersion        | Complete and **re-measured on the corrected corpus** — §2.1.         |
 | P1 Track M           | **Complete.** Base head frozen, base score published, all gates run. |
-| P1 Track A (serving) | **Not started.**                                                     |
-| P2 player prior      | Not started. Unblocked; ordering decision open (§3.1).               |
-| P3 calibration       | Not started.                                                         |
+| P1 Track A (serving) | **Built and tested; not turned on** — see §1.0.                      |
+| P2 player prior      | **Complete and descoped.** Null on five arms — §1.2.                 |
+| P3 calibration       | **P3-lite complete.** Calibration null/negative; book off — §1.0.    |
 | P4 / P5 / P6         | Not started.                                                         |
 
 **Frozen base head:** `H400 / a0.1 / weekly / E0+E1+E2+E3+EC`, no season-boundary
-shrink, COVID window embargoed from scoring. Artifact
-`p1-36d44c72db18b384`. 154 tests pass. Gate ledger holds **41 recorded trials**.
+shrink, no squad prior, COVID window embargoed from scoring. Artifact
+`p1-36d44c72db18b384`. 233 tests pass. Gate ledger holds **51 recorded trials**.
 
 ---
 
 ## 1. Blocking / do first
 
+### 1.0 The book stays off at launch — decided, with numbers
+
+**Resolved 2026-08-03 by P3-lite.** Full results in `CALIBRATION.md`.
+
+The flat-EV rule was backtested three ways (uncalibrated, calibrated, blended)
+against the de-vigged close, at both average and best-available prices. **No
+stratum is profitable at either price level.** The market ablation (H12) found
+the model's weight given the price is small, inconsistent in sign, and negative
+in five of eight cells; the blend never beats the market in any division on
+either market.
+
+Three things worth carrying forward:
+
+- **The pre-registered bar was wrong.** "CLV ≥ 0 with CI excluding zero" passed
+  two strata that lose 7.6% and 10.0%. CLV must exceed the **vig**, not zero.
+- **Positive CLV at average prices was an artifact** of comparing a wide-margin
+  consensus against a sharp close. Re-priced like-for-like at Max, CLV is zero.
+- **Vig is the binding constraint on any future edge.** At average prices a
+  strategy needs 8x the current signal to break even; at best-available, ~1x.
+  Best-price capture is a prerequisite, not an optimisation.
+
+**Ships regardless:** fixture sync, predictions, CLV grading, API, frontend.
+Opening-weekend prediction data is irrecoverable and the CLV series is the
+instrument that detects a real edge if one appears.
+
+**Do not** re-litigate with more calibration, blending or thresholds. All
+measured, all null or negative, all in the ledger (45 trials).
+
 ### 1.1 The entire P1 workstream is uncommitted
 
-`git status` shows every P1 module and test as untracked, plus modified
-`build.py`, `PLAN.md`, `.gitignore`, `test_seasons_and_db.py` and the five
-replaced 2015-16 CSVs. **Nothing from this session is in git.**
+**Resolved 2026-08-03** — P1 committed as `244ca18`. Track A **and P2** are now
+the uncommitted work: `db/migrations/002_serving.sql`, `services/`, `api/`,
+`web/`, `engine/serve/{cycle,book}.py`, `engine/models/{calibration,squad}.py`,
+`engine/eval/{p2,p3}.py`, `docs/{P2_PLAN,P3_PLAN,PLAYER_PRIOR,CALIBRATION}.md`
+and six new test modules.
 
-Untracked: `engine/eval/{metrics,walkforward,bootstrap,sweep,p1}.py`,
-`engine/serve/`, `tests/test_{metrics,walkforward_harness,bootstrap,sweep,artifact}.py`,
-`docs/{BASELINE,P1_PLAN,OUTSTANDING}.md`, `docs/p1_results.json`.
+### 1.2 The player prior is descoped — decided, with numbers
 
-A single commit for the P1 head plus a separate one for the 2015-16 data fix
-would keep the data correction independently revertable.
+**Resolved 2026-08-03 by P2.** Full results in `PLAYER_PRIOR.md`.
+
+Five arms, all null on goal deviance: the SPEC §3.3 weight sweep spans 0.00002
+nats and the 1-SE rule selects weight 0; every channel set matches a control
+prior containing **no player data at all** to five decimal places; the
+division-change population moves +0.00045 [−0.00036, +0.00123].
+
+Three things worth carrying forward:
+
+- **There is no cold start to fix.** Minimum decayed evidence behind any scored
+  club is **25.8 effective matches**, median 65.2. SPEC §3.3 imported a doctrine
+  about clubs decayed to ~1% weight; that population does not exist here,
+  **because P1's NEW-1 joint fit already removed it.**
+- **The 0.058 nats that motivated P2 was never the player layer's.** It is the
+  value of lower-division match history (`BASELINE.md` §3), and P1 banked it.
+- **α and the ridge target are coupled and were tuned as if they were not.** A
+  *perfect* prior is worth −0.00018 at α=0.1 but −0.00694 at α=5. P1 swept α
+  with the target pinned at zero. The follow-up was run (H19): no legal prior
+  beats the frozen head at any α, and α=0.1 now survives a test it had not
+  previously faced.
+
+**Do not** re-litigate with a per-player ratings model, an age curve, market
+values, or more channels. The constraint is that the N−1 roster *is* the club
+(0.980 collinear) and that season N's squad is unknowable as-of. Only **dated
+transfer data** would change it — `data/transfer-history/` is empty.
 
 ---
 
@@ -101,10 +154,15 @@ See §3.2 for the open question about how to treat this.
 
 ## 3. Decisions awaiting the owner
 
-### 3.1 P2 ordering — E3-first or E0-first?
+### 3.1 P2 ordering — E3-first or E0-first? **MOOT, 2026-08-03**
 
-Deferred once already ("note it now, decide in P2"). The evidence got stronger,
-not weaker, so it is worth revisiting before P2 starts.
+The question presupposed a player layer worth ordering. P2 ran on all four
+served divisions at once (the fit is joint, so a per-division build was never
+the cheaper option) and returned null in every one — E0 +0.00008, E1 +0.00012,
+E2 −0.00029, E3 +0.00013. No ordering decision is needed for work that is not
+happening. **Closed, not deferred.**
+
+The underlying asymmetry it was about is still live and still unexplained:
 
 | division | share of the market's edge the base head captures |
 | -------- | ------------------------------------------------- |
@@ -113,19 +171,17 @@ not weaker, so it is worth revisiting before P2 starts.
 | E2       | 0.64                                              |
 | E3       | **0.51**                                          |
 
-And the National League gate found that clubs promoted out of EC are predicted
-**0.058 nats better** when the fit has seen their EC matches — roughly fourteen
-times the size of the entire E0 improvement P1 achieved.
-
-**Against E3-first:** the Premier League is the product, and lower-division
-player data is the weaker source (NL pre-2018-19 has slug IDs that are not
-cross-division joinable).
+That belongs to §3.3 (OPEN-6) now, not to P2.
 
 ### 3.2 How should the inflated trial count feed deflation?
 
-38 trials, but they are not 38 independent hypotheses — they are ~10 distinct
+51 trials, but they are not 51 independent hypotheses — they are ~13 distinct
 questions asked up to 3 times each after defects were found. Treating re-runs as
 independent trials over-deflates; treating them as one under-deflates.
+
+One entry is explicitly post-hoc and labelled as such in the ledger
+(`probe:h19_alpha_interaction`) — a hypothesis invented after seeing H17's
+result. Whatever scheme is chosen must not treat it as pre-registered.
 
 No decision needed until P6, but it should be made **before** the holdout read,
 in writing, not after seeing the result.
@@ -189,7 +245,8 @@ everywhere.
 | **OPEN-2** form leg               | In-season                         | H2 put the decay optimum at 400 days, the opposite end of the timescale axis from where a short-memory leg lives.                                    |
 | **OPEN-3** season-boundary shrink | P4, as a population-specific gate | Helps lower-division O/U, degrades E0 1X2 (+0.00259 [+0.00121, +0.00389]). Not a global hyperparameter.                                              |
 | **OPEN-4** stakes definition      | P4                                | Needs as-of league-table reconstruction.                                                                                                             |
-| Market-value snapshot             | Live inference only, if ever      | Single undated Transfermarkt-style snapshot; excluded from every backtest path.                                                                      |
+| Market-value snapshot             | **Dropped**                       | Single undated snapshot. P2 measured that a *perfect* prior is worth 0.0002 nats at the served α; a noisier one cannot be worth more.                |
+| **Dated transfer data**           | Blocked on acquisition            | `data/transfer-history/` is empty. The one input that would make the player layer buildable — it makes season-N squads legally knowable (`PLAYER_PRIOR.md` §5). |
 | Asian handicap / correct score    | Post-launch                       | Veto lifted in P0-3 (pending §2.1 re-check), but\|margin\| 3–4 is over-predicted by 3–6% and that is exactly where AH lines sit. Needs its own gate. |
 
 ---
@@ -235,3 +292,12 @@ obvious from the code alone.
    left row counts perfect and content wrong.
 7. **A boundary optimum is not an optimum.** `SweepResult.censored` flags it;
    widen the grid rather than reporting the edge.
+8. **A null needs a positive control or it is not a result.** P2's arms were all
+   null; what makes them mean "no signal" rather than "no instrument" is H17,
+   which planted a prior that knew the answer. It is the same discipline as the
+   planted defects in `test_calibration.py`, and it is what turned P2 from a
+   null into a diagnosis. Every future gate expecting a null should carry one.
+9. **Hyperparameters chosen under an assumption inherit it.** P1 selected α=0.1
+   with the ridge target pinned at zero, which silently decided how much any
+   future prior could ever matter (`PLAYER_PRIOR.md` §2). Before sweeping a
+   parameter, write down what is being held fixed and whether the two interact.

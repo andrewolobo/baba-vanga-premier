@@ -16,6 +16,9 @@ Three arms are configurable, each corresponding to an open decision:
   `offseason_gap_days`     OPEN-3 (b). Count the summer as `k` days rather than
                            its calendar length. Expected to hurt; kept as a
                            control that moves the opposite way.
+  `squad_prior`            P2. Weight on the squad-derived ridge target passed
+                           in as `priors`. At 0, or with no `priors`, the fit
+                           is bit-for-bit the pre-P2 one.
 
 `embargo_regimes` removes matches from *scoring*, never from training. Dropping
 the COVID window from training would leave a fifteen-month hole for decay to
@@ -28,12 +31,22 @@ from __future__ import annotations
 
 import datetime as dt
 from dataclasses import dataclass, field, replace
+from typing import Protocol
 
 import numpy as np
 import pandas as pd
 
 from engine.models import poisson as poisson_model
 from engine.seasons import REGIMES, ALL_DIVISIONS
+
+
+class RidgeTarget(Protocol):
+    """What the P2 arm needs from a prior. `engine.models.squad.SquadPriors`
+    satisfies it; stated as a protocol so this module keeps no dependency on
+    the player layer."""
+
+    def at(self, cutoff: pd.Timestamp,
+           teams: tuple[str, ...]) -> tuple[np.ndarray, np.ndarray] | None: ...
 
 #: Calendar window treated as the off-season by the `offseason_gap_days` arm.
 #: English football is dormant across it in every season on the corpus. The end
@@ -62,6 +75,7 @@ class WalkForwardConfig:
     fit_divisions: tuple[str, ...] = ALL_DIVISIONS
     season_boundary_shrink: float | None = None
     offseason_gap_days: float | None = None
+    squad_prior: float | None = None
     embargo_regimes: tuple[str, ...] = ()
 
     def label(self) -> str:
@@ -71,6 +85,8 @@ class WalkForwardConfig:
             bits.append(f"shrink{self.season_boundary_shrink:g}")
         if self.offseason_gap_days is not None:
             bits.append(f"gap{self.offseason_gap_days:g}")
+        if self.squad_prior is not None:
+            bits.append(f"prior{self.squad_prior:g}")
         return "/".join(bits)
 
 
@@ -143,7 +159,8 @@ def _index(frame: pd.DataFrame, fit_divisions: tuple[str, ...]) -> _Indexed:
     )
 
 
-def _fit_at(idx: _Indexed, cutoff: pd.Timestamp, cfg: WalkForwardConfig):
+def _fit_at(idx: _Indexed, cutoff: pd.Timestamp, cfg: WalkForwardConfig,
+            priors: RidgeTarget | None = None):
     """Fit on everything strictly before `cutoff`. None if too little history."""
     horizon = pd.Timedelta(days=cfg.half_life * cfg.horizon_half_lives)
     train = ((idx.dates < cutoff) & (idx.dates >= cutoff - horizon)
@@ -154,9 +171,17 @@ def _fit_at(idx: _Indexed, cutoff: pd.Timestamp, cfg: WalkForwardConfig):
     ages = effective_ages(idx.dates[train], cutoff, cfg.offseason_gap_days)
     weights = poisson_model.decay_weights(ages, cfg.half_life)
 
+    prior_att = prior_dfn = None
+    if priors is not None and cfg.squad_prior:
+        target = priors.at(cutoff, idx.teams)
+        if target is not None:
+            prior_att, prior_dfn = (cfg.squad_prior * target[0],
+                                    cfg.squad_prior * target[1])
+
     model = poisson_model.fit(
         idx.home_idx[rows], idx.away_idx[rows], idx.goals_h[rows], idx.goals_a[rows],
         weights, len(idx.teams), alpha=cfg.alpha,
+        prior_att=prior_att, prior_dfn=prior_dfn,
     )
 
     stale_share = 0.0
@@ -177,7 +202,8 @@ def _fit_at(idx: _Indexed, cutoff: pd.Timestamp, cfg: WalkForwardConfig):
 
 
 def lambdas_at(frame: pd.DataFrame, cutoff, cfg: WalkForwardConfig | None = None,
-               *, targets: pd.Series | None = None) -> pd.DataFrame:
+               *, targets: pd.Series | None = None,
+               priors: RidgeTarget | None = None) -> pd.DataFrame:
     """One fit at `cutoff`, predicting the matches selected by `targets`.
 
     This is the serving operation, isolated so the leak canary has something to
@@ -192,7 +218,7 @@ def lambdas_at(frame: pd.DataFrame, cutoff, cfg: WalkForwardConfig | None = None
     else:
         selected = np.asarray(targets)[: len(work)]
 
-    model, _ = _fit_at(idx, cutoff, cfg)
+    model, _ = _fit_at(idx, cutoff, cfg, priors)
     out = work.loc[selected].copy()
     if model is None:
         out["lam_h"] = np.nan
@@ -228,7 +254,8 @@ def _step(cfg: WalkForwardConfig) -> pd.Timedelta:
 # --- the harness -----------------------------------------------------------
 
 
-def walk_forward(frame: pd.DataFrame, cfg: WalkForwardConfig | None = None) -> pd.DataFrame:
+def walk_forward(frame: pd.DataFrame, cfg: WalkForwardConfig | None = None,
+                 priors: RidgeTarget | None = None) -> pd.DataFrame:
     """Out-of-sample lambdas for every match with enough history behind it.
 
     Returns the frame with `lam_h`, `lam_a`, `fit_cutoff`, `n_train` and
@@ -252,7 +279,7 @@ def walk_forward(frame: pd.DataFrame, cfg: WalkForwardConfig | None = None) -> p
         target = ((work["match_date"] >= cutoff) & (work["match_date"] < window_end)).to_numpy()
         if not target.any():
             continue
-        model, stale_share = _fit_at(idx, cutoff, cfg)
+        model, stale_share = _fit_at(idx, cutoff, cfg, priors)
         if model is None:
             continue
         lam_h[target], lam_a[target] = model.predict(idx.home_idx[target], idx.away_idx[target])

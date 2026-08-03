@@ -141,15 +141,21 @@ def _align(scored: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
 def run(frame: pd.DataFrame, parameter: str, values: Sequence,
         base: WalkForwardConfig, *, more_regularised: Callable[[Any], float] | None = None,
         reps: int = bootstrap.DEFAULT_REPS,
-        score_filter: Callable[[pd.DataFrame], pd.DataFrame] | None = None) -> SweepResult:
-    """Evaluate one hyperparameter across `values` and apply the 1-SE rule."""
+        score_filter: Callable[[pd.DataFrame], pd.DataFrame] | None = None,
+        priors=None) -> SweepResult:
+    """Evaluate one hyperparameter across `values` and apply the 1-SE rule.
+
+    `priors` is the P2 ridge target, held fixed while the sweep varies its
+    weight. One prior object across every arm, so the sweep moves the weight
+    and nothing else.
+    """
     more_regularised = more_regularised or (lambda v: float(v))
 
     scored = {}
     configs = {}
     for value in values:
         cfg = replace(base, **{parameter: value})
-        out = walk_forward(frame, cfg)
+        out = walk_forward(frame, cfg, priors)
         if score_filter is not None:
             out = score_filter(out)
         scored[str(value)] = out
@@ -189,17 +195,21 @@ def run(frame: pd.DataFrame, parameter: str, values: Sequence,
 def compare(frame: pd.DataFrame, arms: dict[str, WalkForwardConfig], reference: str,
             *, reps: int = bootstrap.DEFAULT_REPS,
             score_filter: Callable[[pd.DataFrame], pd.DataFrame] | None = None,
-            score_on: Callable[[pd.DataFrame], pd.DataFrame] | None = None) -> dict:
+            score_on: Callable[[pd.DataFrame], pd.DataFrame] | None = None,
+            priors: dict | None = None) -> dict:
     """Paired comparison of named arms against `reference`, on shared matches.
 
     Arms can produce different match sets (a different fit population may pass
     the burn-in at a different time), so the comparison is restricted to the
     matches every arm scored. Comparing means over different samples would not
     be a paired test at all.
+
+    `priors` maps arm name to a P2 ridge target, so arms can differ in which
+    prior they carry and not only in configuration.
     """
     scored = {}
     for name, cfg in arms.items():
-        out = walk_forward(frame, cfg)
+        out = walk_forward(frame, cfg, (priors or {}).get(name))
         if score_filter is not None:
             out = score_filter(out)
         if score_on is not None:

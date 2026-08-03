@@ -80,11 +80,21 @@ def test_a_split_spanning_a_regime_change_is_detected():
 
 
 def test_migrations_are_idempotent(tmp_path):
+    """Applies every migration on disk once, and nothing on a second call.
+
+    Asserted against the migrations directory rather than a hardcoded list, so
+    adding a migration does not require editing this test -- and so a migration
+    that silently fails to register still fails here.
+    """
+    from engine import config
+
+    on_disk = sorted(p.stem for p in config.MIGRATIONS_DIR.glob("*.sql"))
     conn = db.connect(tmp_path / "m.db")
     first = db.migrate(conn)
     second = db.migrate(conn)
-    assert first == ["001_data_spine"]
+    assert first == on_disk
     assert second == []
+    assert "001_data_spine" in on_disk  # the spine must never be renamed away
     conn.close()
 
 
