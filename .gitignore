@@ -23,3 +23,11 @@ node_modules/
 
 # Frozen serving artifacts are reproducible outputs, not source.
 db/artifacts/
+
+# fbref scraper: the raw HTML cache and scraped output are reproducible, and
+# the Chrome profile and session file hold live Cloudflare cookies.
+data/fbref/
+
+# Scheduled-cycle logs. Operational output, not source; the durable record of
+# what a cycle did is its serving_state row.
+logs/

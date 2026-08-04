@@ -5,7 +5,7 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-03**, at the end of the P2 session.
+Last updated **2026-08-04**, after building the runbook and scheduling.
 
 Companion documents, in reading order:
 `SPEC.md` (methodology authority, includes refuted parts) →
@@ -15,7 +15,8 @@ Companion documents, in reading order:
 `P1_PLAN.md` (P1 pre-registration, left unedited) →
 `BASELINE.md` (P1 results and the base score) →
 `P3_PLAN.md` / `CALIBRATION.md` (calibration, ablation, the launch decision) →
-`P2_PLAN.md` / `PLAYER_PRIOR.md` (the player prior, and why it is descoped).
+`P2_PLAN.md` / `PLAYER_PRIOR.md` (the player prior, and why it is descoped) →
+`RUNBOOK.md` (how the thing is actually operated).
 
 ---
 
@@ -219,6 +220,20 @@ artifacts, so this is plumbing:
    football-data.co.uk fixtures CSV for E1–E3 and current prices.
    **Availability of that CSV has never been verified** — fallback is a manual
    entry UI.
+   **New option (2026-08-03):** `services/fbref_scraper/` is built, tested and
+   working — one fbref date page carries every competition, so a week of E0–EC
+   fixtures costs 7 requests. Probe results, architecture and caveats in
+   `docs/FBREF_SCRAPER.md`. No prices on fbref, so it covers fixtures/results
+   only, not the CLV feed. Unverified: comp ids for E0–E3 in the example TOML
+   (only 34/514/690 confirmed live), and the practical Cloudflare session
+   refresh cadence.
+   **SHELVED 2026-08-04 by owner decision.** Not wired into the serving path
+   and not to be enabled without a recorded decision. It is the fallback if
+   English rows never appear in the football-data.co.uk feed (§1.2), not the
+   default. Two reasons beyond the decision itself: it needs a *headed* browser
+   on a live desktop to refresh the Cloudflare session, which does not compose
+   with an unattended scheduled cycle (§4.3); and it carries no odds, so
+   `fixture_sync` is still required for CLV grading either way.
 3. `predictions` table writer — λ stored raw, pmf-derived 1X2 + O/U, version
    string, information-set tag, served-at.
 4. `web/` — SvelteKit fixture cards.
@@ -231,10 +246,32 @@ Per-population Platt recal fitted from stored λs with the poison test; OPEN-6
 interaction test (§3.3); CLV harness de-vigging PSCH with AvgCH fallback,
 backtested on dev seasons.
 
-### 4.3 Opening-weekend runbook
+### 4.3 Opening-weekend runbook — **BUILT 2026-08-04**
 
-Not written. Launch checklist per SPEC §6: flags off, dry-runs, append-only
-everywhere.
+`docs/RUNBOOK.md`, with `services/run_cycle.py` and `scripts/run_cycle.ps1`.
+
+The orchestrator runs sync → serve → grade as **independent** steps and always
+writes a `serving_state` row, including on failure. Three exit codes, and the
+distinction is load-bearing:
+
+    0  clean      2  ran but needs a look      1  a step failed
+
+`2` covers the failures that neither raise nor succeed — empty feed, unbridged
+club, unpriceable fixture, stale artifact. Collapsing `2` into `1` means being
+paged all summer for an out-of-season feed and then not reading the alerts.
+
+Two behaviours worth knowing about:
+
+- **The artifact refreezes itself** past `REFIT_AFTER_DAYS` (7), so a missed run
+  cannot leave a stale head pricing a weekend.
+- **`cycle.serve` now skips clubs the artifact has never seen** instead of
+  raising (`cycle.servable`). One National League newcomer used to take the
+  whole matchday down, Premier League included. Unknown clubs are still never
+  given a silent league average — they are reported by name and left unpriced.
+
+Verified against the live feed: `exit 2`, `NO ENGLISH ROWS`, which is the
+correct answer out of season and confirms the detector while it is cheap to
+confirm. **Still not done: alerting, hosting, DB backup** (§1.4–1.8).
 
 ---
 

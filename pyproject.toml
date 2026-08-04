@@ -15,6 +15,15 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# services/fbref_scraper only. curl_cffi impersonates Chrome's TLS fingerprint
+# and patchright drives a real Chrome; nothing else clears fbref's Cloudflare
+# challenge (docs/FBREF_SCRAPER.md §1).
+scrape = [
+    "curl_cffi>=0.15",
+    "patchright>=1.40",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+]
 
 [tool.setuptools.packages.find]
 include = ["engine*"]

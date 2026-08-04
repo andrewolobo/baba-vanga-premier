@@ -88,12 +88,40 @@ def pending_fixtures(conn: sqlite3.Connection, version: str,
     )
 
 
+def servable(fixtures: pd.DataFrame, artifact: Artifact) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Split pending fixtures into (can price, cannot).
+
+    `Artifact.predict` raises on a club it has never seen, deliberately, so that
+    a cold start is never hidden behind a silent league average. That is right
+    for a single call and wrong for a scheduled run: the corpus gains a club
+    almost every season and every one of them arrives in the National League, so
+    one newly-promoted side would otherwise take the whole matchday down with
+    it -- Premier League fixtures included.
+
+    Splitting keeps both properties. Unknown clubs are still never averaged over;
+    they are reported by name and left unpriced.
+    """
+    known = set(artifact.teams)
+    ok = fixtures["home_team"].isin(known) & fixtures["away_team"].isin(known)
+    return (fixtures[ok].reset_index(drop=True),
+            fixtures[~ok].reset_index(drop=True))
+
+
+def unknown_clubs(fixtures: pd.DataFrame, artifact: Artifact) -> list[str]:
+    """The club names in `fixtures` the artifact has never seen, sorted."""
+    named = set(fixtures["home_team"]) | set(fixtures["away_team"])
+    return sorted(named - set(artifact.teams))
+
+
 def serve(conn: sqlite3.Connection, artifact: Artifact, *,
           information_set: str = INFORMATION_SET, force: bool = False,
           dry_run: bool = False) -> pd.DataFrame:
-    """Price every pending fixture. Returns what was written."""
+    """Price every pending fixture the artifact knows. Returns what was written."""
     fixtures = pending_fixtures(conn, artifact.version,
                                information_set=information_set, force=force)
+    if fixtures.empty:
+        return fixtures
+    fixtures, _ = servable(fixtures, artifact)
     if fixtures.empty:
         return fixtures
 
@@ -159,6 +187,12 @@ def main(argv=None) -> int:
         print(f"using {artifact.version} (cutoff {artifact.fitted_at[:10]})")
     if not args.dry_run:
         register(conn, artifact, path)
+
+    _, unknown = servable(
+        pending_fixtures(conn, artifact.version, force=args.force), artifact)
+    if not unknown.empty:
+        print(f"skipping {len(unknown)} fixture(s); artifact has never seen: "
+              f"{', '.join(unknown_clubs(unknown, artifact))}")
 
     served = serve(conn, artifact, force=args.force, dry_run=args.dry_run)
     print(f"priced {len(served)} fixture(s)")

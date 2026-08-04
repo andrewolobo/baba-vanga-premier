@@ -1,0 +1,28 @@
+# Example settings for `python -m services.fbref_scraper --config <this file>`.
+# Every key is optional; anything omitted keeps the default in config.py, and
+# any CLI flag beats what is written here.
+
+# The English professional pyramid plus the domestic cups, by fbref comp id.
+# Leave this out (or set it empty) to keep every competition on the page --
+# a date page carries about fifty leagues worldwide.
+#
+# 34, 514 and 690 are confirmed against the 2026-08-08 probe page. The league
+# ids below come from fbref's published scheme and had no fixtures on that
+# date, so they are unconfirmed here; check the first in-season run keeps the
+# rows you expect before trusting the filter.
+comps = [
+    9,    # Premier League  (E0)
+    10,   # Championship    (E1)
+    15,   # League One      (E2)
+    16,   # League Two      (E3)
+    34,   # National League (EC)  -- confirmed
+    514,  # FA Cup               -- confirmed
+    690,  # EFL Cup              -- confirmed
+]
+
+format = "csv"
+out = "data/fbref/fixtures.csv"
+
+# Sports Reference blocks for roughly 24h above about 10 requests a minute.
+min_interval = 6.0
+retries = 1
