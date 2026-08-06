@@ -30,6 +30,11 @@ from engine.models import calibration as cal
 from engine.odds import breakeven_prob, devig_probs
 from engine.seasons import DEV_SEASONS, SERVED_DIVISIONS
 
+#: The head as it stood when P3 ran, pinned deliberately. Serving adopted the
+#: shots channel on 2026-08-04 (`SHOTS_TARGET.md`) and this does not follow it:
+#: `CALIBRATION.md`'s numbers were measured on the head below, so importing the
+#: live config would silently invalidate them. A P3 re-run against the new head
+#: is a new measurement and needs its own ledger row.
 SERVING_CONFIG = replace(BASE, half_life=400.0, alpha=0.1, embargo_regimes=())
 
 #: Seasons of history before a calibration is fitted at all.

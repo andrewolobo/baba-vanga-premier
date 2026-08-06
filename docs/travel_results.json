@@ -1,0 +1,93 @@
+{
+  "h36": {
+    "coefficient": {
+      "beta": -0.014652195492410258,
+      "stderr": 0.014887527097818576,
+      "t": 0.984192700113184,
+      "resolved": false
+    },
+    "arms": {
+      "A1 slope": {
+        "delta": 8.051980320606673e-05,
+        "ci_low": -0.00010364456879895772,
+        "ci_high": 0.0002603834726609185,
+        "stderr": 9.364248663875143e-05,
+        "n": 21896,
+        "n_blocks": 447,
+        "excludes_zero": false,
+        "verdict": "no difference",
+        "by_division": [
+          {
+            "division": "E0",
+            "n": 4088,
+            "delta": -0.00029194959214914336,
+            "ci_low": -0.000715283871624967,
+            "ci_high": 0.00015726926254829197,
+            "stderr": 0.00022641041716855634,
+            "n_blocks": 386,
+            "excludes_zero": false,
+            "verdict": "no difference"
+          },
+          {
+            "division": "E1",
+            "n": 5952,
+            "delta": 4.54134792260295e-05,
+            "ci_low": -0.0002801909146284234,
+            "ci_high": 0.00037011886363851255,
+            "stderr": 0.0001718915747760769,
+            "n_blocks": 387,
+            "excludes_zero": false,
+            "verdict": "no difference"
+          },
+          {
+            "division": "E2",
+            "n": 5908,
+            "delta": 0.00025443775842315624,
+            "ci_low": -8.874651866826431e-05,
+            "ci_high": 0.000616222629549323,
+            "stderr": 0.0001742951661673616,
+            "n_blocks": 423,
+            "excludes_zero": false,
+            "verdict": "no difference"
+          },
+          {
+            "division": "E3",
+            "n": 5948,
+            "delta": 0.0001988958033941494,
+            "ci_low": -0.0001859989036502281,
+            "ci_high": 0.0005762115669151372,
+            "stderr": 0.0001970820123726951,
+            "n_blocks": 415,
+            "excludes_zero": false,
+            "verdict": "no difference"
+          }
+        ]
+      },
+      "A2 bands": {
+        "delta": 7.284906465908515e-05,
+        "ci_low": -9.923845152100564e-05,
+        "ci_high": 0.0002547567958374788,
+        "stderr": 9.263616276215054e-05,
+        "n": 21896,
+        "n_blocks": 447,
+        "excludes_zero": false,
+        "verdict": "no difference"
+      }
+    },
+    "ou_a1": {
+      "delta": 0.00017985265353287968,
+      "ci_low": 7.997351754353067e-05,
+      "ci_high": 0.0002850037402694715,
+      "stderr": 5.233813633795125e-05,
+      "n": 21896,
+      "n_blocks": 447,
+      "excludes_zero": true,
+      "verdict": "second arm better"
+    },
+    "decision": {
+      "adopt": false,
+      "divisions_negative": 1,
+      "interval_excludes_zero": false
+    }
+  }
+}

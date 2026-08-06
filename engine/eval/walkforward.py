@@ -76,6 +76,11 @@ class WalkForwardConfig:
     season_boundary_shrink: float | None = None
     offseason_gap_days: float | None = None
     squad_prior: float | None = None
+    #: P4-shots. Weight on a shots-on-target strength fit, blended into the
+    #: goal-fitted strengths. None or 0.0 leaves the head bit-for-bit unchanged.
+    shots_blend: float | None = None
+    #: Which coefficients the blend touches: "both", "att" or "dfn" (H21).
+    shots_blend_sides: str = "both"
     embargo_regimes: tuple[str, ...] = ()
 
     def label(self) -> str:
@@ -87,6 +92,10 @@ class WalkForwardConfig:
             bits.append(f"gap{self.offseason_gap_days:g}")
         if self.squad_prior is not None:
             bits.append(f"prior{self.squad_prior:g}")
+        if self.shots_blend:
+            bits.append(f"sot{self.shots_blend:g}"
+                        + ("" if self.shots_blend_sides == "both"
+                           else f"-{self.shots_blend_sides}"))
         return "/".join(bits)
 
 
@@ -133,6 +142,14 @@ def effective_ages(dates: pd.Series, cutoff: pd.Timestamp,
 # --- a single fit ----------------------------------------------------------
 
 
+#: Decayed shots-on-target matches a club needs before the shots channel is
+#: allowed to move its strength. Below this the ridge would hand it `att_s ~ 0`,
+#: which is not "average" but fabricated -- and the National League has no shot
+#: statistics at all from 2016-17, so promoted clubs would carry that
+#: fabrication into E3. A club we cannot measure is left alone.
+MIN_SOT_EVIDENCE = 10.0
+
+
 @dataclass
 class _Indexed:
     """Team indices and arrays, built once and reused across every refit."""
@@ -143,11 +160,21 @@ class _Indexed:
     goals_a: np.ndarray
     dates: pd.Series
     in_fit_divisions: np.ndarray
+    sot_h: np.ndarray | None = None
+    sot_a: np.ndarray | None = None
+    has_sot: np.ndarray | None = None
 
 
 def _index(frame: pd.DataFrame, fit_divisions: tuple[str, ...]) -> _Indexed:
     teams = tuple(sorted(set(frame["home_team"]) | set(frame["away_team"])))
     lookup = {name: i for i, name in enumerate(teams)}
+    sot_h = sot_a = has_sot = None
+    if {"home_sot", "away_sot"} <= set(frame.columns):
+        raw_h = pd.to_numeric(frame["home_sot"], errors="coerce")
+        raw_a = pd.to_numeric(frame["away_sot"], errors="coerce")
+        has_sot = (raw_h.notna() & raw_a.notna()).to_numpy()
+        sot_h = raw_h.fillna(0).to_numpy(dtype=float)
+        sot_a = raw_a.fillna(0).to_numpy(dtype=float)
     return _Indexed(
         teams=teams,
         home_idx=frame["home_team"].map(lookup).to_numpy(),
@@ -156,7 +183,57 @@ def _index(frame: pd.DataFrame, fit_divisions: tuple[str, ...]) -> _Indexed:
         goals_a=frame["ftag"].astype(int).to_numpy(),
         dates=frame["match_date"],
         in_fit_divisions=frame["division"].isin(fit_divisions).to_numpy(),
+        sot_h=sot_h, sot_a=sot_a, has_sot=has_sot,
     )
+
+
+def _blend_shots(model, idx: _Indexed, rows: np.ndarray, weights: np.ndarray,
+                 cfg: WalkForwardConfig):
+    """Fold a shots-on-target strength fit into the goal-fitted strengths.
+
+    A second Poisson on the identical design matrix with sot as the count. Both
+    are log-link over the same teams at the same cutoff, so the coefficients
+    share a scale up to the intercept -- were conversion constant,
+    log E[goals] = log(conv) + log E[sot] exactly. They differ in magnitude
+    because sot counts are ~3.5x higher and so take relatively less shrinkage
+    from the same ridge, which the sd ratio below removes.
+
+    Blended per team and only where the club has real shot evidence. The
+    National League has no shot statistics from 2016-17, and the ridge would
+    hand those clubs `att_s ~ 0` -- not "average" but fabricated -- which a
+    promoted club would then carry into E3. See `MIN_SOT_EVIDENCE`.
+    """
+    if idx.has_sot is None:
+        return model
+    usable = rows & idx.has_sot
+    if usable.sum() < cfg.min_train_matches:
+        return model
+
+    # `weights` is ordered by the True positions of `rows`, so the same boolean
+    # restricted to those positions selects exactly the usable ones, in order.
+    w_sot = weights[idx.has_sot[rows]]
+    shots = poisson_model.fit(
+        idx.home_idx[usable], idx.away_idx[usable],
+        idx.sot_h[usable], idx.sot_a[usable],
+        w_sot, len(idx.teams), alpha=cfg.alpha,
+    )
+
+    evidence = (np.bincount(idx.home_idx[usable], w_sot, minlength=len(idx.teams))
+                + np.bincount(idx.away_idx[usable], w_sot, minlength=len(idx.teams)))
+    measured = evidence >= MIN_SOT_EVIDENCE
+    if not measured.any():
+        return model
+
+    def fold(base, other):
+        scale = base[measured].std() / other[measured].std() if other[measured].std() else 0.0
+        out = base.copy()
+        out[measured] = (1.0 - cfg.shots_blend) * base[measured] + \
+            cfg.shots_blend * other[measured] * scale
+        return out
+
+    att = fold(model.att, shots.att) if cfg.shots_blend_sides in ("both", "att") else model.att
+    dfn = fold(model.dfn, shots.dfn) if cfg.shots_blend_sides in ("both", "dfn") else model.dfn
+    return poisson_model.PoissonFit(model.intercept, model.home, att, dfn, model.n_train)
 
 
 def _fit_at(idx: _Indexed, cutoff: pd.Timestamp, cfg: WalkForwardConfig,
@@ -183,6 +260,9 @@ def _fit_at(idx: _Indexed, cutoff: pd.Timestamp, cfg: WalkForwardConfig,
         weights, len(idx.teams), alpha=cfg.alpha,
         prior_att=prior_att, prior_dfn=prior_dfn,
     )
+
+    if cfg.shots_blend:
+        model = _blend_shots(model, idx, rows, weights, cfg)
 
     stale_share = 0.0
     if cfg.season_boundary_shrink is not None:

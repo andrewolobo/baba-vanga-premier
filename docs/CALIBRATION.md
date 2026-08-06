@@ -1,7 +1,34 @@
 # P3-lite results — and the launch decision
 
 Run 2026-08-03 against the pre-registration in `P3_PLAN.md`. Every result is in
-`gate_ledger`; the ledger stands at **45 trials**.
+`gate_ledger`; the ledger stood at **45 trials** when this was written.
+
+> **STALE NUMBERS, STANDING DECISION — flagged 2026-08-04.**
+>
+> Every figure below was measured on the head as it was that day:
+> `H400 / a0.1 / weekly / E0+E1+E2+E3+EC`, **without** the shots channel. The
+> head was re-frozen on 2026-08-04 to adopt it (`SHOTS_TARGET.md`), so §2, §3
+> and §4 describe a model that is no longer served. `engine/eval/p3.py` pins the
+> old config deliberately so this document stays reproducible; re-running it
+> against the new head is a **new measurement** needing its own ledger row.
+>
+> **The decision in §5 is not stale.** Two reasons, neither of which is an
+> arithmetic patch:
+>
+> - §1's finding — that CLV must exceed the **vig**, not zero — is arithmetic
+>   about margin and holds for any head. So is §4's finding that positive CLV at
+>   average prices was an artifact of pricing a wide-margin consensus against a
+>   sharp close.
+> - §3's argument is structural, not marginal. The blend gives the model weight
+>   only if it adds information *given the price*, and the re-issued base score
+>   confirms **H9 still holds**: the head remains behind the market in every
+>   division on both served markets. A head still behind the price still earns
+>   near-zero weight beside it.
+>
+> **What cannot be claimed** is that the shortfall shrank by a computable
+> amount. The head improved by 0.00179 nats of 1X2 logloss; the shortfall is
+> 0.0186 in de-vigged probability. Those are different units and do not net off.
+> Anyone wanting the new number has to re-run P3, not subtract.
 
 **Headline: the book stays off at launch.** The head carries no exploitable
 information beyond the market price. That is now measured four independent

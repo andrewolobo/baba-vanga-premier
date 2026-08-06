@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Archivo:wght@400;500;600;700;800;900&family=Anton&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  @keyframes bracketIn { from { opacity: 0; transform: scale(0.92) rotate(-6deg); } to { opacity: 1; transform: none; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div style="display:flex;gap:56px;align-items:flex-start;padding:56px;background:#e7e2d8;min-width:max-content;font-family:'Archivo',system-ui,sans-serif;">
+
+  <!-- ===================== OPTION 1A : EDITORIAL BROADSHEET ===================== -->
+  <div id="1a" style="{{ va }}">
+    <div style="position:relative;width:1180px;background:var(--bg,#faf6ef);color:var(--ink,#211d18);border:1px solid var(--line,#e6ded0);box-shadow:0 30px 80px -30px rgba(40,30,20,0.35);overflow:hidden;">
+      <div style="position:absolute;top:20px;left:20px;z-index:20;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.1em;background:var(--ink,#211d18);color:var(--bg,#faf6ef);padding:5px 11px;border-radius:99px;">1a · BROADSHEET</div>
+
+      <div style="padding:64px 56px 48px;">
+
+        <!-- MASTHEAD -->
+        <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:18px;border-bottom:3px solid var(--ink,#211d18);">
+          <div>
+            <div style="display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:var(--accent,#e2542a);font-weight:600;">
+              <span style="width:9px;height:9px;border-radius:99px;background:var(--accent,#e2542a);display:inline-block;"></span> World Cup 2026 · Forecaster
+            </div>
+            <h1 style="font-family:'Newsreader',serif;font-weight:700;font-size:58px;line-height:0.96;letter-spacing:-0.025em;margin:10px 0 8px;color:var(--ink,#211d18);">The Knockout Ledger</h1>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#6b6459);">Poisson per-match over a Monte-Carlo bracket · <span style="color:var(--ink,#211d18);">Elo is the baseline to beat</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="text-align:right;line-height:1;padding-right:14px;border-right:1px solid var(--line,#e6ded0);">
+              <div style="font-family:'Newsreader',serif;font-weight:700;font-size:34px;color:var(--accent,#e2542a);">63%</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.16em;color:var(--ink2,#6b6459);margin-top:3px;">ACCURACY</div>
+            </div>
+            <button onClick="{{ toggleModelA }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;font-weight:600;padding:9px 13px;border-radius:99px;border:1px solid var(--ink,#211d18);background:var(--ink,#211d18);color:var(--bg,#faf6ef);">{{ modelLabelA }}</button>
+            <button onClick="{{ toggleThemeA }}" title="Toggle theme" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;font-weight:600;padding:9px 13px;border-radius:99px;border:1px solid var(--line,#e6ded0);background:transparent;color:var(--ink,#211d18);">{{ themeBtnA }}</button>
+          </div>
+        </header>
+
+        <!-- STATUS NOTE -->
+        <div style="display:flex;gap:14px;align-items:center;margin-top:22px;padding:14px 18px;background:var(--accentSoft,#fbe6dc);border-radius:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;font-weight:600;color:var(--accent,#e2542a);white-space:nowrap;">NOW LIVE</span>
+          <span style="font-size:14px;color:var(--ink,#211d18);line-height:1.4;">Group stage complete — the Round of 32 shows the real draw, with each tie graded green / red as it is played.</span>
+        </div>
+
+        <!-- ===== HERO: EXPERT INSIGHTS (lead story) ===== -->
+        <section style="margin-top:44px;">
+          <div style="display:flex;align-items:baseline;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink2,#6b6459);">
+            <span style="color:var(--accent,#e2542a);font-weight:600;">✦ Expert Insights</span>
+            <span>Match-day analysis · preview 2026-07-01 · gpt-5.4</span>
+          </div>
+          <h2 style="font-family:'Newsreader',serif;font-weight:700;font-size:46px;line-height:1.02;letter-spacing:-0.02em;margin:12px 0 4px;color:var(--ink,#211d18);max-width:20ch;">Favorites, with caveats.</h2>
+
+          <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:48px;margin-top:26px;">
+            <!-- narrative -->
+            <div>
+              <sc-for list="{{ analysis }}" as="para" hint-placeholder-count="3">
+                <p style="font-family:'Newsreader',serif;font-size:18px;line-height:1.62;color:var(--ink,#211d18);margin:0 0 18px;">{{ para.text }}</p>
+              </sc-for>
+              <div style="margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--ink3,#9a9284);border-top:1px solid var(--line,#e6ded0);padding-top:12px;">AI-generated analysis · for entertainment & information only · forecasts are probabilistic</div>
+            </div>
+            <!-- picks -->
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink2,#6b6459);margin-bottom:14px;">Top Expert Picks</div>
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <sc-for list="{{ picks }}" as="p" hint-placeholder-count="3">
+                  <article style="border:1px solid var(--line,#e6ded0);border-radius:14px;padding:18px;background:var(--surface,#fffdf9);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;color:var(--ink2,#6b6459);">{{ p.round }}</span>
+                      <span style="{{ p.confStyle }}">{{ p.conf }}</span>
+                    </div>
+                    <div style="font-size:13px;color:var(--ink2,#6b6459);margin-bottom:6px;">{{ p.a }} <span style="color:var(--ink3,#9a9284);">vs</span> {{ p.b }}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                      <span style="font-family:'Newsreader',serif;font-weight:700;font-size:26px;color:var(--ink,#211d18);">{{ p.pick }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink2,#6b6459);">model {{ p.model }}%</span>
+                    </div>
+                    <p style="font-size:13.5px;line-height:1.5;color:var(--ink,#211d18);margin:10px 0 12px;">{{ p.blurb }}</p>
+                    <div style="border:1px solid var(--line,#e6ded0);border-radius:10px;padding:11px 13px;background:var(--bg2,#f3ede2);">
+                      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink,#211d18);margin-bottom:8px;"><span style="font-weight:600;">{{ p.dlabel }}</span><span style="font-family:'IBM Plex Mono',monospace;color:var(--ink2,#6b6459);">margin {{ p.dmargin }}% · ≤15%</span></div>
+                      <div style="height:7px;border-radius:99px;background:var(--line,#e6ded0);overflow:hidden;"><div style="height:100%;width:{{ p.dwidth }}%;background:var(--accent,#e2542a);"></div></div>
+                      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2,#6b6459);margin-top:8px;">{{ p.dnote }}</div>
+                    </div>
+                    <sc-for list="{{ p.bullets }}" as="bl" hint-placeholder-count="0">
+                      <div style="display:flex;gap:8px;font-size:12.5px;color:var(--ink2,#6b6459);margin-top:8px;"><span style="color:var(--accent,#e2542a);">▪</span>{{ bl.text }}</div>
+                    </sc-for>
+                    <div style="display:flex;align-items:center;gap:7px;margin-top:13px;padding-top:11px;border-top:1px solid var(--line,#e6ded0);font-size:12px;font-weight:600;color:var(--good,#3f9b6a);">✓ Aligns with model</div>
+                  </article>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== UPCOMING FIXTURES ===== -->
+        <section style="margin-top:48px;padding-top:36px;border-top:1px solid var(--line,#e6ded0);">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:18px;">
+            <h3 style="font-family:'Newsreader',serif;font-weight:700;font-size:30px;margin:0;color:var(--ink,#211d18);">Upcoming fixtures</h3>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#6b6459);">9 matches over 3 days · select a day</span>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+            <sc-for list="{{ days }}" as="d" hint-placeholder-count="3">
+              <button onClick="{{ d.onA }}" style="{{ d.tabStyleA }}">
+                <span style="font-weight:700;font-size:14px;">{{ d.label }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:0.7;">{{ d.count }} matches</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <sc-for list="{{ fxA }}" as="m" hint-placeholder-count="3">
+              <article style="border:1px solid var(--line,#e6ded0);border-radius:14px;padding:18px;background:var(--surface,#fffdf9);">
+                <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--ink2,#6b6459);margin-bottom:14px;"><span style="font-weight:600;color:var(--ink,#211d18);">{{ m.round }}</span><span>{{ m.city }}</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;"><span style="font-family:'Newsreader',serif;font-weight:700;font-size:20px;color:var(--ink,#211d18);">{{ m.a }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--accent,#e2542a);">{{ m.pa }}%</span></div>
+                <div style="height:8px;border-radius:99px;background:var(--line,#e6ded0);display:flex;overflow:hidden;gap:2px;margin:8px 0;"><div style="width:{{ m.pa }}%;background:var(--accent,#e2542a);"></div><div style="width:{{ m.pb }}%;background:var(--ink3,#9a9284);"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:16px;color:var(--ink2,#6b6459);">{{ m.b }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink2,#6b6459);">{{ m.pb }}%</span></div>
+                <div style="margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2,#6b6459);">likely <span style="color:var(--ink,#211d18);font-weight:600;">{{ m.likely }}</span></div>
+              </article>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- ===== SIGNATURE: CIRCULAR KNOCKOUT BRACKET ===== -->
+        <section style="margin-top:52px;padding-top:36px;border-top:1px solid var(--line,#e6ded0);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:8px;">
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#e2542a);font-weight:600;">The Road to the Final</div>
+              <h3 style="font-family:'Newsreader',serif;font-weight:700;font-size:30px;margin:6px 0 0;color:var(--ink,#211d18);">Knockout bracket</h3>
+            </div>
+            <div style="display:flex;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2,#6b6459);">
+              <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:99px;background:var(--accent,#e2542a);"></span>advanced</span>
+              <span style="display:flex;align-items:center;gap:6px;"><span style="width:10px;height:10px;border-radius:99px;border:1.5px solid var(--line,#e6ded0);"></span>eliminated</span>
+            </div>
+          </div>
+          <div style="max-width:820px;margin:0 auto;animation:bracketIn 0.9s cubic-bezier(.2,.7,.2,1) both;">{{ bracketA }}</div>
+          <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink3,#9a9284);margin-top:4px;">Round of 32 on the rim → the trophy at the core · projected champion <span style="color:var(--accent,#e2542a);font-weight:600;">Argentina (16.1%)</span> · 40k Monte-Carlo brackets</div>
+        </section>
+
+        <!-- ===== TITLE ODDS ===== -->
+        <section style="margin-top:52px;padding-top:36px;border-top:1px solid var(--line,#e6ded0);">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:18px;">
+            <h3 style="font-family:'Newsreader',serif;font-weight:700;font-size:30px;margin:0;color:var(--ink,#211d18);">Title odds</h3>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#6b6459);">Monte-Carlo bracket · top 12</span>
+          </div>
+          <div style="display:flex;flex-direction:column;">
+            <div style="display:grid;grid-template-columns:26px 1.6fr 1fr 64px 64px 64px;gap:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--ink3,#9a9284);padding:0 0 8px;border-bottom:1px solid var(--line,#e6ded0);">
+              <span>#</span><span>TEAM</span><span></span><span style="text-align:right;">SF%</span><span style="text-align:right;">FINAL%</span><span style="text-align:right;">TITLE%</span>
+            </div>
+            <sc-for list="{{ odds }}" as="o" hint-placeholder-count="12">
+              <div style="display:grid;grid-template-columns:26px 1.6fr 1fr 64px 64px 64px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line,#e6ded0);">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink3,#9a9284);">{{ o.rank }}</span>
+                <span style="font-weight:600;font-size:15px;color:var(--ink,#211d18);">{{ o.team }} <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink3,#9a9284);">{{ o.grp }}</span></span>
+                <span style="height:7px;border-radius:99px;background:var(--line,#e6ded0);overflow:hidden;"><span style="display:block;height:100%;width:{{ o.w }}%;background:var(--accent,#e2542a);"></span></span>
+                <span style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink2,#6b6459);">{{ o.sf }}</span>
+                <span style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink2,#6b6459);">{{ o.fin }}</span>
+                <span style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--accent,#e2542a);">{{ o.title }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- ===== GROUP STANDINGS ===== -->
+        <section style="margin-top:52px;padding-top:36px;border-top:1px solid var(--line,#e6ded0);">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:18px;">
+            <h3 style="font-family:'Newsreader',serif;font-weight:700;font-size:30px;margin:0;color:var(--ink,#211d18);">Group standings</h3>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#6b6459);">points · GD · goals · top 2 advance</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="12">
+              <div style="border:1px solid var(--line,#e6ded0);border-radius:12px;overflow:hidden;background:var(--surface,#fffdf9);">
+                <div style="padding:10px 12px;background:var(--bg2,#f3ede2);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;font-weight:600;color:var(--ink,#211d18);border-bottom:1px solid var(--line,#e6ded0);">GROUP {{ g.name }}</div>
+                <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
+                  <div style="{{ r.rowStyle }}">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink3,#9a9284);width:12px;">{{ r.pos }}</span>
+                    <span style="flex:1;font-size:12.5px;font-weight:600;color:var(--ink,#211d18);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.team }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2,#6b6459);width:34px;text-align:right;">{{ r.gd }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:var(--ink,#211d18);width:20px;text-align:right;">{{ r.pts }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- ===== COMPLETED MATCHES ===== -->
+        <section style="margin-top:52px;padding-top:36px;border-top:1px solid var(--line,#e6ded0);">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:18px;flex-wrap:wrap;">
+            <h3 style="font-family:'Newsreader',serif;font-weight:700;font-size:30px;margin:0;color:var(--ink,#211d18);">Completed matches</h3>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#6b6459);">79 played · <span style="color:var(--good,#3f9b6a);font-weight:600;">50 correct (63%)</span> · mean Brier 0.529</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+            <sc-for list="{{ completed }}" as="c" hint-placeholder-count="12">
+              <article style="{{ c.cardStyle }}">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink3,#9a9284);margin-bottom:10px;">{{ c.date }}</div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="{{ c.homeStyle }}">{{ c.home }}</span><span style="font-family:'Newsreader',serif;font-weight:700;font-size:20px;color:var(--ink,#211d18);">{{ c.hs }}</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;"><span style="{{ c.awayStyle }}">{{ c.away }}</span><span style="font-family:'Newsreader',serif;font-weight:700;font-size:20px;color:var(--ink,#211d18);">{{ c.as }}</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:10px;border-top:1px solid var(--line,#e6ded0);font-family:'IBM Plex Mono',monospace;font-size:11px;"><span style="{{ c.tagStyle }}">{{ c.tag }}</span><span style="color:var(--ink3,#9a9284);">Brier {{ c.brier }}</span></div>
+              </article>
+            </sc-for>
+          </div>
+          <div style="text-align:center;margin-top:20px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent,#e2542a);border-bottom:1px solid var(--accent,#e2542a);padding-bottom:2px;cursor:pointer;">View all completed matches →</span></div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== OPTION 1B : POSTER / STADIUM ===================== -->
+  <div id="1b" style="{{ vb }}">
+    <div style="position:relative;width:1180px;background:var(--bg,#151210);color:var(--ink,#f3ede2);border:1px solid var(--line,#332d24);box-shadow:0 30px 80px -30px rgba(0,0,0,0.6);overflow:hidden;">
+      <div style="position:absolute;top:20px;left:20px;z-index:20;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.1em;background:var(--accent,#f5713f);color:#fff;padding:5px 11px;border-radius:99px;">1b · STADIUM</div>
+
+      <div style="padding:64px 52px 48px;">
+
+        <!-- MASTHEAD -->
+        <header style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:var(--accent,#f5713f);font-weight:600;margin-bottom:6px;">
+              <span style="width:9px;height:9px;border-radius:99px;background:var(--accent,#f5713f);display:inline-block;"></span> World Cup 2026 · Forecaster
+            </div>
+            <h1 style="font-family:'Anton',sans-serif;font-weight:400;font-size:88px;line-height:0.84;letter-spacing:-0.01em;margin:0;text-transform:uppercase;color:var(--ink,#f3ede2);">The Road<br><span style="color:var(--accent,#f5713f);">to the Final</span></h1>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#a99f8f);margin-top:14px;">Poisson per-match · Monte-Carlo bracket · Elo is the baseline to beat</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:9px;">
+            <div style="text-align:center;line-height:0.9;padding:12px 16px;background:var(--accent,#f5713f);border-radius:14px;">
+              <div style="font-family:'Anton',sans-serif;font-size:38px;color:#fff;">63%</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.16em;color:rgba(255,255,255,0.85);margin-top:4px;">ACCURACY</div>
+            </div>
+            <button onClick="{{ toggleModelB }}" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;font-weight:600;padding:9px 13px;border-radius:99px;border:1px solid var(--ink,#f3ede2);background:var(--ink,#f3ede2);color:var(--bg,#151210);">{{ modelLabelB }}</button>
+            <button onClick="{{ toggleThemeB }}" title="Toggle theme" style="cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;font-weight:600;padding:9px 13px;border-radius:99px;border:1px solid var(--line,#332d24);background:transparent;color:var(--ink,#f3ede2);">{{ themeBtnB }}</button>
+          </div>
+        </header>
+
+        <!-- STATUS NOTE -->
+        <div style="display:flex;gap:12px;align-items:center;margin-top:24px;padding:12px 16px;background:var(--accentSoft,#3a251b);border:1px solid var(--accent,#f5713f);border-radius:99px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;font-weight:600;color:var(--accent,#f5713f);white-space:nowrap;">● LIVE</span>
+          <span style="font-size:13.5px;color:var(--ink,#f3ede2);">Group stage complete — the Round of 32 shows the real draw, graded as it is played.</span>
+        </div>
+
+        <!-- ===== SIGNATURE: CIRCULAR BRACKET as centerpiece hero ===== -->
+        <section style="margin-top:40px;position:relative;">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+            <div style="width:520px;height:520px;border-radius:50%;background:radial-gradient(circle, var(--accentSoft,#3a251b) 0%, transparent 70%);"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:center;position:relative;">
+            <div style="animation:bracketIn 1s cubic-bezier(.2,.7,.2,1) both;">{{ bracketB }}</div>
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent,#f5713f);font-weight:600;">Knockout bracket</div>
+              <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:34px;line-height:0.95;margin:8px 0 12px;text-transform:uppercase;color:var(--ink,#f3ede2);">32 teams,<br>one core.</h3>
+              <p style="font-size:14px;line-height:1.55;color:var(--ink2,#a99f8f);margin:0 0 18px;">Round of 32 rides the rim; win and you spiral inward. The Final sits at the core — projected champion from 40k Monte-Carlo brackets.</p>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <span style="display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink,#f3ede2);"><span style="width:12px;height:12px;border-radius:99px;background:var(--accent,#f5713f);box-shadow:0 0 8px var(--accent);"></span> advanced</span>
+                <span style="display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#a99f8f);"><span style="width:12px;height:12px;border-radius:99px;border:1.5px solid var(--line,#332d24);"></span> eliminated</span>
+              </div>
+              <div style="margin-top:22px;padding:16px;background:var(--surface,#211c17);border-radius:14px;border:1px solid var(--line,#332d24);">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;color:var(--ink2,#a99f8f);">PROJECTED CHAMPION</div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;"><span style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;color:var(--ink,#f3ede2);">Argentina</span><span style="font-family:'Anton',sans-serif;font-size:30px;color:var(--accent,#f5713f);">16.1%</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== EXPERT INSIGHTS ===== -->
+        <section style="margin-top:52px;padding-top:34px;border-top:1px solid var(--line,#332d24);">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
+            <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:40px;text-transform:uppercase;margin:0;color:var(--ink,#f3ede2);">Expert Insights</h3>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;color:var(--ink2,#a99f8f);margin-bottom:24px;">MATCH-DAY ANALYSIS · PREVIEW 2026-07-01 · GPT-5.4</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;">
+            <div>
+              <div style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;color:var(--accent,#f5713f);margin-bottom:14px;">Favorites, with caveats.</div>
+              <sc-for list="{{ analysis }}" as="para" hint-placeholder-count="3">
+                <p style="font-size:15px;line-height:1.6;color:var(--ink,#f3ede2);margin:0 0 16px;">{{ para.text }}</p>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ picksB }}" as="p" hint-placeholder-count="3">
+                <article style="border:1px solid var(--line,#332d24);border-radius:16px;padding:18px;background:var(--surface,#211c17);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;color:var(--ink2,#a99f8f);">{{ p.a }} vs {{ p.b }}</span>
+                    <span style="{{ p.confStyle }}">{{ p.conf }}</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                    <span style="font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;color:var(--ink,#f3ede2);">{{ p.pick }}</span>
+                    <span style="font-family:'Anton',sans-serif;font-size:30px;color:var(--accent,#f5713f);">{{ p.model }}%</span>
+                  </div>
+                  <p style="font-size:13px;line-height:1.5;color:var(--ink2,#a99f8f);margin:8px 0 12px;">{{ p.blurb }}</p>
+                  <div style="height:8px;border-radius:99px;background:var(--bg2,#1d1914);overflow:hidden;"><div style="height:100%;width:{{ p.dwidth }}%;background:var(--accent,#f5713f);"></div></div>
+                  <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink2,#a99f8f);"><span>{{ p.dnote }}</span><span style="color:var(--good,#57ba86);font-weight:600;">✓ aligns</span></div>
+                </article>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== UPCOMING FIXTURES ===== -->
+        <section style="margin-top:52px;padding-top:34px;border-top:1px solid var(--line,#332d24);">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+            <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:40px;text-transform:uppercase;margin:0;color:var(--ink,#f3ede2);">Upcoming</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <sc-for list="{{ days }}" as="d" hint-placeholder-count="3">
+                <button onClick="{{ d.onB }}" style="{{ d.tabStyleB }}"><span style="font-weight:700;font-size:13px;">{{ d.label }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:0.75;">{{ d.count }}</span></button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <sc-for list="{{ fxB }}" as="m" hint-placeholder-count="3">
+              <article style="border:1px solid var(--line,#332d24);border-radius:16px;padding:20px;background:var(--surface,#211c17);">
+                <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--ink2,#a99f8f);margin-bottom:16px;"><span style="color:var(--accent,#f5713f);font-weight:600;">{{ m.round }}</span><span>{{ m.city }}</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;color:var(--ink,#f3ede2);">{{ m.a }}</span><span style="font-family:'Anton',sans-serif;font-size:26px;color:var(--accent,#f5713f);">{{ m.pa }}%</span></div>
+                <div style="height:9px;border-radius:99px;background:var(--bg2,#1d1914);display:flex;overflow:hidden;gap:2px;margin:10px 0;"><div style="width:{{ m.pa }}%;background:var(--accent,#f5713f);"></div><div style="width:{{ m.pb }}%;background:var(--ink3,#78705f);"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:16px;color:var(--ink2,#a99f8f);">{{ m.b }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink2,#a99f8f);">{{ m.pb }}%</span></div>
+                <div style="margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2,#a99f8f);">likely <span style="color:var(--ink,#f3ede2);font-weight:600;">{{ m.likely }}</span></div>
+              </article>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- ===== TITLE ODDS ===== -->
+        <section style="margin-top:52px;padding-top:34px;border-top:1px solid var(--line,#332d24);">
+          <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:40px;text-transform:uppercase;margin:0 0 20px;color:var(--ink,#f3ede2);">Title Race</h3>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px 40px;">
+            <sc-for list="{{ odds }}" as="o" hint-placeholder-count="12">
+              <div style="display:grid;grid-template-columns:24px 1fr 56px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line,#332d24);">
+                <span style="font-family:'Anton',sans-serif;font-size:18px;color:var(--ink3,#78705f);">{{ o.rank }}</span>
+                <span>
+                  <span style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-weight:700;font-size:15px;color:var(--ink,#f3ede2);">{{ o.team }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink3,#78705f);">grp {{ o.grp }}</span></span>
+                  <span style="display:block;height:6px;border-radius:99px;background:var(--bg2,#1d1914);overflow:hidden;margin-top:5px;"><span style="display:block;height:100%;width:{{ o.w }}%;background:var(--accent,#f5713f);"></span></span>
+                </span>
+                <span style="text-align:right;font-family:'Anton',sans-serif;font-size:20px;color:var(--accent,#f5713f);">{{ o.title }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- ===== GROUP STANDINGS ===== -->
+        <section style="margin-top:52px;padding-top:34px;border-top:1px solid var(--line,#332d24);">
+          <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:40px;text-transform:uppercase;margin:0 0 20px;color:var(--ink,#f3ede2);">Group Standings</h3>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+            <sc-for list="{{ groupsB }}" as="g" hint-placeholder-count="12">
+              <div style="border:1px solid var(--line,#332d24);border-radius:14px;overflow:hidden;background:var(--surface,#211c17);">
+                <div style="padding:10px 12px;background:var(--bg2,#1d1914);font-family:'Anton',sans-serif;font-size:15px;letter-spacing:0.04em;color:var(--accent,#f5713f);text-transform:uppercase;">Group {{ g.name }}</div>
+                <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
+                  <div style="{{ r.rowStyle }}">
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink3,#78705f);width:12px;">{{ r.pos }}</span>
+                    <span style="flex:1;font-size:12.5px;font-weight:600;color:var(--ink,#f3ede2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.team }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2,#a99f8f);width:34px;text-align:right;">{{ r.gd }}</span>
+                    <span style="font-family:'Anton',sans-serif;font-size:15px;color:var(--ink,#f3ede2);width:22px;text-align:right;">{{ r.pts }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <!-- ===== COMPLETED MATCHES ===== -->
+        <section style="margin-top:52px;padding-top:34px;border-top:1px solid var(--line,#332d24);">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:20px;flex-wrap:wrap;">
+            <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:40px;text-transform:uppercase;margin:0;color:var(--ink,#f3ede2);">Results</h3>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink2,#a99f8f);">79 played · <span style="color:var(--good,#57ba86);font-weight:600;">63% correct</span> · Brier 0.529</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+            <sc-for list="{{ completedB }}" as="c" hint-placeholder-count="12">
+              <article style="{{ c.cardStyle }}">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink3,#78705f);margin-bottom:10px;">{{ c.date }}</div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="{{ c.homeStyle }}">{{ c.home }}</span><span style="font-family:'Anton',sans-serif;font-size:22px;color:var(--ink,#f3ede2);">{{ c.hs }}</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;"><span style="{{ c.awayStyle }}">{{ c.away }}</span><span style="font-family:'Anton',sans-serif;font-size:22px;color:var(--ink,#f3ede2);">{{ c.as }}</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:10px;border-top:1px solid var(--line,#332d24);font-family:'IBM Plex Mono',monospace;font-size:11px;"><span style="{{ c.tagStyle }}">{{ c.tag }}</span><span style="color:var(--ink3,#78705f);">Brier {{ c.brier }}</span></div>
+              </article>
+            </sc-for>
+          </div>
+          <div style="text-align:center;margin-top:22px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent,#f5713f);border:1px solid var(--accent,#f5713f);border-radius:99px;padding:8px 18px;cursor:pointer;">View all completed matches →</span></div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { themeA: 'light', themeB: 'dark', dayA: 0, dayB: 0, modelA: false, modelB: false };
+
+  L = { bg:'#faf6ef', bg2:'#f2ece1', surface:'#fffdf8', ink:'#221d17', ink2:'#6d6559', ink3:'#9d9484', line:'#e7dfd1', accent:'#e2542a', accentSoft:'#fbe7dd', good:'#3f9b6a', bad:'#cf4a3e', gold:'#b98a2c' };
+  D = { bg:'#151210', bg2:'#1d1914', surface:'#211c17', ink:'#f3ede2', ink2:'#a99f8f', ink3:'#78705f', line:'#332d24', accent:'#f5713f', accentSoft:'#3a251b', good:'#57ba86', bad:'#e26c60', gold:'#dcaf4f' };
+
+  vars(mode){ const t = mode==='dark'?this.D:this.L; return Object.keys(t).map(k=>'--'+k+':'+t[k]).join(';')+';'; }
+
+  ANALYSIS = [
+    "The knockout slate is defined by favorites with caveats. England carry the clearest overall case after winning their group and holding the edge in Elo, squad strength and title odds — and this is the one match where the market is even more convinced than the model. Still, the expected script is no runaway: a likely low-margin game, with England's earlier blunt spell against Ghana keeping confidence at medium.",
+    "The biggest tension of the day is USA vs Bosnia & Herzegovina, where model and market split sharply. The USA topped their group, scored freely and arrive off a 4–1 win over Paraguay; Bosnia advanced from third with a negative goal difference and a shakier defense. The résumé favors the USA, but a near toss-up model view makes this far less comfortable than the market suggests.",
+    "Belgium vs Senegal is the standout coin-flip. The model has it essentially level and the market gives Belgium only a slight nudge, so the lean rests on Belgium's steadier group control — first place, two goals conceded. Senegal bring volatility, scoring well but losing twice, which makes this the hardest match on the board to trust."
+  ];
+
+  PICKS = [
+    { round:'ROUND OF 32', conf:'MEDIUM', a:'England', b:'DR Congo', pick:'England', model:55, blurb:"England's superior quality is reinforced by a notably stronger market lean.", dlabel:'Win/Draw tightness', dmargin:35, dnote:'clear-ish favourite → straight win', bullets:[] },
+    { round:'ROUND OF 32', conf:'LOW', a:'USA', b:'Bosnia & Herzegovina', pick:'USA', model:39, blurb:'USA have the stronger résumé, but model–market disagreement keeps confidence down.', dlabel:'Win/Draw: USA or Draw', dmargin:7, dnote:'fair 1.48 — tight enough to lean win/draw', bullets:[] },
+    { round:'ROUND OF 32', conf:'LOW', a:'Belgium', b:'Senegal', pick:'Belgium', model:36, blurb:'Almost even on paper, with only a slight Belgium edge from market and group control.', dlabel:'Win/Draw: Belgium or Draw', dmargin:4, dnote:'fair 1.56 — tight enough to lean win/draw', bullets:['Model sees near dead heat','Market gives Belgium a slight edge','Belgium won group, allowed only 2 goals','Belgium model track record is weak'] }
+  ];
+
+  FIXTURES = [
+    { label:'Wed, Jul 1', count:3, matches:[
+      { round:'ROUND OF 32', city:'Philadelphia', a:'England', pa:55, b:'DR Congo', pb:25, likely:'1-0' },
+      { round:'ROUND OF 32', city:'Dallas (Arlington)', a:'USA', pa:39, b:'Bosnia & Herzegovina', pb:33, likely:'1-1' },
+      { round:'ROUND OF 32', city:'Atlanta', a:'Belgium', pa:36, b:'Senegal', pb:34, likely:'1-1' } ]},
+    { label:'Thu, Jul 2', count:3, matches:[
+      { round:'ROUND OF 32', city:'Seattle', a:'Spain', pa:71, b:'Uruguay', pb:12, likely:'2-0' },
+      { round:'ROUND OF 32', city:'Boston (Foxboro)', a:'Germany', pa:48, b:'Ecuador', pb:27, likely:'2-1' },
+      { round:'ROUND OF 32', city:'Houston', a:'Netherlands', pa:58, b:'Japan', pb:22, likely:'2-1' } ]},
+    { label:'Fri, Jul 3', count:3, matches:[
+      { round:'ROUND OF 32', city:'Miami (Miami Gardens)', a:'Argentina', pa:66, b:'Cape Verde', pb:13, likely:'2-0' },
+      { round:'ROUND OF 32', city:'Kansas City', a:'Colombia', pa:55, b:'Ghana', pb:20, likely:'1-0' },
+      { round:'ROUND OF 32', city:'Dallas (Arlington)', a:'Egypt', pa:37, b:'Australia', pb:35, likely:'1-0' } ]}
+  ];
+
+  ODDS = [['Argentina','J',42.9,27.3,16.1],['Spain','H',34.8,22.3,14.2],['France','I',32.2,18.9,11.3],['England','L',25.7,14.0,7.3],['Netherlands','F',20.2,10.0,5.1],['Brazil','C',19.7,10.3,5.0],['Colombia','K',18.9,9.5,4.4],['Portugal','K',15.3,8.1,4.2],['Germany','E',15.3,7.2,3.5],['Norway','I',13.4,6.3,2.9],['Switzerland','B',13.5,6.2,2.6],['Belgium','G',11.8,5.3,2.3]];
+
+  G = [
+    ['A',[['Mexico',6,0,'+6',9,1],['South Africa',2,3,'−1',4,1],['South Korea',2,3,'−1',3,0],['Czech Republic',2,6,'−4',1,0]]],
+    ['B',[['Switzerland',7,3,'+4',7,1],['Canada',8,3,'+5',4,1],['Bosnia & Herz.',5,6,'−1',4,0],['Qatar',2,10,'−8',1,0]]],
+    ['C',[['Brazil',7,1,'+6',7,1],['Morocco',6,3,'+3',7,1],['Scotland',1,4,'−3',3,0],['Haiti',2,8,'−6',0,0]]],
+    ['D',[['USA',8,4,'+4',6,1],['Australia',2,2,'0',4,1],['Paraguay',2,4,'−2',4,0],['Turkey',3,5,'−2',3,0]]],
+    ['E',[['Germany',10,4,'+6',6,1],['Ivory Coast',4,2,'+2',6,1],['Ecuador',2,2,'0',4,0],['Curaçao',1,9,'−8',1,0]]],
+    ['F',[['Netherlands',10,4,'+6',7,1],['Japan',7,3,'+4',5,1],['Sweden',7,7,'0',4,0],['Tunisia',2,12,'−10',0,0]]],
+    ['G',[['Belgium',6,2,'+4',5,1],['Egypt',5,3,'+2',5,1],['Iran',3,3,'0',3,0],['New Zealand',4,10,'−6',1,0]]],
+    ['H',[['Spain',5,0,'+5',7,1],['Cape Verde',2,2,'0',3,1],['Uruguay',3,4,'−1',2,0],['Saudi Arabia',1,5,'−4',2,0]]],
+    ['I',[['France',10,2,'+8',9,1],['Norway',8,7,'+1',6,1],['Senegal',8,6,'+2',3,0],['Iraq',1,12,'−11',0,0]]],
+    ['J',[['Argentina',8,1,'+7',9,1],['Austria',6,6,'0',4,1],['Algeria',5,7,'−2',4,0],['Jordan',3,8,'−5',0,0]]],
+    ['K',[['Colombia',4,1,'+3',7,1],['Portugal',6,1,'+5',5,1],['DR Congo',4,3,'+1',4,0],['Uzbekistan',2,11,'−9',0,0]]],
+    ['L',[['England',6,2,'+4',7,1],['Croatia',5,5,'0',6,1],['Ghana',2,2,'0',4,0],['Panama',0,4,'−4',0,0]]]
+  ];
+
+  COMPLETED = [
+    ['2026-06-17','England',4,'Croatia',2,'correct',0.47],
+    ['2026-06-16','Argentina',3,'Algeria',0,'correct',0.25],
+    ['2026-06-16','France',3,'Senegal',1,'correct',0.37],
+    ['2026-06-16','Austria',3,'Jordan',1,'correct',0.21],
+    ['2026-06-14','Germany',7,'Curaçao',1,'correct',0.24],
+    ['2026-06-14','Sweden',5,'Tunisia',1,'correct',0.48],
+    ['2026-06-14','Netherlands',2,'Japan',2,'draw',0.79],
+    ['2026-06-13','Australia',2,'Turkey',0,'wrong',0.84],
+    ['2026-06-13','Brazil',1,'Morocco',1,'draw',0.81],
+    ['2026-06-12','USA',4,'Paraguay',1,'correct',0.59],
+    ['2026-06-11','South Korea',2,'Czech Republic',1,'wrong',0.64],
+    ['2026-06-11','Mexico',2,'South Africa',0,'correct',0.23]
+  ];
+
+  buildBracket(variant){
+    const h = React.createElement;
+    const R32=["Canada","South Africa","France","Sweden","Brazil","Japan","Norway","Ivory Coast","Mexico","Ecuador","Germany","Paraguay","Netherlands","Morocco","Argentina","Cape Verde","Colombia","Ghana","England","DR Congo","USA","Bosnia","Belgium","Senegal","Spain","Uruguay","Portugal","Iran","Switzerland","Austria","Croatia","Egypt"];
+    const R16=["Canada","France","Brazil","Norway","Mexico","Germany","Netherlands","Argentina","Colombia","England","USA","Belgium","Spain","Portugal","Switzerland","Croatia"];
+    const QF=["France","Brazil","Germany","Argentina","England","Belgium","Spain","Croatia"];
+    const SF=["France","Argentina","England","Spain"];
+    const FN=["Argentina","Spain"];
+    const rounds=[R32,R16,QF,SF,FN,["Argentina"]];
+    const radii=[420,338,256,180,110,0];
+    const cx=480, cy=480, bold = variant==='b';
+    const CODE={"Canada":"CAN","South Africa":"RSA","France":"FRA","Sweden":"SWE","Brazil":"BRA","Japan":"JPN","Norway":"NOR","Ivory Coast":"CIV","Mexico":"MEX","Ecuador":"ECU","Germany":"GER","Paraguay":"PAR","Netherlands":"NED","Morocco":"MAR","Argentina":"ARG","Cape Verde":"CPV","Colombia":"COL","Ghana":"GHA","England":"ENG","DR Congo":"COD","USA":"USA","Bosnia":"BIH","Belgium":"BEL","Senegal":"SEN","Spain":"ESP","Uruguay":"URU","Portugal":"POR","Iran":"IRN","Switzerland":"SUI","Austria":"AUT","Croatia":"CRO","Egypt":"EGY"};
+    const ang=(i,N)=>((i+0.5)*(2*Math.PI/N))-Math.PI/2;
+    const pt=(r,a)=>[cx+r*Math.cos(a), cy+r*Math.sin(a)];
+    const adv=(name,L)=> L<5 && rounds[L+1].indexOf(name)>=0;
+    const els=[];
+    const lineCol='var(--line,#e7dfd1)', accCol='var(--accent,#e2542a)', inkCol='var(--ink,#221d17)', ink3='var(--ink3,#9d9484)', surf='var(--surface,#fffdf8)';
+    const baseW=bold?1.4:1, accW=bold?2.4:1.7;
+    // ---- staple connectors: radial spoke -> concentric arc -> inward spoke ----
+    for(let L=0;L<5;L++){
+      const N=rounds[L].length, M=rounds[L+1].length, rL=radii[L], rP=radii[L+1], rB=(rL+rP)/2;
+      for(let j=0;j<M;j++){
+        const aA=ang(2*j,N), aB=ang(2*j+1,N), aP=ang(j,M);
+        const cAadv=adv(rounds[L][2*j],L), cBadv=adv(rounds[L][2*j+1],L);
+        const pAdv=(L+1<5)?adv(rounds[L+1][j],L+1):true;
+        const spoke=(r1,r2,a,on,key)=>{const p1=pt(r1,a),p2=pt(r2,a);els.push(h('line',{key:key,x1:p1[0],y1:p1[1],x2:p2[0],y2:p2[1],stroke:on?accCol:lineCol,strokeWidth:on?accW:baseW,strokeOpacity:on?0.95:0.6,strokeLinecap:'round'}));};
+        const arc=(a1,a2,on,key)=>{const p1=pt(rB,a1),p2=pt(rB,a2);els.push(h('path',{key:key,d:'M'+p1[0]+' '+p1[1]+' A'+rB+' '+rB+' 0 0 '+(a2>a1?1:0)+' '+p2[0]+' '+p2[1],fill:'none',stroke:on?accCol:lineCol,strokeWidth:on?accW:baseW,strokeOpacity:on?0.95:0.6,strokeLinecap:'round'}));};
+        spoke(rL,rB,aA,cAadv,'sa'+L+j);
+        spoke(rL,rB,aB,cBadv,'sb'+L+j);
+        arc(aA,aP,cAadv,'ara'+L+j);
+        arc(aP,aB,cBadv,'arb'+L+j);
+        spoke(rB,rP,aP,pAdv,'sp'+L+j);
+        const jp=pt(rB,aP);
+        els.push(h('circle',{key:'jd'+L+j,cx:jp[0],cy:jp[1],r:bold?2.4:1.8,fill:pAdv?accCol:ink3}));
+      }
+    }
+    // ---- node medallions (3-letter codes) + full names on the rim ----
+    for(let L=0;L<5;L++){
+      const N=rounds[L].length;
+      for(let i=0;i<N;i++){
+        const a=ang(i,N), name=rounds[L][i], on=adv(name,L), code=CODE[name]||name.slice(0,3).toUpperCase();
+        const p=pt(radii[L],a), rd=bold?(L===0?13:12):(L===0?12:11);
+        els.push(h('circle',{key:'n'+L+i,cx:p[0],cy:p[1],r:rd,fill:on?accCol:surf,stroke:on?accCol:lineCol,strokeWidth:1.6,...(on&&bold?{filter:'drop-shadow(0 0 7px var(--accent))'}:{})}));
+        els.push(h('text',{key:'cd'+L+i,x:p[0],y:p[1],textAnchor:'middle',dominantBaseline:'central',fontSize:bold?9:8.5,fontFamily:"'IBM Plex Mono',monospace",fontWeight:700,letterSpacing:'0.02em',fill:on?'#fff':ink3},code));
+        if(L===0){
+          const flip=Math.cos(a)<0, deg=a*180/Math.PI, lr=radii[0]+rd+8, lp=pt(lr,a);
+          els.push(h('text',{key:'nm'+i,x:lp[0],y:lp[1],transform:'rotate('+(flip?deg+180:deg)+' '+lp[0]+' '+lp[1]+')',textAnchor:flip?'end':'start',dominantBaseline:'middle',fontSize:10.5,fontFamily:bold?"'Archivo',sans-serif":"'IBM Plex Mono',monospace",fontWeight:on?700:500,fill:on?inkCol:ink3},name));
+        }
+      }
+    }
+    // ---- trophy at the core ----
+    const ts=bold?1.65:1.42, tg=[];
+    tg.push(h('path',{key:'cup',d:'M -15 -18 L 15 -18 L 12 -3 Q 0 7 -12 -3 Z',fill:inkCol}));
+    tg.push(h('path',{key:'hl',d:'M -15 -16 q -10 1 -9 9 q 1 6 8 6',fill:'none',stroke:inkCol,strokeWidth:2.6,strokeLinecap:'round'}));
+    tg.push(h('path',{key:'hr',d:'M 15 -16 q 10 1 9 9 q -1 6 -8 6',fill:'none',stroke:inkCol,strokeWidth:2.6,strokeLinecap:'round'}));
+    tg.push(h('rect',{key:'st',x:-2.5,y:5,width:5,height:9,fill:inkCol}));
+    tg.push(h('rect',{key:'b1',x:-10,y:13,width:20,height:4,rx:1.5,fill:inkCol}));
+    tg.push(h('rect',{key:'b2',x:-7,y:17,width:14,height:3.5,rx:1.5,fill:inkCol}));
+    els.push(h('g',{key:'trophy',transform:'translate('+cx+' '+(cy-6)+') scale('+ts+')'},tg));
+    return h('svg',{viewBox:'-95 -95 1150 1150',role:'img','aria-label':'Circular knockout bracket',style:{width:'100%',height:'auto',display:'block',overflow:'visible'}},els);
+  }
+
+  confStyle(conf, poster){
+    const med = conf==='MEDIUM';
+    if(poster){ return 'font-family:\'IBM Plex Mono\',monospace;font-size:10px;letter-spacing:0.12em;font-weight:600;padding:3px 9px;border-radius:99px;'+(med?'background:var(--accent,#e2542a);color:#fff;':'background:var(--bg2,#1d1914);color:var(--ink2,#a99f8f);border:1px solid var(--line,#332d24);'); }
+    return 'font-family:\'IBM Plex Mono\',monospace;font-size:10px;letter-spacing:0.12em;font-weight:600;padding:3px 9px;border-radius:99px;'+(med?'background:var(--accent,#e2542a);color:#fff;':'background:var(--bg2,#f2ece1);color:var(--ink2,#6d6559);');
+  }
+
+  mapPicks(poster){
+    return this.PICKS.map(p=>({ ...p, dwidth: Math.min(100, p.dmargin*2.5+8), confStyle: this.confStyle(p.conf, poster), bullets:(p.bullets||[]).map(t=>({text:t})) }));
+  }
+
+  mapDays(){
+    const mk=(f,i,active,poster)=>{
+      const base='cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:10px 16px;border-radius:12px;text-align:left;';
+      if(poster){ return base+(active?'background:var(--accent,#e2542a);color:#fff;border:1px solid var(--accent,#e2542a);':'background:transparent;color:var(--ink2,#a99f8f);border:1px solid var(--line,#332d24);'); }
+      return base+(active?'background:var(--ink,#221d17);color:var(--bg,#faf6ef);border:1px solid var(--ink,#221d17);':'background:transparent;color:var(--ink,#221d17);border:1px solid var(--line,#e7dfd1);');
+    };
+    return this.FIXTURES.map((f,i)=>({ label:f.label, count:f.count,
+      onA:()=>this.setState({dayA:i}), onB:()=>this.setState({dayB:i}),
+      tabStyleA: mk(f,i,this.state.dayA===i,false), tabStyleB: mk(f,i,this.state.dayB===i,true) }));
+  }
+
+  mapGroups(poster){
+    return this.G.map(g=>({ name:g[0], rows: g[1].map((r,i)=>{
+      const adv=r[5]===1;
+      const rowStyle='display:flex;align-items:center;gap:8px;padding:8px 12px;'+(i<3?'border-bottom:1px solid var(--line,'+(poster?'#332d24':'#e7dfd1')+');':'')+(adv?'background:var(--accentSoft,'+(poster?'#3a251b':'#fbe7dd')+');':'');
+      return { pos:i+1, team:r[0], gd:r[3], pts:r[4], rowStyle };
+    })}));
+  }
+
+  mapCompleted(poster){
+    return this.COMPLETED.map(c=>{
+      const [date,home,hs,away,as,outcome,brier]=c;
+      const col = outcome==='correct'?'var(--good,#3f9b6a)':(outcome==='wrong'?'var(--bad,#cf4a3e)':'var(--gold,#b98a2c)');
+      const homeWin=hs>as, awayWin=as>hs;
+      const cardStyle='border:1px solid var(--line,'+(poster?'#332d24':'#e7dfd1')+');border-left:4px solid '+col+';border-radius:12px;padding:14px 15px;background:var(--surface,'+(poster?'#211c17':'#fffdf8')+');';
+      const nm=(win)=>'font-size:14px;color:var(--ink,'+(poster?'#f3ede2':'#221d17')+');font-weight:'+(win?'700':'400')+';';
+      const tag = outcome==='correct'?'✓ correct':(outcome==='wrong'?'✕ '+home+' (pred)':'— draw');
+      const tagStyle='color:'+col+';font-weight:600;';
+      return { date, home, hs, away, as, cardStyle, homeStyle:nm(homeWin), awayStyle:nm(awayWin), tag, tagStyle, brier:brier.toFixed(2) };
+    });
+  }
+
+  renderVals(){
+    const oddsMax=16.1;
+    return {
+      va: this.vars(this.state.themeA),
+      vb: this.vars(this.state.themeB),
+      toggleThemeA: ()=>this.setState(s=>({themeA:s.themeA==='light'?'dark':'light'})),
+      toggleThemeB: ()=>this.setState(s=>({themeB:s.themeB==='light'?'dark':'light'})),
+      themeBtnA: this.state.themeA==='light'?'◐ DARK':'◑ LIGHT',
+      themeBtnB: this.state.themeB==='light'?'◐ DARK':'◑ LIGHT',
+      toggleModelA: ()=>this.setState(s=>({modelA:!s.modelA})),
+      toggleModelB: ()=>this.setState(s=>({modelB:!s.modelB})),
+      modelLabelA: this.state.modelA?'BLENDED':'MODEL',
+      modelLabelB: this.state.modelB?'BLENDED':'MODEL',
+      analysis: this.ANALYSIS.map(t=>({text:t})),
+      picks: this.mapPicks(false),
+      picksB: this.mapPicks(true),
+      days: this.mapDays(),
+      fxA: this.FIXTURES[this.state.dayA].matches,
+      fxB: this.FIXTURES[this.state.dayB].matches,
+      odds: this.ODDS.map((o,i)=>({rank:i+1,team:o[0],grp:o[1],sf:o[2].toFixed(1),fin:o[3].toFixed(1),title:o[4].toFixed(1),w:(o[4]/oddsMax*100)})),
+      groups: this.mapGroups(false),
+      groupsB: this.mapGroups(true),
+      completed: this.mapCompleted(false),
+      completedB: this.mapCompleted(true),
+      bracketA: this.buildBracket('a'),
+      bracketB: this.buildBracket('b')
+    };
+  }
+}
+</script>
+</body>
+</html>

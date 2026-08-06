@@ -1,0 +1,130 @@
+{
+  "rest": {
+    "n": 21425,
+    "differential_pct_over_7_days": 3.9944214044042545,
+    "bands": [
+      {
+        "group": "4",
+        "n": 7626,
+        "lam_sum": 9861.40229958036,
+        "resolvable_pct": 1.9737254138881588,
+        "vs_7day_pct": 2.4346495639738737
+      },
+      {
+        "group": "5-6",
+        "n": 3949,
+        "lam_sum": 5246.378512016491,
+        "resolvable_pct": 2.705990459526204,
+        "vs_7day_pct": 3.0584817895447776
+      },
+      {
+        "group": "7",
+        "n": 14591,
+        "lam_sum": 18906.195765635122,
+        "resolvable_pct": 1.4254565899844829,
+        "vs_7day_pct": 2.01590004213016
+      },
+      {
+        "group": "8-11",
+        "n": 3557,
+        "lam_sum": 4696.84689732765,
+        "resolvable_pct": 2.8599133134901082,
+        "vs_7day_pct": 3.195470333238623
+      },
+      {
+        "group": "<=3",
+        "n": 9304,
+        "lam_sum": 12129.465513289679,
+        "resolvable_pct": 1.7796526242636999,
+        "vs_7day_pct": 2.280151300457683
+      },
+      {
+        "group": ">=12",
+        "n": 3823,
+        "lam_sum": 5043.311887125946,
+        "resolvable_pct": 2.7599305776065717,
+        "vs_7day_pct": 3.1063070168832208
+      }
+    ],
+    "stated_bound_pct": 3.5
+  },
+  "tod": {
+    "n": 5644,
+    "slots": [
+      {
+        "group": "fri_eve",
+        "n": 296,
+        "lam_sum": 373.4316677155451,
+        "resolvable_pct": 10.142628048141411
+      },
+      {
+        "group": "holiday_15",
+        "n": 522,
+        "lam_sum": 656.4998143704224,
+        "resolvable_pct": 7.649600725546317
+      },
+      {
+        "group": "midweek_eve",
+        "n": 2480,
+        "lam_sum": 3173.5542316502833,
+        "resolvable_pct": 3.479229758333211
+      },
+      {
+        "group": "mon_eve",
+        "n": 206,
+        "lam_sum": 269.21077779964367,
+        "resolvable_pct": 11.94565175808429
+      },
+      {
+        "group": "sat_15",
+        "n": 6258,
+        "lam_sum": 7949.667276681733,
+        "resolvable_pct": 2.1982728455683986
+      },
+      {
+        "group": "sat_early",
+        "n": 472,
+        "lam_sum": 625.7295097183963,
+        "resolvable_pct": 7.835428516587079
+      },
+      {
+        "group": "sat_late",
+        "n": 218,
+        "lam_sum": 308.2734205576135,
+        "resolvable_pct": 11.163182651267903
+      },
+      {
+        "group": "sun_early",
+        "n": 450,
+        "lam_sum": 610.1621407956102,
+        "resolvable_pct": 7.934753558889582
+      },
+      {
+        "group": "sun_late",
+        "n": 386,
+        "lam_sum": 529.804087402634,
+        "resolvable_pct": 8.515269923101386
+      }
+    ],
+    "planted": [
+      {
+        "slot": "sun_late",
+        "planted": 0.18,
+        "t": 4.143145234220657,
+        "detectable": true
+      },
+      {
+        "slot": "sat_late",
+        "planted": -0.14,
+        "t": 2.458080357296975,
+        "detectable": true
+      },
+      {
+        "slot": "holiday_15",
+        "planted": 0.06,
+        "t": 1.537335139692553,
+        "detectable": false
+      }
+    ]
+  }
+}

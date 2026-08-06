@@ -1,0 +1,35 @@
+canonical_name,wikidata_label,venue_name,reviewed,note
+AFC Wimbledon,Q48851,,,Not Wimbledon F.C. (Q19482) - that club became MK Dons; AFC Wimbledon is the 2002 phoenix
+Accrington,Q48843,,,Accrington Stanley. Accrington F.C. (Q580259) folded in 1896
+Aldershot,Q48862,,,Aldershot Town. Aldershot F.C. folded 1992; same ground either way
+Bournemouth,Q19568,,,AFC Bournemouth at Dean Court. Bournemouth F.C. (Q5212324) is 3.7 km away
+Bradford,Q48879,,,Bradford City at Valley Parade. Bradford (Park Avenue) is 5 km away
+Bristol Rvs,Bristol Rovers F.C.,,,
+Boston Utd,Boston United F.C.,,,
+Chester,Q2041933,,,Chester F.C. 2010 phoenix. Chester City folded March 2010; same ground either way
+Crystal Palace,Q19467,,,Selhurst Park. A second item shares the label and sits in Crystal Palace Park 2.5 km away
+Dag and Red,Dagenham & Redbridge F.C.,,,
+Exeter,Exeter City F.C.,,,
+Halifax,Q5214935,,,FC Halifax Town 2008 phoenix. Same ground as Halifax Town A.F.C.
+Hereford,Q18516,,,"Hereford United, in the corpus to 2014. Hereford F.C. shares Edgar Street, so coordinates are identical"
+Lincoln,Q18519,,,Lincoln City at Sincil Bank. Lincoln United is a different club 4 km away
+Macclesfield,Q18521,,,Macclesfield Town. Macclesfield F.C. phoenix shares Moss Rose
+Nott'm Forest,Nottingham Forest F.C.,,,
+Oxford,Oxford United F.C.,,,Oxford United. Distinct from Oxford City below
+Peterboro,Peterborough United F.C.,,,
+QPR,Queens Park Rangers F.C.,,,
+Rochdale,Q48949,,,Spotland. A second item shares the label and sits at the former Athletic Grounds 3 km away
+Rushden & D,Rushden & Diamonds F.C.,,,
+Salisbury,Q2118564,,,Salisbury City. Salisbury F.C. phoenix shares the Raymond McEnhill Stadium
+Sheffield Weds,Sheffield Wednesday F.C.,,,
+Telford United,Q18505,,,AFC Telford United. Shares the SEAH Stadium with the defunct Telford United
+Darlington,,"Blackwell Meadows, Darlington",,"Wikidata P625 is WRONG - it points at Heritage Park, Bishop Auckland (54.638/-1.693), where Darlington groundshared 2012-2016. The real Blackwell Meadows is 16.5 km away and reverse-geocodes to Blackwell, Darlington. Caught by the reverse check."
+Brackley Town,,"St James Park, Brackley",,No P115 in Wikidata - geocoded
+Fylde,,"Mill Farm, Wesham",,AFC Fylde. No P115 in Wikidata - geocoded
+Havant & Waterlooville,,"Havant & Waterlooville FC",,No P115 in Wikidata - geocoded
+King’s Lynn,,"The Walks Stadium, Kings Lynn",,No P115 in Wikidata - geocoded
+North Ferriby,,"North Ferriby United",,No P115 in Wikidata - geocoded
+Oxford City,,"Court Place Farm, Marsh Lane, Oxford",,No P115 in Wikidata - geocoded
+Wealdstone,,"Wealdstone FC, Ruislip",,No P115 in Wikidata - geocoded
+Brighton,,,"Reverse geocode returns 'American Express Stadium, Village Way, Falmer' - the same ground under its sponsor name, against Wikidata's label 'Brighton Community Stadium'. Confirmed correct.",Forward search found a point 1.6 km away; the coordinate itself is the Amex
+Nuneaton Town,,,"Reverse geocode returns 'Eastboro Way, Attleborough, Nuneaton and Bedworth' - the Liberty Way ground fronts Eastboro Way. Coordinate is in Nuneaton. Confirmed correct.",Forward search found Liberty Way in Exeter 246 km away

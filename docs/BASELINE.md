@@ -28,10 +28,19 @@ Reproduce with `python -m engine.eval.p1 --stage all`. Every result below is in
 
 ---
 
+> **RE-ISSUED 2026-08-04 — the head now carries the shots channel.** P4-shots
+> (`SHOTS_TARGET.md`) measured a shots-on-target blend worth **−0.00422**
+> [−0.00535, −0.00307] of goal deviance, negative in all four served divisions
+> with every interval excluding zero. It was adopted, the head re-frozen as
+> `p1-3a38e9d6ef1ca7ee`, and the base score below re-measured by the same
+> `h9_baseline` code that produced the previous one. **§1 and §2 are current.**
+> Everything from §3 onward describes the P1 run that produced the earlier head
+> and is left unedited, so its predictions can still be scored.
+
 ## 1. The frozen head
 
 ```
-H400 / a0.1 / weekly / E0+E1+E2+E3+EC
+H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3
 ```
 
 | setting | value | how it was chosen |
@@ -40,8 +49,18 @@ H400 / a0.1 / weekly / E0+E1+E2+E3+EC
 | ridge α | **0.1** | H3 sweep, interior optimum, 1-SE (paired) |
 | refit cadence | **weekly** (Monday, predicting 7 days) | H1: matches serving; day-frozen is worth 0.00007 nats |
 | fit population | **E0–EC** | H5 gate: including the National League helps |
+| **shots blend** | **0.30** | H20 sweep, interior optimum, 1-SE (paired) — `SHOTS_TARGET.md` |
 | season-boundary shrink | **not adopted** | H8 gate: improves goal deviance, but measurably harms E0 on both served markets — §5 |
+| squad prior | **not adopted** | P2: null on five arms — `PLAYER_PRIOR.md` |
 | scoring embargo | COVID window (2020-03-13 → 2021-05-31) | H6: excluded from scoring, retained in training |
+
+**The shots blend is the newest change.** A second Poisson fit on
+shots-on-target over the identical design matrix, folded into the goal-fitted
+strengths at weight 0.3. It is a *channel*, not a replacement target: at weight
+0.8 the blend is worse than not using shots at all, which is why SPEC §3.7's
+proposal to substitute the target was refuted rather than implemented. Clubs
+with no shot evidence — the whole National League since 2016-17 — are left on
+their goal-fitted strengths rather than given an invented one.
 
 **The half-life is the headline change.** SPEC §3.2 proposed a defensible window
 of [100, 300] days and P0 froze the instrument at 200. The data wants **400** —
@@ -74,46 +93,61 @@ means the market wins, which it does everywhere.
 
 | division | n | model 1X2 | market 1X2 | base rate | gap | model O/U | market O/U | gap | model Brier | AUC O/U |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| E0 | 4,088 | 0.9669 | 0.9552 | 1.0627 | **+0.0117** | 0.6833 | 0.6788 | +0.0045 | 0.5731 | 0.577 |
-| E1 | 5,952 | 1.0549 | 1.0410 | 1.0777 | +0.0140 | 0.6948 | 0.6888 | +0.0060 | 0.6361 | 0.536 |
-| E2 | 5,907 | 1.0499 | 1.0344 | 1.0776 | +0.0155 | 0.6950 | 0.6901 | +0.0049 | 0.6327 | 0.532 |
-| E3 | 5,943 | 1.0665 | 1.0520 | 1.0815 | +0.0145 | 0.6920 | 0.6883 | +0.0037 | 0.6442 | 0.535 |
+| E0 | 4,088 | 0.9650 | 0.9552 | 1.0627 | **+0.0098** | 0.6802 | 0.6788 | +0.0014 | 0.5717 | 0.586 |
+| E1 | 5,952 | 1.0537 | 1.0410 | 1.0777 | +0.0127 | 0.6936 | 0.6888 | +0.0048 | 0.6351 | 0.539 |
+| E2 | 5,907 | 1.0485 | 1.0344 | 1.0776 | +0.0141 | 0.6949 | 0.6901 | +0.0048 | 0.6316 | 0.530 |
+| E3 | 5,943 | 1.0639 | 1.0520 | 1.0815 | +0.0119 | 0.6903 | 0.6883 | +0.0020 | 0.6423 | 0.541 |
+
+Every gap narrowed, and the pooled 1X2 deficit moved **+0.01419 [+0.01239,
++0.01609] → +0.01230 [+0.01041, +0.01419]**. Those two intervals overlap
+heavily, which is exactly why the adoption decision rests on the *paired*
+comparison in `SHOTS_TARGET.md` (−0.00422, 7.3 paired SE) and not on this
+table — the marginal and paired standard errors differ by ~29× on this corpus
+(`OUTSTANDING.md` §7.3).
 
 **Closing information set** (Pinnacle `PSC` for 1X2; `close_avg` for O/U, which
 only exists from 2019-20, hence the smaller n):
 
 | division | n | model 1X2 | market 1X2 | base rate | gap | model O/U | market O/U | gap |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| E0 | 1,048 | 0.9751 | 0.9580 | 1.0622 | +0.0170 | 0.6727 | 0.6748 | −0.0021 |
-| E1 | 1,548 | 1.0565 | 1.0483 | 1.0779 | +0.0081 | 0.6912 | 0.6868 | +0.0044 |
-| E2 | 1,502 | 1.0271 | 1.0007 | 1.0701 | +0.0264 | 0.6957 | 0.6888 | +0.0069 |
-| E3 | 1,541 | 1.0662 | 1.0476 | 1.0830 | +0.0187 | 0.6842 | 0.6798 | +0.0044 |
+| E0 | 1,048 | 0.9757 | 0.9580 | 1.0622 | +0.0177 | 0.6719 | 0.6748 | −0.0029 |
+| E1 | 1,548 | 1.0564 | 1.0483 | 1.0779 | +0.0081 | 0.6895 | 0.6868 | +0.0027 |
+| E2 | 1,502 | 1.0277 | 1.0007 | 1.0701 | +0.0270 | 0.6964 | 0.6888 | +0.0076 |
+| E3 | 1,541 | 1.0655 | 1.0476 | 1.0830 | +0.0180 | 0.6813 | 0.6798 | +0.0015 |
 
 The one negative cell — closing/E0 on O/U — was put through a paired bootstrap
-before being called anything: **−0.00209 [−0.00853, +0.00481]**, an interval six
-times wider than the point estimate. It is noise, not an edge, and saying so
-required the CI rather than the table. Worth noting that the H9 hard stop as
+before being called anything: **−0.00294 [−0.00880, +0.00308]**, an interval
+three times wider than the point estimate. It is noise, not an edge, and saying
+so required the CI rather than the table. Worth noting that the H9 hard stop as
 originally written only covered 1X2; this cell would have passed unexamined, so
-the check now covers both served markets.
+the check now covers both served markets. **H9 holds: the model is behind the
+market everywhere it is measurably anywhere.**
 
 ### Share of the market's edge captured
 
 The most useful reading of the table. The market beats a per-division base rate
 by some amount; this is the fraction of that the head recovers.
 
-| division | before P1 (H200, α1) | after P1 |
-| --- | --- | --- |
-| E0 | 0.83 | **0.89** |
-| E1 | 0.54 | **0.62** |
-| E2 | 0.50 | **0.64** |
-| E3 | 0.36 | **0.51** |
+| division | before P1 (H200, α1) | after P1 | **after the shots channel** |
+| --- | --- | --- | --- |
+| E0 | 0.83 | 0.89 | **0.909** |
+| E1 | 0.54 | 0.62 | **0.654** |
+| E2 | 0.50 | 0.64 | **0.674** |
+| E3 | 0.36 | 0.51 | **0.598** |
 
 Tuning bought the most where the model was weakest: League One improved by
-fourteen points and League Two by fifteen, the Premier League by six. **The
-asymmetry is still stark** — in E0 a bare Poisson strength model recovers 89% of
-what the closing market knows, in E3 half. Whatever the lower-division market is
-pricing that this head cannot see is worth roughly four times as much there as
-in the Premier League. Recorded as evidence for P2's ordering, not acted on yet.
+fourteen points and League Two by fifteen, the Premier League by six. The shots
+channel then bought the most in the same place again — **E3 gained nine points,
+E0 two.**
+
+**The asymmetry is narrowing but has not closed.** E3 has gone from recovering
+a third of what the market knows to recovering three-fifths; E0 sits at
+nine-tenths. Whatever the lower-division market prices that this head cannot see
+is still worth about four times as much there as in the Premier League.
+
+Recorded originally as evidence for P2's ordering. P2 returned null and the
+ordering question is closed (`OUTSTANDING.md` §3.1), so this asymmetry is now
+unexplained rather than pending — it belongs to OPEN-6.
 
 ## 3. Prediction scorecard
 

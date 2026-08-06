@@ -53,6 +53,21 @@ def record(
     return int(cur.lastrowid)
 
 
+def last_detail(conn: sqlite3.Connection, name: str) -> dict[str, Any]:
+    """The `detail` of the most recent entry called `name`, or `{}` if none.
+
+    Read-only, and deliberately so. The append-only rule (convention 5) is
+    about there being no way to update or delete a row; reading the last one
+    back is how a later stage can enforce a stop condition an earlier stage
+    recorded, instead of trusting whoever is at the keyboard to have run it.
+    """
+    row = conn.execute(
+        "SELECT detail FROM gate_ledger WHERE name = ? "
+        "ORDER BY id DESC LIMIT 1", (name,)
+    ).fetchone()
+    return json.loads(row["detail"]) if row and row["detail"] else {}
+
+
 def trial_count(conn: sqlite3.Connection, kinds: tuple[str, ...] = (GATE, SWEEP, PROBE)) -> int:
     """How many trials have been run against the corpus. Feeds PBO deflation."""
     marks = ",".join("?" * len(kinds))

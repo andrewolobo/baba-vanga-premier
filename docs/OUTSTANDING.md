@@ -5,7 +5,8 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-04**, after building the runbook and scheduling.
+Last updated **2026-08-06**, after building the stadium coordinate table and
+running the P4-travel positive control.
 
 Companion documents, in reading order:
 `SPEC.md` (methodology authority, includes refuted parts) →
@@ -16,7 +17,14 @@ Companion documents, in reading order:
 `BASELINE.md` (P1 results and the base score) →
 `P3_PLAN.md` / `CALIBRATION.md` (calibration, ablation, the launch decision) →
 `P2_PLAN.md` / `PLAYER_PRIOR.md` (the player prior, and why it is descoped) →
-`RUNBOOK.md` (how the thing is actually operated).
+`RUNBOOK.md` (how the thing is actually operated) →
+`DEFLATION.md` (multiple-testing treatment, pre-committed before the P6 read) →
+`P4_SHOTS_PLAN.md` / `SHOTS_TARGET.md` (the shots channel — the first feature that works) →
+`TOD_SLOT.md` (the kickoff slot — real, and not measurable on this corpus) →
+`REST.md` (days since last match — a bounded null, and where §3.6 goes next) →
+`P4_TRAVEL_PLAN.md` / `TRAVEL.md` (travel — pre-registration, §8 on why the
+detection statistic changed after the control and not after the result, and the
+bounded null that closes SPEC §3.6).
 
 ---
 
@@ -30,11 +38,37 @@ Companion documents, in reading order:
 | P1 Track A (serving) | **Built and tested; not turned on** — see §1.0.                      |
 | P2 player prior      | **Complete and descoped.** Null on five arms — §1.2.                 |
 | P3 calibration       | **P3-lite complete.** Calibration null/negative; book off — §1.0.    |
-| P4 / P5 / P6         | Not started.                                                         |
+| P4 shots channel     | **Measured and positive** — first feature that works. §1.3.          |
+| P4 TOD slot          | **Real, but not resolvable on this corpus** — §1.4.                  |
+| P4 rest              | **Measured null, bounded at ~3.5%** — §1.5.                          |
+| P4 travel            | **Measured null, bounded at ~3.7%/500km** — §1.6.                     |
+| P4 congestion/stakes | Not started. **Both blocked**, and §1.6 closes SPEC §3.6.            |
+| P5 / P6              | Not started.                                                         |
 
-**Frozen base head:** `H400 / a0.1 / weekly / E0+E1+E2+E3+EC`, no season-boundary
-shrink, no squad prior, COVID window embargoed from scoring. Artifact
-`p1-36d44c72db18b384`. 233 tests pass. Gate ledger holds **51 recorded trials**.
+**Frozen base head:** `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3` — the
+shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
+prior, COVID window embargoed from scoring. Artifact
+`p1-3a38e9d6ef1ca7ee`. **357 tests pass.** Gate ledger holds **75 runs / 40
+questions / at least 149 configurations** — the last is the number that feeds
+deflation, and §3.2 explains why the other two mislead.
+
+Eight of those runs are §1.5, which was run twice: once before and once after a
+correctness fix to how rest is computed. Both are recorded, per §7.5 — a trial
+spends against the development set whether or not its result was superseded.
+
+**Two of them are §1.6**, which was also run twice: once on the detection
+statistic the plan pre-registered and once on the one that replaced it. Both
+stand, for the same reason. Note the configuration count did **not** move —
+both runs are planted controls on synthetic outcomes, which spend no
+information about a real answer, and `count_configurations` reads them as rows
+carrying no arm list.
+
+**The count this file used to carry (52 / 24 / 133) was already stale when it
+was written.** It predates the seven rows the shots channel itself added, so
+§0 quoted a ledger state older than the result on the same page; §1.4 then
+added four more. Re-derive it with `trials.count_configurations(conn)` instead
+of trusting the prose — the figures above are that call's output, and it is the
+only way this number should ever be quoted.
 
 ---
 
@@ -104,6 +138,224 @@ values, or more channels. The constraint is that the N−1 roster *is* the club
 (0.980 collinear) and that season N's squad is unknowable as-of. Only **dated
 transfer data** would change it — `data/transfer-history/` is empty.
 
+### 1.3 The shots channel works — **ADOPTED 2026-08-04**
+
+**Measured and shipped 2026-08-04.** Results in `SHOTS_TARGET.md`,
+pre-registration in `P4_SHOTS_PLAN.md`. **Six of seven predictions right.**
+
+A second Poisson fit on shots-on-target, blended into the goal-fitted strengths
+at `w = 0.3`, improves goal deviance by **−0.00422** [−0.00535, −0.00307] —
+7.3 paired SE, interior optimum, uncensored grid. Negative in all four served
+divisions with every interval excluding zero. 1X2 −0.00179, O/U −0.00140.
+
+**Everything that had to move, moved:**
+
+- head `H400/a0.1/weekly/E0+E1+E2+E3+EC/**sot0.3**`, artifact
+  **`p1-3a38e9d6ef1ca7ee`** (`p1-36d44c72db18b384` retired)
+- `BASELINE.md` §1–2 re-issued by the same `h9_baseline` code; **H9 still holds**
+- pooled deficit **+0.01419 [+0.01239, +0.01609] → +0.01230 [+0.01041, +0.01419]**
+- `DEFLATION.md` §5 criterion 2 restated against the new interval, holdout still
+  sealed, reason recorded — a restatement, not a relaxation
+- share of market edge: E0 0.89→**0.909**, E1 0.62→**0.654**, E2 0.64→**0.674**,
+  E3 0.51→**0.598**
+
+`p2.py`, `p3.py` and `p4_shots.py` pin the head as it stood when they ran, so
+they still reproduce their own documents. **Serving moves forward; history does
+not.** Any future head change must do the same five things or the documents
+drift out of agreement with the code.
+
+Three things worth carrying forward:
+
+- **It does not turn the book on.** Deficit +0.01230 against a vig of 0.02122.
+  Still behind the market in every division. `CALIBRATION.md` §5 stands.
+- **The positive control failed first, and it was my error.** The oracle was
+  built from goals scored alone, so its `dfn` had nothing to fit; attack
+  improved and defence was destroyed and the two cancelled. Rebuilt two-sided,
+  it passed at −0.01636. The stop condition held — no other arm ran until it did.
+- **The coefficient diagnostic contradicted the pre-gate** and would have killed
+  a feature that works. Raw within-season team rates and opponent-adjusted
+  decayed coefficients measure different things; the blend helps because it
+  combines two imperfect estimates rather than replacing one.
+
+### 1.4 The kickoff slot is real and not measurable — **MEASURED 2026-08-04**
+
+Results in `TOD_SLOT.md`, code `engine/eval/tod.py`, ledger `h26`–`h29`.
+Answers SPEC §3.6. **This is not a null, and the difference is the finding.**
+
+A slot effect survives the residual test the SPEC asked for, and survives a
+control gtleague did not have — the frozen head's opponent-adjusted λ.
+Permutation p **0.0020** with labels shuffled within season. `sun_late` clears a
+Bonferroni-corrected interval at **+0.426 [+0.087, +0.770]**, holds its sign in
+all three seasons and all four divisions, and the market **misses it in the same
+direction** (+0.094 [+0.020, +0.176]).
+
+It is then worth **−0.00067 [−0.00216, +0.00079]** on goal deviance — and H29
+shows the instrument recovers a planted effect of exactly that size in **2 draws
+out of 6**. The interval is underpowered, not empty.
+
+Three things worth carrying forward:
+
+- **`Time` does not exist before 2019-20.** After the holdout and the COVID
+  embargo that leaves **5,644 of 21,896 scored matches — 2.6 seasons.** This
+  limits *measurement only*; every future fixture has a kickoff time, so the
+  feature would apply to 100% of served matches if it were ever built.
+- **No amount of holdout spending answers it.** Reaching 1.96 SE needs ≈28,400
+  matches, 5× the corpus, about ten further seasons. Unsealing **all three**
+  sealed seasons reaches 1.3 SE. The most expensive act available to this
+  project does not buy the answer, which is worth knowing before someone
+  proposes it.
+- **Nine levels fitted to noise cost +0.00112 nats**, measured on the planted
+  ×0 arm. The −0.00067 point estimate is consistent with a small real effect
+  roughly cancelling that overfit cost, which is a second and independent
+  reason not to read the sign.
+
+**Do not** re-litigate with finer time buckets, per-division slot terms, or
+interactions with team strength — every one of those spends *more* degrees of
+freedom on a corpus that cannot afford the nine already tried. If it is ever
+revisited the only defensible arm is the two-level contrast, pre-registered
+before looking; `TOD_SLOT.md` §8 explains why that still does not reach 2 SE.
+
+**This closes the slot, not SPEC §3.6.** The SPEC asked for the slot to be
+*replaced* by rest days, congestion, travel and stakes — and **only the slot is
+limited to 2019-20**. Rest and congestion come from `match_date`, so they run on
+**21,896 scored matches, 3.9× this sample** (median rest 7 days, p10 3, p90 13),
+and cost no new data. Travel is blocked on a stadium coordinate table, stakes on
+OPEN-4. `TOD_SLOT.md` §9 has the arithmetic. **That is where §3.6 resumes** —
+the constraint that killed the slot does not apply to the features the SPEC
+actually preferred.
+
+### 1.5 Rest is a measured null, and it is bounded — **MEASURED 2026-08-04**
+
+Results in `REST.md`, code `engine/eval/rest.py`, ledger `h30`–`h33`. The first
+of SPEC §3.6's replacement analogues, picked up from `TOD_SLOT.md` §9.
+
+**Unlike the kickoff slot, this corpus could answer the question.** Rest comes
+from `match_date`, so the arm runs on **21,425 matches / 42,850 match-sides**
+across eleven seasons rather than 5,644.
+
+Neither form of the feature works. Six rest bands cost **+0.00017 [+0.00000,
++0.00035]** on goal deviance, and the differential the SPEC actually asked for
+is flat at **r = −0.0040, p = 0.562** and costs +0.00003 as a fitted slope.
+H33 catches a planted 5% attacking deficit **6 times out of 6** and puts the
+resolution threshold near **3.5%**.
+
+Three things worth carrying forward:
+
+- **The null has a size attached.** Fitting six bands to data with no rest
+  effect by construction costs +0.00020; the real corpus returned +0.00017. The
+  measurement is not "not significant", it is the number the arm produces when
+  the effect does not exist. **Any true rest effect on scoring is below ~3.5%
+  of a goal rate.**
+- **The corpus is league-only, and that is the standing limitation.** No FA Cup,
+  League Cup or European ties, so measured rest is an *upper bound* on true
+  rest. All ten dates contributing the most long gaps are FIFA windows or FA Cup
+  third-round weekends; long gaps are 20.9% of match-sides in November against
+  0.3% in August. A congestion effect driven by midweek European football is not
+  refuted here — it is unmeasurable, because those matches are not in the data.
+- **The one apparent signal was multiplicity.** Conceding on ≤3 days' rest
+  cleared an uncorrected interval, in the wrong direction (tired teams conceding
+  *fewer*), and vanished under Bonferroni across the twelve cells tested. Worth
+  recording because it is exactly the shape a false positive takes.
+
+**Do not** re-litigate with finer bands, per-division rest terms, or a rest ×
+strength interaction. The differential is the form the SPEC preferred, it was
+measured on one parameter, and it is flat.
+
+**Travel distance is the best remaining §3.6 candidate.** Congestion inherits
+the same league-only hole and inherits it *worse* — it is precisely a count of
+the midweek ties the corpus lacks — and stakes is blocked on OPEN-4. Travel
+needs one static table of stadium coordinates, applies to every match in the
+corpus, and its confounds are the kind λ already absorbs. `REST.md` §7 has the
+comparison. **The "~92 clubs" this paragraph used to quote was wrong** — 92 is
+the size of the Premier League plus EFL at one instant, not the club universe
+of a sixteen-season corpus. Measured against `teams`: **151 clubs, 108 of them
+in E0–E3.** The table is built (§1.6).
+
+### 1.6 Travel is a measured null, bounded at ~3.7% per 500 km — **MEASURED 2026-08-06**
+
+Results in `TRAVEL.md`, pre-registration `P4_TRAVEL_PLAN.md`, code
+`engine/eval/travel.py`, retriever `services/stadium_coords/`, ledger
+`h34_travel_power` (×2) and `h36_travel_arms`. **Do not adopt.**
+
+Score coefficient **β = −0.0147, t = 0.98** — not resolved. A1 (one slope)
+**+0.00008 [−0.00010, +0.00026]** on goal deviance, negative in **1 of 4**
+divisions against a §7 bar of 3. A2 (five bands) +0.00007. The point estimate
+is in the predicted direction at 1.47% per 500 km — 0.51% at the median trip —
+and **40% of the resolution threshold**. Resolving an effect that size needs
+**4.0× this corpus (~86,800 matches, ~43 seasons)**; unsealing all three
+holdout seasons moves t from 0.98 to **1.15**, so the most expensive act
+available does not buy it.
+
+**A1 also makes the served O/U market measurably worse** — +0.00018
+[+0.00008, +0.00029] — while goal deviance is flat. Recorded per convention 2;
+it does not change a decision that was already against adoption.
+
+`reference/stadiums.csv` holds **151 of 151 clubs, every one verified** against
+an independent geocode — Wikidata `P115`/`P625` as the source, LocationIQ as the
+check, nothing recalled. 100% coverage of all 33,158 dev match-sides.
+
+**The feature is identified, which was the thing worth checking first.** After
+removing both home and away club fixed effects, **70% of the variance in
+away-trip distance survives** (sd 85.6 km of 102.3). λ's club coefficients do
+not absorb it. Median trip 176 km, p10 53, p90 321, max 537.
+
+Four things worth carrying forward:
+
+- **The pre-registered detection statistic was the wrong one, and the control
+  is what caught it.** The deviance delta recovered a planted 5%-at-500km
+  deficit **0 times in 6**; a Poisson score coefficient test on the identical
+  frames recovered it **5 of 6** at t = 2.68 with **0/6 false positives** at
+  zero. Thresholds 13.5% against **3.7%** — 3.6× on the same data. The
+  amendment and its reasoning are `P4_TRAVEL_PLAN.md` §8.
+- **Amending after a control is not the thing `CALIBRATION.md` §1 forbids.**
+  That bar moved after seeing *real* results. This one moved after seeing
+  Poisson-resampled synthetic outcomes carrying no information about the real
+  answer — which is the whole reason the control is specified to run first and
+  alone. The distinction is which numbers were in view, and it is the reason
+  the plan says the control runs before anything else.
+- **Adoption still runs on goal Poisson deviance.** Convention 2 is untouched.
+  The coefficient test answers "can the corpus see an effect this size"; it
+  never decides whether a feature goes in the head. Both are reported for every
+  arm, and the gap between them is itself a finding — real-but-not-adoptable is
+  exactly the §1.4 shape.
+- **Resolution: 3.7% at 500 km, ~1.3% at the median trip.** That is what the
+  real arms will be able to say something about, and it is the number any null
+  from them must be reported against.
+
+**§1.4 and §1.5 have been re-evaluated under the new statistic — both stand.**
+`engine/eval/power.py`, ledger `h35_power_revisit`. It reads **no match
+outcomes** — Fisher information for a Poisson rate is `Σλx²`, which needs only
+the fitted λs — so closed gates were re-examined without being reopened, no
+information was spent, and the configuration count is unchanged.
+
+| gate | stated bound | score test says | verdict |
+| ---- | ------------ | --------------- | ------- |
+| §1.5 rest, differential | ~3.5% | **3.99%** over a 7-day gap | stands |
+| §1.5 rest, ≤3 vs 7-day band | ~3.5% | **2.28%** | mildly conservative |
+| §1.4 slot, `sun_late` +0.18 | 2/6 detected | **t = 4.14** | see below |
+
+**Rest is confirmed, and the interesting half is that it barely moved.** The
+form the SPEC preferred — one parameter on the differential — resolves 3.99%,
+against the 3.5% `REST.md` claimed. The band contrast is tighter at 2.28%, so
+the null is if anything slightly stronger than published, and nothing in §1.5
+needs rewriting.
+
+**The slot needs a distinction it already drew, and this sharpens it.** Under
+the score test `sun_late` is a **4.1σ** effect and `sat_late` 2.5σ, so the
+*reality* of the slot was never the underpowered part — `TOD_SLOT.md` had
+already established that by permutation at p = 0.0020. What H29 found
+unresolvable at 2/6 was its **worth on goal deviance**, and that is unchanged:
+the deviance value is the adoption question, and it still needs ≈28,400 matches.
+The re-evaluation adds a second, independent reason the nine-level arm was the
+wrong instrument — **five of the nine slots resolve only 7.6–12%**
+(`mon_eve` 11.95%, `sat_late` 11.16%, `fri_eve` 10.14%), so most of the
+degrees of freedom were being spent where nothing could be seen. `holiday_15`
+at +0.06 sits below 1.96 either way.
+
+**This is the real-but-not-adoptable shape, and it now has two statistics
+saying so rather than one.** Do not read it as a reason to revisit §1.4's
+closure.
+
 ---
 
 ## 2. Known-stale results
@@ -153,6 +405,31 @@ See §3.2 for the open question about how to treat this.
 
 ---
 
+### 2.3 CALIBRATION.md's numbers predate the shots channel — **decision holds**
+
+**Flagged 2026-08-04.** Every figure in `CALIBRATION.md` §2–4 was measured on
+the head *before* the shots channel was adopted (§1.3). `engine/eval/p3.py`
+pins that old config on purpose so the document stays reproducible, which is
+also what makes its numbers stale relative to what is served.
+
+**Not re-measured. The book stays off anyway**, on two arguments that do not
+depend on the head:
+
+- §1's bar — CLV must exceed the **vig**, not zero — is arithmetic about margin.
+- H12's ablation is structural: the blend weights the model only if it adds
+  information *given the price*, and the re-issued base score confirms **H9
+  still holds**, the head is behind the market in all four divisions on both
+  markets.
+
+**What must not be done:** netting the head's 0.00179 nats of 1X2 improvement
+against the 0.0186 CLV shortfall. Different units — nats versus de-vigged
+probability. A new number requires re-running P3, which is a new measurement and
+a new ledger row.
+
+Re-running P3 on the current head is **not scheduled**; it would spend trials to
+confirm a decision that is already carried by structure. Revisit only if a head
+change is ever large enough to make the model competitive with the price.
+
 ## 3. Decisions awaiting the owner
 
 ### 3.1 P2 ordering — E3-first or E0-first? **MOOT, 2026-08-03**
@@ -174,18 +451,37 @@ The underlying asymmetry it was about is still live and still unexplained:
 
 That belongs to §3.3 (OPEN-6) now, not to P2.
 
-### 3.2 How should the inflated trial count feed deflation?
+### 3.2 How should the inflated trial count feed deflation? — **DECIDED 2026-08-04**
 
-51 trials, but they are not 51 independent hypotheses — they are ~13 distinct
-questions asked up to 3 times each after defects were found. Treating re-runs as
-independent trials over-deflates; treating them as one under-deflates.
+Written up in `docs/DEFLATION.md`, with the holdout still sealed. Machinery in
+`engine/eval/trials.py`, planted-control tests in `tests/test_trials.py`.
 
-One entry is explicitly post-hoc and labelled as such in the ledger
-(`probe:h19_alpha_interaction`) — a hypothesis invented after seeing H17's
-result. Whatever scheme is chosen must not treat it as pre-registered.
+**The question was on the wrong unit.** "51 trials or 13 questions" are both too
+small: the ledger stores one row per *run*, and a sweep row holds a whole grid.
+Counted mechanically — **52 runs / 24 questions / 133 configurations**, and 133
+is a floor because 28 rows record no arm list. Counting rows *understates*
+multiplicity by ~2.5×.
 
-No decision needed until P6, but it should be made **before** the holdout read,
-in writing, not after seeing the result.
+**The counting argument dissolves rather than being settled.** Primary statistic
+is PBO via CSCV, which **takes no trial count as input** — it consumes a
+weeks × configurations matrix and handles correlated trials by construction.
+Deflated Sharpe is explicitly not used, because it needs the effective-N this
+project cannot establish honestly. There is also no return series to deflate:
+the book is off, so what P6 adjudicates is forecast quality, not profit.
+
+**Measured, not asserted:** on P1's α grid (490 weeks × 8 configs),
+**PBO 0.022**, degradation +0.000431, spread 0.00882 — the ridge selection is
+not overfit. Three planted regimes (real skill / pure noise / designed overfit)
+are asserted in tests, on the P2 principle that a null without a positive
+control is not a result.
+
+**The pre-committed criterion is in `DEFLATION.md` §5.** Read it before
+unsealing, not after. Note §6's trap: PBO ≈ 0.5 on near-identical grids means
+the choice was inconsequential, not overfit — handled explicitly by
+`choice_mattered` rather than left to memory.
+
+**P6 is not a launch gate**, and §8 says do not run it yet: no pending decision
+turns on it, and it can be spent only once.
 
 ### 3.3 OPEN-6 — is the information-set split worth its cost?
 

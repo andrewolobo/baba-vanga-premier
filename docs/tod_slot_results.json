@@ -1,0 +1,570 @@
+{
+  "h26": {
+    "raw": [
+      {
+        "slot": "sat_late",
+        "n": 109,
+        "value": 2.467889908256881,
+        "ci_low": 2.1726948051948054,
+        "ci_high": 2.7610830172777074,
+        "excludes_zero": true
+      },
+      {
+        "slot": "midweek_eve",
+        "n": 1240,
+        "value": 2.490322580645161,
+        "ci_low": 2.412889919368082,
+        "ci_high": 2.5697771404019236,
+        "excludes_zero": true
+      },
+      {
+        "slot": "sat_15",
+        "n": 3129,
+        "value": 2.5461808884627675,
+        "ci_low": 2.4933331300719512,
+        "ci_high": 2.5968260204155933,
+        "excludes_zero": true
+      },
+      {
+        "slot": "mon_eve",
+        "n": 103,
+        "value": 2.563106796116505,
+        "ci_low": 2.2699915730337077,
+        "ci_high": 2.8582756700866936,
+        "excludes_zero": true
+      },
+      {
+        "slot": "fri_eve",
+        "n": 148,
+        "value": 2.6554054054054053,
+        "ci_low": 2.398410337334437,
+        "ci_high": 2.932017840248682,
+        "excludes_zero": true
+      },
+      {
+        "slot": "holiday_15",
+        "n": 261,
+        "value": 2.6666666666666665,
+        "ci_low": 2.5482351258581235,
+        "ci_high": 2.8095704117946108,
+        "excludes_zero": true
+      },
+      {
+        "slot": "sat_early",
+        "n": 236,
+        "value": 2.7245762711864407,
+        "ci_low": 2.511872811059908,
+        "ci_high": 2.9563459945791295,
+        "excludes_zero": true
+      },
+      {
+        "slot": "sun_early",
+        "n": 225,
+        "value": 2.7333333333333334,
+        "ci_low": 2.524401515151515,
+        "ci_high": 2.937837953981779,
+        "excludes_zero": true
+      },
+      {
+        "slot": "sun_late",
+        "n": 193,
+        "value": 3.1709844559585494,
+        "ci_low": 2.9399767025089605,
+        "ci_high": 3.4595114345114344,
+        "excludes_zero": true
+      }
+    ],
+    "ported": [
+      {
+        "slot": "sat_late",
+        "n": 109,
+        "value": -0.5664130164621907,
+        "ci_low": -0.8666329988335967,
+        "ci_high": -0.2600005682014382,
+        "excludes_zero": true
+      },
+      {
+        "slot": "mon_eve",
+        "n": 103,
+        "value": -0.15142162705050619,
+        "ci_low": -0.4834709190065742,
+        "ci_high": 0.13292984990708004,
+        "excludes_zero": false
+      },
+      {
+        "slot": "midweek_eve",
+        "n": 1240,
+        "value": -0.08166280666896299,
+        "ci_low": -0.15678782844243158,
+        "ci_high": -0.003192697243299787,
+        "excludes_zero": true
+      },
+      {
+        "slot": "sat_early",
+        "n": 236,
+        "value": -0.045296893447738566,
+        "ci_low": -0.2823435825489307,
+        "ci_high": 0.18494033636229135,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sun_early",
+        "n": 225,
+        "value": -0.004009283103822621,
+        "ci_low": -0.23127197391647705,
+        "ci_high": 0.20943983741478922,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sat_15",
+        "n": 3129,
+        "value": 0.027799665922460286,
+        "ci_low": -0.02368805701441769,
+        "ci_high": 0.07826347530867495,
+        "excludes_zero": false
+      },
+      {
+        "slot": "fri_eve",
+        "n": 148,
+        "value": 0.08217337807058898,
+        "ci_low": -0.1704405081810597,
+        "ci_high": 0.36138246166155946,
+        "excludes_zero": false
+      },
+      {
+        "slot": "holiday_15",
+        "n": 261,
+        "value": 0.19147945525224142,
+        "ci_low": 0.07493186763647101,
+        "ci_high": 0.3248174240074541,
+        "excludes_zero": true
+      },
+      {
+        "slot": "sun_late",
+        "n": 193,
+        "value": 0.21277994691948704,
+        "ci_low": -0.04093926239361463,
+        "ci_high": 0.4621769002022957,
+        "excludes_zero": false
+      }
+    ],
+    "lambda": [
+      {
+        "slot": "sat_late",
+        "n": 109,
+        "value": -0.3603066106203078,
+        "ci_low": -0.6416134780303885,
+        "ci_high": -0.07886800937694399,
+        "excludes_zero": true
+      },
+      {
+        "slot": "midweek_eve",
+        "n": 1240,
+        "value": -0.06899534810506688,
+        "ci_low": -0.14166871714442053,
+        "ci_high": 0.007770748271751907,
+        "excludes_zero": false
+      },
+      {
+        "slot": "mon_eve",
+        "n": 103,
+        "value": -0.050590075724695246,
+        "ci_low": -0.37349100943472885,
+        "ci_high": 0.21965430754164797,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sat_15",
+        "n": 3129,
+        "value": 0.005539381054095988,
+        "ci_low": -0.0491410243368695,
+        "ci_high": 0.05631547180009578,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sun_early",
+        "n": 225,
+        "value": 0.021501596463954654,
+        "ci_low": -0.20377956169567613,
+        "ci_high": 0.22732021456087054,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sat_early",
+        "n": 236,
+        "value": 0.07318004356611697,
+        "ci_low": -0.15361328006471753,
+        "ci_high": 0.296087186342032,
+        "excludes_zero": false
+      },
+      {
+        "slot": "fri_eve",
+        "n": 148,
+        "value": 0.13221846138145218,
+        "ci_low": -0.1283596294505534,
+        "ci_high": 0.4131549236630258,
+        "excludes_zero": false
+      },
+      {
+        "slot": "holiday_15",
+        "n": 261,
+        "value": 0.1513417073930176,
+        "ci_low": 0.028647600747634262,
+        "ci_high": 0.28899702397750743,
+        "excludes_zero": true
+      },
+      {
+        "slot": "sun_late",
+        "n": 193,
+        "value": 0.4258855574993064,
+        "ci_low": 0.19948078586649381,
+        "ci_high": 0.6758980008378738,
+        "excludes_zero": true
+      }
+    ],
+    "swing": 0.7030945477016686,
+    "anova_f": 3.2272350434151305,
+    "anova_p": 0.0011486285052743719,
+    "n": 5644
+  },
+  "h27": {
+    "per_season": [
+      {
+        "slot": "fri_eve",
+        "n": 148,
+        "201920": 0.3663,
+        "202122": 0.0749,
+        "202223": 0.0431,
+        "signs_agree": true
+      },
+      {
+        "slot": "holiday_15",
+        "n": 261,
+        "201920": 0.1365,
+        "202122": 0.2564,
+        "202223": 0.1061,
+        "signs_agree": true
+      },
+      {
+        "slot": "midweek_eve",
+        "n": 1240,
+        "201920": -0.0558,
+        "202122": -0.0198,
+        "202223": -0.1329,
+        "signs_agree": true
+      },
+      {
+        "slot": "mon_eve",
+        "n": 103,
+        "201920": -0.4831,
+        "202122": -0.0379,
+        "202223": 0.097,
+        "signs_agree": false
+      },
+      {
+        "slot": "sat_15",
+        "n": 3129,
+        "201920": -0.0178,
+        "202122": 0.0478,
+        "202223": -0.0172,
+        "signs_agree": false
+      },
+      {
+        "slot": "sat_early",
+        "n": 236,
+        "201920": 0.0375,
+        "202122": 0.0328,
+        "202223": 0.1499,
+        "signs_agree": true
+      },
+      {
+        "slot": "sat_late",
+        "n": 109,
+        "201920": -0.2923,
+        "202122": -0.2594,
+        "202223": -0.5229,
+        "signs_agree": true
+      },
+      {
+        "slot": "sun_early",
+        "n": 225,
+        "201920": -0.0407,
+        "202122": -0.0532,
+        "202223": 0.1363,
+        "signs_agree": false
+      },
+      {
+        "slot": "sun_late",
+        "n": 193,
+        "201920": 0.3062,
+        "202122": 0.8355,
+        "202223": 0.1378,
+        "signs_agree": true
+      }
+    ],
+    "corrected": [
+      {
+        "slot": "sat_late",
+        "n": 109,
+        "value": -0.3603066106203078,
+        "ci_low": -0.7204435533336409,
+        "ci_high": 0.053597501187125765,
+        "excludes_zero": false
+      },
+      {
+        "slot": "midweek_eve",
+        "n": 1240,
+        "value": -0.06899534810506688,
+        "ci_low": -0.16819676239330048,
+        "ci_high": 0.037356054782864356,
+        "excludes_zero": false
+      },
+      {
+        "slot": "mon_eve",
+        "n": 103,
+        "value": -0.050590075724695246,
+        "ci_low": -0.492895306705582,
+        "ci_high": 0.3403387618699622,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sat_15",
+        "n": 3129,
+        "value": 0.005539381054095988,
+        "ci_low": -0.07106512262021548,
+        "ci_high": 0.07281219305320555,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sun_early",
+        "n": 225,
+        "value": 0.021501596463954654,
+        "ci_low": -0.30277518987695295,
+        "ci_high": 0.33599395079305805,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sat_early",
+        "n": 236,
+        "value": 0.07318004356611697,
+        "ci_low": -0.27252266792556396,
+        "ci_high": 0.3744357315283652,
+        "excludes_zero": false
+      },
+      {
+        "slot": "fri_eve",
+        "n": 148,
+        "value": 0.13221846138145218,
+        "ci_low": -0.22108023223724838,
+        "ci_high": 0.5125375663114131,
+        "excludes_zero": false
+      },
+      {
+        "slot": "holiday_15",
+        "n": 261,
+        "value": 0.1513417073930176,
+        "ci_low": -0.020459016905018737,
+        "ci_high": 0.33481619639015414,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sun_late",
+        "n": 193,
+        "value": 0.4258855574993064,
+        "ci_low": 0.08660521428008425,
+        "ci_high": 0.7697872035926403,
+        "excludes_zero": true
+      }
+    ],
+    "survivors": [
+      "sun_late"
+    ],
+    "permutation_p": 0.001999000499750125,
+    "market": [
+      {
+        "slot": "sat_late",
+        "n": 109,
+        "value": -0.10148242031188565,
+        "ci_low": -0.18214069837151883,
+        "ci_high": -0.012769023479173653,
+        "excludes_zero": true
+      },
+      {
+        "slot": "mon_eve",
+        "n": 103,
+        "value": -0.048513948701180344,
+        "ci_low": -0.1396229457721839,
+        "ci_high": 0.04902979175602023,
+        "excludes_zero": false
+      },
+      {
+        "slot": "midweek_eve",
+        "n": 1239,
+        "value": -0.021933209283356746,
+        "ci_low": -0.04599112469133558,
+        "ci_high": 0.0019353133979869463,
+        "excludes_zero": false
+      },
+      {
+        "slot": "fri_eve",
+        "n": 148,
+        "value": -0.017170137443204496,
+        "ci_low": -0.09285340764589807,
+        "ci_high": 0.06451318323750344,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sat_15",
+        "n": 3126,
+        "value": -0.003964529077508809,
+        "ci_low": -0.01979909904953631,
+        "ci_high": 0.01293872887410422,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sat_early",
+        "n": 236,
+        "value": -0.0025242484648425618,
+        "ci_low": -0.06843360169233724,
+        "ci_high": 0.06521474984742905,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sun_early",
+        "n": 225,
+        "value": 0.02655253871391144,
+        "ci_low": -0.043420852928179786,
+        "ci_high": 0.09354811742642043,
+        "excludes_zero": false
+      },
+      {
+        "slot": "holiday_15",
+        "n": 259,
+        "value": 0.03378370926777716,
+        "ci_low": -0.00803182245888835,
+        "ci_high": 0.07189428761117453,
+        "excludes_zero": false
+      },
+      {
+        "slot": "sun_late",
+        "n": 193,
+        "value": 0.0942844199751681,
+        "ci_low": 0.020264199116278574,
+        "ci_high": 0.17606406030593588,
+        "excludes_zero": true
+      }
+    ]
+  },
+  "h28": {
+    "all slots": {
+      "delta": -0.0006682172597303157,
+      "ci_low": -0.0021628882231566377,
+      "ci_high": 0.0007930564095375292,
+      "stderr": 0.0007594718747262846,
+      "n": 5644,
+      "n_blocks": 119,
+      "excludes_zero": false,
+      "verdict": "no difference"
+    },
+    "sun_late + sat_late": {
+      "delta": -0.000862907186297568,
+      "ci_low": -0.0020639089719713447,
+      "ci_high": 0.0002914529399174152,
+      "stderr": 0.0005980902218042431,
+      "n": 5644,
+      "n_blocks": 119,
+      "excludes_zero": false,
+      "verdict": "no difference"
+    },
+    "sun_late only": {
+      "delta": -0.00047825067851476905,
+      "ci_low": -0.0015033214178460346,
+      "ci_high": 0.0005128427165180931,
+      "stderr": 0.00051836216648829,
+      "n": 5644,
+      "n_blocks": 119,
+      "excludes_zero": false,
+      "verdict": "no difference"
+    },
+    "ou_all slots": {
+      "delta": -0.0003876920286872733,
+      "ci_low": -0.0016800915849794886,
+      "ci_high": 0.00102115161595264,
+      "stderr": 0.000680583840426681,
+      "n": 5644,
+      "n_blocks": 119,
+      "excludes_zero": false,
+      "verdict": "no difference"
+    },
+    "ou_sun_late + sat_late": {
+      "delta": -0.0005683047940801688,
+      "ci_low": -0.0017627057701990378,
+      "ci_high": 0.0005598192656445574,
+      "stderr": 0.000584934534899424,
+      "n": 5644,
+      "n_blocks": 119,
+      "excludes_zero": false,
+      "verdict": "no difference"
+    },
+    "ou_sun_late only": {
+      "delta": -0.0003745104651370924,
+      "ci_low": -0.0014467890200419802,
+      "ci_high": 0.0006437862333119967,
+      "stderr": 0.0005353428254844599,
+      "n": 5644,
+      "n_blocks": 119,
+      "excludes_zero": false,
+      "verdict": "no difference"
+    }
+  },
+  "h29": {
+    "curve": [
+      {
+        "planted_x": 0.0,
+        "delta": 0.0011246939757859743,
+        "stderr": 0.0007339048474537636,
+        "se_ratio": 1.5324792848664632,
+        "detected": "0/6"
+      },
+      {
+        "planted_x": 0.5,
+        "delta": 0.00018020889364197637,
+        "stderr": 0.0009361260865839784,
+        "se_ratio": 0.1925049373419102,
+        "detected": "0/6"
+      },
+      {
+        "planted_x": 1.0,
+        "delta": -0.0009671205619338064,
+        "stderr": 0.0011069308078582275,
+        "se_ratio": 0.873695586994334,
+        "detected": "2/6"
+      },
+      {
+        "planted_x": 1.5,
+        "delta": -0.003969629610601931,
+        "stderr": 0.0016387491971256692,
+        "se_ratio": 2.422353351912895,
+        "detected": "3/6"
+      },
+      {
+        "planted_x": 2.0,
+        "delta": -0.007498247710625815,
+        "stderr": 0.0021586330091857985,
+        "se_ratio": 3.473609306777919,
+        "detected": "6/6"
+      },
+      {
+        "planted_x": 3.0,
+        "delta": -0.017301172584187976,
+        "stderr": 0.004261702174664092,
+        "se_ratio": 4.059685983465434,
+        "detected": "6/6"
+      }
+    ],
+    "n": 5644,
+    "n_required": 28403.958115942944,
+    "seasons_required": 10.484743285161528,
+    "holdout_would_reach": 1.2822345700598223
+  }
+}

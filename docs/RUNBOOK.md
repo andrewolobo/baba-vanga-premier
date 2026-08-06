@@ -29,6 +29,54 @@ worst one and always writes a `serving_state` row, including when it failed.
 **The book does not run.** It is measured-negative and absent from the runner
 rather than disabled by a flag.
 
+### 0.1 Starting it by hand
+
+Three independent pieces. The cycle is a **batch job that exits**, not a server;
+the other two are servers. Verified working 2026-08-04.
+
+```powershell
+# one-off: the API's dependencies are an extra, not a base dependency
+pip install -e ".[serve]"
+
+# 1. the cycle -- run it, it exits. Nothing else needs it running.
+python -m services.run_cycle
+
+# 2. the API (terminal 1)
+uvicorn api.main:app --port 8000 --reload
+
+# 3. the frontend (terminal 2)
+cd web
+npm install        # first time only
+npm run dev
+```
+
+Then open **`http://localhost:5173`**.
+
+> **Use `localhost`, not `127.0.0.1`, for the frontend.** Vite 5 binds to
+> `localhost`, which resolves to IPv6 `::1` here; `http://127.0.0.1:5173`
+> refuses the connection while `http://localhost:5173` serves normally. The API
+> answers on both.
+
+Check the API alone without the frontend:
+
+```powershell
+curl.exe http://127.0.0.1:8000/health
+```
+
+**What you will see today: empty pages.** That is correct, not a fault:
+
+| you see | because |
+| --- | --- |
+| no fixtures | the feed carries no English rows yet (§5.1) |
+| no predictions | nothing to price until fixtures exist |
+| **empty book, always** | the betting rule is **off by decision** — `CALIBRATION.md` §5 |
+| `"model": null` on `/health` | no non-dry-run cycle has been run yet |
+| `calibrated: false` | flagged on the wire on purpose — P3 found calibration null/harmful |
+
+**"Off" refers to the book, not the application.** The engine, API and frontend
+all run. The betting rule is the only thing deliberately disabled, and the
+`/book` and `/performance` pages will stay empty for as long as that holds.
+
 ## 1. Exit codes — and why 2 is not worse than 1
 
 ```

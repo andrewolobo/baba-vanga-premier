@@ -34,9 +34,20 @@ from engine.eval.p1 import BASE
 from engine.ingest.holdout import Purpose
 from engine.serve.artifact import Artifact, freeze
 
-#: The P1 frozen head (BASELINE.md §1). Not swept here and not swept again
-#: without a ledger entry.
-SERVING_CONFIG = replace(BASE, half_life=400.0, alpha=0.1, embargo_regimes=())
+#: The frozen head. Not swept here and not swept again without a ledger entry.
+#:
+#: Re-frozen 2026-08-04 to adopt the shots-on-target channel: goal deviance
+#: −0.00422 [−0.00535, −0.00307], negative in all four served divisions with
+#: every interval excluding zero, pooled deficit to market +0.01410 → +0.01230
+#: (`SHOTS_TARGET.md`). The base score was re-issued at the same time
+#: (`BASELINE.md`); the two move together or neither moves.
+#:
+#: The evaluation modules deliberately do NOT import this. `p2.py`, `p3.py` and
+#: `p4_shots.py` each pin the head as it stood when they ran, so re-running them
+#: still reproduces the documents they produced. Serving moves forward; history
+#: does not.
+SERVING_CONFIG = replace(BASE, half_life=400.0, alpha=0.1, embargo_regimes=(),
+                         shots_blend=0.3)
 
 ARTIFACT_DIR = config.DB_DIR / "artifacts"
 INFORMATION_SET = "pre_close"
