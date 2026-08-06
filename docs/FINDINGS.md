@@ -3,6 +3,18 @@
 Everything established between the SPEC being written and P0 closing, in one
 place. Written 2026-07-28.
 
+> **SCOPE BANNER — added 2026-08-06.** This file covers **P0 only** and is not
+> maintained past it. Everything it states about the corpus, the odds columns,
+> the player data and the team bridge remains accurate and load-bearing — §2.3
+> (CLV reaches back to 2012-13) and §2.5 (kickoff `Time` only from 2019-20) in
+> particular still decide what later gates can measure, and both were
+> re-confirmed on 2026-08-06.
+>
+> What it does **not** cover is any model result from P1 onward: the frozen
+> head, the base score, the shots channel, the book decision, or the P4 context
+> gates. §6's "open decisions: current status" is a 2026-07-28 snapshot —
+> `PLAN.md` §3 and `OUTSTANDING.md` are the live registers.
+
 Each finding is stated as *what was assumed → what is true → what changed*,
 because in most cases the assumption was reasonable and the correction is only
 interesting relative to it.

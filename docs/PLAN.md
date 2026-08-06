@@ -6,6 +6,21 @@ correct or resolve parts of the SPEC, (2) the decided open questions, (3) the
 system architecture, and (4) the phased execution plan against the ~3-week
 deadline to the 2026-27 opening weekend.
 
+> **STALENESS BANNER — added 2026-08-06.** Written 2026-07-28, before P1 closed.
+> **§3's open-decision register and §1–§2's discovery findings are still the
+> reference**; the phase plan in §5 has been overtaken by events and
+> `OUTSTANDING.md` §0 is the authority on where the project actually is.
+>
+> Specifically: P1–P4 are complete, the head carries a shots channel adopted
+> 2026-08-04, the book is **off by decision** (`CALIBRATION.md` §5), and the
+> P4 context gates §5 lists as future work have been run — rest, travel and the
+> kickoff slot are all closed. The in-store channel pre-gate (`CHANNELS.md`) is
+> the live P4 thread.
+>
+> One row in §3 was internally contradictory until 2026-08-06 and is now fixed:
+> OPEN-2 quoted a 500-day decay optimum while NEW-4 in the same table recorded
+> the 500 → 400 correction.
+
 ---
 
 ## 1. Decisions taken this session (owner-confirmed)
@@ -142,7 +157,7 @@ as such. Not on any critical path.
 | # | Status | Resolution / owner |
 | --- | --- | --- |
 | OPEN-1 | **RESOLVED (c)** | Per-season aggregates; as-of rule §2.2; P2 unblocked with reduced arms |
-| OPEN-2 (form leg) | Deferred to in-season | Not run in P1 by agreement. P1's decay sweep put the optimum at **500 days** — the opposite end of the timescale axis from where a short-memory form leg lives — which weakens the case further. `BASELINE.md` §3 |
+| OPEN-2 (form leg) | Deferred to in-season | Not run in P1 by agreement. P1's decay sweep put the optimum at **400 days** — the opposite end of the timescale axis from where a short-memory form leg lives — which weakens the case further. `BASELINE.md` §3. *(Corrected 2026-08-06: this row read 500 days, the corrupted-corpus value. NEW-4 in the same table already recorded the 500 → 400 correction, so this file contradicted itself.)* |
 | OPEN-3 (off-season decay) | **RESOLVED — not in the base head** | Season-boundary shrink improves goal deviance (−0.0025 early-season) but **degrades E0 1X2 over the full season** (+0.00259 [+0.00121, +0.00389]); benefit is confined to lower-division O/U. Population-specific, so it becomes a P4 context gate, not a global hyperparameter. Summer-compression arm rejected outright (−0.00000, CI spans zero). `BASELINE.md` §5 |
 | OPEN-4 (stakes definition) | Open | P4; as-of table reconstruction only |
 | OPEN-5 (stat coverage) | **RESOLVED — clean** | No gap; shots proxy viable everywhere E0–E3 |

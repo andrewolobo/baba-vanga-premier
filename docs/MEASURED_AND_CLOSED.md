@@ -104,8 +104,11 @@ Three independent reasons not to ship it:
 
 1. **The 1X2 gain is −0.000145 logloss.** gtleague declined a correction worth
    −0.0004 as not worth serving; this is still nearly three times smaller than
-   that. For scale, the P1 base head trails the market by 0.0117–0.0155 nats, so
-   τ would close about 1% of the gap it actually needs to close.
+   that. For scale, the served head trails the market by **0.0098–0.0141 nats**
+   (`BASELINE.md` §2), so τ would close about 1% of the gap it actually needs to
+   close. *(Corrected 2026-08-06: this read 0.0117–0.0155, the range before the
+   shots channel was adopted. The argument is unaffected — a smaller gap makes
+   τ's share smaller still.)*
 2. **The O/U gain is exactly zero, structurally.** τ redistributes mass between
    the 0-0, 1-0, 0-1 and 1-1 cells, whose totals are 0, 1, 1 and 2 — all below
    the 2.5 line. No redistribution among them can move a 2.5 probability by any

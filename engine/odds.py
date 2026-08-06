@@ -145,6 +145,30 @@ def overround(*decimal_odds):
         return np.nansum(np.where(stacked > 0, 1.0 / stacked, np.nan), axis=0)
 
 
+def vig_per_leg(*decimal_odds):
+    """Mean margin a single leg of this market must beat, as a probability.
+
+    `(overround - 1) / legs`, averaged over the rows supplied. This is the bar
+    `CALIBRATION.md` §1 established after "CLV >= 0" passed two strata that lost
+    7.6% and 10.0%: **CLV must exceed the vig, not zero.**
+
+    It exists as committed code because that bar was previously stated in prose
+    with nothing behind it — nothing in `engine/` computed an overround on the
+    corpus, so the figures under the launch decision could not be re-derived.
+    That is the same defect `CHANNELS.md` §7 records for row 53, sitting under a
+    more consequential number.
+
+    Rows where any price is missing are dropped, so the result is the mean over
+    complete markets rather than a partial sum over incomplete ones.
+    """
+    stacked = np.stack([np.asarray(o, dtype=float) for o in decimal_odds])
+    complete = np.all(np.isfinite(stacked) & (stacked > 0), axis=0)
+    if not complete.any():
+        return float("nan")
+    total = np.sum(1.0 / stacked[:, complete], axis=0)
+    return float(np.mean(total - 1.0) / len(decimal_odds))
+
+
 def devig_probs(*decimal_odds):
     """Normalised probabilities summing to 1. The market's opinion.
 

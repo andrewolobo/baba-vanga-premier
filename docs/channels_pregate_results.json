@@ -1,0 +1,75 @@
+{
+  "m6": {
+    "diagonal_vertex": 0.3413,
+    "diagonal_gain": -6.27e-05,
+    "paired_se": 0.000286,
+    "cross_term": -0.009478,
+    "consistency_residual": -5.765e-06,
+    "identified": false,
+    "in_box_gain_range": [
+      -0.0009633,
+      -6.21e-05
+    ],
+    "in_box_se_range": [
+      3.37,
+      0.22
+    ],
+    "n_admissible": 12
+  },
+  "m4": {
+    "n_team_seasons": 1103,
+    "r": {
+      "goals->goals_for": 0.5282,
+      "sot->goals_for": 0.3938,
+      "shots->goals_for": 0.4609,
+      "corners->goals_for": 0.4305,
+      "goals+sot->goals_for": 0.5426,
+      "shots+sot->goals_for": 0.5018,
+      "goals+sot+shots->goals_for": 0.5719,
+      "goals+sot+corners->goals_for": 0.5768,
+      "goals+sot+shots+corners->goals_for": 0.5916,
+      "goals+sot+NOISE->goals_for": 0.5418,
+      "goals->goals_against": 0.4391,
+      "sot->goals_against": 0.3485,
+      "shots->goals_against": 0.4261,
+      "corners->goals_against": 0.3847,
+      "goals+sot->goals_against": 0.4621,
+      "shots+sot->goals_against": 0.4577,
+      "goals+sot+shots->goals_against": 0.5045,
+      "goals+sot+corners->goals_against": 0.4961,
+      "goals+sot+shots+corners->goals_against": 0.5161,
+      "goals+sot+NOISE->goals_against": 0.4621
+    },
+    "gain_over_shipped": {
+      "goals+sot+shots": [
+        0.0293,
+        0.0424
+      ],
+      "goals+sot+corners": [
+        0.0342,
+        0.034
+      ],
+      "goals+sot+shots+corners": [
+        0.049,
+        0.054
+      ],
+      "goals+sot+NOISE": [
+        -0.0008,
+        0.0
+      ]
+    },
+    "control_passed": true
+  },
+  "m5": {
+    "cutoff": "2022-01-01",
+    "n_clubs": 98,
+    "corr": {
+      "att:sot~shots": 0.9748,
+      "att:goals~sot": 0.9712,
+      "att:goals~shots": 0.9439,
+      "dfn:sot~shots": 0.9607,
+      "dfn:goals~sot": 0.9743,
+      "dfn:goals~shots": 0.9241
+    }
+  }
+}

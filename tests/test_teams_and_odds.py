@@ -99,6 +99,33 @@ def test_breakeven_is_raw_and_overround_exceeds_one():
     assert total > 1.0
 
 
+def test_vig_per_leg_is_the_overround_split_across_legs():
+    """A 6% three-way book costs 2% per leg -- the bar CLV has to clear."""
+    assert odds.vig_per_leg(2.0, 3.5, 4.0) == pytest.approx(
+        (odds.overround(2.0, 3.5, 4.0) - 1.0) / 3.0)
+
+
+def test_vig_per_leg_is_zero_on_a_fair_book():
+    """Two legs at evens carry no margin, so there is nothing to beat."""
+    assert odds.vig_per_leg(2.0, 2.0) == pytest.approx(0.0)
+
+
+def test_vig_per_leg_drops_incomplete_markets_rather_than_undercounting():
+    """A market missing one price would otherwise read as a *negative* vig.
+
+    Summing 1/odds over the two legs that are present gives a total below 1,
+    which is the shape of a free bet. Dropping the row is the only safe
+    treatment, and it is why this is not a one-line expression at the call site.
+    """
+    home = np.array([2.0, 2.0])
+    draw = np.array([3.5, np.nan])
+    away = np.array([4.0, 4.0])
+    both = odds.vig_per_leg(home, draw, away)
+    only_complete = odds.vig_per_leg(home[:1], draw[:1], away[:1])
+    assert both == pytest.approx(only_complete)
+    assert both > 0.0
+
+
 def test_devig_sums_to_one_and_differs_from_breakeven():
     home, draw, away = odds.devig_probs(2.0, 3.5, 4.0)
     assert float(home + draw + away) == pytest.approx(1.0)

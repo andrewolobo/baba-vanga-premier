@@ -1,6 +1,31 @@
 # baba.vanga.premier — design specification
 
-Status: **DRAFT for re-review.** Nothing built. No code written. Every quantitative claim about the
+> **STATUS BANNER — added 2026-08-06. Read before anything below.**
+>
+> The line that stood here — *"DRAFT for re-review. Nothing built. No code
+> written."* — was written 2026-07-28 and has been wrong for over a week. **The
+> system is built**: P0–P4 complete, a frozen head serving, 357 tests passing,
+> and 76 recorded gate-ledger runs. `OUTSTANDING.md` is the current state; this
+> file is the *methodology authority and the historical record of what was
+> assumed*, which is a different job.
+>
+> **This document contains refuted parts, deliberately kept.** The major ones,
+> so nobody re-derives them:
+>
+> | SPEC section | what happened |
+> | --- | --- |
+> | §2.4 draw deficit "larger at lower λ" | **refuted** — pooled +0.90 pts, and E0 is +0.01 (`MEASURED_AND_CLOSED.md` P0-2) |
+> | §2.4 Asian-handicap / correct-score veto | **lifted** — margin dispersion 0.9909 (P0-3) |
+> | §3.2 half-life window [100, 300] days | **refuted** — optimum is **400** (`BASELINE.md` §1) |
+> | §3.3 player-prior cold start | **refuted** — no such population exists (`PLAYER_PRIOR.md`) |
+> | §3.6 kickoff slot + four analogues | **closed** — slot unresolvable, rest and travel bounded nulls, congestion and stakes blocked (`TOD_SLOT.md`, `REST.md`, `TRAVEL.md`) |
+> | §3.7 substitute shots for the target | **refuted as written** — it is a *channel* at w = 0.3, not a replacement (`SHOTS_TARGET.md`) |
+> | §3.8 meta-label | **planned, not run** — `P5_META_PLAN.md` |
+>
+> OPEN-1 through OPEN-9 are resolved or reassigned in `PLAN.md` §3; do not read
+> their status from this file.
+
+Every quantitative claim about the
 gtleague(a separate prediction) engine is sourced to a doc in that repo (§Appendix A); every claim
 about the input data is sourced to `data/notes.txt` (football-data.co.uk key)
 or flagged as an assumption to be confirmed.

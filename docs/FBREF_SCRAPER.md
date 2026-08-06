@@ -4,6 +4,32 @@ Probed **2026-08-03** against `https://fbref.com/en/matches/2026-08-08`.
 Relates to Track A fixture sync (`OUTSTANDING.md` §4.1) but is a standalone
 evaluation; it does not replace the football-data.org path until decided.
 
+> **SHELVED, AND ITS MAIN USE CASE IS CLOSED — read this before §1.**
+>
+> The scraper is built, tested and working. **It is not wired into serving and
+> must not be enabled without a recorded decision** (`OUTSTANDING.md` §4.1,
+> owner decision 2026-08-04). Two reasons beyond the decision itself: it needs a
+> *headed* browser on a live desktop to refresh the Cloudflare session, which
+> does not compose with an unattended scheduled cycle; and it carries **no
+> odds**, so `fixture_sync` is still required for the CLV feed either way.
+>
+> **The xG route it was expected to open does not exist** (`OUTSTANDING.md`
+> §1.8, `CHANNELS.md` §7, verified 2026-08-06). Date pages carry no xG column
+> for any of 60 competitions, and neither does the Premier League comp-season
+> schedule page for 2022-23 or the current season — zero `xg` data-stats in
+> 628 KB, HTML comments included. `P4_CHANNELS_PREGATE.md` §7 predicted xG lived
+> on comp-season pages and estimated a 52-request backfill; **that prediction was
+> refuted.** The remaining route is per-match report pages: ~26,000 requests
+> against a 10 req/min policy, roughly 43 hours of continuous scraping.
+>
+> **A further operational finding:** the session does not survive two days
+> unattended. The one minted 2026-08-04 was refused on first use on 2026-08-06,
+> which is a third independent reason it does not fit an unattended cycle.
+>
+> §1–§6 below are the original probe and are left unedited — the architecture
+> and rate-limit findings remain accurate and would be the starting point if
+> this is ever revived.
+
 ## 1. Probe findings
 
 | route                                        | result                                        |

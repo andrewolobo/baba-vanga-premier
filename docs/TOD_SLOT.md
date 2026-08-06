@@ -188,7 +188,7 @@ travel distance, and match stakes.
 | --- | --- | --- |
 | kickoff slot | 5,644 | — |
 | rest days / congestion | **21,896** | **3.9×** |
-| travel distance | blocked — no stadium coordinate table | — |
+| travel distance | ~~blocked — no stadium coordinate table~~ **21,896** — table built 2026-08-06 | **3.9×** |
 | stakes | blocked — needs as-of league tables (OPEN-4) | — |
 
 Rest has real spread to work with: median 7 days, 10th percentile 3, 90th
@@ -207,5 +207,19 @@ instrument caught a planted effect 6 times out of 6 where this one managed 2,
 and returned a bounded null rather than an unresolvable interval — `REST.md`.
 It also found a *different* limitation that this document did not anticipate:
 the corpus is league-only, so rest and congestion cannot see midweek cup or
-European fixtures at all. Travel distance is the remaining candidate that
-carries neither problem.
+European fixtures at all.
+
+**Travel followed, and SPEC §3.6 is now closed** (`TRAVEL.md`, 2026-08-06). It
+ran on the full 21,896 and returned a bounded null at ~3.7% per 500 km. Two
+things in it bear directly on this document:
+
+- **A control can fail because the statistic is wrong, not because the corpus
+  is small.** Travel's pre-registered deviance-delta criterion missed a planted
+  5% effect 0 times in 6; a Poisson score test caught it 5 of 6 on the same
+  frames. Re-reading §7 with that statistic, `sun_late`'s planted +0.18 is
+  **t = 4.14** — so what was underpowered here was the *deviance value*, never
+  the effect's reality, which §4's permutation p = 0.0020 had already
+  established. `engine/eval/power.py`, ledger `h35_power_revisit`.
+- **The verdict is unchanged.** Five of the nine slots resolve only 7.6–12%
+  even under the better statistic, which is a second and independent reason the
+  nine-level arm was the wrong instrument. §8 stands.

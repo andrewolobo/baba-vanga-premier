@@ -5,8 +5,10 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-06**, after building the stadium coordinate table and
-running the P4-travel positive control.
+Last updated **2026-08-06**, after the P4-channels pre-gate — which found the
+in-store channels are *not* exhausted, and that FBref cannot supply xG — and
+after a full documentation audit (§8) that corrected four numeric defects and
+made the launch-bar vig reproducible for the first time.
 
 Companion documents, in reading order:
 `SPEC.md` (methodology authority, includes refuted parts) →
@@ -24,7 +26,13 @@ Companion documents, in reading order:
 `REST.md` (days since last match — a bounded null, and where §3.6 goes next) →
 `P4_TRAVEL_PLAN.md` / `TRAVEL.md` (travel — pre-registration, §8 on why the
 detection statistic changed after the control and not after the result, and the
-bounded null that closes SPEC §3.6).
+bounded null that closes SPEC §3.6) →
+`P4_CHANNELS_PREGATE.md` / `CHANNELS.md` (the in-store channels — a pre-gate
+that refuted two of its own three predictions, voided one of its own stop
+rules, and says run the gate) →
+`P5_META_PLAN.md` (the meta-label — grounded, pre-registered, **not run**; §3
+separates a gate on the football model from a line-movement predictor, and that
+fork is an owner decision).
 
 ---
 
@@ -43,14 +51,24 @@ bounded null that closes SPEC §3.6).
 | P4 rest              | **Measured null, bounded at ~3.5%** — §1.5.                          |
 | P4 travel            | **Measured null, bounded at ~3.7%/500km** — §1.6.                     |
 | P4 congestion/stakes | Not started. **Both blocked**, and §1.6 closes SPEC §3.6.            |
-| P5 / P6              | Not started.                                                         |
+| P4 channels          | **Pre-gate run and positive — a gate is licensed, not written.** §1.7 |
+| P5 meta-label        | **Planned and grounded; not run.** Owner decision in §3.4.            |
+| P6                   | Not started. Not a launch gate — `DEFLATION.md` §8.                  |
 
 **Frozen base head:** `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3` — the
 shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
 prior, COVID window embargoed from scoring. Artifact
-`p1-3a38e9d6ef1ca7ee`. **357 tests pass.** Gate ledger holds **75 runs / 40
+`p1-3a38e9d6ef1ca7ee`. **360 tests pass.** Gate ledger holds **76 runs / 41
 questions / at least 149 configurations** — the last is the number that feeds
-deflation, and §3.2 explains why the other two mislead.
+deflation, and §3.2 explains why the other two mislead. **The audit in §8 added
+no ledger rows**: `engine.odds.vig_per_leg` reads prices only, so it spends no
+information about any outcome, on the same accounting as `power.py`.
+
+**The configuration count did not move for §1.7**, for the same reason it did
+not move for the travel controls: a probe carrying no arm list is a row that
+spends no information about a real answer. Note `count_configurations` needs
+`conn.row_factory = sqlite3.Row` and dies with an opaque `ValueError` without
+it — worth knowing, since this file tells you to call it.
 
 Eight of those runs are §1.5, which was run twice: once before and once after a
 correctness fix to how rest is computed. Both are recorded, per §7.5 — a trial
@@ -356,6 +374,85 @@ at +0.06 sits below 1.96 either way.
 saying so rather than one.** Do not read it as a reason to revisit §1.4's
 closure.
 
+### 1.7 The in-store channels are not exhausted — **PRE-GATE RUN 2026-08-06**
+
+Results in `CHANNELS.md`, pre-registration `P4_CHANNELS_PREGATE.md`, code
+`engine/eval/channels.py`, ledger `p4_channels_pregate` (row 76). **A gate is
+licensed. It is not written, and nothing is adopted.**
+
+Leave-one-season-out split-half reliability over 1,103 team-seasons, gain over
+the shipped `goals+sot`, as (attack, defence):
+
+| added channel | attack | defence |
+| ------------- | ------ | ------- |
+| shots | +0.0293 | +0.0424 |
+| corners | +0.0342 | +0.0340 |
+| **shots + corners** | **+0.0490** | **+0.0540** |
+| NOISE (negative control) | −0.0008 | +0.0000 |
+
+Row 53 measured adding *sot to goals* at +0.039/+0.060, and that became −0.00422
+nats and shipped. The two unused in-store channels are the same order of
+magnitude, and they are complementary rather than redundant.
+
+Four things worth carrying forward:
+
+- **A positive result needs a planted negative, exactly as a null needs a
+  planted positive.** Adding any predictor raises in-sample multiple R, and
+  leave-one-season-out bounds that without proving it zero. The noise channel
+  gains −0.0008. Without it, §1.7 would be an artifact claim. Convention 8
+  should be read as covering both directions.
+- **Corners was struck from the candidate list on the wrong statistic.**
+  Per-match correlation with same-side goals is 0.021 and reads as a dud; at
+  team-season level, which is the only level the strength layer sees, it is
+  **+0.418**. It then turned out to be the best single addition on attack.
+- **A coefficient diagnostic gave the wrong answer about this feature for the
+  second time.** M5's pre-registered 0.95 collinearity veto fires on
+  `goals ~ sot` at 0.9712 — the adopted channel. `SHOTS_TARGET.md` §4 recorded
+  the first instance and the lesson did not transfer, because it was written as
+  a note about one diagnostic rather than a rule about the class.
+  **Reliability on held-out matches has been right both times.**
+- **The per-side blend weight is unidentified, and identifying it costs 2
+  configurations, not 36.** H20 + H21 give five constraints for six quadratic
+  parameters; the free one is the curvature split between att and dfn. One
+  att-only arm at a second weight pins it. A 6x6 grid would be a quarter of the
+  ledger for a question one arm answers.
+
+**Do not** read this as a result about the head. Split-half reliability is not
+deviance, `SHOTS_TARGET.md` §7 already records over-estimating that mapping
+once, and no arm has been run. It also does not touch the book — §2.3 stands.
+
+**Row 53 is not reproducible, and that is a standing defect.** The pre-gate
+behind `SHOTS_TARGET.md` §1 was never committed; `p4_shots.py` holds only
+H20/H21/H22/H25 and nothing in `engine/` computes split-half reliability. M4 is
+a rebuild, and it **disagrees with row 53 on the comparison that motivated the
+shots channel** — row 53 put sot above goals on attack (0.446 vs 0.441), this
+harness puts goals well above sot (0.528 vs 0.394). Unresolvable without the
+lost code. It does not unsettle the shots channel, which was established by
+H20's gate rather than by the pre-gate, but only the within-run contrasts and
+the noise control carry weight in `CHANNELS.md` §1.
+
+### 1.8 xG is unreachable through FBref — **VERIFIED 2026-08-06**
+
+Not a decision awaiting anyone; a closed door, recorded so it is not reopened
+speculatively. FBref **date pages carry no xG column for any of 60
+competitions**, and neither does the Premier League **comp-season schedule
+page** for 2022-23 or for the current season — zero `xg` data-stats in 628 KB,
+HTML comments included. The remaining route is per-match report pages: ~26,000
+requests against a 10 req/min policy, roughly 43 hours of continuous scraping.
+
+Two side findings:
+
+- **The session does not survive two days unattended.** The one minted
+  2026-08-04 was refused on first use on 2026-08-06. A third independent reason
+  the §4.1 shelving decision was right.
+- **Comp ids for E0–E3 remain unverified** (`FBREF_SCRAPER.md` §4). The five
+  cached date pages carry 34, 514 and 690 but none of 9/10/15/16, because those
+  seasons had not started.
+
+**This is what promotes §1.7 from "probably overtaken" to the live question.**
+The argument for xG was that it is a better-measured version of the channel that
+worked; it is not available, so the in-store channels are what remains.
+
 ---
 
 ## 2. Known-stale results
@@ -501,6 +598,46 @@ Splitting halves the sample behind each Platt fit. Decide by
 `y ~ logit(p) * information_set` in P3 rather than inheriting the SPEC's
 assumption.
 
+### 3.4 P5 meta-label — which product is being built?
+
+Plan in `P5_META_PLAN.md`, grounded 2026-08-06. **Nothing run, no ledger row.**
+The grounding inverted the prior this project had been carrying, so the decision
+is not the one that was expected.
+
+**Power is not the constraint — that was wrong when I last reviewed it.**
+sd(CLV) is 0.0222 over 59,652 legs in 408 week blocks; the block-bootstrap SE of
+the mean is 0.00006, and even a **2% stratum (1,193 legs) resolves 0.00085**
+against a Max vig of 0.00201. The binding constraint is **multiplicity**, which
+needs a different control — PBO/CSCV, a declared ≤12-configuration budget, and a
+planted negative per §1.7.
+
+Three other grounded facts that scope it:
+
+- **1X2 only.** The 1X2 CLV basis is 19,884 matches / 59,652 legs from 2012-13;
+  the O/U basis is **5,638 matches from 2019-20** — within six of the 5,644 that
+  made the kickoff slot unresolvable, and the same cause. O/U also costs 3.6×
+  more at best price.
+- **The mean is mechanically pinned.** The three 1X2 legs of a match have CLVs
+  summing to −0.00577, the Max overround. Betting every leg returns −0.00192/leg
+  **by construction**. A meta-label can only help by *ranking*; any evaluation
+  reporting a mean over all legs is measuring the overround.
+- **The basis is clean.** `predictions`, `paper_bets` and `clv_grades` are all
+  empty, so SPEC §3.8's "all leans, never surfaced picks" holds by construction
+  and the survivorship loop cannot exist yet. **Keep it that way when the book
+  turns on.**
+
+**The decision, and it is not a modelling one.** There are two products under
+"meta-model": **(A)** a gate on the football model, and **(B)** a line-movement
+predictor. The most informative feature available — the sharp-vs-consensus
+spread, −0.01017 at 99.8% coverage — is pure price, so (B) is what the data
+readily supports and (A) is what SPEC §3.8 wants. The plan tests (A) and uses
+(B) as the ablation that tells them apart, with **`MODEL − BOOK` as the decision
+statistic rather than a footnote**.
+
+Whether (B) is worth pursuing on its own is the owner's call. It would reopen
+§1.0 on a *new* instrument rather than re-litigating the old one, and it should
+be decided in the open rather than arriving as a good AUC.
+
 ---
 
 ## 4. Work not started
@@ -634,3 +771,68 @@ obvious from the code alone.
    with the ridge target pinned at zero, which silently decided how much any
    future prior could ever matter (`PLAYER_PRIOR.md` §2). Before sweeping a
    parameter, write down what is being held fixed and whether the two interact.
+
+---
+
+## 8. Documentation audit — 2026-08-06
+
+Every file in `docs/` was read and its numeric and structural claims checked
+against the code and the database. **No decision changed.** Recorded because
+this project's failure mode is documents drifting from the results they cite,
+and §0 already carries one instance of it.
+
+### 8.1 Four numeric defects, corrected in place with the reason kept
+
+| file | defect | status |
+| --- | --- | --- |
+| `REST.md` §3 | band table was from the **pre-fix** of the two runs §1.5 records — counts summed to 42,778 against the 42,850 in its own §1, and three bands were wrong in value too (`7` was 14,524, not 14,591). `rest_results.json` was correct throughout. | corrected |
+| `PLAN.md` §3 | **contradicted itself**: OPEN-2 said the decay optimum was 500 days, NEW-4 in the same table recorded the 500 → 400 correction | corrected |
+| `MEASURED_AND_CLOSED.md` P0-2 | quoted the deficit range 0.0117–0.0155, the value *before* the shots channel; now 0.0098–0.0141 | corrected |
+| `DEFLATION.md` §1, §4 | counts 52 / 24 / 133 and "28 rows" were 2026-08-04 values; live is 76 / 41 / 149 and 47 | both dates now shown, with a re-derive instruction |
+
+None moves a verdict. `REST.md`'s largest cell shifts 0.5% and its ANOVA is
+unchanged at p = 0.591.
+
+### 8.2 The launch bar was not reproducible, and now is
+
+**Nothing in `engine/` computed an overround on the corpus.** The
+`0.65% / 0.00217 / 6.37% / 0.02122` figures under `CALIBRATION.md` §4 — the
+arithmetic behind "CLV must exceed the vig" — were written into prose with no
+code behind them. `p3.py` never calculated them, so re-running it could not
+check them. Same defect class as `CHANNELS.md` §7's row 53, under a more
+consequential number.
+
+`engine.odds.vig_per_leg` is now committed and tested. Re-derived:
+
+| basis | 1X2 @avg | 1X2 @max | O/U @avg | O/U @max |
+| --- | --- | --- | --- | --- |
+| all scored (21,896) | 0.02107 | **0.00201** | 0.03041 | 0.00718 |
+| H13's 1X2 basis (19,887) | 0.02067 | **0.00192** | 0.03010 | 0.00719 |
+
+The published figures are **8–12% higher than any subset reproduces**, so the
+stated bar is conservative and §1/§4/§5 all hold. Two things the single pooled
+figure concealed: **O/U costs 3.6× more than 1X2 at best price**, and
+best-available pricing removes **90%** of the 1X2 margin — which is the
+arithmetic behind "best-price capture is a prerequisite, not an optimisation".
+
+**Use the re-derived table for new work.** `P5_META_PLAN.md` §1.3 already does.
+
+### 8.3 Staleness banners added
+
+- **`SPEC.md`** read *"DRAFT for re-review. Nothing built. No code written."* —
+  at the top of the first file the reading order sends people to, with the
+  system built and 360 tests passing. Banner now lists the seven refuted
+  sections so nobody re-derives them.
+- **`FBREF_SCRAPER.md`** still read "Verdict: feasible" with no record that it
+  was shelved 2026-08-04 and its xG premise refuted 2026-08-06 (§1.8).
+- **`PLAN.md`** and **`FINDINGS.md`** dated 2026-07-28 with no scope marker.
+- **`TOD_SLOT.md`** §9 and **`REST.md`** §7 still listed travel as blocked.
+
+### 8.4 Checked and clean
+
+Every cross-document reference resolves (`META.md` is a forward reference from
+`P5_META_PLAN.md`). Every code path cited in docs exists. `OUTSTANDING.md` §6's
+`dispersion.py:338` pointer is exact. `BASELINE.md` §2's n differing from
+`SHOTS_TARGET.md` §3 is **not** a defect — BASELINE requires prices. Stale
+figures inside `BASELINE.md` §3+ and `P3_PLAN.md` are correct to leave: both are
+explicitly unedited so their predictions can still be scored.

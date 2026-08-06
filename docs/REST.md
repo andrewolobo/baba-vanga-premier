@@ -72,10 +72,21 @@ conceding residual is goals against minus the opponent's λ.
 | --- | --- | --- | --- |
 | `<=3` | 9,304 | −0.0147 [−0.0378, +0.0094] | −0.0295 [−0.0503, −0.0083] |
 | `4` | 7,626 | −0.0019 [−0.0288, +0.0261] | +0.0158 [−0.0125, +0.0444] |
-| `5-6` | 3,948 | −0.0114 [−0.0455, +0.0229] | −0.0106 [−0.0474, +0.0240] |
-| `7` | 14,524 | +0.0126 [−0.0064, +0.0320] | +0.0149 [−0.0048, +0.0332] |
-| `8-11` | 3,553 | +0.0044 [−0.0350, +0.0434] | −0.0013 [−0.0401, +0.0395] |
+| `5-6` | 3,949 | −0.0115 [−0.0460, +0.0243] | −0.0110 [−0.0474, +0.0260] |
+| `7` | 14,591 | +0.0114 [−0.0074, +0.0304] | +0.0138 [−0.0045, +0.0331] |
+| `8-11` | 3,557 | +0.0040 [−0.0352, +0.0408] | −0.0018 [−0.0404, +0.0371] |
 | `>=12` | 3,823 | +0.0083 [−0.0268, +0.0422] | +0.0048 [−0.0311, +0.0397] |
+
+> **Corrected 2026-08-06.** This table previously carried the numbers from the
+> *first* of the two runs §1.5 records — the one before the fix to how rest is
+> computed. Its counts summed to 42,778 against the 42,850 stated in §1, and
+> three bands were wrong in value as well as in n (`7` was 14,524, not 14,591).
+> `docs/rest_results.json` held the corrected figures throughout; only the
+> markdown was left behind. **No conclusion moves** — the largest cell shifts by
+> 0.5%, the ANOVA is unchanged at p = 0.591, and nothing survives correction
+> either way. Recorded rather than silently overwritten, because a table that
+> disagrees with its own results file is exactly the defect this project keeps
+> finding in other people's work.
 
 ANOVA on the attacking residual: F = 0.743, **p = 0.591**.
 
@@ -179,6 +190,8 @@ Two analogues remain, and both are blocked on data rather than on power:
 | **travel distance** | ~~Blocked on a stadium coordinate table.~~ **Table built 2026-08-06** — `reference/stadiums.csv`, **151 clubs** (not the 92 this row originally claimed; 92 is the Premier League plus EFL at one instant, not a sixteen-season club universe), every row verified against an independent geocode. The only one of the four with no confound of this kind. See `OUTSTANDING.md` §1.6. |
 | **stakes** | Blocked on as-of league-table reconstruction (OPEN-4). |
 
-Travel is the one to do next: it needs one small static table, it applies to
-every match in the corpus, and its confounds (E1–E3 geography) are the kind λ
-already absorbs rather than the kind that contaminates the feature itself.
+> **Travel was done next, and it is closed.** Measured 2026-08-06: a bounded
+> null at **~3.7% per 500 km**, point estimate 1.47% and t = 0.98 — `TRAVEL.md`.
+> The paragraph that stood here predicted it was the one to do next and was
+> right about that; it is superseded rather than deleted. **This closes SPEC
+> §3.6**: all four analogues are now resolved or blocked.

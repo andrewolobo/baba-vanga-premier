@@ -24,15 +24,24 @@ two and a half.
 
 Counted mechanically by `engine.eval.trials.count_configurations`:
 
-| unit | count |
-| --- | --- |
-| ledger rows ("trials") | 52 |
-| distinct questions | 24 |
-| **configurations actually scored** | **133** |
-| rows recording no arm list | 28 |
+| unit | count **as at 2026-08-04** | count **as at 2026-08-06** |
+| --- | --- | --- |
+| ledger rows ("trials") | 52 | **76** |
+| distinct questions | 24 | **41** |
+| **configurations actually scored** | **133** | **149** |
+| rows recording no arm list | 28 | **47** |
 
-The 133 is a floor, not a total: 28 rows record no arm list, and every one of
-those scored at least one configuration.
+The count is a floor, not a total: rows recording no arm list each scored at
+least one configuration.
+
+> **These numbers move, and that is the point of Decision 1.** The left column
+> is what was on the table when this decision was taken and is kept so the
+> decision can be read in its own context; the right is the count at the last
+> revision of this file. **Neither is authoritative at P6.** Re-derive with
+> `count_configurations` immediately before reading the holdout — quoting a
+> figure from prose is exactly the failure `OUTSTANDING.md` §0 records itself
+> committing. Note the call needs `conn.row_factory = sqlite3.Row` or it raises
+> an opaque `ValueError`.
 
 **Decision 1.** The unit of multiplicity is the **configuration**, not the
 ledger row and not the question. The count is derived from the ledger by
@@ -110,9 +119,11 @@ excluded from any claim that selection was pre-registered. It returned a null
 P6 will read. Any future post-hoc trial must be added to that tuple **when it is
 run**, not when it is reported.
 
-**Decision 6 — unattributed rows.** The 28 rows carrying no arm list are
-reported as a known undercount, never silently treated as one configuration
-each. Any P6 statement of the count carries the phrase "at least".
+**Decision 6 — unattributed rows.** The rows carrying no arm list (28 when this
+was written, **47** at the last revision — §1) are reported as a known
+undercount, never silently treated as one configuration each. Any P6 statement
+of the count carries the phrase "at least", and re-derives the figure rather
+than quoting this one.
 
 ## 5. The pre-committed criterion
 

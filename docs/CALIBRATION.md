@@ -143,6 +143,33 @@ nearly fair and the comparison is like-for-like:
 | --- | --- | --- |
 | overround (1X2) | 6.37% | **0.65%** |
 | vig per leg | 0.02122 | **0.00217** |
+
+> **The two figures in this row could not be reproduced, and now can — 2026-08-06.**
+>
+> Nothing in `engine/` computed an overround on the corpus; these numbers were
+> derived ad hoc during the session and written straight into the document.
+> `p3.py` never calculated them, so re-running it could not check them. That is
+> the same defect `CHANNELS.md` §7 records for row 53, sitting under the launch
+> bar rather than under a pre-gate.
+>
+> `engine.odds.vig_per_leg` is now committed, tested, and gives:
+>
+> | basis | 1X2 @avg | 1X2 @max | O/U @avg | O/U @max |
+> | --- | --- | --- | --- | --- |
+> | all scored (21,896) | 0.02107 | **0.00201** | 0.03041 | 0.00718 |
+> | H13's 1X2 basis (19,887) | 0.02067 | **0.00192** | 0.03010 | 0.00719 |
+>
+> **The published figures are 8–12% higher than any subset reproduces**, so the
+> bar stated above is *conservative* and every conclusion in §1, §4 and §5 holds
+> — a lower vig makes the shortfall smaller, and the shortfall is an order of
+> magnitude wide either way. The originals are left in place rather than
+> overwritten; **use the table in this note for any new work.** `P5_META_PLAN.md`
+> §1.3 already does.
+>
+> Two things worth carrying: the O/U market is **3.6× more expensive than 1X2 at
+> best price** (0.00718 vs 0.00201), which the single pooled "vig per leg" above
+> concealed; and best-available pricing removes **90%** of the 1X2 margin, which
+> is the arithmetic behind §5's "best-price capture is a prerequisite".
 | blend mean CLV | +0.00262 | **+0.00000** |
 | blend ROI, min_edge 0 | −4.75% | **−1.31%** [−2.97%, +0.36%] |
 | blend ROI, min_edge 0.02 | −1.97% | +2.95% [−1.31%, +7.43%] |
