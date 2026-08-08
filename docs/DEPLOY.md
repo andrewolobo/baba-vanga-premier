@@ -132,8 +132,41 @@ perfect.
 this needs no action — but note the served `model_version` on the server will
 **not** be `p1-3a38e9d6ef1ca7ee`. It will be a fresh hash at the server's own
 cutoff, which is correct and expected (the runner refreezes past
-`REFIT_AFTER_DAYS`). The version string is a derivation of the training data
-and cutoff, so it is *supposed* to differ.
+`REFIT_AFTER_DAYS`).
+
+#### The artifact version is machine-dependent — measured 2026-08-08
+
+The server's first cycle froze `p1-89db580603366a9f`. The same config at the
+same cutoff on the development machine gives `p1-81b57865368de474`. **The
+inputs are identical and the outputs disagree**, which is worth having straight
+because `artifact.py` says *"Two artifacts with the same version must be the
+same artifact"*.
+
+Isolated by elimination. `corpus_digest` is `4dbc6d849193e8f6` on both the
+development store and an independently rebuilt one, because `match_id` is a
+natural key (`season:division:date:home:away`) rather than a rowid — so two
+builds of the same CSVs are byte-identical to the digest. Re-fitting from both
+stores on one machine reproduces **the same version, teams tuple, digest and
+coefficients bit-for-bit**. So the store is not the variable.
+
+What is: `_version_string` hashes `intercept`, `home`, `att` and `dfn` — the
+**fitted coefficients**. Those come out of an iterative solve, and Windows and
+Linux BLAS disagree in the last bits. So the version identifies **the fit**,
+not merely its inputs.
+
+**This does not affect serving and is not being changed.** Every prediction is
+still traceable to the exact artifact that produced it: the cycle registers it
+in `model_runs` and writes the JSON to `db/artifacts/`. Changing the derivation
+would invalidate `p1-3a38e9d6ef1ca7ee`, which the documents cite and which
+`p2.py`/`p3.py`/`p4_shots.py` pin.
+
+**What it does break is one specific check.** `artifact.py`'s *"Re-running the
+same fit on the same data reproduces the string exactly, which is what makes a
+stored prediction reproducible months later"* holds **on one machine** and not
+across two. You cannot audit a server artifact by re-fitting on the development
+box and comparing version strings — compare coefficients within a tolerance
+instead. Anything that treats the version as a pure function of the inputs is
+overstating it by exactly this much.
 
 ### 2.3 The frontend build output is gitignored
 
