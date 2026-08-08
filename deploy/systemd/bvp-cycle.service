@@ -1,0 +1,72 @@
+# The serving cycle, run once. Triggered by bvp-cycle.timer, never enabled
+# itself. docs/DEPLOY.md 5.5.
+#
+#   sudo cp deploy/systemd/bvp-cycle.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now bvp-cycle.timer     # the TIMER, not the service
+#
+# Run it by hand with `sudo systemctl start bvp-cycle` -- which is also the way
+# to confirm the unit works without waiting for 06:00.
+
+[Unit]
+Description=baba.vanga.premier serving cycle (sync -> serve -> tips -> grade)
+Documentation=file:/srv/bvp/docs/RUNBOOK.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=bvp
+Group=bvp
+WorkingDirectory=/srv/bvp
+ExecStart=/srv/bvp/scripts/run_cycle.sh
+
+# ------------------------------------------------------------------------- #
+# THE LOAD-BEARING LINE. services/run_cycle.py returns 2 for "ran, but a human
+# should look" -- an empty feed, a club the alias table does not know, a
+# fixture the artifact cannot price. systemd treats every non-zero as a
+# failure, so without this the unit is marked failed every single day of the
+# close season, OnFailure fires every day, and whoever is on the other end
+# stops reading the alerts. That is the exact failure the three exit codes were
+# designed to prevent (RUNBOOK.md 1); collapsing 2 into 1 here undoes it.
+#
+# Consequence worth knowing: a persistent 2 is now invisible to systemd. It is
+# in the journal and in serving_state, and DEPLOY.md 6.2 is what turns it into
+# a weekly digest. Until that exists, `journalctl -u bvp-cycle -g ATTENTION`
+# is the manual version.
+# ------------------------------------------------------------------------- #
+SuccessExitStatus=2
+
+# The refit takes ~1.5s; everything slow here is network. sync fetches one CSV
+# and grade fetches one per (division, season) with matches to settle, each
+# with a 30s timeout. 30 minutes is generous enough that a timeout means
+# something is genuinely wrong rather than merely slow.
+TimeoutStartSec=30min
+
+# DEPLOY.md 6.2 wires alerting; until it exists there is no unit to call and
+# naming one that does not exist makes the service fail to load.
+#   OnFailure=bvp-alert@%n.service
+
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+
+# --- hardening ----------------------------------------------------------- #
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+
+# db/ carries the database, the WAL sidecars, the frozen artifacts the cycle
+# writes under db/artifacts/, and run_cycle.sh's lock file. It is the only
+# thing the cycle writes to.
+ReadWritePaths=/srv/bvp/db
+
+# No [Install] section, deliberately. This unit is started by the timer. If it
+# were enabled directly it would also run once at every boot, which is a
+# fixture sync and a results fetch on every reboot for no reason.

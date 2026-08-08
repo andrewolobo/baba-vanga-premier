@@ -1,0 +1,38 @@
+# Daily trigger for bvp-cycle.service. docs/DEPLOY.md 5.5, RUNBOOK.md 2.
+#
+#   sudo systemctl enable --now bvp-cycle.timer
+#   systemctl list-timers bvp-cycle.timer     # NEXT / LEFT / LAST / PASSED
+#
+# Daily, not weekly. The feed is a rolling ~7-day window that republishes
+# prices, so a daily run picks up each fixture the first time it appears and
+# prices it at its earliest observed price -- which is what first_seen_at
+# exists to record. The weekly refit happens by itself: the runner refreezes
+# whenever the artifact is older than REFIT_AFTER_DAYS, so a missed run cannot
+# leave a stale head pricing a weekend.
+
+[Unit]
+Description=Daily baba.vanga.premier serving cycle
+Documentation=file:/srv/bvp/docs/RUNBOOK.md
+
+[Timer]
+# UTC is stated rather than assumed. SQLite's date('now') is UTC while
+# pd.Timestamp.now() in run_cycle is local, and the two agree only on a UTC
+# machine (docs/DEPLOY.md 3.8). Azure defaults to UTC; this suffix means the
+# schedule does not silently move if someone ever changes the VM's zone.
+OnCalendar=*-*-* 06:00:00 UTC
+
+# The Windows equivalent was -StartWhenAvailable. If the VM was off at 06:00 --
+# a reboot for unattended-upgrades, a resize, an outage -- run as soon as it is
+# back rather than skipping to tomorrow. A skipped run on a matchday is a
+# permanent hole in the CLV series; RUNBOOK.md opens by saying so.
+Persistent=true
+
+# Politeness to football-data.co.uk, which is one publisher serving everyone.
+# Five minutes of jitter costs nothing here: the fixtures are for later that
+# day at the earliest.
+RandomizedDelaySec=5min
+
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

@@ -985,6 +985,13 @@ server install a test failure waiting to happen), `deploy/nginx/*.template`
 endpoints), `.gitignore` for `web/static/*.rar`, and the hero image de-fringed
 and cut 2.72 MB → 127 KB.
 
+**Also done: the Linux operational layer** — `scripts/run_cycle.sh`,
+`scripts/deploy.sh`, `deploy/systemd/{bvp-api.service,bvp-cycle.service,
+bvp-cycle.timer}`, and a `.gitattributes` pinning `eol=lf` on everything Linux
+consumes. `run_cycle.sh` is verified against the live feed at `exit 2`,
+`NO ENGLISH ROWS` — `RUNBOOK.md` §3's T-7 check, now passing through the shell
+script that will actually run it.
+
 **Four things worth carrying forward:**
 
 - **A public host would publish a return, through a page B7 does not guard.**
@@ -1006,6 +1013,25 @@ and cut 2.72 MB → 127 KB.
   never de-fringed. Invisible against white, which is how it survived review,
   and `.hero` is orange, so it would have gone live with a lime halo. Found by
   measuring the asset rather than by looking at it. `DEPLOY.md` §2.6.
+- **The gate ledger exists on one machine, gitignored, with no backup.** Found
+  by asking why one test fails on a fresh store. The 90 rows behind §0's
+  `87 runs / 45 questions / 167 configurations` live in `db/premier.db` **here
+  and nowhere else**; `engine.ingest.build` rebuilds `matches` and
+  `player_seasons` from the tracked CSVs and cannot rebuild the ledger, because
+  it is **a record of what was measured, not a function of the data**.
+  `DEFLATION.md` reads it, §0 tells every future thread to re-derive from it
+  rather than trust the prose — which makes it the authority — and the
+  pre-committed P6 read depends on it. `DEPLOY.md` §6.1 now covers **two**
+  machines, and says do this one first: the server does not exist yet, and this
+  asset is older and equally irreplaceable.
+- **One test could not pass on the server, and it was the acceptance gate that
+  found it.** `test_the_real_ledger_holds_more_configurations_than_rows` opens
+  the real `db/premier.db` and asserts `configurations >= 133`; a rebuilt store
+  has an empty ledger, so `pytest -q` was **436 passed, 1 failed** on a
+  server-like database. It now skips where there is no ledger to guard — narrow
+  enough that a ledger which *exists* and has regressed still fails. A gate
+  known to fail is not a gate, on the same argument `RUNBOOK.md` §7 makes about
+  tolerated warnings.
 - **`git push` over SSH does not work from this machine.** `github.com:22`
   times out; the network blocks it. GitHub's port-443 endpoint authenticates
   fine, so `origin` is now `ssh://git@ssh.github.com:443/...`. **Check the

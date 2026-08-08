@@ -1,0 +1,68 @@
+# The read-only serving API. docs/DEPLOY.md 5.5.
+#
+#   sudo cp deploy/systemd/bvp-api.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now bvp-api
+#
+# Copied rather than symlinked from the repo: a `git pull` that changed a unit
+# under systemd's nose would leave the running service and the file on disk
+# disagreeing, with nothing to say so. Copy, then `daemon-reload` deliberately.
+
+[Unit]
+Description=baba.vanga.premier API (read-only serving layer)
+Documentation=file:/srv/bvp/docs/DEPLOY.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=bvp
+Group=bvp
+
+# api/ is not an installed package -- pyproject's packages.find includes
+# engine* only -- so the repo root has to be the working directory.
+# docs/DEPLOY.md 3.4.
+WorkingDirectory=/srv/bvp
+
+# Bound to loopback. nginx is the only thing that should reach it, and it is
+# what enforces basic auth on /api/book and /api/performance (docs/DEPLOY.md
+# 3.1). An API listening on 0.0.0.0 would let anyone bypass that by going
+# straight to the port.
+#
+# ONE worker, deliberately. The API is read-only and WAL permits concurrent
+# readers, so more would work -- there is simply no load here that needs them,
+# and one process keeps the sqlite story simple.
+ExecStart=/srv/bvp/.venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 8000
+
+Restart=always
+RestartSec=5
+
+# ProtectSystem=strict makes the whole hierarchy read-only, so the bytecode
+# cache is unwritable; saying so explicitly beats letting Python discover it on
+# every import.
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+
+# --- hardening ----------------------------------------------------------- #
+# The API reads one sqlite file and answers HTTP. It needs nothing else.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+
+# THE ONE WRITABLE PATH, and it is not optional. ProtectSystem=strict would
+# otherwise make db/ read-only, and WAL is not a read-only mode: opening the
+# database creates and writes premier.db-wal and premier.db-shm even for a pure
+# reader. Without this the API fails on its first query with "attempt to write
+# a readonly database", which reads as a permissions bug rather than as WAL.
+ReadWritePaths=/srv/bvp/db
+
+[Install]
+WantedBy=multi-user.target

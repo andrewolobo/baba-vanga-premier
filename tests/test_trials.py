@@ -150,8 +150,26 @@ def test_the_post_hoc_trial_is_named_when_present(tmp_path):
 
 
 def test_the_real_ledger_holds_more_configurations_than_rows():
-    """Guards the finding itself against a future refactor quietly reverting it."""
+    """Guards the finding itself against a future refactor quietly reverting it.
+
+    **Skipped where there is no ledger to guard.** `db/premier.db` is gitignored
+    and the store is rebuilt from the tracked CSVs by `engine.ingest.build`,
+    which loads `matches` and `player_seasons` and *not* `gate_ledger`. So a
+    fresh checkout -- and every deployed server -- has zero rows here, and this
+    was the one test in 437 that failed on a server-like database
+    (`docs/DEPLOY.md` §5.4). Asserting against an empty ledger would make
+    `pytest -q` fail on the serving host for a reason with nothing to do with
+    serving, and an acceptance gate that is known to fail is not a gate.
+
+    The skip is narrow on purpose: it fires only when the ledger is *empty*, so
+    a ledger that exists and has regressed still fails. What it cannot catch is
+    the ledger being wiped, which would present as a skip -- but that is a
+    catastrophe with much louder symptoms, and it is why `DEPLOY.md` §6.1 treats
+    this file as irreplaceable rather than reproducible.
+    """
     count = trials.count_configurations(db.connect())
+    if count.runs == 0:
+        pytest.skip("no gate ledger in this database -- nothing to guard")
     assert count.configurations > count.runs
     assert count.configurations >= 133
 

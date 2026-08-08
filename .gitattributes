@@ -1,0 +1,19 @@
+# Files consumed by Linux must check out with LF whatever the committing
+# machine's core.autocrlf says.
+#
+# The blobs are correct today because this repo is committed from a box with
+# core.autocrlf=true. That is a property of one machine's git config, not of
+# the repository, and the failure it guards against is both cryptic and total:
+# a CRLF shebang makes the kernel look for an interpreter literally named
+# `bash\r`, so scripts/run_cycle.sh dies with
+#
+#     /srv/bvp/scripts/run_cycle.sh: /usr/bin/env: bad interpreter
+#
+# and systemd mis-parses unit values with a trailing CR without saying so.
+# Both would present on the server as "the deployment is broken" with nothing
+# pointing at line endings.
+
+*.sh        text eol=lf
+*.service   text eol=lf
+*.timer     text eol=lf
+*.template  text eol=lf

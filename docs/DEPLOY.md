@@ -155,15 +155,43 @@ is the one `vite.config.js` already documents in a comment: every page reads as
 **an empty week rather than as a misconfiguration**. It will look like the feed
 is out of season.
 
-### 2.5 All operational scripting is PowerShell
+### 2.5 All operational scripting is PowerShell — **RESOLVED 2026-08-08**
 
 `scripts/run_cycle.ps1` (the logging wrapper that preserves the exit code) and
 `scripts/dev.ps1` are Windows-only — `RUNBOOK.md` §0.2 says so in as many
 words. `RUNBOOK.md` §2's whole scheduling section is Task Scheduler.
 
-Needs a Linux twin: `scripts/run_cycle.sh` plus systemd units (§5.5, §6.2).
-`RUNBOOK.md` §2 and §0.2 then need an Ubuntu column, or the runbook describes a
-machine that is not the one serving.
+Now shipped: `scripts/run_cycle.sh`, `scripts/deploy.sh`, and
+`deploy/systemd/{bvp-api.service,bvp-cycle.service,bvp-cycle.timer}`.
+
+**`run_cycle.sh` does not write a dated log file, and that is the one place it
+deliberately differs from the `.ps1`.** The PowerShell version wrote one
+because Task Scheduler reports "last run result" and discards output, so a run
+was otherwise unreconstructable. journald does not discard output; a second
+copy on disk would only age independently and go unpruned.
+
+**Two defects found by running it rather than reading it:**
+
+- **A missing `flock` took the same branch as a held lock** — the script
+  reported "another cycle is already running" and exited 2, which is a
+  benign-looking message for a cycle that never ran at all. `flock` ships with
+  util-linux and is on every Ubuntu, so this would only fire on a minimal
+  image — but the cost is a matchday going unpriced while the log reads fine,
+  which is the precise failure `services/run_cycle.py` exists to prevent. It
+  now detects absence separately, says so, and runs anyway: the lock is belt
+  and braces over systemd, re-running is idempotent, and a skipped run is
+  permanent where an unguarded one is merely wasteful.
+- **The lock cannot live in `/tmp`.** The units set `PrivateTmp=true`, so a
+  `/tmp` lock is invisible between the service and a hand-run shell — which is
+  exactly the overlap it exists to catch. It lives at `db/.cycle.lock`, inside
+  the one path `ReadWritePaths` grants.
+
+Verified against the live feed: `exit 2`, `NO ENGLISH ROWS` — `RUNBOOK.md` §3's
+T-7 check, now passing through the Linux script.
+
+**Still open: `RUNBOOK.md` §0.2 and §2 still document Task Scheduler**, so an
+operator following it against the Ubuntu VM finds half its commands do not
+exist. §7 step 9.
 
 ### 2.6 The hero image carries a green matte fringe
 
@@ -507,6 +535,22 @@ sudo -u bvp .venv/bin/python -m pytest -q             # expect: 437 passed
 The build step runs migrations, loads 16 seasons from the tracked CSVs, and
 runs the integrity checks. `pytest` on the server is the §3.5 acceptance gate.
 
+**Expect `436 passed, 1 skipped` on the server, not 437 passed.** This was
+measured on 2026-08-08 by pointing `BVP_DB_PATH` at a freshly built store, and
+it failed before it skipped.
+`test_trials.py::test_the_real_ledger_holds_more_configurations_than_rows`
+opens the **real** `db/premier.db` and asserts `configurations >= 133`; the
+store the server builds has `gate_ledger` **empty**, because
+`engine.ingest.build` loads `matches` and `player_seasons` and nothing else.
+The test now skips where there is no ledger to guard, because an acceptance
+gate that is known to fail is not a gate — and a tolerated failure becomes an
+ignored one, on the same argument `RUNBOOK.md` §7 makes about warnings.
+
+**The reason it is a skip and not a deletion is §6.1.** The empty ledger is not
+a server problem to fix; it is a fact about where the measurement history
+lives, and that fact turns out to matter more on the *development* machine than
+on the server.
+
 Then a dry cycle, which is `RUNBOOK.md` §3's T-7 check:
 
 ```bash
@@ -519,56 +563,41 @@ genuinely empty is the only cheap opportunity to confirm it.
 
 ### 5.5 systemd — *verify:* API answers after a reboot; timer shows a next run
 
-**`bvp-api.service`** — always up, restarts on crash, comes back after reboot.
+**Committed at `deploy/systemd/`** — `bvp-api.service`, `bvp-cycle.service`,
+`bvp-cycle.timer`. Each carries its reasoning inline; only the decisions are
+repeated here, because a unit duplicated into prose is a unit that will
+disagree with itself, which is this project's recorded failure mode
+(`OUTSTANDING.md` §8).
 
-```ini
-[Unit]
-Description=baba.vanga.premier API
-After=network-online.target
-
-[Service]
-User=bvp
-WorkingDirectory=/srv/bvp
-ExecStart=/srv/bvp/.venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 8000
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
+```bash
+sudo cp deploy/systemd/bvp-*.{service,timer} /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now bvp-api bvp-cycle.timer   # the TIMER, not the service
 ```
 
-Bound to `127.0.0.1` — nginx is the only thing that should reach it. **One
-worker.** The API is read-only and WAL permits concurrent readers, so more
-workers would work, but there is no load here that needs them and one process
-keeps the sqlite story simple.
+**Copied, not symlinked into the repo.** A `git pull` that changed a unit under
+systemd's nose would leave the running service and the file on disk disagreeing
+with nothing to say so. Copy, then `daemon-reload`, deliberately.
 
-**`bvp-cycle.service` + `bvp-cycle.timer`** — the Task Scheduler replacement.
+Four decisions worth stating outside the files:
 
-```ini
-# bvp-cycle.service
-[Unit]
-Description=baba.vanga.premier serving cycle
-After=network-online.target
-
-[Service]
-Type=oneshot
-User=bvp
-WorkingDirectory=/srv/bvp
-ExecStart=/srv/bvp/scripts/run_cycle.sh
-# exit 2 is "ran, but a human should look" -- not a failure. RUNBOOK.md 1.
-SuccessExitStatus=2
-OnFailure=bvp-alert@%n.service
-```
-
-```ini
-# bvp-cycle.timer
-[Timer]
-OnCalendar=*-*-* 06:00:00 UTC
-Persistent=true
-
-[Install]
-WantedBy=timers.target
-```
+- **The API binds `127.0.0.1`, one worker.** nginx is the only thing that
+  should reach it, and nginx is what enforces basic auth on `/api/book` and
+  `/api/performance` (§3.1) — an API on `0.0.0.0` lets anyone bypass that by
+  going straight to the port. One worker because the API is read-only and there
+  is no load here that needs more.
+- **`ReadWritePaths=/srv/bvp/db` is not optional.** `ProtectSystem=strict`
+  makes the hierarchy read-only, and **WAL is not a read-only mode**: opening
+  the database creates and writes `premier.db-wal` and `premier.db-shm` even
+  for a pure reader. Without it the API fails its first query with *attempt to
+  write a readonly database*, which reads as a permissions bug rather than as
+  WAL.
+- **`bvp-cycle.service` has no `[Install]` section.** It is started by the
+  timer. Enabling it directly would also run it at every boot — a fixture sync
+  and a results fetch on each reboot, for nothing.
+- **`OnFailure` is commented out until §6.2 exists.** Naming a unit that is not
+  installed makes the service fail to load, and shipping a stub alert that
+  quietly does nothing would be worse than shipping none.
 
 Three things this buys, mapped to what the Windows setup did:
 
@@ -585,28 +614,40 @@ which is the exact failure the three-code design exists to prevent.
 
 ### 5.6 The deploy script — *verify:* run it once with no changes to pull
 
-`scripts/deploy.sh`, ordered around §3.7:
+**Committed as `scripts/deploy.sh`.** Run it as the `bvp` user; it needs `sudo`
+for exactly one thing, restarting the API, and asks for nothing else.
 
 ```
+0. refuse if the working tree is dirty or the branch is not main
 1. git pull --ff-only
-2. pip install -e ".[serve]" -c requirements.lock
-3. migrate            <-- BEFORE the API restarts
-4. npm ci && npm run build
-5. systemctl restart bvp-api
-6. curl /api/health   <-- and fail loudly if it does not answer
+2. pip install -e ".[serve,dev]" -c requirements.lock
+3. npm ci && npm run build
+4. migrate                       <-- BEFORE the API restarts
+5. pytest -q                     <-- before the restart, so a failure changes nothing
+6. systemctl restart bvp-api
+7. curl /health, retrying        <-- and fail loudly, with the journal, if it never answers
 ```
 
-Step 3 as a one-liner, because `--dry-run` would also refit and hit the
-network:
+**Migrate moved from step 3 to step 4, and the order is the point.** The hard
+constraint is §3.7: `api/main.py` never migrates, so the schema must be current
+before the API restarts. But the window between *schema changed* and *code that
+expects it is running* is the only genuinely dangerous stretch of a deploy, and
+`npm ci` can take a minute. Do the slow work first, then move the schema and
+the code together.
 
-```bash
-.venv/bin/python -c "from engine import db; print(db.migrate(db.connect()))"
-```
+Migrate is a one-liner rather than `run_cycle --dry-run`, which also migrates:
+that would refit the artifact and hit the network as a side effect of asking
+about the schema.
 
-Step 4 writes into `web/build`, which nginx serves from directly. There is a
-sub-second window mid-build where the site is inconsistent; at this traffic
-level that is acceptable. If it ever isn't, build to a temp directory and
-swap a symlink.
+**Step 0 enforces §3.6.** A tracked file edited on the server makes the next
+pull a conflict over SSH on a matchday. Catching it at deploy time is cheaper
+than catching it then.
+
+**Nothing user-visible changes until step 3.** A failure before it leaves the
+running site untouched. Step 3 itself writes into `web/build`, which nginx
+serves directly, so there is a ~2 s window mid-build where the site is
+incomplete; at this traffic level that is acceptable, and if it ever is not,
+build to a staging directory and swap a symlink that `root` points at.
 
 ---
 
@@ -620,6 +661,34 @@ backup and alerting.
 
 `premier.db` holds what was predicted and when. Everything else on the VM is
 reconstructible from git in minutes.
+
+#### The development machine needs this more than the server does
+
+**Found 2026-08-08, while working out why one test fails on a fresh store.**
+The gate ledger — **90 rows**, the `87 runs / 45 questions / 167 configurations`
+`OUTSTANDING.md` §0 quotes — lives in `db/premier.db` on the development
+machine and **nowhere else**. It is gitignored. `engine.ingest.build` rebuilds
+`matches` and `player_seasons` from the tracked CSVs and **does not rebuild the
+ledger**, because nothing could: it is a record of measurements that were run,
+not a derivation of the corpus.
+
+`DEFLATION.md`'s entire multiplicity accounting reads it, `OUTSTANDING.md` §0
+instructs every future thread to re-derive the count with
+`trials.count_configurations(conn)` **rather than trusting the prose** — which
+makes that file the authority — and the pre-committed P6 read depends on it.
+There is no backup of any kind.
+
+So §6.1's scope is wider than "back up the server":
+
+| machine | holds | irreplaceable because |
+| --- | --- | --- |
+| server | `predictions`, `tips`, `clv_grades`, `serving_state` | opening-weekend predictions cannot be recovered afterwards |
+| **development** | **`gate_ledger`** | **a record of what was measured, not a function of the data** |
+
+The server's backup is not yet built and the machine does not yet exist. The
+development machine exists now, and the same `VACUUM INTO` works on it today.
+**Do that before the VM, not after** — it is the cheaper half of §6.1 and it
+protects the older asset.
 
 **`cp premier.db` is not a backup** and neither is a VM snapshot of it. Under
 WAL, committed transactions can still be sitting in `premier.db-wal`, so a
