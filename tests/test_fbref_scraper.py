@@ -27,9 +27,16 @@ import pytest
 # reports as a COLLECTION error -- the entire suite refuses to run, so the
 # deployment's acceptance gate cannot report on the 415 tests that have
 # nothing to do with the scraper. Skipping is what makes those still count.
-pytest.importorskip(
-    "bs4", reason="fbref scraper tests need the `scrape` extra (pip install -e '.[scrape]')"
-)
+# BOTH names, because the module needs both and they fail at different moments.
+# `bs4` missing is an ImportError at collection. `lxml` missing is not: bs4
+# imports fine, `BeautifulSoup(html, "lxml")` then raises FeatureNotFound at
+# CALL time, so gating on bs4 alone let 13 of these through to fail and error
+# on a host that simply did not have the extra. Skipping on one name is a claim
+# about imports; the module's real precondition is the `scrape` extra, and that
+# is two packages.
+_SCRAPE = "fbref scraper tests need the `scrape` extra (pip install -e '.[scrape]')"
+pytest.importorskip("bs4", reason=_SCRAPE)
+pytest.importorskip("lxml", reason=_SCRAPE)
 
 from services.fbref_scraper import cli, config, parse  # noqa: E402
 

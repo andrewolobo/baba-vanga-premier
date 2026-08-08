@@ -627,13 +627,29 @@ than as a rule about the class, so it did not transfer. Now in the `dev` extra.
 what `pyproject.toml` declares, so it inherited the omission. It pins versions;
 it does not discover dependencies. Fix `pyproject.toml` first, then regenerate.
 
-**Skip 2 — the `scrape` extra is absent on purpose.** `tests/test_fbref_scraper.py`
-imports `bs4`, which lives in the `scrape` extra along with `patchright` —
-which downloads a **full Chrome** onto the host. The scraper is also shelved by
-owner decision and must not be enabled without a recorded one
-(`OUTSTANDING.md` §4.1), so a serving VM having no `bs4` is the correct state,
-not a missing step. The module now uses `pytest.importorskip`, so its 22 tests
-skip instead of taking the other 414 down with them.
+**Skip 2 — the `scrape` extra is absent on purpose, and it took two goes to
+skip it correctly.** `tests/test_fbref_scraper.py` needs `bs4` **and** `lxml`,
+both in the `scrape` extra alongside `patchright` — which downloads a **full
+Chrome** onto the host. The scraper is shelved by owner decision and must not
+be enabled without a recorded one (`OUTSTANDING.md` §4.1), so a serving VM
+lacking them is the correct state, not a missing step.
+
+The first fix gated on `bs4` alone and **did not work**, because the two fail
+at different moments:
+
+| package | when its absence bites |
+| --- | --- |
+| `bs4` | `ImportError` at collection — loud, and what the first fix saw |
+| `lxml` | **not at import.** `bs4` loads fine; `BeautifulSoup(html, "lxml")` then raises `FeatureNotFound` at **call** time |
+
+So on a host with `bs4` but no `lxml`, 13 of the 22 ran and blew up — 6 failed,
+7 errored — while the module-level guard reported nothing. **Gating on one
+import name is a claim about imports; the module's real precondition is the
+extra, and that is two packages.** Both are now checked.
+
+Verified against all three shapes by blocking modules with a `meta_path`
+finder, which reproduces absence exactly rather than approximating it: `bs4`
+present + `lxml` absent, both absent, and both present.
 
 **Skip 3 — the gate ledger.** Measured 2026-08-08 by pointing `BVP_DB_PATH` at
 a freshly built store; it failed before it skipped.
