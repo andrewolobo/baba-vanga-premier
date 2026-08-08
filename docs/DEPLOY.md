@@ -7,7 +7,7 @@ Companion to `RUNBOOK.md` (how the cycle is operated) and `OUTSTANDING.md` §4.3
 Written **2026-08-08**. Nothing here has been executed.
 
 > **The fault-tolerance step this plan is built around.** Taken to mean
-> `RUNBOOK.md` §8's *Known gaps* — **no alerting, no hosting, no backup, no
+> `RUNBOOK.md` §8's _Known gaps_ — **no alerting, no hosting, no backup, no
 > lock file** — which `OUTSTANDING.md` §4.3 carries as the outstanding item.
 > §6 below builds all four. If a different piece of work was meant, say so;
 > §6 is the only section that changes.
@@ -19,11 +19,11 @@ Written **2026-08-08**. Nothing here has been executed.
 Three pieces with different lifecycles. Getting this distinction right is most
 of the deployment.
 
-| piece | what it is | how it runs |
-| --- | --- | --- |
-| `services.run_cycle` | a **batch job that exits** — sync → serve → tips → grade | systemd **timer**, daily |
-| `api.main:app` | a read-only FastAPI over what the cycle wrote | systemd **service**, always up |
-| `web/build` | a **static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx |
+| piece                | what it is                                                  | how it runs                    |
+| -------------------- | ----------------------------------------------------------- | ------------------------------ |
+| `services.run_cycle` | a **batch job that exits** — sync → serve → tips → grade    | systemd **timer**, daily       |
+| `api.main:app`       | a read-only FastAPI over what the cycle wrote               | systemd **service**, always up |
+| `web/build`          | a **static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx          |
 
 Nothing daemonises itself and nothing retries itself, by design
 (`services/run_cycle.py` docstring). The scheduler owns recurrence; the
@@ -33,13 +33,13 @@ application owns one run.
 
 Timed on this machine, 2026-08-08, against the live 44 MB database:
 
-| | measured |
-| --- | --- |
+|                                              | measured                                      |
+| -------------------------------------------- | --------------------------------------------- |
 | full artifact refit (`cycle.build_artifact`) | **1.5 s**, 13,973 training matches, 151 clubs |
-| peak process RSS during the refit | **167 MB** |
-| test suite | **437 passed in 44 s** |
-| `db/premier.db` | 44 MB |
-| `data/` (tracked CSV corpus) | 59 MB |
+| peak process RSS during the refit            | **167 MB**                                    |
+| test suite                                   | **437 passed in 44 s**                        |
+| `db/premier.db`                              | 44 MB                                         |
+| `data/` (tracked CSV corpus)                 | 59 MB                                         |
 
 **The weekly refit is not a sizing constraint.** The heaviest thing this
 application will do on the server is `npm run build`, and that happens only on
@@ -108,6 +108,7 @@ Host github.com
   publishing it. **`web/static/` is a publication list, not a folder**, and the
   only reliable way to keep something out of it is for the file not to be in it.
   Design source lives in `docs/ui/`, which is never served.
+
 - `web/static/player.png` is the hero image on the one public page and is
   therefore the largest thing this VM will ever serve. See §2.6 — it also
   carries a defect worth fixing before it is published.
@@ -124,8 +125,8 @@ python -m engine.ingest.build          # runs migrations, loads, then validates
 ```
 
 Expect `integrity checks: all passed` and exit 0. Anything else, stop —
-`OUTSTANDING.md` §7.6 is the convention: *no number is trusted before
-`build.validate()` passes*, and both defects it has caught left row counts
+`OUTSTANDING.md` §7.6 is the convention: _no number is trusted before
+`build.validate()` passes_, and both defects it has caught left row counts
 perfect.
 
 `db/artifacts/` is gitignored too. The first cycle freezes its own artifact, so
@@ -134,7 +135,7 @@ this needs no action — but note the served `model_version` on the server will
 cutoff, which is correct and expected (the runner refreezes past
 `REFIT_AFTER_DAYS`).
 
-#### The artifact version is machine-dependent — measured 2026-08-08
+#### The artifact version is machine-dependent â€” measured 2026-08-08
 
 The server's first cycle froze `p1-89db580603366a9f`. The same config at the
 same cutoff on the development machine gives `p1-81b57865368de474`. **The
@@ -144,12 +145,12 @@ same artifact"*.
 
 Isolated by elimination. `corpus_digest` is `4dbc6d849193e8f6` on both the
 development store and an independently rebuilt one, because `match_id` is a
-natural key (`season:division:date:home:away`) rather than a rowid — so two
+natural key (`season:division:date:home:away`) rather than a rowid â€” so two
 builds of the same CSVs are byte-identical to the digest. Re-fitting from both
 stores on one machine reproduces **the same version, teams tuple, digest and
 coefficients bit-for-bit**. So the store is not the variable.
 
-What is: `_version_string` hashes `intercept`, `home`, `att` and `dfn` — the
+What is: `_version_string` hashes `intercept`, `home`, `att` and `dfn` â€” the
 **fitted coefficients**. Those come out of an iterative solve, and Windows and
 Linux BLAS disagree in the last bits. So the version identifies **the fit**,
 not merely its inputs.
@@ -164,9 +165,10 @@ would invalidate `p1-3a38e9d6ef1ca7ee`, which the documents cite and which
 same fit on the same data reproduces the string exactly, which is what makes a
 stored prediction reproducible months later"* holds **on one machine** and not
 across two. You cannot audit a server artifact by re-fitting on the development
-box and comparing version strings — compare coefficients within a tolerance
+box and comparing version strings â€” compare coefficients within a tolerance
 instead. Anything that treats the version as a pure function of the inputs is
 overstating it by exactly this much.
+
 
 ### 2.3 The frontend build output is gitignored
 
@@ -244,9 +246,9 @@ keeping its alpha — a standard matte de-fringe, 54,696 → 107 green pixels �
 downscaling to 2000 px and quantising. `.art` is `width: min(64%, 1000px)`, so
 2000 px is exactly 2× and nothing visible is lost.
 
-| | bytes |
-| --- | --- |
-| as found | 2.72 MB |
+|                                     | bytes      |
+| ----------------------------------- | ---------- |
+| as found                            | 2.72 MB    |
 | de-fringed, 2000 px, 256-colour PNG | **127 KB** |
 
 A 95% reduction with the defect removed, and it stays a PNG, so
@@ -317,7 +319,7 @@ the reason to proxy rather than to split hosts.
 It becomes a problem the moment anyone wants `api.<domain>` separate from the
 site: that would require editing a file on the server, which breaks `git pull`
 as a deployment mechanism (§3.6). If a split origin is ever wanted, the fix is
-to read the allowlist from an env var — a two-line change made *before* the
+to read the allowlist from an env var — a two-line change made _before_ the
 split, not during it.
 
 ### 3.4 `api`, `services` and `scripts` are not installed packages
@@ -423,16 +425,16 @@ VM; there is nothing there that needs it.
 
 ## 4. Azure shape
 
-| | choice | why |
-| --- | --- | --- |
-| VM | **2 vCPU / 4 GiB burstable** (B2s or the current v2 equivalent) | runtime needs ~200 MB; the 4 GiB is for `npm run build` and headroom |
-| image | Ubuntu Server **24.04 LTS**, Gen2 | as specified |
-| OS disk | 30 GiB Standard SSD, ext4 | repo 130 MB + DB 44 MB + `node_modules`; no IOPS pressure at this size |
-| data disk | none | see §3.2 — if one is added it must be a managed disk, never Azure Files |
-| public IP | static | needed for a stable DNS A record and TLS |
-| NSG inbound | 22 from your address only; 80 and 443 from anywhere | 80 exists to redirect to 443 and for the ACME challenge |
-| NSG outbound | default (allow) | §3.9 |
-| backups | Blob container, versioning on, lifecycle rule | §6.1 |
+|              | choice                                                          | why                                                                     |
+| ------------ | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| VM           | **2 vCPU / 4 GiB burstable** (B2s or the current v2 equivalent) | runtime needs ~200 MB; the 4 GiB is for `npm run build` and headroom    |
+| image        | Ubuntu Server **24.04 LTS**, Gen2                               | as specified                                                            |
+| OS disk      | 30 GiB Standard SSD, ext4                                       | repo 130 MB + DB 44 MB + `node_modules`; no IOPS pressure at this size  |
+| data disk    | none                                                            | see §3.2 — if one is added it must be a managed disk, never Azure Files |
+| public IP    | static                                                          | needed for a stable DNS A record and TLS                                |
+| NSG inbound  | 22 from your address only; 80 and 443 from anywhere             | 80 exists to redirect to 443 and for the ACME challenge                 |
+| NSG outbound | default (allow)                                                 | §3.9                                                                    |
+| backups      | Blob container, versioning on, lifecycle rule                   | §6.1                                                                    |
 
 **A 1 vCPU / 2 GiB B1ms would run the application fine** — the measured
 footprint is 167 MB. It is tight for the Node build. If cost matters more than
@@ -451,7 +453,7 @@ up properly. A VM-level snapshot of a live WAL database is exactly the
 
 Each step has a verification. Do not proceed past a failed one.
 
-### 5.1 Commit and push — *verify:* `git status` clean, `origin/main` moved
+### 5.1 Commit and push — _verify:_ `git status` clean, `origin/main` moved
 
 Blocker §2.1. Handle `player.rar` and `player.png` (§2.6) at the same time.
 Generate and commit `requirements.lock` (§3.5) in the same push.
@@ -459,7 +461,7 @@ Generate and commit `requirements.lock` (§3.5) in the same push.
 A **read-only deploy key** on the server for the private repo — not a personal
 SSH key, and not a token in a URL.
 
-### 5.2 Provision and harden the VM — *verify:* `ssh` in, `sudo` works
+### 5.2 Provision and harden the VM — _verify:_ `ssh` in, `sudo` works
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -488,8 +490,8 @@ Two independent failures, and the second is the dangerous one:
 
 - `adduser` populates a new home from `/etc/skel`, so `/srv/bvp` is created
   holding `.bashrc`, `.profile` and `.bash_logout`. `git clone` into it then
-  fails outright: *destination path already exists and is not an empty
-  directory*.
+  fails outright: _destination path already exists and is not an empty
+  directory_.
 - Work around that with `git init` + `git fetch` instead, and it fails
   **silently and permanently**: those three dotfiles are untracked, so
   `git status --porcelain` is never empty, so `scripts/deploy.sh` step 0
@@ -509,7 +511,7 @@ every path in this document assume it.
 
 **Not `adduser --system`, which is what this section said until 2026-08-08.**
 A system user gets `/usr/sbin/nologin` and is not in `sudo`, and
-`scripts/deploy.sh` runs *as* `bvp` and needs exactly two privileged calls:
+`scripts/deploy.sh` runs _as_ `bvp` and needs exactly two privileged calls:
 restarting the API and reading its journal when the health check fails. The
 narrow grant, rather than putting `bvp` in the `sudo` group:
 
@@ -527,7 +529,7 @@ sudo visudo -c        # expect: /etc/sudoers.d/bvp: parsed OK
 `sqlite3` is installed for the backup in §6.1, and for the ad-hoc queries
 `RUNBOOK.md` §3 and §7 tell you to run.
 
-### 5.3 nginx — *verify:* `nginx -t`, then curl each of the three shapes
+### 5.3 nginx — _verify:_ `nginx -t`, then curl each of the three shapes
 
 Three jobs: serve the SPA, reproduce Vite's `/api` rewrite (§2.4), and fence
 off the internal views (§3.1).
@@ -599,6 +601,34 @@ server {
 }
 ```
 
+#### 5a ran 2026-08-08. The application was never the problem; the NSG was.
+
+Recorded because the diagnosis took four rounds and none of it was nginx.
+
+**§5.2's `az` commands created the inbound rules inline, so this document
+assumed the CLI path.** The VM was built in the Portal, whose *Select inbound
+ports* checkboxes had SSH only — so nginx served correctly on `0.0.0.0:80` and
+nothing could reach it. **A Portal-built VM needs 80 and 443 added by hand**;
+add 443 at the same time or 5b needs a second trip.
+
+Three things worth keeping:
+
+- **A hang and a refusal are different diagnoses.** No response at all means a
+  packet was *dropped* — a firewall above the host. *Connection refused* means
+  the host answered and nothing was listening. Reading a hang as "nginx is
+  broken" is what sent this the wrong way first.
+- **`curl ifconfig.me` on the VM does not tell you the inbound address.** Azure
+  gives VMs default outbound access through shared SNAT, so that call can return
+  an address that is not an inbound public IP at all. It proves the VM can reach
+  out and nothing about whether anything can reach in. Read the assigned address
+  from `az vm list -d -o table` or the Portal's Overview blade.
+- **Curling the VM's own public IP from inside the VM is not a test.** Azure
+  generally does not hairpin it, so it fails whether or not the configuration is
+  right. Test from somewhere else.
+
+The internal fence also had its allowlist inverted on the first attempt, for the
+same reason as the second bullet — see `bvp-http.conf.template`'s header.
+
 TLS via `certbot --nginx` once the DNS A record resolves. Certbot writes the
 port-80 redirect itself.
 
@@ -613,7 +643,7 @@ curl -sI  https://<domain>/api/performance     # 401
 
 `/api/health` returning JSON is the one that proves §2.4 is right.
 
-### 5.4 The application — *verify:* `build.validate()` passes, the suite is green
+### 5.4 The application — _verify:_ `build.validate()` passes, the suite is green
 
 A **read-only deploy key**, not a personal key and not a token in a URL. As
 `bvp` (`sudo -u bvp -H bash`):
@@ -643,17 +673,17 @@ runs the integrity checks. `pytest` on the server is the §3.5 acceptance gate.
 **Expect `414 passed, 2 skipped` on the server, against 437 passed on a
 development machine.** Two different reasons, and the gate earned its keep by
 finding both — it did not pass first time on the VM, it errored during
-*collection*, which means zero tests ran.
+_collection_, which means zero tests ran.
 
 **Skip 1 — `httpx` was an undeclared dependency, and this is the second time.**
 `fastapi.testclient` re-exports starlette's, which imports `httpx` and raises
-*The starlette.testclient module requires the httpx package* without it. It was
+_The starlette.testclient module requires the httpx package_ without it. It was
 installed on the development machine as a transitive of something unrelated, so
 437 passed there and a clean install could not collect `tests/test_api.py` at
 all. `pyproject.toml`'s `serve` block already carries a comment recording
-exactly this defect from 2026-08-04 — *"present in the development environment
+exactly this defect from 2026-08-04 — _"present in the development environment
 but undeclared… a fresh clone could pass the whole test suite and still fail to
-start the API"*. The lesson was written down as a note about `fastapi` rather
+start the API"_. The lesson was written down as a note about `fastapi` rather
 than as a rule about the class, so it did not transfer. Now in the `dev` extra.
 
 **`requirements.lock` could not have caught it.** The lock is computed from
@@ -670,10 +700,10 @@ lacking them is the correct state, not a missing step.
 The first fix gated on `bs4` alone and **did not work**, because the two fail
 at different moments:
 
-| package | when its absence bites |
-| --- | --- |
-| `bs4` | `ImportError` at collection — loud, and what the first fix saw |
-| `lxml` | **not at import.** `bs4` loads fine; `BeautifulSoup(html, "lxml")` then raises `FeatureNotFound` at **call** time |
+| package | when its absence bites                                                                                            |
+| ------- | ----------------------------------------------------------------------------------------------------------------- |
+| `bs4`   | `ImportError` at collection — loud, and what the first fix saw                                                    |
+| `lxml`  | **not at import.** `bs4` loads fine; `BeautifulSoup(html, "lxml")` then raises `FeatureNotFound` at **call** time |
 
 So on a host with `bs4` but no `lxml`, 13 of the 22 ran and blew up — 6 failed,
 7 errored — while the module-level guard reported nothing. **Gating on one
@@ -696,7 +726,7 @@ ignored one, on the same argument `RUNBOOK.md` §7 makes about warnings.
 
 **The reason it is a skip and not a deletion is §6.1.** The empty ledger is not
 a server problem to fix; it is a fact about where the measurement history
-lives, and that fact turns out to matter more on the *development* machine than
+lives, and that fact turns out to matter more on the _development_ machine than
 on the server.
 
 Then a dry cycle, which is `RUNBOOK.md` §3's T-7 check:
@@ -709,7 +739,7 @@ sudo -u bvp .venv/bin/python -m services.run_cycle --dry-run
 correct answer, and confirming the empty-feed detector while the feed is
 genuinely empty is the only cheap opportunity to confirm it.
 
-### 5.5 systemd — *verify:* API answers after a reboot; timer shows a next run
+### 5.5 systemd — _verify:_ API answers after a reboot; timer shows a next run
 
 **Committed at `deploy/systemd/`** — `bvp-api.service`, `bvp-cycle.service`,
 `bvp-cycle.timer`. Each carries its reasoning inline; only the decisions are
@@ -737,8 +767,8 @@ Four decisions worth stating outside the files:
 - **`ReadWritePaths=/srv/bvp/db` is not optional.** `ProtectSystem=strict`
   makes the hierarchy read-only, and **WAL is not a read-only mode**: opening
   the database creates and writes `premier.db-wal` and `premier.db-shm` even
-  for a pure reader. Without it the API fails its first query with *attempt to
-  write a readonly database*, which reads as a permissions bug rather than as
+  for a pure reader. Without it the API fails its first query with _attempt to
+  write a readonly database_, which reads as a permissions bug rather than as
   WAL.
 - **`bvp-cycle.service` has no `[Install]` section.** It is started by the
   timer. Enabling it directly would also run it at every boot — a fixture sync
@@ -749,18 +779,18 @@ Four decisions worth stating outside the files:
 
 Three things this buys, mapped to what the Windows setup did:
 
-| Task Scheduler | systemd | note |
-| --- | --- | --- |
-| `-StartWhenAvailable` | `Persistent=true` | catches up a run missed while the VM was down |
-| `-MultipleInstances IgnoreNew` | **free** | systemd will not run two instances of one unit — this closes `RUNBOOK.md` §8's "no lock file" gap at no cost |
-| `LastTaskResult` | `systemctl status` / `journalctl -u` | plus §6.2's alerting, which Task Scheduler never had |
+| Task Scheduler                 | systemd                              | note                                                                                                         |
+| ------------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `-StartWhenAvailable`          | `Persistent=true`                    | catches up a run missed while the VM was down                                                                |
+| `-MultipleInstances IgnoreNew` | **free**                             | systemd will not run two instances of one unit — this closes `RUNBOOK.md` §8's "no lock file" gap at no cost |
+| `LastTaskResult`               | `systemctl status` / `journalctl -u` | plus §6.2's alerting, which Task Scheduler never had                                                         |
 
 `SuccessExitStatus=2` is load-bearing and is the direct translation of
 `RUNBOOK.md` §1. Without it systemd marks the unit **failed** every day of the
 close season, `OnFailure` pages every day, and the alerts stop being read —
 which is the exact failure the three-code design exists to prevent.
 
-### 5.6 The deploy script — *verify:* run it once with no changes to pull
+### 5.6 The deploy script — _verify:_ run it once with no changes to pull
 
 **Committed as `scripts/deploy.sh`.** Run it as the `bvp` user; it needs `sudo`
 for exactly one thing, restarting the API, and asks for nothing else.
@@ -778,8 +808,8 @@ for exactly one thing, restarting the API, and asks for nothing else.
 
 **Migrate moved from step 3 to step 4, and the order is the point.** The hard
 constraint is §3.7: `api/main.py` never migrates, so the schema must be current
-before the API restarts. But the window between *schema changed* and *code that
-expects it is running* is the only genuinely dangerous stretch of a deploy, and
+before the API restarts. But the window between _schema changed_ and _code that
+expects it is running_ is the only genuinely dangerous stretch of a deploy, and
 `npm ci` can take a minute. Do the slow work first, then move the schema and
 the code together.
 
@@ -801,7 +831,7 @@ build to a staging directory and swap a symlink that `root` points at.
 
 ## 6. Fault tolerance — `RUNBOOK.md` §8's four gaps
 
-The gaps are *no backup, no alerting, no lock file, no hosting*. §5 closes
+The gaps are _no backup, no alerting, no lock file, no hosting_. §5 closes
 hosting, and §5.5 closes the lock file for free. The two that need building are
 backup and alerting.
 
@@ -828,10 +858,10 @@ There is no backup of any kind.
 
 So §6.1's scope is wider than "back up the server":
 
-| machine | holds | irreplaceable because |
-| --- | --- | --- |
-| server | `predictions`, `tips`, `clv_grades`, `serving_state` | opening-weekend predictions cannot be recovered afterwards |
-| **development** | **`gate_ledger`** | **a record of what was measured, not a function of the data** |
+| machine         | holds                                                | irreplaceable because                                         |
+| --------------- | ---------------------------------------------------- | ------------------------------------------------------------- |
+| server          | `predictions`, `tips`, `clv_grades`, `serving_state` | opening-weekend predictions cannot be recovered afterwards    |
+| **development** | **`gate_ledger`**                                    | **a record of what was measured, not a function of the data** |
 
 The server's backup is not yet built and the machine does not yet exist. The
 development machine exists now, and the same `VACUUM INTO` works on it today.
@@ -861,8 +891,8 @@ sqlite3 /srv/bvp/db/premier.db "VACUUM INTO '/var/backups/bvp/premier-$(date -u 
 3. **restore drill, quarterly, written down when done.** Pull the newest blob,
    `PRAGMA integrity_check`, and compare `COUNT(*)` on `predictions` and `tips`
    against production. A backup that has never been restored is a belief, not a
-   backup — and this project's own convention (§7.8: *a null needs a positive
-   control*) is the same argument in a different domain.
+   backup — and this project's own convention (§7.8: _a null needs a positive
+   control_) is the same argument in a different domain.
 
 ### 6.2 Alerting — and the failure that alerting structurally cannot catch
 
@@ -873,11 +903,11 @@ Today nothing pushes. Failures are visible in the exit code, the log and
 `RUNBOOK.md` §1 turned into wiring, and collapsing them re-creates the problem
 that section exists to prevent.
 
-| condition | channel | urgency |
-| --- | --- | --- |
-| exit **1** — a step raised | `OnFailure=bvp-alert@.service` → push (email/webhook) | same day |
-| exit **2** — ran, needs a look | append to a digest; one message Monday morning | weekly, unless it repeats into matchday |
-| **no run at all** | **dead-man's switch** — see below | same day |
+| condition                      | channel                                               | urgency                                 |
+| ------------------------------ | ----------------------------------------------------- | --------------------------------------- |
+| exit **1** — a step raised     | `OnFailure=bvp-alert@.service` → push (email/webhook) | same day                                |
+| exit **2** — ran, needs a look | append to a digest; one message Monday morning        | weekly, unless it repeats into matchday |
+| **no run at all**              | **dead-man's switch** — see below                     | same day                                |
 
 The third is the one that matters most and the one `OnFailure` **cannot**
 provide: if the VM is off, or the timer got disabled, or systemd never started
@@ -916,20 +946,20 @@ to prevent.
 
 ## 7. Sequence
 
-| # | step | gate |
-| --- | --- | --- |
-| # | step | gate | state |
-| --- | --- | --- | --- |
-| 1 | Commit + push everything; fix `player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved | **done** `e840951` |
-| 2 | Provision VM, harden, UTC confirmed | ssh + `timedatectl` | |
-| 3 | Clone, venv, `ingest.build`, `pytest -q` | `all passed`; **414 passed, 2 skipped** (§5.4) | |
-| 4 | systemd units for API and cycle | API answers after `reboot`; `systemctl list-timers` shows the next run | |
-| **5a** | **nginx over HTTP, internal endpoints fenced by source IP** | the four curls in §5.3, against the public IP | |
-| 6 | `deploy.sh`, run once against no changes | `/api/health` answers afterwards | |
-| 7 | Backup timer + first restore drill — **and the development machine first** (§6.1) | a restored copy passes `integrity_check` and matches row counts | |
-| 8 | Alerting: `OnFailure` + dead-man's switch | **test all three** — break the cycle on purpose, and stop the timer for a day | |
-| **5b** | **Domain, TLS, basic auth** | `https://` serves; `/api/performance` is 401 | **blocked: no domain** |
-| 9 | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck | the runbook describes the machine that is serving | |
+| #      | step                                                                               | gate                                                                          |
+| ------ | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------- |
+| #      | step                                                                               | gate                                                                          | state                  |
+| ---    | ---                                                                                | ---                                                                           | ---                    |
+| 1      | Commit + push everything; fix `player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved                                       | **done** `e840951`     |
+| 2      | Provision VM, harden, UTC confirmed                                                | ssh + `timedatectl`                                                           | **done** |
+| 3      | Clone, venv, `ingest.build`, `pytest -q`                                           | `all passed`; **414 passed, 2 skipped** (§5.4)                                | **done** 414/2 |
+| 4      | systemd units for API and cycle                                                    | API answers after `reboot`; `systemctl list-timers` shows the next run        | **done** |
+| **5a** | **nginx over HTTP, internal endpoints fenced by source IP**                        | the four curls in §5.3, against the public IP                                 | **done** HTTP only |
+| 6      | `deploy.sh`, run once against no changes                                           | `/api/health` answers afterwards                                              |                        |
+| 7      | Backup timer + first restore drill — **and the development machine first** (§6.1)  | a restored copy passes `integrity_check` and matches row counts               |                        |
+| 8      | Alerting: `OnFailure` + dead-man's switch                                          | **test all three** — break the cycle on purpose, and stop the timer for a day |                        |
+| **5b** | **Domain, TLS, basic auth**                                                        | `https://` serves; `/api/performance` is 401                                  | **blocked: no domain** |
+| 9      | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck                              | the runbook describes the machine that is serving                             |                        |
 
 **Step 5 splits and 5b moves to the end**, because there is no domain yet
 (§5.3). That is a deliberate reordering, not a deferral of the hard part: 5a
