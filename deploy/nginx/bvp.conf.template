@@ -1,0 +1,120 @@
+# nginx site for baba.vanga.premier. See docs/DEPLOY.md 5.3.
+#
+# A TEMPLATE, rendered once into /etc/nginx/sites-available/bvp:
+#
+#     BVP_DOMAIN=example.com \
+#       envsubst '$BVP_DOMAIN' < deploy/nginx/bvp.conf.template \
+#       | sudo tee /etc/nginx/sites-available/bvp
+#     sudo ln -sf /etc/nginx/sites-available/bvp /etc/nginx/sites-enabled/bvp
+#     sudo nginx -t && sudo systemctl reload nginx
+#
+# It is a template rather than a finished file for two reasons, both from
+# docs/DEPLOY.md 3.6 -- the working tree on the server must stay clean or the
+# next `git pull` is a conflict on a matchday:
+#
+#   - the domain is environment, so it must not be a tracked constant;
+#   - `certbot --nginx` REWRITES the site file it manages. So certificates are
+#     obtained with `certonly --webroot` instead (see below), which touches
+#     nothing here. Renewal then replaces only the files under /etc/letsencrypt
+#     and this config keeps pointing at them.
+#
+# First run, before any certificate exists, the 443 block cannot load. Use
+# deploy/nginx/bvp-bootstrap.conf.template for long enough to issue the cert:
+#
+#     sudo certbot certonly --webroot -w /var/www/certbot -d ${BVP_DOMAIN}
+#
+# then render this file over it and reload.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${BVP_DOMAIN};
+
+    # ACME renewal must keep working over plain HTTP, so it is matched before
+    # the redirect rather than after it.
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name ${BVP_DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${BVP_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${BVP_DOMAIN}/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+
+    # `npm run build` writes here. adapter-static, so these are plain files.
+    root /srv/bvp/web/build;
+    index index.html;
+
+    # ------------------------------------------------------------------ #
+    # THE PROXY. This is docs/DEPLOY.md 2.4 -- the blocker this file exists
+    # for. web/src/lib/api.js sets BASE = '/api' and every call is
+    # origin-relative; in development web/vite.config.js proxies /api to
+    # uvicorn AND rewrites the prefix away. There is no Vite in production, so
+    # nginx has to reproduce both halves.
+    #
+    # The TRAILING SLASH on proxy_pass is what strips /api. Without it uvicorn
+    # receives /api/tips, answers 404, and -- because the frontend renders an
+    # empty list rather than an error for an empty week -- the whole site reads
+    # as "no matches this week" instead of as a misconfiguration. That failure
+    # mode is already documented in web/vite.config.js for the same reason.
+    # ------------------------------------------------------------------ #
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
+    }
+
+    # The internal views, fenced off. docs/DEPLOY.md 3.1: /performance returns
+    # `pnl` and `roi` and /book returns paper_bets.*, and B7's honesty test
+    # covers /tips/record ONLY. Both are empty today because the book is off --
+    # this is here so that stops being the only thing standing between a public
+    # URL and a published return.
+    #
+    # Exact-match locations are evaluated before the /api/ prefix above, so each
+    # needs its own proxy_pass. A query string is not part of the match, so
+    # /api/book?settled=true still lands here.
+    location = /api/book {
+        auth_basic "internal";
+        auth_basic_user_file /etc/nginx/.htpasswd-bvp;
+        proxy_pass http://127.0.0.1:8000/book;
+        proxy_set_header Host $host;
+    }
+    location = /api/performance {
+        auth_basic "internal";
+        auth_basic_user_file /etc/nginx/.htpasswd-bvp;
+        proxy_pass http://127.0.0.1:8000/performance;
+        proxy_set_header Host $host;
+    }
+
+    # Vite emits content-hashed filenames under /_app, so they are immutable.
+    location /_app/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # SvelteKit adapter-static with fallback: 'index.html'. /book and
+    # /performance are client-side routes with no file behind them; without
+    # this they 404 on refresh or on a pasted link.
+    #
+    # index.html itself must never be cached, or a deploy ships new assets to
+    # browsers still holding the old entry point.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+}

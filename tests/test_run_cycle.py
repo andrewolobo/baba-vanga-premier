@@ -231,3 +231,118 @@ def _empty_feed(tmp=[]):  # noqa: B006 -- module-local cache, not user-facing
         path.write_text(feed(), encoding="utf-8")
         tmp.append(path)
     return tmp[0]
+
+
+# --- the tip step ----------------------------------------------------------
+
+
+def test_the_cycle_publishes_tips_for_the_fixtures_it_just_priced(
+        conn, artifact, monkeypatch, tmp_path):
+    """serve -> tips in one pass: a fixture priced this cycle is tippable this
+    cycle, not next week.
+
+    The floor is lowered to 0.50 because the stub artifact prices this fixture
+    at about 0.53; at the shipped 0.55 it would fall back to double chance,
+    which is correct behaviour and a less direct thing to assert. Patching the
+    module constant also checks the cycle reads it rather than hard-coding one.
+    """
+    monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
+    monkeypatch.setattr(run_cycle, "TIP_FLOOR", 0.50)
+    add_fixture(conn, "E0", 1, 2)
+    conn.execute("UPDATE fixtures SET max_h=1.5, max_d=4.0, max_a=7.0,"
+                 " avg_h=1.45, avg_d=3.9, avg_a=6.8 WHERE 1=1")
+    conn.commit()
+    path = tmp_path / "feed.csv"
+    path.write_text(feed(), encoding="utf-8")
+
+    report = run_cycle.run(conn, file=path)
+
+    step = next(s for s in report.steps if s.name == "tips")
+    published = conn.execute("SELECT COUNT(*) FROM tips").fetchone()[0]
+    assert step.status is not Status.FAILED, step.detail
+    assert published == 1, step.detail
+    row = conn.execute("SELECT side, floor FROM tips").fetchone()
+    assert row["side"] == "H"
+    assert row["floor"] == 0.50, "the cycle must read TIP_FLOOR"
+
+
+def test_a_fixture_below_the_floor_falls_back_rather_than_going_untipped(
+        conn, artifact, monkeypatch, tmp_path):
+    """v2 covers every fixture. The stub prices this at ~0.53, below the shipped
+    0.55, so the cycle must publish a double chance rather than nothing -- v1
+    published nothing here, and that 14.4% coverage is what B8 replaced."""
+    monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
+    add_fixture(conn, "E0", 1, 2)
+    conn.execute("UPDATE fixtures SET max_h=1.9, max_d=3.6, max_a=4.2,"
+                 " avg_h=1.85, avg_d=3.5, avg_a=4.1")
+    conn.commit()
+    path = tmp_path / "feed.csv"
+    path.write_text(feed(), encoding="utf-8")
+
+    report = run_cycle.run(conn, file=path)
+
+    step = next(s for s in report.steps if s.name == "tips")
+    assert step.status is Status.OK, step.detail
+    assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] == 1
+    side = conn.execute("SELECT side FROM tips").fetchone()[0]
+    assert side in {"1X", "X2", "12"}, f"expected a fallback, got {side}"
+
+
+def test_grading_does_not_chase_results_for_unplayed_fixtures(conn, monkeypatch):
+    """v2 tips every fixture the moment it is priced, so without a date bound
+    the cycle would pull a results CSV for every upcoming match, every run, all
+    season -- fetching files that cannot contain the result yet."""
+    add_fixture(conn, "E0", 1, 2, date="2099-01-01")
+    fixture_id = conn.execute("SELECT fixture_id FROM fixtures").fetchone()[0]
+    conn.execute(
+        "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
+        " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
+        " p_over25, p_under25) VALUES (1, ?, 'v1', 'pre_close', '2026-08-10',"
+        " 1.5, 1.0, 0.62, 0.24, 0.14, 0.5, 0.5)", (fixture_id,))
+    conn.execute(
+        "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
+        " best_price, avg_price, rule_version) VALUES (1, ?, 'H', 0.62, 0.55,"
+        " 1.6, 1.5, 'confidence-v2')", (fixture_id,))
+    conn.commit()
+
+    def explode(*a, **k):
+        raise AssertionError("must not fetch results for an unplayed fixture")
+
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", explode)
+
+    step = run_cycle.step_grade(conn, dry_run=True)
+
+    assert step.status is Status.OK
+    assert step.detail == "nothing unsettled"
+
+
+def test_grading_still_runs_when_only_tips_are_unsettled(conn, monkeypatch):
+    """The book is off, so `paper_bets` is always empty. Before the tip step
+    shipped, `step_grade` short-circuited on that and would have left every tip
+    ungraded forever while reporting success."""
+    add_fixture(conn, "E0", 1, 2, date="2020-01-01")
+    fixture_id = conn.execute("SELECT fixture_id FROM fixtures").fetchone()[0]
+    conn.execute(
+        "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
+        " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
+        " p_over25, p_under25) VALUES (1, ?, 'v1', 'pre_close', '2026-08-10',"
+        " 1.5, 1.0, 0.62, 0.24, 0.14, 0.5, 0.5)", (fixture_id,))
+    conn.execute(
+        "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
+        " best_price, avg_price, rule_version) VALUES (1, ?, 'H', 0.62, 0.55,"
+        " 1.6, 1.5, 'confidence-v2')", (fixture_id,))
+    conn.commit()
+
+    seen = {}
+
+    def fake_fetch(division, season, **kwargs):
+        seen["called"] = True
+        return ""
+
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", fake_fetch)
+    monkeypatch.setattr(run_cycle.csv_grader, "parse_results", lambda text: [])
+
+    step = run_cycle.step_grade(conn, dry_run=True)
+
+    assert seen.get("called"), "an unsettled tip must pull the results feed"
+    assert step.status is not Status.FAILED, step.detail

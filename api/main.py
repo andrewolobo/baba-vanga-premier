@@ -13,6 +13,16 @@ Probabilities are served as-is and flagged `calibrated: false` until P3 exists.
 Marking that on the wire rather than in a document is deliberate: a consumer
 that treats raw pmf output as calibrated will be wrong in level, and the
 response should say so.
+
+**The `/tips` endpoints are the customer-facing product** (`BACKLOG.md` B6) and
+are held to a stricter rule than the rest of this module: `/tips/record` returns
+strike rate and **no profit or loss at all**, even though the `tips` table
+carries `pnl_best` and `pnl_avg`. `engine/eval/tips.py` measured the two claims
+coming apart -- the strike rate is honest, the return at prices a customer
+actually gets is not distinguishable from zero and is negative at every sellable
+setting. Leaving P&L off the wire means the surface cannot advertise a return by
+accident, which is the failure B7 exists to prevent. The columns stay in the
+database, where the record is kept; they are simply not what this API publishes.
 """
 
 from __future__ import annotations
@@ -42,7 +52,15 @@ app.add_middleware(
 
 
 def get_conn() -> sqlite3.Connection:
-    conn = db.connect()
+    """One connection per request.
+
+    `check_same_thread=False` because FastAPI may open this dependency on a
+    different threadpool worker from the one that runs the endpoint -- see
+    `engine.db.connect`. Without it, any page fetching two endpoints at once
+    fails intermittently with `SQLite objects created in a thread can only be
+    used in that same thread`.
+    """
+    conn = db.connect(check_same_thread=False)
     try:
         yield conn
     finally:
@@ -123,6 +141,136 @@ def predictions(
         f"{clause} ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
         (division,) if division else (),
     )
+
+
+#: Every tip endpoint reads the same joined shape. Kept as one string so the
+#: upcoming list, the settled list and the record cannot drift apart in which
+#: fixture a tip is attached to.
+TIP_SELECT = """
+    SELECT t.tip_id, t.published_at, t.side, t.model_prob, t.floor, t.ceiling,
+           t.best_price, t.avg_price, t.rule_version,
+           t.settled_at, t.outcome,
+           f.fixture_id, f.division, f.match_date, f.kickoff_time,
+           h.canonical_name AS home_team, a.canonical_name AS away_team
+    FROM tips t
+    JOIN fixtures f ON f.fixture_id = t.fixture_id
+    JOIN teams h ON h.team_id = f.home_team_id
+    JOIN teams a ON a.team_id = f.away_team_id
+"""
+
+
+def _check_division(division: str | None) -> None:
+    if division and division not in SERVED_DIVISIONS:
+        raise HTTPException(400, f"unknown division {division!r}")
+
+
+@app.get("/tips")
+def tips(
+    division: str | None = Query(None, description="E0 | E1 | E2 | E3"),
+    conn: sqlite3.Connection = Depends(get_conn),
+) -> list[dict]:
+    """The published tip list for matches that have not been played.
+
+    One tip per fixture, which the schema enforces rather than this query
+    (`UNIQUE (fixture_id, rule_version)`, migration 003): a tipster showing two
+    contradictory calls for one match has no defensible strike rate.
+
+    `side` is one of `H`, `A`, `1X`, `X2`, `12` -- the confidence rule steps
+    down to a double chance when no outright clears its floor, so **most calls
+    are unions rather than a named team**. A surface that renders only `H`/`A`
+    will silently drop the majority of the product.
+
+    `best_price` and `avg_price` are carried for reporting and took no part in
+    selection. On a double chance they are *derived* from the 1X2 legs and are
+    an **upper bound** on what a customer could get, because real double-chance
+    markets carry their own margin.
+    """
+    _check_division(division)
+    clause = " WHERE t.settled_at IS NULL AND f.match_date >= date('now')"
+    if division:
+        clause += " AND f.division = ?"
+    return _rows(
+        conn,
+        TIP_SELECT + clause
+        + " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
+        (division,) if division else (),
+    )
+
+
+@app.get("/tips/results")
+def tip_results(
+    division: str | None = Query(None),
+    limit: int = Query(60, ge=1, le=500),
+    conn: sqlite3.Connection = Depends(get_conn),
+) -> list[dict]:
+    """Settled tips, most recently played first.
+
+    Outcome only. The scoreline is not here because it is not stored: the
+    grader settles a tip from the result it reads and does not keep the goals,
+    so an endpoint claiming to return one would be inventing it.
+    """
+    _check_division(division)
+    clause = " WHERE t.settled_at IS NOT NULL"
+    params: tuple = ()
+    if division:
+        clause += " AND f.division = ?"
+        params = (division,)
+    return _rows(
+        conn,
+        TIP_SELECT + clause + " ORDER BY f.match_date DESC, t.tip_id DESC LIMIT ?",
+        params + (limit,),
+    )
+
+
+#: Strike rate and volume. **No P&L column appears here by design** -- see the
+#: module docstring. `void` is excluded from the denominator rather than counted
+#: as a loss, which is why the graded count is not `settled_at IS NOT NULL`.
+RECORD = """
+    SELECT {group}
+           COUNT(*) AS published,
+           SUM(CASE WHEN t.outcome IN ('win', 'lose') THEN 1 ELSE 0 END) AS graded,
+           SUM(CASE WHEN t.outcome = 'win' THEN 1 ELSE 0 END) AS won,
+           SUM(CASE WHEN t.outcome = 'win' THEN 1 ELSE 0 END) * 1.0
+             / NULLIF(SUM(CASE WHEN t.outcome IN ('win', 'lose')
+                               THEN 1 ELSE 0 END), 0) AS strike_rate,
+           SUM(CASE WHEN t.settled_at IS NULL AND f.match_date >= date('now')
+                    THEN 1 ELSE 0 END) AS upcoming,
+           COUNT(DISTINCT CASE WHEN t.outcome IN ('win', 'lose')
+                          THEN strftime('%Y-%W', f.match_date) END) AS matchweeks
+    FROM tips t
+    JOIN fixtures f ON f.fixture_id = t.fixture_id
+"""
+
+
+@app.get("/tips/record")
+def tip_record(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
+    """How the published tips have actually done.
+
+    **Strike rate is the whole claim, and this endpoint returns nothing else
+    that could be mistaken for one.** No profit, no ROI, no streak: the rule is
+    sold on how often it is right, and `engine/eval/tips.py` measured that the
+    return at customer prices is negative at every sellable setting with no
+    interval excluding zero.
+
+    `strike_rate` is **null**, never zero, until something has been graded. A
+    zero would read as "we get everything wrong" rather than "nothing has been
+    played yet", and opening weekend is exactly when that gets screenshotted.
+    """
+    overall = dict(conn.execute(RECORD.format(group="")).fetchone())
+    by_division = _rows(
+        conn, RECORD.format(group="f.division,") + " GROUP BY f.division"
+                                                   " ORDER BY f.division")
+    rule = conn.execute(
+        "SELECT rule_version, floor, ceiling FROM tips"
+        " ORDER BY tip_id DESC LIMIT 1").fetchone()
+    return {
+        **overall,
+        "by_division": by_division,
+        "rule": dict(rule) if rule else None,
+        # Stated on the wire so a surface cannot present the strike rate as a
+        # return without ignoring a field it was handed.
+        "return_supported": False,
+    }
 
 
 @app.get("/book")

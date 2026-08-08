@@ -1,0 +1,28 @@
+# Bootstrap-only nginx site. Used ONCE, to issue the first certificate.
+#
+# bvp.conf.template's 443 block will not load before the certificate exists, so
+# nginx refuses to start and certbot cannot complete the HTTP-01 challenge --
+# the usual chicken-and-egg. This file serves the challenge over plain HTTP and
+# nothing else.
+#
+#     sudo mkdir -p /var/www/certbot
+#     BVP_DOMAIN=example.com \
+#       envsubst '$BVP_DOMAIN' < deploy/nginx/bvp-bootstrap.conf.template \
+#       | sudo tee /etc/nginx/sites-available/bvp
+#     sudo ln -sf /etc/nginx/sites-available/bvp /etc/nginx/sites-enabled/bvp
+#     sudo rm -f /etc/nginx/sites-enabled/default
+#     sudo nginx -t && sudo systemctl reload nginx
+#     sudo certbot certonly --webroot -w /var/www/certbot -d $BVP_DOMAIN
+#
+# Then render bvp.conf.template over the same path and reload. Nothing in the
+# repository is edited at any point -- see docs/DEPLOY.md 3.6.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${BVP_DOMAIN};
+
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+
+    location / { return 503; }
+}

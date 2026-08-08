@@ -35,6 +35,7 @@ from pathlib import Path
 import numpy as np
 
 from engine import db
+from engine.eval import selection
 from engine.ingest.teams import FOOTBALL_DATA, TeamBridge
 from engine.odds import devig_probs
 from engine.seasons import SERVED_DIVISIONS, season_code
@@ -59,11 +60,13 @@ class GradeReport:
     results_seen: int = 0
     settled: int = 0
     graded: int = 0
+    tips_settled: int = 0
     unmatched: list = field(default_factory=list)
 
     def describe(self) -> str:
         lines = [f"{self.results_seen} result(s) seen; "
-                 f"{self.settled} bet(s) settled, {self.graded} CLV grade(s) written"]
+                 f"{self.settled} bet(s) settled, {self.graded} CLV grade(s) written, "
+                 f"{self.tips_settled} tip(s) settled"]
         if self.unmatched:
             lines.append(f"  {len(self.unmatched)} fixture(s) had bets but no result yet")
         return "\n".join(lines)
@@ -140,6 +143,44 @@ def _won(market: str, side: str, result: dict) -> bool:
     return (total > 2.5) if side == "over" else (total < 2.5)
 
 
+def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
+                dry_run: bool = False) -> int:
+    """Settle every unsettled tip on this fixture, at BOTH price levels.
+
+    Two P&L columns rather than one, because the tip product is sold on strike
+    rate and `engine/eval/tips.py` measured the two claims coming apart: the
+    strike rate is honest and the return at prices a customer without a dozen
+    accounts gets is not distinguishable from zero. Recording only the best
+    price would reproduce that gap live, in the flattering direction.
+
+    A tip with no stored price still settles -- outcome is the product's
+    headline number and must never depend on the feed having carried odds --
+    and leaves its P&L NULL rather than guessing one.
+    """
+    tips = conn.execute(
+        "SELECT tip_id, side, best_price, avg_price FROM tips"
+        " WHERE fixture_id=? AND settled_at IS NULL", (fixture_id,),
+    ).fetchall()
+    for tip in tips:
+        # Not `_won("1x2", ...)`: a tip may be a union of outright legs, and
+        # that function only knows single outcomes. `selection._won` is the
+        # same logic the gate measured the strike rate with, so the published
+        # number and the settled number cannot drift apart.
+        won = bool(selection._won(np.array([tip["side"]]),
+                                  np.array([result["ftr"]]))[0])
+        pnl = {name: (None if tip[name] is None
+                      else (tip[name] - 1.0 if won else -1.0))
+               for name in ("best_price", "avg_price")}
+        if not dry_run:
+            conn.execute(
+                "UPDATE tips SET settled_at=datetime('now'), outcome=?,"
+                " pnl_best=?, pnl_avg=? WHERE tip_id=?",
+                ("win" if won else "lose", pnl["best_price"], pnl["avg_price"],
+                 tip["tip_id"]),
+            )
+    return len(tips)
+
+
 def _devigged_at_bet(market: str, side: str, odds) -> float | None:
     """The market's opinion at bet time, de-vigged.
 
@@ -198,6 +239,9 @@ def grade(conn: sqlite3.Connection, results: list[dict], *,
         ).fetchone()
         if fixture is None:
             continue
+
+        out.tips_settled += settle_tips(conn, fixture["fixture_id"], result,
+                                        dry_run=dry_run)
 
         odds_at_bet = conn.execute(
             "SELECT avg_h, avg_d, avg_a, avg_over25, avg_under25 FROM fixtures"

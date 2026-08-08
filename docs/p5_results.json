@@ -1,0 +1,266 @@
+{
+  "arms": {
+    "arms": [
+      {
+        "arm": "BOOK",
+        "n_features": 9,
+        "selected": 4622,
+        "mean_clv_selected": 0.00762,
+        "lift_over_random": 0.00957,
+        "clears_vig": true
+      },
+      {
+        "arm": "MODEL",
+        "n_features": 24,
+        "selected": 4622,
+        "mean_clv_selected": 0.00061,
+        "lift_over_random": 0.00256,
+        "clears_vig": false
+      },
+      {
+        "arm": "FULL",
+        "n_features": 31,
+        "selected": 4622,
+        "mean_clv_selected": 0.00744,
+        "lift_over_random": 0.00939,
+        "clears_vig": true
+      },
+      {
+        "arm": "NOISE",
+        "n_features": 17,
+        "selected": 4622,
+        "mean_clv_selected": 0.00759,
+        "lift_over_random": 0.00954,
+        "clears_vig": true
+      }
+    ],
+    "contrasts": {
+      "MODEL-BOOK": {
+        "delta": 0.007022268049787605,
+        "ci_low": 0.005988820462694105,
+        "ci_high": 0.008027392907134024,
+        "stderr": 0.0005217162696664249,
+        "n": 46149,
+        "n_blocks": 318,
+        "excludes_zero": true,
+        "verdict": "second arm better",
+        "lift": -0.00702
+      },
+      "FULL-BOOK": {
+        "delta": 0.00018299449620258585,
+        "ci_low": -0.0003539910976094176,
+        "ci_high": 0.000699251564044575,
+        "stderr": 0.0002645233766512489,
+        "n": 46149,
+        "n_blocks": 318,
+        "excludes_zero": false,
+        "verdict": "no difference",
+        "lift": -0.00018
+      },
+      "NOISE-BOOK": {
+        "delta": 3.343949271262915e-05,
+        "ci_low": -0.00017205687083343162,
+        "ci_high": 0.0002427287099810006,
+        "stderr": 0.0001069888518226514,
+        "n": 46149,
+        "n_blocks": 318,
+        "excludes_zero": false,
+        "verdict": "no difference",
+        "lift": -3e-05
+      },
+      "MODEL-NOISE": {
+        "delta": 0.0069888285570749754,
+        "ci_low": 0.005895686784836662,
+        "ci_high": 0.0080239911989668,
+        "stderr": 0.0005382622675622183,
+        "n": 46149,
+        "n_blocks": 318,
+        "excludes_zero": true,
+        "verdict": "second arm better",
+        "lift": -0.00699
+      }
+    },
+    "by_division": [
+      {
+        "division": "E0",
+        "n": 8604,
+        "book_clv": 0.00868,
+        "model_clv": 0.00046,
+        "model_minus_book": -0.01287,
+        "positive": false
+      },
+      {
+        "division": "E1",
+        "n": 12594,
+        "book_clv": 0.00797,
+        "model_clv": -0.00082,
+        "model_minus_book": -0.00749,
+        "positive": false
+      },
+      {
+        "division": "E2",
+        "n": 12429,
+        "book_clv": 0.00632,
+        "model_clv": 0.00234,
+        "model_minus_book": -0.00431,
+        "positive": false
+      },
+      {
+        "division": "E3",
+        "n": 12522,
+        "book_clv": 0.0072,
+        "model_clv": 0.00222,
+        "model_minus_book": -0.00523,
+        "positive": false
+      }
+    ],
+    "strata": [
+      {
+        "fraction": 0.25,
+        "selected": 11524,
+        "mean_clv": 0.00413,
+        "clears_vig": true
+      },
+      {
+        "fraction": 0.1,
+        "selected": 4622,
+        "mean_clv": 0.00762,
+        "clears_vig": true
+      },
+      {
+        "fraction": 0.05,
+        "selected": 2304,
+        "mean_clv": 0.00984,
+        "clears_vig": true
+      },
+      {
+        "fraction": 0.02,
+        "selected": 940,
+        "mean_clv": 0.01325,
+        "clears_vig": true
+      }
+    ],
+    "pbo": {
+      "all": {
+        "arms": [
+          "BOOK",
+          "MODEL",
+          "FULL",
+          "NOISE"
+        ],
+        "pbo": 0.6306915306915307,
+        "degradation": -5.2799577446429906e-05,
+        "spread": 0.006729436856127959,
+        "n_trials": 4,
+        "n_splits": 12870,
+        "choice_mattered": true
+      },
+      "contenders": {
+        "arms": [
+          "BOOK",
+          "FULL",
+          "NOISE"
+        ],
+        "pbo": 0.8626262626262626,
+        "degradation": -0.00016035562377743944,
+        "spread": 0.00014945589454559705,
+        "n_trials": 3,
+        "n_splits": 12870,
+        "choice_mattered": false
+      },
+      "decision": {
+        "arms": [
+          "BOOK",
+          "MODEL"
+        ],
+        "pbo": 0.0,
+        "degradation": 0.0033000961023559113,
+        "spread": 0.006596653496667227,
+        "n_trials": 2,
+        "n_splits": 12870,
+        "choice_mattered": true
+      }
+    },
+    "book_coefficients": [
+      {
+        "feature": "max_spread",
+        "beta_std": -0.004333
+      },
+      {
+        "feature": "sharp_spread",
+        "beta_std": 0.003289
+      },
+      {
+        "feature": "be_max",
+        "beta_std": -0.002757
+      },
+      {
+        "feature": "or_ps",
+        "beta_std": -0.001325
+      },
+      {
+        "feature": "or_avg",
+        "beta_std": -0.000781
+      },
+      {
+        "feature": "or_max",
+        "beta_std": -0.000672
+      },
+      {
+        "feature": "is_away",
+        "beta_std": -0.000299
+      },
+      {
+        "feature": "b365_spread",
+        "beta_std": 0.000209
+      },
+      {
+        "feature": "is_draw",
+        "beta_std": 0.000136
+      }
+    ],
+    "selection_profile": {
+      "BOOK": {
+        "be_max": 0.35162,
+        "max_spread": -0.02549,
+        "sharp_spread": -0.00403,
+        "or_max": 0.99599,
+        "side_mix": {
+          "H": 0.396,
+          "D": 0.136,
+          "A": 0.468
+        },
+        "share_overround_below_1": 0.653
+      },
+      "MODEL": {
+        "be_max": 0.35881,
+        "max_spread": -0.01841,
+        "sharp_spread": -0.00981,
+        "or_max": 1.00172,
+        "side_mix": {
+          "H": 0.37,
+          "D": 0.004,
+          "A": 0.627
+        },
+        "share_overround_below_1": 0.393
+      },
+      "pool": {
+        "be_max": 0.33528,
+        "max_spread": -0.01808,
+        "sharp_spread": -0.01016,
+        "or_max": 1.00585,
+        "side_mix": {
+          "H": 0.333,
+          "D": 0.333,
+          "A": 0.333
+        },
+        "share_overround_below_1": 0.237
+      }
+    },
+    "decision": {
+      "c1_model_beats_book": false,
+      "c2_selected_clears_vig": false,
+      "book_clears_vig": true
+    }
+  }
+}

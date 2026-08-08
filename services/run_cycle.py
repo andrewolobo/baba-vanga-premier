@@ -46,7 +46,7 @@ from pathlib import Path
 import pandas as pd
 
 from engine import db
-from engine.serve import cycle
+from engine.serve import cycle, tips
 from services import csv_grader, fixture_sync
 
 #: Refit once the frozen artifact is older than this. P1's H1 measured
@@ -56,8 +56,17 @@ from services import csv_grader, fixture_sync
 REFIT_AFTER_DAYS = 7
 
 #: Recorded in `serving_state.rule_version` so the row states plainly that no
-#: betting rule ran, rather than naming one that was never invoked.
+#: betting rule ran, rather than naming one that was never invoked. The tip rule
+#: is not a betting rule and does not change this: nothing is staked.
 RULE_VERSION = "book-off"
+
+#: The tip rule's two settings. Measured in `engine/eval/selection.py`: floor
+#: 0.55 publishes a 72.5% strike rate on **100% of matches**, against the v1
+#: outright-only rule's 65.5% on 14.4%. Changing either means bumping
+#: `tips.RULE_VERSION`, or the published history mixes two products under one
+#: strike rate.
+TIP_FLOOR = tips.DEFAULT_FLOOR
+TIP_CEILING = tips.DEFAULT_CEILING
 
 
 class Status(IntEnum):
@@ -191,16 +200,34 @@ def step_serve(conn: sqlite3.Connection, report: CycleReport, *,
 
 
 def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
-    """Settle played fixtures and write CLV. A no-op while the book is off."""
+    """Settle played fixtures, write CLV, and settle published tips.
+
+    The pending query spans `paper_bets` **and** `tips`. It used to read
+    `paper_bets` alone, which was right while that was the only thing needing
+    settlement and became a silent no-op the moment tips shipped: the book is
+    off, so there are never unsettled bets, so the step returned early and no
+    tip would ever have been graded. The product's own strike rate would have
+    stayed empty forever while the cycle reported success.
+    """
 
     def work(step: Step) -> None:
+        # **Played fixtures only.** The v1 tip rule covered 14.4% of matches so
+        # unsettled rows were rare; v2 covers 100%, which means every future
+        # fixture carries an unsettled tip from the moment it is priced. Without
+        # the date bound the cycle would pull a results CSV for every division
+        # with an upcoming match, every run, all season -- fetching files that
+        # cannot contain the result yet.
         pending = conn.execute(
             "SELECT DISTINCT f.division, f.match_date FROM paper_bets b"
             " JOIN fixtures f ON f.fixture_id = b.fixture_id"
-            " WHERE b.settled_at IS NULL"
+            " WHERE b.settled_at IS NULL AND f.match_date <= date('now')"
+            " UNION"
+            " SELECT DISTINCT f.division, f.match_date FROM tips t"
+            " JOIN fixtures f ON f.fixture_id = t.fixture_id"
+            " WHERE t.settled_at IS NULL AND f.match_date <= date('now')"
         ).fetchall()
         if not pending:
-            step.detail = "nothing unsettled (expected: the book is off)"
+            step.detail = "nothing unsettled"
             return
         seasons = {(r["division"], csv_grader.season_for(r["match_date"]))
                    for r in pending}
@@ -212,10 +239,52 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
             total.results_seen += got.results_seen
             total.settled += got.settled
             total.graded += got.graded
+            total.tips_settled += got.tips_settled
         step.detail = (f"{total.results_seen} result(s), {total.settled} settled, "
-                       f"{total.graded} CLV grade(s)")
+                       f"{total.graded} CLV grade(s), "
+                       f"{total.tips_settled} tip(s) settled")
 
     return _guard(Step("grade"), work)
+
+
+def step_tips(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
+    """Publish the confidence-rule tip list for fixtures priced this cycle.
+
+    Runs after `serve` and before `grade`, and is independent of both: a tip
+    list that cannot be built must not stop results being settled, and a dead
+    fixtures feed must not stop yesterday's tips being graded.
+
+    **Unlike the book, this is present rather than absent.** `run_cycle`'s
+    docstring explains why the paper book is not wired in -- it is measured
+    negative and a scheduled job should not be one typo from placing bets.
+    Tips place no bets and stake nothing, so the same argument does not apply.
+    What it publishes is a confidence ranking whose strike rate is measured and
+    honest (`engine/eval/tips.py`); what it must never be presented as is a
+    return, which the same module measures and does not support.
+    """
+
+    def work(step: Step) -> None:
+        pending = tips.untipped(conn)
+        if pending.empty:
+            step.detail = "no untipped predictions"
+            return
+        selected = tips.select(pending, floor=TIP_FLOOR, ceiling=TIP_CEILING)
+        written = tips.publish(conn, selected, dry_run=dry_run)
+        mix = selected.side.value_counts().to_dict() if not selected.empty else {}
+        step.detail = (f"{len(pending)} untipped, {written} published "
+                       f"(floor {TIP_FLOOR}); "
+                       + ", ".join(f"{k} {v}" for k, v in sorted(mix.items())))
+        missing = int(selected["best_price"].isna().sum()) if not selected.empty else 0
+        if missing:
+            # The tips still stand -- selection never reads a price -- but the
+            # product cannot compute its own return without one, and a silent
+            # gap in the P&L column is exactly the number nobody notices is
+            # missing until it is quoted.
+            step.flag(Status.ATTENTION,
+                      f"{missing} tip(s) published with no price; return "
+                      f"cannot be graded for them")
+
+    return _guard(Step("tips"), work)
 
 
 def _stale(artifact, today: pd.Timestamp) -> bool:
@@ -234,6 +303,7 @@ def run(conn: sqlite3.Connection, *, dry_run: bool = False, refreeze: bool = Fal
     report.steps.append(step_sync(conn, dry_run=dry_run, url=url, file=file))
     report.steps.append(step_serve(conn, report, dry_run=dry_run,
                                    refreeze=refreeze, today=today))
+    report.steps.append(step_tips(conn, dry_run=dry_run))
     report.steps.append(step_grade(conn, dry_run=dry_run))
 
     if not dry_run:

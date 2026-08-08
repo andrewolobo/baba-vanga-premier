@@ -6,6 +6,14 @@ Results will go in `META.md`.
 Every number in §1 was measured before the strategy in §2 was chosen, and two of
 them changed it. Nothing here has been fitted to an outcome.
 
+**§1 is reproducible as of 2026-08-06.** `engine/eval/meta.py` recomputes every
+figure below and checks it against what this document publishes — 18 of 18
+reproduce. It reads prices and λ coverage only, no match outcome, so it carries
+no arm list and spends no configuration (ledger `p5_grounding`, row 77; the
+count stays at 149). Running it was not cosmetic: **it corrected two figures**,
+marked below. `OUTSTANDING.md` §8.2 records why prose-only numbers are treated
+as a defect here rather than a style preference.
+
 ---
 
 ## 1. What the data says
@@ -32,7 +40,15 @@ all-legs.
 | **1X2** | de-vigged Pinnacle `close_ps_*` | **19,884** | **59,652** | 2012-13 → |
 | O/U 2.5 | de-vigged `close_avg_over25` | 5,638 | 11,276 | **2019-20 →** |
 
-1X2 by division: E0 4,180 / E1 6,070 / E2 5,913 / E3 5,950.
+1X2 by division: **E0 3,708 / E1 5,412 / E2 5,366 / E3 5,398.**
+
+**Corrected 2026-08-06 by `meta.py` G2.** This line previously read E0 4,180 /
+E1 6,070 / E2 5,913 / E3 5,950, which summed to 22,113 — *more than the 21,896
+scored matches in the whole corpus*, so it could not have been a subset of the
+gradable sample. Those cells are price availability alone, measured before the
+COVID embargo and before a walk-forward λ is required. The corrected cells sum
+to 19,884 and agree with the headline. `meta.py` reports both, so the older
+figure stays attributable rather than merely wrong.
 
 **The O/U basis is the 2019-20 cliff again.** 5,638 matches is within six of the
 5,644 that made the kickoff slot unresolvable, and for the same reason —
@@ -83,6 +99,24 @@ Even a 2%-of-volume stratum resolves an edge well below the bar it has to clear.
 **I expected the opposite** and said so when this was last reviewed: that a
 meta-label here would be an underpowered fishing expedition. On CLV it is not.
 
+**The table above is optimistic, and `meta.py` G5 measures by how much.** The
+design effect of 0.68 comes from the three legs of a match cancelling — but a
+selection takes *one* leg per match, where that cancellation is unavailable.
+Measured on one randomly chosen leg per match, the design effect is **1.06**,
+so a real stratum's interval is 1.56× the width above:
+
+| stratum | as published | one leg/match | vs Max vig 0.00201 |
+| --- | --- | --- | --- |
+| 100% | 0.00012 | 0.00019 | resolves |
+| 25% | 0.00024 | 0.00038 | resolves |
+| 10% | 0.00038 | 0.00060 | resolves |
+| 5% | 0.00054 | 0.00085 | resolves |
+| **2%** | 0.00085 | **0.00134** | **resolves, at 1.5× not 2.4×** |
+
+**§1.5's conclusion stands — power is still not the constraint** — but the
+margin at thin volume is half what the published table implies, and §5's
+budget should be read against the right-hand column.
+
 **The binding constraint is therefore multiplicity, not power** — which is a
 different problem with a different control, and §5 is that control.
 
@@ -99,9 +133,17 @@ Coverage on the 19,884-match basis, at the pre-closing timestamp:
 | model λ and derived probabilities | 100% |
 | kickoff slot | **28.3%** — excluded, see §3 |
 
-The sharp-versus-consensus spread (`1/ps − 1/avg`) is **−0.01017, sd 0.00755**:
-well populated and clearly structured. It is also **pure price**, so it is
-exactly what §4's book ablation removes.
+The sharp-versus-consensus spread (`1/ps − 1/avg`) is **−0.01097, sd 0.00712**
+over all three legs (n = 19,846): well populated and clearly structured. It is
+also **pure price**, so it is exactly what §4's book ablation removes.
+
+**Corrected 2026-08-06 by `meta.py` G6.** The published −0.01017 / 0.00755 is
+the **home leg alone** (D −0.01140 / 0.00668, A −0.01136 / 0.00705), presented
+as though it were the feature across all legs. §4 builds the feature per leg, so
+the all-leg figure is the one that describes it. The conclusion is untouched —
+both readings are well populated and structured — but a per-leg feature quoted
+at a single leg's moments is the shape of error this project keeps finding, so
+it is corrected rather than left to be discovered during the gate.
 
 **Leakage boundary.** `close_*`, `fthg`, `ftag`, `ftr` are label-side only. The
 closing price is not known when the bet is placed; it appears in the target and

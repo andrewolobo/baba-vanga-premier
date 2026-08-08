@@ -1,0 +1,239 @@
+{
+  "g1": {
+    "counts": {
+      "predictions": 0,
+      "paper_bets": 0,
+      "clv_grades": 0
+    },
+    "all_empty": true
+  },
+  "g2": {
+    "scored_matches": 21896,
+    "matches_1x2": 19884,
+    "legs_1x2": 59652,
+    "matches_ou": 5638,
+    "legs_ou": 11276,
+    "seasons_1x2": [
+      "201213",
+      "202223"
+    ],
+    "seasons_ou": [
+      "201920",
+      "202223"
+    ],
+    "by_division_1x2": {
+      "E0": 3708,
+      "E1": 5412,
+      "E2": 5366,
+      "E3": 5398
+    },
+    "published_division_basis": {
+      "by_division": {
+        "E0": 4180,
+        "E1": 6070,
+        "E2": 5913,
+        "E3": 5950
+      },
+      "total": 22113
+    }
+  },
+  "g3": {
+    "vig_1x2_avg": 0.02107,
+    "overround_1x2_avg": 0.06322,
+    "vig_1x2_max": 0.00201,
+    "overround_1x2_max": 0.00603,
+    "vig_ou_avg": 0.03041,
+    "overround_ou_avg": 0.06082,
+    "vig_ou_max": 0.00718,
+    "overround_ou_max": 0.01436
+  },
+  "g4": {
+    "match_sum_mean": -0.00577,
+    "match_sum_sd": 0.00923,
+    "every_leg_return": -0.00192
+  },
+  "g5": {
+    "n_legs": 59652,
+    "n_blocks": 408,
+    "sd_clv": 0.0222,
+    "block_se": 6e-05,
+    "naive_se": 9e-05,
+    "design_effect": 0.68,
+    "one_leg_design_effect": 1.06,
+    "strata": [
+      {
+        "fraction": 1.0,
+        "legs": 59652,
+        "half_width": 0.00012,
+        "half_width_one_leg": 0.00019
+      },
+      {
+        "fraction": 0.25,
+        "legs": 14913,
+        "half_width": 0.00024,
+        "half_width_one_leg": 0.00038
+      },
+      {
+        "fraction": 0.1,
+        "legs": 5965,
+        "half_width": 0.00038,
+        "half_width_one_leg": 0.0006
+      },
+      {
+        "fraction": 0.05,
+        "legs": 2982,
+        "half_width": 0.00054,
+        "half_width_one_leg": 0.00085
+      },
+      {
+        "fraction": 0.02,
+        "legs": 1193,
+        "half_width": 0.00085,
+        "half_width_one_leg": 0.00134
+      }
+    ]
+  },
+  "g6": {
+    "coverage": {
+      "avg": 100.0,
+      "max": 100.0,
+      "ps": 99.8,
+      "b365": 100.0,
+      "lambda": 100.0,
+      "kickoff": 28.3
+    },
+    "spread": {
+      "n": 19846,
+      "all_legs_mean": -0.01097,
+      "all_legs_sd": 0.00712,
+      "by_leg": {
+        "H": [
+          -0.01017,
+          0.00755
+        ],
+        "D": [
+          -0.0114,
+          0.00668
+        ],
+        "A": [
+          -0.01136,
+          0.00705
+        ]
+      }
+    }
+  },
+  "reproduction": {
+    "rows": [
+      {
+        "key": "g2.matches_1x2",
+        "published": 19884,
+        "measured": 19884,
+        "ok": true
+      },
+      {
+        "key": "g2.legs_1x2",
+        "published": 59652,
+        "measured": 59652,
+        "ok": true
+      },
+      {
+        "key": "g2.matches_ou",
+        "published": 5638,
+        "measured": 5638,
+        "ok": true
+      },
+      {
+        "key": "g2.legs_ou",
+        "published": 11276,
+        "measured": 11276,
+        "ok": true
+      },
+      {
+        "key": "g3.vig_1x2_avg",
+        "published": 0.02107,
+        "measured": 0.02107,
+        "ok": true
+      },
+      {
+        "key": "g3.vig_1x2_max",
+        "published": 0.00201,
+        "measured": 0.00201,
+        "ok": true
+      },
+      {
+        "key": "g3.vig_ou_avg",
+        "published": 0.03041,
+        "measured": 0.03041,
+        "ok": true
+      },
+      {
+        "key": "g3.vig_ou_max",
+        "published": 0.00718,
+        "measured": 0.00718,
+        "ok": true
+      },
+      {
+        "key": "g4.match_sum_mean",
+        "published": -0.00577,
+        "measured": -0.00577,
+        "ok": true
+      },
+      {
+        "key": "g4.match_sum_sd",
+        "published": 0.00923,
+        "measured": 0.00923,
+        "ok": true
+      },
+      {
+        "key": "g4.every_leg_return",
+        "published": -0.00192,
+        "measured": -0.00192,
+        "ok": true
+      },
+      {
+        "key": "g5.sd_clv",
+        "published": 0.0222,
+        "measured": 0.0222,
+        "ok": true
+      },
+      {
+        "key": "g5.n_blocks",
+        "published": 408,
+        "measured": 408,
+        "ok": true
+      },
+      {
+        "key": "g5.block_se",
+        "published": 6e-05,
+        "measured": 6e-05,
+        "ok": true
+      },
+      {
+        "key": "g5.naive_se",
+        "published": 9e-05,
+        "measured": 9e-05,
+        "ok": true
+      },
+      {
+        "key": "g5.design_effect",
+        "published": 0.68,
+        "measured": 0.68,
+        "ok": true
+      },
+      {
+        "key": "g6.coverage_ps",
+        "published": 99.8,
+        "measured": 99.8,
+        "ok": true
+      },
+      {
+        "key": "g6.coverage_kickoff",
+        "published": 28.3,
+        "measured": 28.3,
+        "ok": true
+      }
+    ],
+    "all_reproduce": true,
+    "failed": []
+  }
+}

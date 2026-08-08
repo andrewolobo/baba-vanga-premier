@@ -55,17 +55,19 @@ class TrialCount:
     configurations: int       # arms -- the number that matters
     unattributed: int         # rows whose detail records no arm list
     post_hoc: tuple[str, ...] # named, and excluded from pre-registration claims
+    repeats: int = 0          # rows collapsed as the same computation re-run
 
     def describe(self) -> str:
+        repeated = f", {self.repeats} repeat run(s) collapsed" if self.repeats else ""
         return (f"{self.runs} runs / {self.questions} distinct questions / "
                 f"**{self.configurations} configurations** "
-                f"({self.unattributed} rows carry no arm list); "
+                f"({self.unattributed} rows carry no arm list{repeated}); "
                 f"post-hoc: {', '.join(self.post_hoc) or 'none'}")
 
 
 #: Recorded as post-hoc at the time it was run. Excluded from any claim that the
 #: selection was pre-registered; see `docs/DEFLATION.md` §4.
-POST_HOC_TRIALS: tuple[str, ...] = ("h19_alpha_interaction",)
+POST_HOC_TRIALS: tuple[str, ...] = ("h19_alpha_interaction", "p5_book_no_arb")
 
 
 def _arms_in(detail) -> int | None:
@@ -83,16 +85,90 @@ def _arms_in(detail) -> int | None:
     return None
 
 
+def _arm_list(detail):
+    """The recorded arm list as a sequence of arms, or None."""
+    if isinstance(detail, str):
+        try:
+            detail = json.loads(detail)
+        except (TypeError, ValueError):
+            return None
+    if not isinstance(detail, dict):
+        return None
+    arms = detail.get("arms")
+    if isinstance(arms, dict):
+        return list(arms.values())
+    return arms if isinstance(arms, list) else None
+
+
+#: Fields that name an arm rather than report what it did. A run whose arms
+#: carry nothing else cannot be shown to have reproduced an earlier one, so it
+#: is never collapsed -- `b2_b3_selection` recorded bare names and two runs that
+#: really did differ would otherwise have merged. Silence is not agreement.
+_IDENTITY_KEYS = frozenset({"arm", "name", "label", "value"})
+
+
+def _signature(arms, shared: frozenset) -> tuple:
+    """A comparable form of one run's arms, over the fields every run recorded.
+
+    Restricted to `shared` because a gate re-run with an extra *reporting* field
+    is the same computation, and a digest over the raw payload would call it a
+    new one. What survives is the part every run of that name agreed to record,
+    which is exactly the claim "these produced the same numbers".
+    """
+    out = []
+    for arm in arms:
+        if isinstance(arm, dict):
+            out.append(tuple(sorted(
+                (k, json.dumps(v, sort_keys=True, default=str))
+                for k, v in arm.items() if k in shared)))
+        else:
+            out.append(json.dumps(arm, sort_keys=True, default=str))
+    return tuple(out)
+
+
 def count_configurations(conn) -> TrialCount:
-    """Count what the ledger actually records. Derived, never negotiated."""
+    """Count what the ledger actually records. Derived, never negotiated.
+
+    **Re-running the identical computation does not spend again.** Multiplicity
+    is the number of configurations chosen among, and four runs of one gate that
+    produced identical numbers offered one chance to be fooled, not four. This
+    happened for real: `p5_meta_arms` wrote a row on each of four implementation
+    runs as reporting was added, byte-identical in every arm result
+    (`META.md` §9).
+
+    **A re-run whose numbers changed still spends**, and must: `OUTSTANDING.md`
+    §7.5 records the rest gate running before and after a correctness fix, and
+    both rows count because both were real attempts at the answer. The line is
+    whether the results moved, not whether the code did.
+    """
     rows = [dict(r) for r in conn.execute("SELECT name, detail FROM gate_ledger")]
-    arms = [_arms_in(r["detail"]) for r in rows]
+    by_name: dict[str, list] = {}
+    for row in rows:
+        arms = _arm_list(row["detail"])
+        if arms is not None:
+            by_name.setdefault(row["name"], []).append(arms)
+
+    configurations, repeats = 0, 0
+    for runs in by_name.values():
+        shared = frozenset.intersection(*[
+            frozenset(a) for run in runs for a in run if isinstance(a, dict)
+        ]) if any(isinstance(a, dict) for run in runs for a in run) else frozenset()
+        if not (shared - _IDENTITY_KEYS):
+            configurations += sum(len(arms) for arms in runs)
+            continue
+        seen = {}
+        for arms in runs:
+            seen.setdefault(_signature(arms, shared), len(arms))
+        configurations += sum(seen.values())
+        repeats += len(runs) - len(seen)
+
     return TrialCount(
         runs=len(rows),
         questions=len({r["name"] for r in rows}),
-        configurations=sum(a for a in arms if a),
-        unattributed=sum(1 for a in arms if not a),
+        configurations=configurations,
+        unattributed=sum(1 for r in rows if _arm_list(r["detail"]) is None),
         post_hoc=tuple(sorted({r["name"] for r in rows} & set(POST_HOC_TRIALS))),
+        repeats=repeats,
     )
 
 

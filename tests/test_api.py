@@ -8,6 +8,9 @@ stop being evidence.
 
 from __future__ import annotations
 
+import sqlite3
+from concurrent.futures import ThreadPoolExecutor
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -21,9 +24,13 @@ def _override(path):
     Reusing one connection across requests fails under TestClient because
     sqlite3 objects are bound to the thread that created them -- and it would
     be wrong in production too, where uvicorn serves from a thread pool.
+
+    `check_same_thread=False` mirrors `api.main.get_conn` exactly. It has to:
+    without it this override is a *different* dependency from the one that
+    ships, and the defect it guards against is invisible to every test here.
     """
     def dependency():
-        conn = db.connect(path)
+        conn = db.connect(path, check_same_thread=False)
         try:
             yield conn
         finally:
@@ -144,6 +151,204 @@ def test_performance_leads_with_clv_not_roi(client):
     assert row["hit_rate"] == 1.0
 
 
+# --- the tip list, which is the customer-facing product --------------------
+
+
+@pytest.fixture
+def tips_client(tmp_path):
+    """A database with tips on both sides of today.
+
+    Dates are relative to `date('now')` rather than fixed, because the split
+    between what is published and what is settled is exactly what these
+    endpoints key on -- a hard-coded date would make the suite start failing on
+    a particular morning for reasons nobody would connect to this file.
+    """
+    path = tmp_path / "tips.db"
+    conn = db.connect(path)
+    db.migrate(conn)
+    for i, name in enumerate(["Arsenal", "Chelsea", "Luton", "Barnsley"], start=1):
+        conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)", (i, name))
+    for fixture_id, division, offset, home, away in (
+        (1, "E0", "+5 days", 1, 2),
+        (2, "E2", "+5 days", 3, 4),
+        (3, "E0", "-4 days", 2, 1),
+        (4, "E0", "-4 days", 1, 3),
+    ):
+        conn.execute(
+            "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
+            " home_team_id, away_team_id, avg_h, avg_d, avg_a, source_file)"
+            f" VALUES (?, ?, date('now', '{offset}'), '15:00', ?, ?, 1.9, 3.6, 4.0, 't')",
+            (fixture_id, division, home, away),
+        )
+        conn.execute(
+            "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
+            " information_set, lam_h, lam_a, p_home, p_draw, p_away, p_over25,"
+            " p_under25) VALUES (?, ?, 'v2', 'pre_close', 1.6, 1.1,"
+            " 0.48, 0.26, 0.26, 0.52, 0.48)",
+            (fixture_id, fixture_id),
+        )
+    for tip_id, side, prob, settled, outcome, rule in (
+        (1, "12", 0.78, None, None, "confidence-v2"),
+        (2, "H", 0.61, None, None, "confidence-v2"),
+        (3, "1X", 0.72, "2026-01-01 12:00:00", "win", "confidence-v2"),
+        (4, "A", 0.58, "2026-01-01 12:00:00", "lose", "confidence-v2"),
+        # A void on a fixture already tipped under another rule version, so the
+        # denominator can be checked against something that must not count.
+        (5, "X2", 0.66, "2026-01-01 12:00:00", "void", "confidence-v1"),
+    ):
+        conn.execute(
+            "INSERT INTO tips (tip_id, prediction_id, fixture_id, side, model_prob,"
+            " floor, ceiling, best_price, avg_price, rule_version, settled_at,"
+            " outcome, pnl_best, pnl_avg) VALUES (?, ?, ?, ?, ?, 0.55, 0.85,"
+            " 1.35, 1.28, ?, ?, ?, 0.35, 0.28)",
+            (tip_id, min(tip_id, 4), min(tip_id, 4), side, prob, rule, settled, outcome),
+        )
+    conn.commit()
+    conn.close()
+
+    app.dependency_overrides[get_conn] = _override(path)
+    yield TestClient(app)
+    app.dependency_overrides.clear()
+
+
+def test_tips_returns_only_unplayed_fixtures(tips_client):
+    body = tips_client.get("/tips").json()
+    assert {t["tip_id"] for t in body} == {1, 2}
+    assert all(t["settled_at"] is None for t in body)
+
+
+def test_tips_publishes_double_chance_sides_intact(tips_client):
+    """85.6% of published calls are unions rather than a named team. An endpoint
+    that dropped or rewrote them would hide most of the product."""
+    sides = {t["side"] for t in tips_client.get("/tips").json()}
+    assert "12" in sides
+
+
+def test_tips_filter_by_division_and_reject_unknown_ones(tips_client):
+    only_e2 = tips_client.get("/tips", params={"division": "E2"}).json()
+    assert [t["division"] for t in only_e2] == ["E2"]
+    assert tips_client.get("/tips", params={"division": "EC"}).status_code == 400
+
+
+def test_tip_results_are_settled_only_and_most_recent_first(tips_client):
+    body = tips_client.get("/tips/results").json()
+    assert {t["tip_id"] for t in body} == {3, 4, 5}
+    assert all(t["outcome"] is not None for t in body)
+    dates = [t["match_date"] for t in body]
+    assert dates == sorted(dates, reverse=True)
+
+
+def test_the_record_excludes_voids_from_the_strike_rate(tips_client):
+    """A void is not a loss. Counting it as one would understate the rule, and
+    counting it as a win would overstate it; it leaves the denominator."""
+    body = tips_client.get("/tips/record").json()
+    assert body["published"] == 5
+    assert body["graded"] == 2          # win + lose; the void is not graded
+    assert body["won"] == 1
+    assert body["strike_rate"] == pytest.approx(0.5)
+    assert body["upcoming"] == 2
+
+
+def test_the_record_publishes_no_profit_figure(tips_client):
+    """The load-bearing honesty test (`BACKLOG.md` B7).
+
+    The `tips` table carries `pnl_best` and `pnl_avg`, and the fixture above
+    populates both. `engine/eval/tips.py` measured that the return at customer
+    prices is negative at every sellable setting with no interval excluding
+    zero, so the product is sold on strike rate alone. If P&L ever reaches this
+    payload a surface can advertise a return without anyone deciding to.
+    """
+    body = tips_client.get("/tips/record").json()
+    banned = ("pnl", "profit", "roi", "return_pct", "units", "yield")
+    fields = [str(k).lower() for k in body]
+    fields += [str(k).lower() for row in body["by_division"] for k in row]
+    assert not [f for f in fields if any(word in f for word in banned)]
+    assert body["return_supported"] is False
+
+
+def test_the_record_reports_no_strike_rate_rather_than_zero_when_nothing_is_graded(tmp_path):
+    """Opening weekend. A zero would read as "we get everything wrong"."""
+    path = tmp_path / "fresh.db"
+    conn = db.connect(path)
+    db.migrate(conn)
+    conn.close()
+    app.dependency_overrides[get_conn] = _override(path)
+    try:
+        body = TestClient(app).get("/tips/record").json()
+        assert body["strike_rate"] is None
+        assert body["published"] == 0
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_the_dependency_survives_being_opened_and_used_on_different_threads(tmp_path):
+    """The defect the tip page found, pinned at the level it actually occurs.
+
+    FastAPI runs a sync generator dependency's setup, the endpoint body and its
+    teardown as three separate threadpool hand-offs. They are not guaranteed to
+    land on the same worker, so a per-request connection is routinely created on
+    one thread and used on another. sqlite3 rejects that by default.
+
+    It stayed hidden because the old frontend fetched one endpoint per page:
+    with requests strictly serialised the pool reuses one worker and the hand-off
+    is invisible. The tip page fetches three at once, and every load failed.
+    """
+    path = tmp_path / "threads.db"
+    conn = db.connect(path)
+    db.migrate(conn)
+    conn.close()
+
+    opened = db.connect(path, check_same_thread=False)
+    try:
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            count = pool.submit(
+                lambda: opened.execute("SELECT COUNT(*) FROM tips").fetchone()[0]
+            ).result()
+        assert count == 0
+    finally:
+        opened.close()
+
+    # The guard is still on everywhere else, so a connection crossing threads
+    # in the cycle or the grader remains the error it should be.
+    guarded = db.connect(path)
+    try:
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            with pytest.raises(sqlite3.ProgrammingError):
+                pool.submit(lambda: guarded.execute("SELECT 1").fetchone()).result()
+    finally:
+        guarded.close()
+
+
+def test_the_request_connection_is_opened_without_the_thread_guard(monkeypatch):
+    """The half of the fix that lives in `api.main`, pinned directly.
+
+    Asserting it through the app does not work: under `TestClient` the portal
+    reuses a single worker, so the hand-off never crosses threads and the
+    endpoints pass either way. That is precisely why this shipped -- a live
+    uvicorn spreads the same dependency across a real pool and a TestClient
+    does not. So the kwarg is checked at the call, which is deterministic.
+    """
+    seen = {}
+
+    def fake_connect(path=None, **kwargs):
+        seen.update(kwargs)
+        return sqlite3.connect(":memory:")
+
+    monkeypatch.setattr(db, "connect", fake_connect)
+    generator = get_conn()
+    next(generator)
+    generator.close()
+    assert seen.get("check_same_thread") is False
+
+
+def test_concurrent_requests_all_succeed(tips_client):
+    """A smoke test, not the guard above: the surface fetches three at once."""
+    paths = ["/tips", "/tips/results", "/tips/record", "/health"] * 4
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        codes = list(pool.map(lambda p: tips_client.get(p).status_code, paths))
+    assert set(codes) == {200}
+
+
 def test_the_api_exposes_no_write_routes(client):
     """Read-only by contract, asserted against the route table rather than
     trusted -- a POST added later would otherwise pass unnoticed."""
@@ -166,5 +371,8 @@ def test_endpoints_survive_an_empty_database(tmp_path):
         assert empty.get("/predictions").json() == []
         assert empty.get("/book").json() == []
         assert empty.get("/performance").json() == []
+        assert empty.get("/tips").json() == []
+        assert empty.get("/tips/results").json() == []
+        assert empty.get("/tips/record").json()["published"] == 0
     finally:
         app.dependency_overrides.clear()

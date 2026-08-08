@@ -14,20 +14,47 @@ Everything below is arranged around not losing a matchday.
 ## 0. What runs
 
 ```
-python -m services.run_cycle          # sync -> serve -> grade -> record
+python -m services.run_cycle          # sync -> serve -> tips -> grade -> record
 ```
 
-Three independent steps. Each records its own outcome; the cycle reports the
+Four independent steps. Each records its own outcome; the cycle reports the
 worst one and always writes a `serving_state` row, including when it failed.
 
 | step | does | needs the network? |
 | --- | --- | --- |
 | `sync` | pull the rolling fixtures feed, upsert fixtures + prices | yes |
 | `serve` | refit if stale, price every pending fixture it can | no |
-| `grade` | settle played fixtures, write CLV | yes (no-op while the book is off) |
+| `tips` | publish one recommendation per priced fixture | no |
+| `grade` | settle played fixtures, write CLV, settle tips | yes |
 
 **The book does not run.** It is measured-negative and absent from the runner
 rather than disabled by a flag.
+
+**The tip list does run, and it is not the book.** `tips` stakes nothing and
+places nothing. It publishes **one recommendation per fixture**: the outright
+favourite when it clears `TIP_FLOOR` (0.55), otherwise the likeliest double
+chance under `TIP_CEILING` (0.85). The argument for keeping the book out of a
+scheduled job — one typo from placing bets — does not apply.
+
+> **What the tip list may and may not be presented as.** Measured over eleven
+> dev seasons: the strike rate is **honest** — **72.5% at floor 0.55, on 100%
+> of matches** (`engine/eval/selection.py`), and the head is under-confident
+> rather than over. A **return** is not: at prices a customer without a dozen
+> accounts gets, nothing resolves and the sellable settings are negative
+> (`engine/eval/tips.py`). And the model is not the source of either — it names
+> the market favourite and the paired difference against backing that favourite
+> is ~0.00%.
+>
+> **The published mix at floor 0.55 is 65% `12`, 17.6% `1X`, 11.8% `H`, 3.0%
+> `X2`, 2.5% `A`** — the product names a team in 14.3% of matches. Owner
+> decision of 2026-08-06.
+>
+> Re-run `python -m engine.eval.tips` and `python -m engine.eval.selection`
+> after any head change; both end with a block stating which claims hold.
+
+Changing `TIP_FLOOR` or `TIP_CEILING` means bumping
+`engine.serve.tips.RULE_VERSION`, or the published history mixes two products
+under one strike rate. It is at `confidence-v2`.
 
 ### 0.1 Starting it by hand
 
@@ -76,6 +103,24 @@ curl.exe http://127.0.0.1:8000/health
 **"Off" refers to the book, not the application.** The engine, API and frontend
 all run. The betting rule is the only thing deliberately disabled, and the
 `/book` and `/performance` pages will stay empty for as long as that holds.
+
+### 0.2 Starting it with one command
+
+```powershell
+.\scripts\dev.ps1              # cycle once, then API + frontend
+.\scripts\dev.ps1 -SkipCycle   # servers only
+```
+
+Same three pieces as §0.1, one shell. Ctrl-C stops both servers. Output from
+the two interleaves — use §0.1 when you need to read one of them cleanly.
+
+**It runs the cycle once and does not schedule it.** Recurring runs stay with
+Task Scheduler (§2); the launcher is not a substitute for registering the task.
+The cycle finishes before the API binds — not for locking reasons any more
+(§5.6), but so its exit code is readable before request logs bury it.
+
+**Windows only.** It uses `npm.cmd`, `taskkill` and `Get-NetTCPConnection`; it
+will not run as-is on the Ubuntu target.
 
 ## 1. Exit codes — and why 2 is not worse than 1
 
@@ -269,8 +314,16 @@ Add the prices later when the feed recovers; `sync` upserts on
 
 ### 5.6 The database is locked
 
-Another process holds it — usually the API. Stop it, re-run, restart it. The
-cycle is short; it does not need to share.
+**This should no longer happen.** The database runs in WAL mode as of
+2026-08-07 (`engine/db.py`), so a read in progress no longer blocks the cycle's
+write. Before that it did: an open read made the cycle fail with `database is
+locked` after the full 5s busy timeout, which is why this section used to say
+"stop the API, re-run, restart it".
+
+WAL still allows only **one writer at a time**. So if you see it now, it is two
+*writers* — two cycles overlapping, which nothing in the application prevents
+(§8). Check for a second `python -m services.run_cycle`, and re-run once it is
+gone; re-running is safe (§6).
 
 ## 6. Re-running is safe
 
@@ -310,5 +363,14 @@ Honest list of what this runbook does not yet cover, tracked in
 - **No hosting.** API and frontend run locally; there is no deployment.
 - **No backup.** `db/premier.db` is not backed up anywhere. It holds the
   irreplaceable part: what was predicted, and when.
+
+  When one is written: **copying `premier.db` alone is not a backup.** Under WAL
+  (§5.6) committed transactions can still be sitting in `premier.db-wal`, so a
+  plain `cp` can silently lose the most recent cycle — the one you most wanted.
+  Use `VACUUM INTO 'backup.db'` or `sqlite3 premier.db ".backup ..."`, either of
+  which is safe to run while the API is up.
+
+  WAL also needs shared memory, so **the database cannot live on NFS or SMB.**
+  Relevant to the Ubuntu move: local disk or a bind-mount from local disk only.
 - **No lock file.** Overlapping runs are prevented by the scheduler's
   `IgnoreNew`, not by the application. Safe if it happens (§6), just wasteful.

@@ -1,114 +1,575 @@
 <script>
   import { onMount } from 'svelte';
-  import { getPredictions, DIVISIONS, breakEven, pct } from '$lib/api.js';
+  import {
+    getTips,
+    getTipResults,
+    getTipRecord,
+    callLabel,
+    callMeans,
+    DIVISIONS,
+    pct
+  } from '$lib/api.js';
+  import { fixtureBadges } from '$lib/badge.js';
 
   let division = $state('');
-  let rows = $state([]);
+  let tips = $state([]);
+  let results = $state([]);
+  let record = $state(null);
   let error = $state(null);
   let loading = $state(true);
+  let loaded = $state(false);
 
   async function load() {
     loading = true;
     error = null;
     try {
-      rows = await getPredictions(division || null);
+      [tips, results, record] = await Promise.all([
+        getTips(division || null),
+        getTipResults(division || null, 12),
+        getTipRecord()
+      ]);
     } catch (e) {
       error = e.message;
     } finally {
       loading = false;
+      loaded = true;
     }
   }
 
   onMount(load);
-  $effect(() => { division; load(); });
-
-  // Display-only. The engine already applied this same rule when deciding what
-  // to bet; recomputing it here would let the screen and the book disagree.
-  const edge = (probability, price) => {
-    const bar = breakEven(price);
-    return bar === null ? null : probability - bar;
-  };
+  $effect(() => {
+    division;
+    if (loaded) load();
+  });
 
   const byDay = $derived(
     Object.entries(
-      rows.reduce((acc, r) => ((acc[r.match_date] ??= []).push(r), acc), {})
+      tips.reduce((acc, t) => ((acc[t.match_date] ??= []).push(t), acc), {})
     ).sort(([a], [b]) => a.localeCompare(b))
   );
+
+  const divisionName = (code) =>
+    DIVISIONS.find(([c]) => c === code)?.[1] ?? code;
+
+  // Built from the parts rather than parsed, so a date never shifts a day
+  // across a timezone boundary — `new Date('2026-08-15')` is UTC midnight.
+  const day = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-GB', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    });
+  };
+  const shortDay = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short'
+    });
+  };
+
+  // --- hero parallax -------------------------------------------------------
+  let art, plate, copy;
+
+  function heroMove(event) {
+    const box = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width - 0.5;
+    const y = (event.clientY - box.top) / box.height - 0.5;
+    const shift = (node, mx, my, scale) => {
+      if (node)
+        node.style.transform =
+          `translate3d(${(x * mx).toFixed(2)}px, ${(y * my).toFixed(2)}px, 0)` +
+          (scale ? ` scale(${scale})` : '');
+    };
+    shift(art, -80, -40, 1.05);
+    shift(plate, 46, 26);
+    shift(copy, 18, 10);
+  }
+
+  const heroLeave = () => {
+    for (const node of [art, plate, copy])
+      if (node) node.style.transform = 'translate3d(0,0,0)';
+  };
 </script>
 
-<div class="controls">
-  {#each DIVISIONS as [code, label]}
-    <button class:on={division === code} onclick={() => (division = code)}>{label}</button>
-  {/each}
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<section class="hero" onmousemove={heroMove} onmouseleave={heroLeave}>
+  <div class="plate" bind:this={plate}>
+    <div class="orb light"></div>
+    <div class="orb dark"></div>
+  </div>
+  <div class="notch"></div>
+  <div class="art" bind:this={art}>
+    <img src="/player.png" alt="" />
+  </div>
+  <div class="copy" bind:this={copy}>
+    <div class="eyebrow"><span class="dot"></span>Premier League · Championship · League One · League Two</div>
+    <h1>We call it before kick-off</h1>
+    <p>
+      Every fixture in the top four English divisions, called before kick-off and
+      graded after. One call per match — and we say plainly when we are hedging.
+    </p>
+    <div class="actions">
+      <a href="#tips" class="solid">See this week's calls</a>
+      <a href="#record" class="ghost">Check the record</a>
+    </div>
+  </div>
+</section>
+
+<!-- Every tile falls back to an em dash rather than to zero. A failed fetch or
+     an unrun cycle would otherwise render "0 calls graded" beside a blank
+     strike rate, which reads as a record rather than as an absence of one. -->
+<div class="stats">
+  <div class="inner">
+    <div class="tile">
+      <span class="figure accent"
+        >{record?.strike_rate == null ? '—' : pct(record.strike_rate, 1)}</span
+      >
+      <span class="caption">Strike rate, graded calls</span>
+    </div>
+    <div class="tile">
+      <span class="figure">{record ? record.graded.toLocaleString() : '—'}</span>
+      <span class="caption">Calls graded</span>
+    </div>
+    <div class="tile">
+      <span class="figure">{record ? record.upcoming.toLocaleString() : '—'}</span>
+      <span class="caption">Calls live now</span>
+    </div>
+    <div class="tile">
+      <span class="figure">{record ? record.matchweeks.toLocaleString() : '—'}</span>
+      <span class="caption">Matchweeks graded</span>
+    </div>
+  </div>
+  <p class="disclaimer">
+    Strike rate is the share of graded calls that came in. It is not a profit
+    figure and it does not imply one.
+  </p>
 </div>
 
-{#if loading}
-  <p class="muted">Loading…</p>
-{:else if error}
-  <p class="error">{error}</p>
-{:else if rows.length === 0}
-  <p class="muted">
-    No predictions yet. Run <code>python -m services.fixture_sync</code> then
-    <code>python -m engine.serve.cycle</code>.
-  </p>
-{:else}
-  {#each byDay as [day, fixtures]}
-    <h2>{day}</h2>
-    <table>
+<section id="tips" class="page">
+  <div class="head">
+    <div>
+      <div class="kicker">The published list</div>
+      <h2>Fixtures &amp; calls</h2>
+    </div>
+    <div class="mono summary">
+      {#if tips.length}
+        {tips.length} call{tips.length === 1 ? '' : 's'} · {byDay.length} day{byDay.length === 1 ? '' : 's'}
+      {/if}
+    </div>
+  </div>
+
+  <div class="tabs">
+    {#each DIVISIONS as [code, label]}
+      <button class:on={division === code} onclick={() => (division = code)}>{label}</button>
+    {/each}
+  </div>
+
+  {#if loading}
+    <p class="state">Loading…</p>
+  {:else if error}
+    <p class="state bad">{error}</p>
+  {:else if tips.length === 0}
+    <div class="state box">
+      <strong>No calls published for these fixtures yet.</strong>
+      <p>
+        The list is rebuilt by the weekly serving cycle. Out of season, or before
+        the fixtures feed carries the coming week, this is the correct and
+        expected state — it is not an error.
+      </p>
+    </div>
+  {:else}
+    <div class="list">
+      {#each byDay as [date, matches]}
+        <div class="daylabel">{day(date)}</div>
+        {#each matches as t}
+          {@const badge = fixtureBadges(t.home_team, t.away_team)}
+          <div class="row">
+            <div class="fixture">
+              <div class="side home">
+                <span class="club">{t.home_team}</span>
+                <span class="crest" style="background:{badge.home.colour}">{badge.home.code}</span>
+              </div>
+              <div class="kick">{t.kickoff_time ?? '—'}</div>
+              <div class="side away">
+                <span class="crest" style="background:{badge.away.colour}">{badge.away.code}</span>
+                <span class="club">{t.away_team}</span>
+              </div>
+            </div>
+
+            <div class="verdict">
+              <div class="call">
+                <div class="label">Our call</div>
+                <div class="phrase">
+                  {callLabel(t.side, t.home_team, t.away_team)}
+                  <!-- Only on a hedge. On an outright the phrase already names
+                       the team, so the code is noise; on `12`/`1X`/`X2` it is
+                       the disclosure that two results are covered. -->
+                  {#if callMeans(t.side, t.home_team, t.away_team)}
+                    <span class="code" title={callMeans(t.side, t.home_team, t.away_team)}
+                      >{t.side}</span
+                    >
+                  {/if}
+                </div>
+                <div class="league">{divisionName(t.division)}</div>
+              </div>
+              <div class="conf">
+                <div class="confhead"><span>CONF</span><span class="v">{pct(t.model_prob, 0)}</span></div>
+                <div class="track"><div class="fill" style="width:{100 * t.model_prob}%"></div></div>
+              </div>
+            </div>
+          </div>
+        {/each}
+      {/each}
+    </div>
+
+    <p class="note">
+      A call of <span class="code">12</span>, <span class="code">1X</span> or
+      <span class="code">X2</span> is a hedge: it covers two of the three
+      results. The rule steps down to one whenever no single result clears its
+      confidence floor, which is most weeks and most matches. Confidence is the
+      model's own probability for the call as published — it is uncalibrated and
+      historically understates itself.
+    </p>
+  {/if}
+</section>
+
+<section id="results" class="page">
+  <div class="head">
+    <div>
+      <div class="kicker">Settled</div>
+      <h2>Last time out</h2>
+    </div>
+  </div>
+
+  <!-- `error` is checked as well as emptiness: a failed fetch also leaves the
+       list empty, and reporting that as "nothing graded yet" would present an
+       outage as a record. -->
+  {#if error}
+    <p class="state bad">{error}</p>
+  {:else if !loading && results.length === 0}
+    <p class="state">Nothing graded yet.</p>
+  {:else}
+    <div class="cards">
+      {#each results as r}
+        <div class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}>
+          <div class="cardtop">
+            <span class="cardfix">{r.home_team} v {r.away_team}</span>
+            <span class="mark">{r.outcome === 'win' ? 'WON' : r.outcome === 'lose' ? 'LOST' : 'VOID'}</span>
+          </div>
+          <div class="cardfoot">
+            <span>{callLabel(r.side, r.home_team, r.away_team)}</span>
+            <span class="when">{shortDay(r.match_date)}</span>
+          </div>
+        </div>
+      {/each}
+    </div>
+  {/if}
+</section>
+
+<section id="record" class="page">
+  <div class="head">
+    <div>
+      <div class="kicker">Everything we have published</div>
+      <h2>The record</h2>
+    </div>
+  </div>
+
+  {#if error}
+    <p class="state bad">{error}</p>
+  {:else if record}
+    <!-- Cells are nowrap, so on a narrow viewport the table is wider than the
+         screen. It scrolls inside this box; without it the whole page scrolled
+         sideways and every section inherited the overflow. -->
+    <div class="tablewrap">
+      <table class="record">
       <thead>
         <tr>
-          <th>Div</th><th>Fixture</th>
-          <th class="num">Home</th><th class="num">Draw</th><th class="num">Away</th>
-          <th class="num">Over 2.5</th>
-          <th class="num">Best edge</th>
-          <th class="num">λ</th>
+          <th>Division</th>
+          <th class="num">Published</th>
+          <th class="num">Graded</th>
+          <th class="num">Right</th>
+          <th class="num">Strike rate</th>
         </tr>
       </thead>
       <tbody>
-        {#each fixtures as f}
-          {@const edges = [
-            ['H', edge(f.p_home, f.avg_h)],
-            ['D', edge(f.p_draw, f.avg_d)],
-            ['A', edge(f.p_away, f.avg_a)],
-            ['O', edge(f.p_over25, f.avg_over25)]
-          ].filter(([, v]) => v !== null)}
-          {@const best = edges.length
-            ? edges.reduce((a, b) => (b[1] > a[1] ? b : a))
-            : null}
+        {#each record.by_division as d}
           <tr>
-            <td class="div">{f.division}</td>
-            <td>{f.home_team} <span class="muted">v</span> {f.away_team}</td>
-            <td class="num">{pct(f.p_home)}</td>
-            <td class="num">{pct(f.p_draw)}</td>
-            <td class="num">{pct(f.p_away)}</td>
-            <td class="num">{pct(f.p_over25)}</td>
-            <td class="num">
-              {#if best}
-                <span class:pos={best[1] > 0.02} class:neg={best[1] <= 0}>
-                  {best[0]} {best[1] >= 0 ? '+' : ''}{(100 * best[1]).toFixed(1)}pt
-                </span>
-              {:else}—{/if}
-            </td>
-            <td class="num muted">{f.lam_h.toFixed(2)}–{f.lam_a.toFixed(2)}</td>
+            <td>{divisionName(d.division)}</td>
+            <td class="num">{d.published.toLocaleString()}</td>
+            <td class="num">{d.graded.toLocaleString()}</td>
+            <td class="num">{d.won.toLocaleString()}</td>
+            <td class="num strike">{d.strike_rate == null ? '—' : pct(d.strike_rate, 1)}</td>
           </tr>
         {/each}
+        <tr class="total">
+          <td>All divisions</td>
+          <td class="num">{record.published.toLocaleString()}</td>
+          <td class="num">{record.graded.toLocaleString()}</td>
+          <td class="num">{record.won.toLocaleString()}</td>
+          <td class="num strike">{record.strike_rate == null ? '—' : pct(record.strike_rate, 1)}</td>
+        </tr>
       </tbody>
-    </table>
-  {/each}
-{/if}
+      </table>
+    </div>
+
+    <div class="honesty">
+      <h3>What this number is, and what it is not</h3>
+      <p>
+        <strong>It is honest about accuracy.</strong> Every call above was written
+        to the database before the match was played and settled from the result
+        afterwards. Nothing is added later, nothing is removed, and there is one
+        call per fixture — the database refuses a second one.
+      </p>
+      <p>
+        <strong>It is not a return.</strong> A high strike rate is mostly a
+        property of backing short prices, not of being better than the market.
+        Measured over eleven seasons at the prices a customer can actually get,
+        this rule does not make money to any degree we can demonstrate. We do not
+        publish a profit figure because we cannot support one.
+      </p>
+      {#if record.rule}
+        <p class="mono prov">
+          rule {record.rule.rule_version} · floor {record.rule.floor}{record.rule
+            .ceiling
+            ? ` · ceiling ${record.rule.ceiling}`
+            : ''}
+        </p>
+      {/if}
+    </div>
+  {/if}
+</section>
 
 <style>
-  .controls { display: flex; gap: 0.4rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
-  button {
-    background: var(--panel); color: var(--muted); border: 1px solid var(--line);
-    padding: 0.35rem 0.75rem; border-radius: 999px; cursor: pointer; font-size: 0.85rem;
+  .page { max-width: var(--page); margin: 0 auto; padding: 64px 32px 0; }
+
+  /* --- hero --------------------------------------------------------------- */
+  .hero {
+    position: relative;
+    background: var(--accent);
+    overflow: hidden;
+    min-height: 520px;
+    isolation: isolate;
   }
-  button.on { color: var(--text); border-color: var(--accent); }
-  h2 { font-size: 0.9rem; color: var(--muted); margin: 1.75rem 0 0.4rem; font-weight: 600; }
-  .div { color: var(--muted); font-size: 0.8rem; }
-  .muted { color: var(--muted); }
-  .error { color: var(--bad); }
-  .pos { color: var(--good); }
-  .neg { color: var(--muted); }
-  code { background: var(--panel); padding: 0.1rem 0.35rem; border-radius: 3px; }
+  .plate {
+    position: absolute; inset: -6%; z-index: 0;
+    transition: transform 340ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .orb { position: absolute; border-radius: 50%; }
+  .orb.light { right: -4%; top: -30%; width: 900px; height: 900px; background: rgba(255,255,255,0.07); }
+  .orb.dark { left: -8%; bottom: -40%; width: 620px; height: 620px; background: rgba(0,0,0,0.06); }
+  .notch {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: var(--bg);
+    clip-path: polygon(100% 34%, 100% 100%, 0 100%, 0 96%);
+  }
+  .art {
+    position: absolute; z-index: 5; right: -2%; bottom: -4%;
+    width: min(64%, 1000px); pointer-events: none;
+    transition: transform 340ms cubic-bezier(0.2, 0.7, 0.3, 1);
+    will-change: transform;
+  }
+  .art img { width: 100%; display: block; filter: drop-shadow(0 30px 60px rgba(0,0,0,0.28)); }
+  .copy {
+    position: relative; z-index: 4; max-width: var(--page); margin: 0 auto;
+    padding: 96px 32px 120px;
+    transition: transform 340ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  /* Not flex: as a flex item the division list is one unbreakable box, so on a
+     narrow viewport it wrapped as a whole and left the dot alone on its own
+     line. Inline flow lets the text wrap around the dot instead. */
+  .eyebrow {
+    font-family: var(--mono); font-weight: 600; font-size: 12px; line-height: 1.6;
+    letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.85);
+  }
+  .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--bg); margin-right: 10px; vertical-align: middle;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 800;
+    font-size: clamp(48px, 7.4vw, 116px); line-height: 0.88; letter-spacing: -0.01em;
+    text-transform: uppercase; color: #fff; margin: 22px 0 0; max-width: 12ch;
+    text-wrap: balance;
+  }
+  .copy p {
+    font-size: 18px; line-height: 1.55; color: rgba(255,255,255,0.92);
+    max-width: 46ch; margin: 22px 0 0; font-weight: 500;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+  .actions a {
+    font-family: var(--display); font-weight: 700; font-size: 16px;
+    letter-spacing: 0.1em; text-transform: uppercase; border-radius: 3px;
+  }
+  .solid { background: var(--bg); color: #fff; padding: 15px 30px; }
+  .ghost { border: 2px solid rgba(255,255,255,0.7); color: #fff; padding: 13px 28px; }
+  .actions a:hover { color: #fff; }
+
+  /* --- stats strip -------------------------------------------------------- */
+  .stats { border-bottom: 1px solid var(--line); }
+  .stats .inner {
+    max-width: var(--page); margin: 0 auto; padding: 26px 32px 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px;
+  }
+  .tile { display: flex; flex-direction: column; gap: 2px; }
+  .figure { font-family: var(--display); font-weight: 800; font-size: 40px; line-height: 1; }
+  .figure.accent { color: var(--accent); }
+  .caption {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .disclaimer {
+    max-width: var(--page); margin: 0 auto; padding: 16px 32px 26px;
+    font-size: 13px; color: var(--dim);
+  }
+
+  /* --- section headings --------------------------------------------------- */
+  .head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .kicker {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h2 {
+    font-family: var(--display); font-weight: 800; font-size: clamp(32px, 4vw, 52px);
+    line-height: 1; text-transform: uppercase; color: #fff; margin: 10px 0 0;
+  }
+  .mono { font-family: var(--mono); }
+  .summary { font-size: 12px; color: var(--muted); }
+
+  /* --- division tabs ------------------------------------------------------ */
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
+  .tabs button {
+    font-family: var(--display); font-weight: 700; font-size: 16px;
+    letter-spacing: 0.09em; text-transform: uppercase; white-space: nowrap;
+    line-height: 1.2; padding: 12px 22px; border-radius: 3px;
+    border: 1px solid #33333c; background: transparent; color: var(--body);
+    cursor: pointer;
+  }
+  .tabs button:hover { border-color: var(--muted); }
+  .tabs button.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+  /* --- the list ----------------------------------------------------------- */
+  .list {
+    margin-top: 26px; border: 1px solid var(--line); border-radius: 6px;
+    overflow: hidden; background: var(--panel);
+  }
+  .daylabel {
+    background: var(--panel-2); padding: 13px 22px; font-family: var(--display);
+    font-weight: 700; font-size: 17px; letter-spacing: 0.09em; text-transform: uppercase;
+    color: #d6d6de; border-bottom: 1px solid var(--line);
+  }
+  .row {
+    display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px;
+    align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--line-2);
+  }
+  .fixture { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
+  .side { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .side.home { justify-content: flex-end; }
+  .side.home .club { text-align: right; }
+  .club { font-size: 16px; font-weight: 600; color: #f2f2f5; }
+  .crest {
+    flex: none; width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-weight: 800; font-size: 13px;
+    letter-spacing: 0.03em; color: #fff;
+  }
+  .kick {
+    font-family: var(--display); font-weight: 700; font-size: 20px; color: #fff;
+    background: var(--bg); border: 1px solid #2c2c34; border-radius: 3px; padding: 5px 12px;
+  }
+  .verdict { display: flex; align-items: center; gap: 16px; justify-content: flex-end; }
+  .call { text-align: right; min-width: 0; }
+  .label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--dim);
+  }
+  .phrase {
+    font-family: var(--display); font-weight: 800; font-size: 19px;
+    text-transform: uppercase; color: var(--accent); line-height: 1.15;
+  }
+  .league { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .code {
+    font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--body);
+    background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 3px; padding: 1px 5px; vertical-align: 2px; cursor: help;
+  }
+  .conf { width: 92px; flex: none; }
+  .confhead {
+    display: flex; justify-content: space-between; font-family: var(--mono);
+    font-size: 11px; color: var(--muted); margin-bottom: 5px;
+  }
+  .confhead .v { color: #fff; }
+  .track { height: 5px; border-radius: 3px; background: #2c2c34; overflow: hidden; }
+  .fill { height: 100%; border-radius: 3px; background: var(--accent); }
+
+  .note {
+    margin-top: 18px; font-size: 13px; line-height: 1.7; color: var(--muted);
+    max-width: 90ch;
+  }
+
+  /* --- results cards ------------------------------------------------------ */
+  .cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 12px; margin-top: 24px;
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-left: 4px solid var(--muted); border-radius: 5px; padding: 14px 16px;
+  }
+  .card.won { border-left-color: var(--good); }
+  .card.lost { border-left-color: var(--bad); }
+  .cardtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .cardfix { font-size: 14px; font-weight: 600; color: #e6e6ec; }
+  .mark { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--muted); }
+  .card.won .mark { color: var(--good); }
+  .card.lost .mark { color: var(--bad); }
+  .cardfoot {
+    display: flex; justify-content: space-between; gap: 10px; margin-top: 9px;
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+  }
+  .when { color: #c9c9d2; }
+
+  /* --- record ------------------------------------------------------------- */
+  .tablewrap { overflow-x: auto; }
+  .record { margin-top: 24px; min-width: 460px; }
+  .record .strike { font-weight: 700; color: var(--accent); }
+  .record .total td { border-top: 1px solid var(--line); font-weight: 700; color: #fff; }
+  .honesty { margin-top: 34px; max-width: 74ch; }
+  .honesty h3 {
+    font-family: var(--display); font-weight: 700; font-size: 24px;
+    text-transform: uppercase; color: #fff; margin: 0 0 12px;
+  }
+  .honesty p { font-size: 15px; line-height: 1.7; color: var(--body); margin: 0 0 14px; }
+  .honesty strong { color: #fff; }
+  .prov { font-size: 11px; color: var(--dim); }
+
+  /* --- states ------------------------------------------------------------- */
+  .state { margin-top: 26px; color: var(--muted); }
+  .state.bad { color: var(--bad); }
+  .state.box {
+    background: var(--panel); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); border-radius: 5px; padding: 18px 20px;
+  }
+  .state.box strong { color: var(--text); display: block; margin-bottom: 8px; }
+  .state.box p { margin: 0; max-width: 70ch; line-height: 1.6; }
+
+  @media (max-width: 940px) {
+    .row { grid-template-columns: 1fr; gap: 14px; }
+    /* Stacked, the call is no longer the right-hand column, so right-aligned
+       text leaves the short label ragged over the long one. */
+    .verdict { justify-content: space-between; }
+    .call { text-align: left; }
+    .art { width: 78%; opacity: 0.35; }
+    .copy { padding: 64px 18px 90px; }
+  }
+  @media (max-width: 820px) {
+    .page { padding: 48px 18px 0; }
+    .stats .inner, .disclaimer { padding-left: 18px; padding-right: 18px; }
+    .fixture { grid-template-columns: 1fr auto 1fr; gap: 10px; }
+    .club { font-size: 14px; }
+  }
 </style>

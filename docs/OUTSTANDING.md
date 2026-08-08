@@ -5,12 +5,25 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-06**, after the P4-channels pre-gate — which found the
-in-store channels are *not* exhausted, and that FBref cannot supply xG — and
-after a full documentation audit (§8) that corrected four numeric defects and
-made the launch-bar vig reproducible for the first time.
+Last updated **2026-08-08**, after the deployment assessment (§4.4) — which
+found that **everything customer-facing is still uncommitted**, that a public
+host would publish a return through a page B7's honesty test does not cover,
+and that the hero image ships a green matte fringe.
 
-Companion documents, in reading order:
+Before that, **2026-08-07**, after the customer-facing surface shipped (§1.11) —
+which closed B6, put a hard no-P&L rule on the wire for B7, and turned up an API
+concurrency defect that every existing test was structurally unable to see.
+
+Before that, **2026-08-06**: the P4-channels pre-gate — which found the in-store
+channels are *not* exhausted, and that FBref cannot supply xG — and a full
+documentation audit (§8) that corrected four numeric defects and made the
+launch-bar vig reproducible for the first time.
+
+Companion documents, in reading order.
+**For product work start at `PRODUCT.md` → `BACKLOG.md` instead** — they carry
+the app's goal, the one decision blocking it, and the trackable list. The chain
+below is the measurement history behind them.
+
 `SPEC.md` (methodology authority, includes refuted parts) →
 `PLAN.md` (architecture, phases, open-decision register) →
 `FINDINGS.md` (what was learned, assumed → true → changed) →
@@ -30,9 +43,13 @@ bounded null that closes SPEC §3.6) →
 `P4_CHANNELS_PREGATE.md` / `CHANNELS.md` (the in-store channels — a pre-gate
 that refuted two of its own three predictions, voided one of its own stop
 rules, and says run the gate) →
-`P5_META_PLAN.md` (the meta-label — grounded, pre-registered, **not run**; §3
-separates a gate on the football model from a line-movement predictor, and that
-fork is an owner decision).
+`P5_META_PLAN.md` / `META.md` (the meta-label — pre-registration with §1
+reproducible as committed code, and the result: **a market follower**, where
+BOOK's apparent edge turns out to be cross-book price dispersion rather than
+forecasting, and `choice_mattered` is shown to have a hole) →
+`DEPLOY.md` (hosting on one Azure Ubuntu VM by `git pull`: the three blockers,
+what does not fit a public single-VM deployment, and the fault-tolerance
+build-out `RUNBOOK.md` §8 leaves open).
 
 ---
 
@@ -52,17 +69,32 @@ fork is an owner decision).
 | P4 travel            | **Measured null, bounded at ~3.7%/500km** — §1.6.                     |
 | P4 congestion/stakes | Not started. **Both blocked**, and §1.6 closes SPEC §3.6.            |
 | P4 channels          | **Pre-gate run and positive — a gate is licensed, not written.** §1.7 |
-| P5 meta-label        | **Planned and grounded; not run.** Owner decision in §3.4.            |
+| P5 meta-label        | **Run. Market follower — do not adopt.** §1.9.                        |
+| Customer surface     | **Built to the owner's design — §1.11.** B6 done, B7 part done.      |
+| Hosting              | **Planned and agreed, not executed** — `DEPLOY.md`. §4.4.            |
 | P6                   | Not started. Not a launch gate — `DEFLATION.md` §8.                  |
 
 **Frozen base head:** `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3` — the
 shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
 prior, COVID window embargoed from scoring. Artifact
-`p1-3a38e9d6ef1ca7ee`. **360 tests pass.** Gate ledger holds **76 runs / 41
-questions / at least 149 configurations** — the last is the number that feeds
+`p1-3a38e9d6ef1ca7ee`. **437 tests pass** (2026-08-07; the 379 this line used to
+quote was stale — re-run `pytest -q` rather than trusting it). Gate ledger holds **87 runs / 45
+questions / at least 167 configurations** — the last is the number that feeds
 deflation, and §3.2 explains why the other two mislead. **The audit in §8 added
 no ledger rows**: `engine.odds.vig_per_leg` reads prices only, so it spends no
 information about any outcome, on the same accounting as `power.py`.
+
+**The P5 rows (§1.9) split three ways on this accounting.** `p5_grounding` (×3)
+reads prices and λ coverage only and `p5_control` (×3) runs on synthetic
+targets, so **neither moves the configuration count** — the same rule as
+`power.py` and `travel.py`'s `h34_travel_power`. Nothing in
+`engine/eval/meta.py` reads a match outcome at any stage, and `drop_outcomes`
+makes that a property of the data rather than a claim about the code.
+`p5_meta_arms` (×4) **does** spend: 16 by the mechanical count, against §5's
+declared budget of 12. The four runs are byte-identical in every arm result, so
+4 configurations were chosen among; `META.md` §9 records both numbers and why.
+`p5_book_no_arb` (×1) adds 2 and is **post-hoc** — `count_configurations` names
+it. `meta.py` now has a `--dry-run` flag so development costs no rows; use it.
 
 **The configuration count did not move for §1.7**, for the same reason it did
 not move for the travel controls: a probe carrying no arm list is a row that
@@ -431,6 +463,189 @@ lost code. It does not unsettle the shots channel, which was established by
 H20's gate rather than by the pre-gate, but only the within-run contrasts and
 the noise control carry weight in `CHANNELS.md` §1.
 
+### 1.10 The product is a strike-rate tipster — **DECIDED AND WIRED 2026-08-06**
+
+Owner decision, taken after §1.9 closed the model-picks-bets path. The product
+is sold on **strike rate**, not on return. Code `engine/serve/tips.py` (the
+rule), `engine/eval/tips.py` (what it delivers), migration `003_tips.sql`,
+`step_tips` in `services/run_cycle.py`, ledger `tips_confidence_rule`
+(5 configurations — the threshold grid; this reads outcomes and spends).
+
+The cycle is now **sync → serve → tips → grade**. Shipped threshold 0.55.
+
+| threshold | tips/week | claimed | **actual strike** | ROI @ avg prices |
+| --- | --- | --- | --- | --- |
+| 0.55 | 7.9 | 62.7% | **65.5%** | −0.75% [−3.17, +1.72] |
+| 0.60 | 4.2 | 67.7% | **70.5%** | −1.29% [−4.50, +1.73] |
+| 0.70 | 1.3 | 76.1% | **82.0%** | +3.03% [−0.87, +6.89] |
+
+Four things worth carrying forward:
+
+- **The strike rate is honest and the return is not, and the code says so.**
+  `engine/eval/tips.py` ends with a claims block printing which of three
+  statements are supported: strike rate HONEST, return NOT SUPPORTED, model
+  beats market favourite NOT SUPPORTED. **Re-run it after any head change** —
+  the numbers above are properties of the frozen head, not of the rule.
+- **The model is not producing the strike rate.** At every sellable threshold
+  it names the market favourite and the paired difference against simply
+  backing that favourite is **~0.00%**. What it genuinely adds is that it can
+  rank a fixture *before a price exists*, which the market favourite cannot.
+- **The head is under-confident on its own favourites**, in every bucket, by up
+  to 5.9 points (claims 76.1%, delivers 82.0% ± 3.3). So the advertised number
+  is conservative. This is a real property of an independent-Poisson 1X2 fit
+  and is worth remembering before anyone "fixes" calibration.
+- **`step_grade` used to short-circuit on `paper_bets` alone.** The book is off,
+  so there are never unsettled bets, so the step returned early — which was
+  correct until tips shipped and would then have left every tip ungraded
+  forever while the cycle reported success. The pending query now unions both
+  tables. **This is the shape to watch for whenever a second thing needs
+  settling.**
+
+**An earlier number in this thread was wrong and is corrected here.** The
+customer loss was quoted at ~2% per bet at best prices and ~5% at typical ones.
+Those were the *model's own* expected values and the all-matches figure. Because
+the head is under-confident, realised losses at the tipping thresholds are
+around **1%**, and no interval excludes zero.
+
+**The customer-facing surface was built 2026-08-07 — §1.11.** It publishes no
+P&L, by construction rather than by convention, and a test fails if any profit
+field reaches the wire. Still not built: any check that the *published* strike
+rate agrees with the out-of-sample one `engine/eval/tips.py` measures. The
+regulatory exposure of advertising a 65% strike rate alongside a product that
+does not measurably profit is **the owner's, and is recorded as flagged**.
+
+**Product scope is now larger than what is served, and it is blocked on one
+decision.** `PRODUCT.md` records the goal — one recommendation per match from a
+menu of 1X2, double chance and goal lines 0.5–5.5 — and `BACKLOG.md` tracks the
+work. Every probability on that menu is already computable; **the blocker is
+that "likeliest" is degenerate.** Measured on 19,884 matches, recommending the
+menu maximum says *under 5.5* in 74.2% of matches and *over 0.5* in the other
+25.8%, and **nothing else, ever**. A second criterion has to be chosen — a
+probability ceiling, a price floor, or a fixed preference order — and it is an
+owner decision (`BACKLOG.md` B0). Double chance and the extra goal lines are
+special cases of it and cannot be specified until it is settled.
+
+**A second constraint worth knowing before planning:** the schema carries prices
+for 1X2 and Over/Under **2.5 only**. On the other five goal lines the app can
+predict but cannot measure itself — no return, no CLV, no market comparison.
+Survivable for a strike-rate product, and it is also the one place identified so
+far where the model beats reading the odds, because it can rank a line before a
+price exists.
+
+### 1.11 The customer surface is built — **SHIPPED 2026-08-07**
+
+B6 closed. Code `api/main.py` (`/tips`, `/tips/results`, `/tips/record`) and
+`web/`, rebuilt to the owner's design at `docs/ui/Baba Vanga.dc.html`.
+`BACKLOG.md` B6/B7 has the full account of what the design asked for and could
+not be supported. No ledger row: nothing here reads a match outcome to make a
+decision, it only displays what the cycle already stored.
+
+Four things worth carrying forward:
+
+- **The API was broken for any page that fetched two endpoints at once, and no
+  test could see it.** FastAPI runs a sync generator dependency's setup, the
+  endpoint body and its teardown as three separate threadpool hand-offs, which
+  need not land on the same worker — so `get_conn`'s connection was created on
+  one thread and used on another, and sqlite3 refused it. It survived because
+  the old frontend fetched **one endpoint per page**: serialised requests reuse
+  a single worker and the hand-off never crosses threads. **`TestClient` also
+  reuses one worker**, so the whole existing suite passed against a live API
+  that 500s on every load. Fixed with `check_same_thread=False`, scoped to
+  `api.main` alone via a new kwarg on `db.connect`; the guard stays on for the
+  cycle, the grader and the gates, where a connection crossing threads is a real
+  bug. The regression test asserts the kwarg at the call site, because asserting
+  it through the app is exactly what does not work.
+- **A design mockup is a claim about the data, and this one made four the
+  project has refuted.** Level-stakes profit, a green-week streak, a "model
+  edge" percentage and a bet slip — all of them `book.py`'s value rule or a
+  return, both measured negative. They were dropped rather than filled with
+  something plausible. The same file also listed the wrong four divisions and
+  promised "no hedging" from a rule that hedges in 85.6% of matches. **Read a
+  design against `PRODUCT.md` before building it.**
+- **The tipster vocabulary problem is real and is now solved in one place.**
+  `tips.side` is `12`/`1X`/`X2` in most matches and `recommend()` can never emit
+  `D`. `web/src/lib/api.js:callLabel` is the single mapping to words; anything
+  else rendering a tip must use it, or the site and the graded record will say
+  different things about the same match.
+- **FT scores of graded fixtures are stored nowhere.** `002_serving.sql` says
+  the grader "writes the result into `matches` and links back by fixture_id" —
+  it does not, and `matches` has no `fixture_id` column. `csv_grader.grade`
+  settles from the result and discards the goals. So the result cards show
+  outcome only. Anything wanting scorelines needs a migration and a grader
+  change first; this is a **documentation defect in the migration**, not just a
+  missing feature.
+
+### 1.9 The meta-label is a market follower — **MEASURED 2026-08-06**
+
+Results in `META.md`, pre-registration `P5_META_PLAN.md`, code
+`engine/eval/meta.py`, ledger `p5_grounding` / `p5_control` / `p5_meta_arms`.
+**Do not adopt.** §6's second branch, and §7's expected finding.
+
+On 46,149 out-of-sample legs, top-10% weekly selection: **BOOK +0.00762**
+(3.8× the Max vig), MODEL +0.00061, FULL +0.00744, NOISE +0.00759.
+**MODEL − BOOK = −0.00702 [−0.00803, −0.00599]**, wrong sign in **4 of 4**
+divisions. The football model adds nothing given the price — and it was handed
+`edge = m_prob − 1/Max` by §4's own feature list, so it had a price and still
+lost by 0.007. NOISE gains −0.00003 over BOOK, so this is not the instrument
+inflating. **Four of five §7 predictions right.**
+
+Four things worth carrying forward:
+
+- **BOOK's edge is price dispersion, not forecasting, and the profile says so.**
+  **65.3% of its selected legs come from matches whose best-available 1X2 book
+  sums to under 1**, against 23.7% in the pool. Backing every leg of one of
+  those is a profit before any forecast. Its top coefficient is `max_spread`,
+  not `sharp_spread`. This is best-price capture — `CALIBRATION.md` §5's
+  *prerequisite* arriving as a *result* — and `P5_META_PLAN.md` §8's exclusion
+  of execution and limits is doing far more work than it was written to do. **Do
+  not read "+0.00762 clears the vig" as an edge that could be traded.**
+- **It survives with those matches removed, and that is POST-HOC.** `META.md` §8,
+  ledger `p5_book_no_arb`, registered in `trials.POST_HOC_TRIALS`. Dropping every
+  sub-1-overround match from training and scoring keeps 76.3% of legs and moves
+  the pinned mean to −0.00318, a *harder* bar. BOOK still returns **+0.00397**,
+  **+0.00196 [+0.00115, +0.00276] above the vig**, clearing in **all four
+  divisions**, against a BLIND control at −0.00223. So there is something beyond
+  arbitrage. **But the mechanism barely moved** — `max_spread` is still the top
+  coefficient and BOOK's picks still carry a 29% wider best-price spread than the
+  pool. The edge halved and stayed execution-dependent. **The next question is
+  not a modelling one:** can the outlier price be taken at stake? `RUNBOOK.md`
+  does not capture Max at bet time, so nothing here can answer it.
+  **`NOISE` was the wrong control for that question and `BLIND` is the right
+  one** — NOISE contains every BOOK feature, so it tests dimensionality; BLIND
+  has no price information and shows the harness is not manufacturing edge.
+- **`choice_mattered` has a hole, and this is the first gate to expose it.**
+  `DEFLATION.md` §6 guards against reading PBO ≈ 0.5 as overfitting when arms
+  are interchangeable. Its test is the spread across *all* trials, so **one
+  clearly losing arm makes the field look separable** while the arms that could
+  actually be chosen are not: PBO 0.631 on all four, but 0.863 at spread
+  0.000149 on {BOOK, FULL, NOISE} — which the tool itself flags uninformative —
+  and **0.000 on {BOOK, MODEL}**, the only comparison that decides anything.
+  §6's criterion 4 fails literally and passes on the comparison it was for.
+  **Fix this in `DEFLATION.md` §6, not here.**
+- **A seed collision nearly inverted the positive control.** The reference arm's
+  random prediction and the synthetic target were both standard normals of the
+  same length from colliding seeds, making the reference an exact oracle on one
+  draw. The only symptom was a control reporting 5/6 recovered *and* a negative
+  mean lift — incoherent, but invisible in either number alone. Per-draw lifts
+  are now recorded. **Report a control's spread, not just its count.**
+- **BOOK is one price level plus spreads, and that was forced by the data.** The
+  four bookmakers' break-even probabilities correlate at 0.997–0.999; a design
+  matrix of the levels has condition number **2×10¹⁵**, singular to working
+  precision. Reparameterised, 2.8. Chosen on conditioning before any target was
+  fitted, and it is the difference between a fit and arithmetic noise.
+
+**Budget: §5 declared ≤12 configurations; the mechanical count is 16**, because
+the gate wrote a ledger row on each of four implementation runs. The arm results
+are **byte-identical across all four**, so 4 configurations were chosen among
+and 16 rows record it. `META.md` §8 puts both numbers on the record; the choice
+is the owner's. The process fix is to write to a scratch path until the code is
+final.
+
+**Do not** re-litigate with more features, a non-linear family, or a different
+selection fraction. MODEL failed by 0.007 against a bar of 0.002 with the price
+in its own feature set, in every division, with a control proving the instrument
+recovers 99% of a planted edge of the size that would matter.
+
 ### 1.8 xG is unreachable through FBref — **VERIFIED 2026-08-06**
 
 Not a decision awaiting anyone; a closed door, recorded so it is not reopened
@@ -598,11 +813,49 @@ Splitting halves the sample behind each Platt fit. Decide by
 `y ~ logit(p) * information_set` in P3 rather than inheriting the SPEC's
 assumption.
 
-### 3.4 P5 meta-label — which product is being built?
+### 3.4 P5 meta-label — which product is being built? **ANSWERED 2026-08-06**
 
-Plan in `P5_META_PLAN.md`, grounded 2026-08-06. **Nothing run, no ledger row.**
-The grounding inverted the prior this project had been carrying, so the decision
-is not the one that was expected.
+**The fork resolved itself, and not in favour of either product.** §1.9 has the
+result. (A), a gate on the football model, is dead: MODEL − BOOK is −0.00702
+with the wrong sign in all four divisions. (B), a line-movement predictor,
+**looked** alive at +0.00762 — until the selection profile showed 65.3% of its
+picks come from matches whose best-available book already sums to under 1. That
+is not a line-movement model, it is an odds-comparison screen, and whether it is
+worth anything is a question about **execution and limits at the Max price**,
+which no gate here has touched.
+
+So the owner decision below is no longer "which product" but a narrower one:
+**is best-price execution worth investigating at all?** That is a question for
+`RUNBOOK.md` and the feed, not for a model. The original framing is kept below
+because the reasoning that produced it still stands.
+
+---
+
+Plan in `P5_META_PLAN.md`, grounded 2026-08-06. **No arm run.** §1's grounding
+is now committed code — `engine/eval/meta.py`, tests `tests/test_meta.py`,
+results `docs/p5_grounding_results.json`, ledger `p5_grounding`. It reads
+prices and λ coverage only, no match outcome, so it carries no arm list and the
+**configuration count stays at 149**. The grounding inverted the prior this
+project had been carrying, so the decision is not the one that was expected.
+
+**Building it corrected three things in §1, which is why it was worth building
+before the arms rather than after:**
+
+- **§1.2's division row was on a different basis.** Its cells summed to 22,113
+  against a scored corpus of 21,896 — price availability alone, before the COVID
+  embargo and before a walk-forward λ. Corrected to E0 3,708 / E1 5,412 /
+  E2 5,366 / E3 5,398, which sums to the 19,884 headline. `meta.py` reports both
+  so the old figure stays attributable.
+- **§1.6's headline spread was one leg.** −0.01017 / 0.00755 is the home leg;
+  over all three it is **−0.01097 / 0.00712**. §4 builds the feature per leg, so
+  the all-leg figure is the one that describes it. No conclusion moves.
+- **§1.5's stratum table is 1.56× optimistic**, and this is the one that
+  matters. The design effect of 0.68 comes from the three legs of a match
+  cancelling; a selection takes one leg per match, where measured design effect
+  is **1.06**. The 2% stratum resolves 0.00134, not 0.00085, against a Max vig
+  of 0.00201. **Power is still not the constraint** — but the margin at thin
+  volume is half what was published, and §5's ≤12-configuration budget should be
+  read against the wider column.
 
 **Power is not the constraint — that was wrong when I last reviewed it.**
 sd(CLV) is 0.0222 over 59,652 legs in 408 week blocks; the block-bootstrap SE of
@@ -704,7 +957,66 @@ Two behaviours worth knowing about:
 
 Verified against the live feed: `exit 2`, `NO ENGLISH ROWS`, which is the
 correct answer out of season and confirms the detector while it is cheap to
-confirm. **Still not done: alerting, hosting, DB backup** (§1.4–1.8).
+confirm. **Still not done: alerting, hosting, DB backup** — all three are now
+planned in `DEPLOY.md` and tracked at §4.4.
+
+### 4.4 Hosting — planned 2026-08-08, agreed, partly started
+
+Plan in `docs/DEPLOY.md`: one Azure VM, Ubuntu 24.04 LTS, updated by `git pull`,
+owner-operated. Measured first — the refit is **1.5 s at 167 MB RSS**, so the
+machine is small and sizing is not the question. **437 tests pass.**
+
+**Three blockers, and the first is the whole of it.** Everything customer-facing
+is uncommitted: `origin/main` is at `1874fa9`, which has no `engine/serve/tips.py`,
+no tips migrations, no `web/static/`, and the *pre-fix* `api/main.py` and
+`engine/db.py`. Deploying today deploys the version §1.11 records as 500ing on
+every load. The other two are that the database and the frontend build are both
+gitignored (both rebuildable on the server — verified 2026-08-08 that a clean
+`engine.ingest.build` applies all four migrations and passes every integrity
+check), and that the `/api` rewrite exists only in Vite's dev proxy.
+
+**Done 2026-08-08:** `requirements.lock` (§3.5 — a pinned closure, because
+`pandas>=2.0` plus `filterwarnings=["error::FutureWarning"]` makes an unpinned
+server install a test failure waiting to happen), `deploy/nginx/*.template`
+(the `/api` rewrite, the SPA fallback, and basic auth on the two internal
+endpoints), `.gitignore` for `web/static/*.rar`, and the hero image de-fringed
+and cut 2.72 MB → 127 KB.
+
+**Four things worth carrying forward:**
+
+- **A public host would publish a return, through a page B7 does not guard.**
+  `/performance` returns `pnl` and `roi` and `/book` returns `paper_bets.*`;
+  `test_the_record_publishes_no_profit_figure` covers `/tips/record` **only**,
+  and both are linked from the public footer. Empty today because the book is
+  off, so the exposure is conditional — but it is the same shape as
+  `step_grade`'s short-circuit in §1.10: **a check that was correct until a
+  second thing needed covering.** nginx basic auth is the deployment
+  mitigation; the real fix is inverting the test to "no *public* endpoint
+  carries P&L", which is small and is not deployment work.
+- **WAL decides the storage, and it rules things out.** `engine/db.py` needs
+  shared memory, so the database cannot live on Azure Files or NFS —
+  local disk or an attached managed disk only. That also rules out any
+  two-VM shared-database design without real work. `RUNBOOK.md` §8 called this
+  before the target was chosen and it turned out to be the binding constraint.
+- **The hero image was published-ready and wrong.** 54,696 pixels — 2.17% —
+  are green, and **every one is semi-transparent**: a keyed background that was
+  never de-fringed. Invisible against white, which is how it survived review,
+  and `.hero` is orange, so it would have gone live with a lime halo. Found by
+  measuring the asset rather than by looking at it. `DEPLOY.md` §2.6.
+- **systemd closes "no lock file" for free**, and `SuccessExitStatus=2` is
+  load-bearing. systemd will not run two instances of one unit, which is the
+  gap `RUNBOOK.md` §8 lists and Task Scheduler covered only by configuration.
+  But systemd treats every non-zero as failure, so without `SuccessExitStatus=2`
+  the cycle is marked failed every day of the close season and the alerts stop
+  being read — the exact failure the three exit codes exist to prevent.
+
+**Not started: §6, the fault-tolerance build-out** — `VACUUM INTO` backups to
+Blob with a restore drill, and alerting on all three conditions including a
+**dead-man's switch**, which is the one `OnFailure` structurally cannot provide:
+if the VM is off, nothing fires and the first symptom is a lost matchday.
+Also not started: `RUNBOOK.md` §0.2/§2 still document Task Scheduler on Windows,
+so an operator following it against the Ubuntu VM finds half its commands do not
+exist.
 
 ---
 

@@ -154,3 +154,58 @@ def test_the_real_ledger_holds_more_configurations_than_rows():
     count = trials.count_configurations(db.connect())
     assert count.configurations > count.runs
     assert count.configurations >= 133
+
+
+# --- re-runs: which spend again, and which do not -------------------------
+
+
+def _ledger(conn, rows):
+    """rows: (name, arms). Writes one gate_ledger row each."""
+    for name, arms in rows:
+        ledger.record(conn, kind=ledger.GATE, name=name, detail={"arms": arms})
+
+
+def test_an_identical_rerun_does_not_spend_again(conn):
+    """Multiplicity is configurations chosen among. `p5_meta_arms` wrote four
+    rows on four implementation runs with byte-identical results; that was one
+    chance to be fooled, not four (META.md 9)."""
+    arms = [{"arm": "A", "score": 0.1}, {"arm": "B", "score": 0.2}]
+    _ledger(conn, [("g", arms), ("g", arms), ("g", arms)])
+
+    count = trials.count_configurations(conn)
+
+    assert count.runs == 3
+    assert count.configurations == 2
+    assert count.repeats == 2
+
+
+def test_a_rerun_whose_numbers_moved_still_spends(conn):
+    """OUTSTANDING 7.5: the rest gate ran before and after a correctness fix and
+    both rows count, because both were real attempts at the answer."""
+    _ledger(conn, [("g", [{"arm": "A", "score": 0.1}]),
+                   ("g", [{"arm": "A", "score": 0.9}])])
+
+    count = trials.count_configurations(conn)
+
+    assert count.configurations == 2
+    assert count.repeats == 0
+
+
+def test_an_added_reporting_field_does_not_make_it_a_new_trial(conn):
+    """The real shape of the p5 re-runs: same computation, extra column."""
+    _ledger(conn, [("g", [{"arm": "A", "score": 0.1}]),
+                   ("g", [{"arm": "A", "score": 0.1, "extra": 7}])])
+
+    assert trials.count_configurations(conn).configurations == 1
+
+
+def test_arms_that_record_only_names_are_never_collapsed(conn):
+    """Silence is not agreement. `b2_b3_selection` recorded bare labels, and two
+    runs that really did differ would otherwise have merged into one."""
+    _ledger(conn, [("g", [{"arm": "A"}, {"arm": "B"}]),
+                   ("g", [{"arm": "A"}, {"arm": "B"}])])
+
+    count = trials.count_configurations(conn)
+
+    assert count.configurations == 4, "cannot prove they matched, so both spend"
+    assert count.repeats == 0
