@@ -473,6 +473,23 @@ sudo visudo -c        # expect: /etc/sudoers.d/bvp: parsed OK
 Three jobs: serve the SPA, reproduce Vite's `/api` rewrite (§2.4), and fence
 off the internal views (§3.1).
 
+> **Split in two, 2026-08-08: there is no domain yet.** Everything except TLS
+> works over plain HTTP against the VM's public IP, so **5a** stands the site
+> up now and **5b** adds the certificate when a domain exists. Nothing else in
+> the plan waits on it — the `/api` rewrite, the SPA fallback and the internal
+> fence are all origin-relative and domain-free.
+>
+> **One consequence that is not cosmetic.** Basic auth over plain HTTP sends
+> the password in clear text on every request. So in 5a the internal endpoints
+> are fenced by **source IP** rather than by password, and the password is not
+> introduced until TLS exists in 5b. Standing up basic auth over HTTP and
+> "adding TLS later" would mean the credential had already been on the wire.
+>
+> A second consequence worth knowing before launch: with no `server_name` to
+> match, nginx serves the site to **any** Host header pointing at that IP, and
+> there is nothing to stop it being indexed if the address is ever published.
+> 5a is a staging posture, not a launch one.
+
 **Committed as `deploy/nginx/bvp.conf.template`** (2026-08-08), with
 `bvp-bootstrap.conf.template` for the first certificate. They are templates
 rendered by `envsubst` into `/etc/nginx/sites-available/bvp` rather than
@@ -787,15 +804,25 @@ to prevent.
 
 | # | step | gate |
 | --- | --- | --- |
-| 1 | Commit + push everything; fix `player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved |
-| 2 | Provision VM, harden, UTC confirmed | ssh + `timedatectl` |
-| 3 | Clone, venv, `ingest.build`, `pytest -q` | `all passed`; **437 passed** |
-| 4 | systemd units for API and cycle | API answers after `reboot`; `systemctl list-timers` shows the next run |
-| 5 | nginx + TLS + basic auth on the two internal endpoints | all four curls in §5.3 |
-| 6 | `deploy.sh`, run once against no changes | `/api/health` answers afterwards |
-| 7 | Backup timer + first restore drill | a restored copy passes `integrity_check` and matches row counts |
-| 8 | Alerting: `OnFailure` + dead-man's switch | **test all three** — break the cycle on purpose, and stop the timer for a day |
-| 9 | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck | the runbook describes the machine that is serving |
+| # | step | gate | state |
+| --- | --- | --- | --- |
+| 1 | Commit + push everything; fix `player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved | **done** `e840951` |
+| 2 | Provision VM, harden, UTC confirmed | ssh + `timedatectl` | |
+| 3 | Clone, venv, `ingest.build`, `pytest -q` | `all passed`; **436 passed, 1 skipped** (§5.4) | |
+| 4 | systemd units for API and cycle | API answers after `reboot`; `systemctl list-timers` shows the next run | |
+| **5a** | **nginx over HTTP, internal endpoints fenced by source IP** | the four curls in §5.3, against the public IP | |
+| 6 | `deploy.sh`, run once against no changes | `/api/health` answers afterwards | |
+| 7 | Backup timer + first restore drill — **and the development machine first** (§6.1) | a restored copy passes `integrity_check` and matches row counts | |
+| 8 | Alerting: `OnFailure` + dead-man's switch | **test all three** — break the cycle on purpose, and stop the timer for a day | |
+| **5b** | **Domain, TLS, basic auth** | `https://` serves; `/api/performance` is 401 | **blocked: no domain** |
+| 9 | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck | the runbook describes the machine that is serving | |
+
+**Step 5 splits and 5b moves to the end**, because there is no domain yet
+(§5.3). That is a deliberate reordering, not a deferral of the hard part: 5a
+gives a fully working site on the VM's public IP, and everything from 6 to 8
+can be built and tested against it. **5b is a launch gate, though** — until it
+is done the site is HTTP-only and served to any Host header, which is a
+staging posture.
 
 Steps 1–6 are the deployment. **7 and 8 are the fault-tolerance step and are
 not optional extras** — until they are done, the system is hosted but silent,
