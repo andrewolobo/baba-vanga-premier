@@ -12,6 +12,10 @@ db/*.db
 db/*.db-journal
 db/*.db-wal
 db/*.db-shm
+# run_cycle.sh's overlap guard. It lives beside the database because the
+# systemd units set PrivateTmp=true, which would make a /tmp lock invisible
+# between the service and a hand-run shell -- the exact overlap it is for.
+db/*.lock
 artifacts/
 
 # Node (web/ arrives in Week 1 Track A)
