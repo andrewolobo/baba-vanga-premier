@@ -966,14 +966,17 @@ Plan in `docs/DEPLOY.md`: one Azure VM, Ubuntu 24.04 LTS, updated by `git pull`,
 owner-operated. Measured first — the refit is **1.5 s at 167 MB RSS**, so the
 machine is small and sizing is not the question. **437 tests pass.**
 
-**Three blockers, and the first is the whole of it.** Everything customer-facing
-is uncommitted: `origin/main` is at `1874fa9`, which has no `engine/serve/tips.py`,
-no tips migrations, no `web/static/`, and the *pre-fix* `api/main.py` and
-`engine/db.py`. Deploying today deploys the version §1.11 records as 500ing on
-every load. The other two are that the database and the frontend build are both
-gitignored (both rebuildable on the server — verified 2026-08-08 that a clean
-`engine.ingest.build` applies all four migrations and passes every integrity
-check), and that the `/api` rewrite exists only in Vite's dev proxy.
+**Three blockers. The first is closed by `ccb6f8e`; the other two are
+groundwork, now laid.** Everything customer-facing was uncommitted — and
+`origin/main` was at **`244ca18`, the first commit**, five behind local `main`.
+GitHub was missing P2, the runbook, all the controls and the whole customer
+surface: **a `git pull` on a fresh server would have fetched the data spine and
+nothing else.** The other two are that the database and the frontend build are
+both gitignored (both rebuildable on the server — verified 2026-08-08 that a
+clean `engine.ingest.build` applies all four migrations and passes every
+integrity check, and that `npm run build` yields a published root of
+`index.html`, `_app/` and one 127 KB image), and that the `/api` rewrite existed
+only in Vite's dev proxy.
 
 **Done 2026-08-08:** `requirements.lock` (§3.5 — a pinned closure, because
 `pandas>=2.0` plus `filterwarnings=["error::FutureWarning"]` makes an unpinned
@@ -1003,6 +1006,11 @@ and cut 2.72 MB → 127 KB.
   never de-fringed. Invisible against white, which is how it survived review,
   and `.hero` is orange, so it would have gone live with a lime halo. Found by
   measuring the asset rather than by looking at it. `DEPLOY.md` §2.6.
+- **`git push` over SSH does not work from this machine.** `github.com:22`
+  times out; the network blocks it. GitHub's port-443 endpoint authenticates
+  fine, so `origin` is now `ssh://git@ssh.github.com:443/...`. **Check the
+  server's egress during `DEPLOY.md` §5.4**, not mid-deploy. The permanent form
+  is a `Host github.com / Port 443` block in `~/.ssh/config`.
 - **systemd closes "no lock file" for free**, and `SuccessExitStatus=2` is
   load-bearing. systemd will not run two instances of one unit, which is the
   gap `RUNBOOK.md` §8 lists and Task Scheduler covered only by configuration.

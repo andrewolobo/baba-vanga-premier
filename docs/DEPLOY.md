@@ -51,11 +51,20 @@ deploy.
 
 Ordered. Each one stops the deployment dead, not degrades it.
 
-### 2.1 The entire customer-facing product is uncommitted
+### 2.1 The entire customer-facing product is uncommitted — **RESOLVED 2026-08-08**
 
-`git status` carries **16 modified and 20 untracked paths**, and `origin/main`
-is at `1874fa9`, the same commit as local `main`. So a `git pull` on a fresh
-server today fetches a tree with:
+Closed by `ccb6f8e`, pushed to `origin/main`. Kept in full because the shape of
+it is the reason the other blockers were worth looking for.
+
+`git status` carried **16 modified and 20 untracked paths**. And `origin/main`
+was at **`244ca18` — the first commit** — five behind local `main`, not level
+with it as this section first said. GitHub was missing P2, the runbook and
+scheduling, all of the controls, and the entire customer surface. **A `git pull`
+on a fresh server would have fetched the data spine and nothing else.** The
+error came from reading `git branch -a` and assuming the remote tracked the
+local; `git status -sb` says `ahead 5` and was never consulted.
+
+So a `git pull` on a fresh server would have fetched a tree with:
 
 - no `engine/serve/tips.py` — the tip rule
 - no `db/migrations/003_tips.sql`, `004_tips_double_chance.sql` — the `tips` table
@@ -69,7 +78,21 @@ server today fetches a tree with:
 The published site is `+page.svelte`, which fetches `/tips`, `/tips/results`
 and `/tips/record` in one `Promise.all`. That is exactly the concurrency case
 `OUTSTANDING.md` §1.11 records as **500ing on every load** before the fix.
-Deploying `1874fa9` deploys the broken version.
+
+**One thing this turned up that belongs in the runbook, not here.**
+`git push` over SSH fails from this machine — `github.com:22` times out, the
+network blocks it. GitHub's port-443 endpoint works and authenticates, so
+`origin` is now `ssh://git@ssh.github.com:443/...`. **The server will need the
+same treatment if its egress is filtered**, and it is worth checking during
+§5.4 rather than discovering it mid-deploy. The permanent, repo-independent
+form is a `~/.ssh/config` block:
+
+```
+Host github.com
+    Hostname ssh.github.com
+    Port 443
+    User git
+```
 
 **Action: commit and push before anything else.** Two care points when doing so:
 
