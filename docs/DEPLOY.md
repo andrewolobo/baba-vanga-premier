@@ -445,8 +445,25 @@ sudo apt install -y nodejs
 A dedicated unprivileged user owning both the repo and the services (§3.6):
 
 ```bash
-sudo adduser --system --group --home /srv/bvp bvp
+sudo adduser --disabled-password --gecos "" --home /srv/bvp bvp
 ```
+
+**Not `adduser --system`, which is what this section said until 2026-08-08.**
+A system user gets `/usr/sbin/nologin` and is not in `sudo`, and
+`scripts/deploy.sh` runs *as* `bvp` and needs exactly two privileged calls:
+restarting the API and reading its journal when the health check fails. The
+narrow grant, rather than putting `bvp` in the `sudo` group:
+
+```bash
+printf '%s\n' \
+  'bvp ALL=(root) NOPASSWD: /usr/bin/systemctl restart bvp-api' \
+  'bvp ALL=(root) NOPASSWD: /usr/bin/journalctl -u bvp-api *' \
+  | sudo tee /etc/sudoers.d/bvp
+sudo chmod 440 /etc/sudoers.d/bvp
+sudo visudo -c        # expect: /etc/sudoers.d/bvp: parsed OK
+```
+
+`bvp` has no password and cannot log in; reach it with `sudo -u bvp -H bash`.
 
 `sqlite3` is installed for the backup in §6.1, and for the ad-hoc queries
 `RUNBOOK.md` §3 and §7 tell you to run.
