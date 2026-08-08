@@ -1013,6 +1013,17 @@ script that will actually run it.
   never de-fringed. Invisible against white, which is how it survived review,
   and `.hero` is orange, so it would have gone live with a lime halo. Found by
   measuring the asset rather than by looking at it. `DEPLOY.md` §2.6.
+- **`httpx` was an undeclared dependency, and it is the second instance of the
+  same defect.** `fastapi.testclient` imports it; it was present on the
+  development machine as a transitive of something unrelated, so 437 passed
+  here and a clean Ubuntu install **could not collect `tests/test_api.py` at
+  all** — a collection error, so zero tests ran. `pyproject.toml`'s `serve`
+  block already carries a comment recording exactly this from 2026-08-04
+  (*"present in the development environment but undeclared"*), and the lesson
+  did not transfer because it was written as a note about `fastapi` rather than
+  as a rule about the class. **`requirements.lock` could not catch it** — the
+  lock is computed from what pyproject declares, so it inherited the omission.
+  It pins versions; it does not discover dependencies.
 - **The gate ledger exists on one machine, gitignored, with no backup.** Found
   by asking why one test fails on a fresh store. The 90 rows behind §0's
   `87 runs / 45 questions / 167 configurations` live in `db/premier.db` **here

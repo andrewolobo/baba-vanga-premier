@@ -17,7 +17,21 @@ from pathlib import Path
 
 import pytest
 
-from services.fbref_scraper import cli, config, parse
+# The scraper's dependencies are the `scrape` extra, which a serving install
+# deliberately does not have: it pulls patchright, which downloads a full
+# Chrome onto the host. The scraper is also SHELVED by owner decision and must
+# not be enabled without a recorded one (OUTSTANDING.md 4.1), so a serving VM
+# having no bs4 is the correct state rather than a missing step.
+#
+# Without this the module raises ModuleNotFoundError at import, which pytest
+# reports as a COLLECTION error -- the entire suite refuses to run, so the
+# deployment's acceptance gate cannot report on the 415 tests that have
+# nothing to do with the scraper. Skipping is what makes those still count.
+pytest.importorskip(
+    "bs4", reason="fbref scraper tests need the `scrape` extra (pip install -e '.[scrape]')"
+)
+
+from services.fbref_scraper import cli, config, parse  # noqa: E402
 
 PAGE = Path(__file__).parent / "data" / "fbref_2026-08-08.html.gz"
 DATE = "2026-08-08"

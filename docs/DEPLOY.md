@@ -601,15 +601,42 @@ python3 -m venv .venv
 .venv/bin/pip install -e ".[serve,dev]" -c requirements.lock
 
 .venv/bin/python -m engine.ingest.build      # expect: all passed, exit 0
-.venv/bin/python -m pytest -q                # expect: 436 passed, 1 skipped
+.venv/bin/python -m pytest -q                # expect: 414 passed, 2 skipped
 ```
 
 The build step runs migrations, loads 16 seasons from the tracked CSVs, and
 runs the integrity checks. `pytest` on the server is the §3.5 acceptance gate.
 
-**Expect `436 passed, 1 skipped` on the server, not 437 passed.** This was
-measured on 2026-08-08 by pointing `BVP_DB_PATH` at a freshly built store, and
-it failed before it skipped.
+**Expect `414 passed, 2 skipped` on the server, against 437 passed on a
+development machine.** Two different reasons, and the gate earned its keep by
+finding both — it did not pass first time on the VM, it errored during
+*collection*, which means zero tests ran.
+
+**Skip 1 — `httpx` was an undeclared dependency, and this is the second time.**
+`fastapi.testclient` re-exports starlette's, which imports `httpx` and raises
+*The starlette.testclient module requires the httpx package* without it. It was
+installed on the development machine as a transitive of something unrelated, so
+437 passed there and a clean install could not collect `tests/test_api.py` at
+all. `pyproject.toml`'s `serve` block already carries a comment recording
+exactly this defect from 2026-08-04 — *"present in the development environment
+but undeclared… a fresh clone could pass the whole test suite and still fail to
+start the API"*. The lesson was written down as a note about `fastapi` rather
+than as a rule about the class, so it did not transfer. Now in the `dev` extra.
+
+**`requirements.lock` could not have caught it.** The lock is computed from
+what `pyproject.toml` declares, so it inherited the omission. It pins versions;
+it does not discover dependencies. Fix `pyproject.toml` first, then regenerate.
+
+**Skip 2 — the `scrape` extra is absent on purpose.** `tests/test_fbref_scraper.py`
+imports `bs4`, which lives in the `scrape` extra along with `patchright` —
+which downloads a **full Chrome** onto the host. The scraper is also shelved by
+owner decision and must not be enabled without a recorded one
+(`OUTSTANDING.md` §4.1), so a serving VM having no `bs4` is the correct state,
+not a missing step. The module now uses `pytest.importorskip`, so its 22 tests
+skip instead of taking the other 414 down with them.
+
+**Skip 3 — the gate ledger.** Measured 2026-08-08 by pointing `BVP_DB_PATH` at
+a freshly built store; it failed before it skipped.
 `test_trials.py::test_the_real_ledger_holds_more_configurations_than_rows`
 opens the **real** `db/premier.db` and asserts `configurations >= 133`; the
 store the server builds has `gate_ledger` **empty**, because
@@ -846,7 +873,7 @@ to prevent.
 | --- | --- | --- | --- |
 | 1 | Commit + push everything; fix `player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved | **done** `e840951` |
 | 2 | Provision VM, harden, UTC confirmed | ssh + `timedatectl` | |
-| 3 | Clone, venv, `ingest.build`, `pytest -q` | `all passed`; **436 passed, 1 skipped** (§5.4) | |
+| 3 | Clone, venv, `ingest.build`, `pytest -q` | `all passed`; **414 passed, 2 skipped** (§5.4) | |
 | 4 | systemd units for API and cycle | API answers after `reboot`; `systemctl list-timers` shows the next run | |
 | **5a** | **nginx over HTTP, internal endpoints fenced by source IP** | the four curls in §5.3, against the public IP | |
 | 6 | `deploy.sh`, run once against no changes | `/api/health` answers afterwards | |
