@@ -442,11 +442,37 @@ curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
-A dedicated unprivileged user owning both the repo and the services (§3.6):
+A dedicated unprivileged user owning both the repo and the services (§3.6).
+**Its home must not be the repository** — see below:
 
 ```bash
-sudo adduser --disabled-password --gecos "" --home /srv/bvp bvp
+sudo adduser --disabled-password --gecos "" --home /home/bvp bvp
+sudo mkdir -p /srv/bvp && sudo chown bvp:bvp /srv/bvp
 ```
+
+**`--home /srv/bvp` is what this said until 2026-08-08, and it cannot work.**
+Two independent failures, and the second is the dangerous one:
+
+- `adduser` populates a new home from `/etc/skel`, so `/srv/bvp` is created
+  holding `.bashrc`, `.profile` and `.bash_logout`. `git clone` into it then
+  fails outright: *destination path already exists and is not an empty
+  directory*.
+- Work around that with `git init` + `git fetch` instead, and it fails
+  **silently and permanently**: those three dotfiles are untracked, so
+  `git status --porcelain` is never empty, so `scripts/deploy.sh` step 0
+  refuses every deploy for the rest of the machine's life with "working tree
+  is dirty". The guard would be correct and the situation it was guarding
+  against would never actually exist.
+
+If the account was already made the old way, move it rather than recreating it:
+
+```bash
+sudo usermod -d /home/bvp -m bvp      # relocates the dotfiles, empties /srv/bvp
+sudo mkdir -p /srv/bvp && sudo chown bvp:bvp /srv/bvp
+```
+
+The repository root stays `/srv/bvp` — the systemd units, the nginx root and
+every path in this document assume it.
 
 **Not `adduser --system`, which is what this section said until 2026-08-08.**
 A system user gets `/usr/sbin/nologin` and is not in `sudo`, and
@@ -554,16 +580,28 @@ curl -sI  https://<domain>/api/performance     # 401
 
 `/api/health` returning JSON is the one that proves §2.4 is right.
 
-### 5.4 The application — *verify:* `build.validate()` passes, 437 tests green
+### 5.4 The application — *verify:* `build.validate()` passes, the suite is green
+
+A **read-only deploy key**, not a personal key and not a token in a URL. As
+`bvp` (`sudo -u bvp -H bash`):
 
 ```bash
-sudo -u bvp git clone git@github.com:andrewolobo/baba-vanga-premier.git /srv/bvp
-cd /srv/bvp
-sudo -u bvp python3 -m venv .venv
-sudo -u bvp .venv/bin/pip install -e ".[serve,dev]" -c requirements.lock
+ssh-keygen -t ed25519 -C "bvp deploy key" -f ~/.ssh/id_ed25519 -N ""
+cat ~/.ssh/id_ed25519.pub      # add on GitHub: repo > Settings > Deploy keys
+                               # leave "Allow write access" UNCHECKED
+ssh -o StrictHostKeyChecking=accept-new -T git@github.com
+```
 
-sudo -u bvp .venv/bin/python -m engine.ingest.build   # expect: all passed, exit 0
-sudo -u bvp .venv/bin/python -m pytest -q             # expect: 437 passed
+Then, still as `bvp`:
+
+```bash
+git clone git@github.com:andrewolobo/baba-vanga-premier.git /srv/bvp
+cd /srv/bvp
+python3 -m venv .venv
+.venv/bin/pip install -e ".[serve,dev]" -c requirements.lock
+
+.venv/bin/python -m engine.ingest.build      # expect: all passed, exit 0
+.venv/bin/python -m pytest -q                # expect: 436 passed, 1 skipped
 ```
 
 The build step runs migrations, loads 16 seasons from the tracked CSVs, and
