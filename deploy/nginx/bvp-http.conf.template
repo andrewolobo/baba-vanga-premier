@@ -1,0 +1,97 @@
+# nginx site, HTTP only, no domain. docs/DEPLOY.md 5.3 step 5a.
+#
+# The interim posture while there is no domain name. Everything except TLS
+# works: the /api rewrite, the SPA fallback and the internal fence are all
+# origin-relative and domain-free. Replace with bvp.conf.template at 5b.
+#
+# Render it, never retype it -- a heredoc pasted into a terminal can have its
+# EOF land mid-line and write a truncated file that still passes `nginx -t`:
+#
+#     sudo apt install -y gettext-base
+#     BVP_ADMIN_IP=$(echo $SSH_CLIENT | awk '{print $1}') \
+#       envsubst '$BVP_ADMIN_IP' < /srv/bvp/deploy/nginx/bvp-http.conf.template \
+#       | sudo tee /etc/nginx/sites-available/bvp >/dev/null
+#     sudo ln -sf /etc/nginx/sites-available/bvp /etc/nginx/sites-enabled/bvp
+#     sudo rm -f /etc/nginx/sites-enabled/default
+#     sudo nginx -t && sudo systemctl reload nginx
+#
+# $SSH_CLIENT's first field is the address you are connected FROM, which is the
+# one the fence below needs. Do not use `curl ifconfig.me` here: run on the VM
+# it returns the VM's own egress address, so the rule would allow the server
+# and lock out the administrator.
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+
+    root /srv/bvp/web/build;
+    index index.html;
+
+    add_header X-Content-Type-Options nosniff always;
+
+    # ------------------------------------------------------------------ #
+    # THE PROXY. docs/DEPLOY.md 2.4. web/src/lib/api.js sets BASE = '/api'
+    # and every call is origin-relative; web/vite.config.js proxies and
+    # rewrites in development, and there is no Vite here.
+    #
+    # The TRAILING SLASH on proxy_pass is what strips /api. Without it
+    # uvicorn gets /api/tips, answers 404, and the frontend renders an empty
+    # list -- so the site reads as "no matches this week" rather than as a
+    # misconfiguration.
+    # ------------------------------------------------------------------ #
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
+    }
+
+    # The internal views. docs/DEPLOY.md 3.1: /performance returns `pnl` and
+    # `roi`, /book returns paper_bets.*, and B7's honesty test covers
+    # /tips/record ONLY. Both are empty while the book is off, so the exposure
+    # is conditional -- this is here so that stops being the only thing between
+    # a public URL and a published return.
+    #
+    # Fenced by SOURCE IP rather than a password, deliberately: this server has
+    # no TLS yet, and basic auth over plain HTTP puts the credential on the
+    # wire on every request. The password arrives with the certificate in 5b,
+    # not before.
+    #
+    # Exact-match locations are evaluated before the /api/ prefix above, so each
+    # needs its own proxy_pass. A query string is not part of the match, so
+    # /api/book?settled=true still lands here.
+    location = /api/book {
+        allow ${BVP_ADMIN_IP};
+        deny all;
+        proxy_pass http://127.0.0.1:8000/book;
+        proxy_set_header Host $host;
+    }
+    location = /api/performance {
+        allow ${BVP_ADMIN_IP};
+        deny all;
+        proxy_pass http://127.0.0.1:8000/performance;
+        proxy_set_header Host $host;
+    }
+
+    # Vite emits content-hashed filenames under /_app, so they are immutable.
+    location /_app/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # adapter-static with fallback: 'index.html'. /book and /performance are
+    # client-side routes with no file behind them; without this they 404 on a
+    # refresh or a pasted link.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # index.html must never be cached, or a deploy ships new hashed assets to
+    # browsers still holding the old entry point.
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+}
