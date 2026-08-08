@@ -868,6 +868,36 @@ development machine exists now, and the same `VACUUM INTO` works on it today.
 **Do that before the VM, not after** — it is the cheaper half of §6.1 and it
 protects the older asset.
 
+**Built 2026-08-08, and the development half is already done.**
+
+`scripts/export_ledger.py` writes `docs/gate_ledger.jsonl` — 90 rows, 202 KB of
+sorted, key-ordered JSON. **That file is the backup**, and committing it means
+git and GitHub provide off-machine durability and full history for free. No
+storage account, no timer, no restore drill: the thing that could not be
+reconstructed is now text in a repository with a remote.
+
+`--check` compares the database against the file and distinguishes the two
+failures that matter. A file that is merely *behind* has gained rows and wants
+re-exporting, which is the normal case. A file that **disagrees on rows it
+already had** is the append-only convention (`OUTSTANDING.md` §7.5) being
+violated, and says so. Run it after any gate.
+
+**There is deliberately no import path.** §7.5 makes the ledger append-only and
+says a helper to update or delete it "would defeat the purpose". Whether
+*restoring* a store from this export counts as reconstitution rather than
+mutation is an owner decision that has not been taken, so the export is
+provenance you can read and diff, and re-populating from it is not offered.
+
+For the server: `scripts/backup.sh` plus `deploy/systemd/bvp-backup.{service,timer}`
+at 06:30 UTC. It snapshots with `VACUUM INTO`, then **reads the copy back** —
+`PRAGMA integrity_check` and row counts of the tables that cannot be rebuilt —
+because a backup that has never been read is a belief rather than a backup, on
+the same argument as §7.8. Retention keeps 7. The off-machine upload is opt-in
+via `BVP_BACKUP_CONTAINER`, and **while it is unset the script warns on every
+run** that the copies live only on the machine they protect; a backup script
+that looks finished while keeping every copy on the VM is worse than one that
+admits it is not.
+
 **`cp premier.db` is not a backup** and neither is a VM snapshot of it. Under
 WAL, committed transactions can still be sitting in `premier.db-wal`, so a
 plain copy can silently lose the most recent cycle — the one you most wanted.
@@ -955,7 +985,7 @@ to prevent.
 | 3      | Clone, venv, `ingest.build`, `pytest -q`                                           | `all passed`; **414 passed, 2 skipped** (§5.4)                                | **done** 414/2 |
 | 4      | systemd units for API and cycle                                                    | API answers after `reboot`; `systemctl list-timers` shows the next run        | **done** |
 | **5a** | **nginx over HTTP, internal endpoints fenced by source IP**                        | the four curls in §5.3, against the public IP                                 | **done** HTTP only |
-| 6      | `deploy.sh`, run once against no changes                                           | `/api/health` answers afterwards                                              |                        |
+| 6      | `deploy.sh`, run once against no changes                                           | `/api/health` answers afterwards                                              | **done** `3c58e43` |
 | 7      | Backup timer + first restore drill — **and the development machine first** (§6.1)  | a restored copy passes `integrity_check` and matches row counts               |                        |
 | 8      | Alerting: `OnFailure` + dead-man's switch                                          | **test all three** — break the cycle on purpose, and stop the timer for a day |                        |
 | **5b** | **Domain, TLS, basic auth**                                                        | `https://` serves; `/api/performance` is 401                                  | **blocked: no domain** |

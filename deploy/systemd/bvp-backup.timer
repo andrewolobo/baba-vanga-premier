@@ -1,0 +1,21 @@
+# Daily trigger for bvp-backup.service. docs/DEPLOY.md 6.1.
+#
+#   sudo systemctl enable --now bvp-backup.timer
+#   systemctl list-timers 'bvp-*' --no-pager
+
+[Unit]
+Description=Daily baba.vanga.premier database snapshot
+Documentation=file:/srv/bvp/docs/DEPLOY.md
+
+[Timer]
+# 30 minutes behind bvp-cycle.timer's 06:00, so a snapshot normally captures a
+# completed cycle. It is not a dependency, though: the two are separate units on
+# purpose, and a cycle that failed or never ran still gets its database backed
+# up. Overlap is harmless anyway -- VACUUM INTO is safe against a live writer.
+OnCalendar=*-*-* 06:30:00 UTC
+Persistent=true
+RandomizedDelaySec=5min
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target
