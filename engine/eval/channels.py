@@ -189,7 +189,7 @@ def m4_split_half(frame) -> dict:
 
 
 def _fit_channel(idx, rows, weights, channel: str, frame, cfg):
-    """The same second-Poisson `_blend_shots` runs, on an arbitrary channel."""
+    """The same second-Poisson `_blend_channels` runs, on an arbitrary channel."""
     hcol, acol = CHANNELS[channel]
     h = pd.to_numeric(frame[hcol], errors="coerce").to_numpy(dtype=float)
     a = pd.to_numeric(frame[acol], errors="coerce").to_numpy(dtype=float)

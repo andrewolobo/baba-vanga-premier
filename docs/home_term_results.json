@@ -1,0 +1,117 @@
+{
+  "step1": {
+    "rows": [
+      {
+        "division": "E0",
+        "n": 2948,
+        "required_pct": 5.304,
+        "required_tilt_pct": 3.136,
+        "resolvable_pct": 2.936,
+        "contrast_pct": 4.38,
+        "t": 1.211,
+        "t_tilt": 0.716,
+        "resolves": false,
+        "resolves_tilt": false,
+        "shift": {
+          "home": 1.77,
+          "draw": -0.563,
+          "away": -1.207
+        },
+        "tilt_shift": {
+          "home": 1.77,
+          "draw": -0.177,
+          "away": -1.593
+        }
+      },
+      {
+        "division": "E1",
+        "n": 4308,
+        "required_pct": 4.973,
+        "required_tilt_pct": 2.947,
+        "resolvable_pct": 2.532,
+        "contrast_pct": 3.776,
+        "t": 1.317,
+        "t_tilt": 0.78,
+        "resolves": false,
+        "resolves_tilt": false,
+        "shift": {
+          "home": 1.77,
+          "draw": -0.566,
+          "away": -1.204
+        },
+        "tilt_shift": {
+          "home": 1.77,
+          "draw": -0.208,
+          "away": -1.562
+        }
+      },
+      {
+        "division": "E2",
+        "n": 4264,
+        "required_pct": 4.93,
+        "required_tilt_pct": 2.911,
+        "resolvable_pct": 2.513,
+        "contrast_pct": 3.747,
+        "t": 1.316,
+        "t_tilt": 0.777,
+        "resolves": false,
+        "resolves_tilt": false,
+        "shift": {
+          "home": 1.77,
+          "draw": -0.555,
+          "away": -1.215
+        },
+        "tilt_shift": {
+          "home": 1.77,
+          "draw": -0.206,
+          "away": -1.564
+        }
+      },
+      {
+        "division": "E3",
+        "n": 4304,
+        "required_pct": 4.942,
+        "required_tilt_pct": 2.928,
+        "resolvable_pct": 2.538,
+        "contrast_pct": 3.787,
+        "t": 1.305,
+        "t_tilt": 0.773,
+        "resolves": false,
+        "resolves_tilt": false,
+        "shift": {
+          "home": 1.77,
+          "draw": -0.565,
+          "away": -1.205
+        },
+        "tilt_shift": {
+          "home": 1.77,
+          "draw": -0.212,
+          "away": -1.558
+        }
+      }
+    ],
+    "measured_gap": {
+      "home": 1.77,
+      "draw": 0.4,
+      "away": -2.17
+    },
+    "geometry": {
+      "home-only": {
+        "residual": {
+          "home": 0.0,
+          "draw": 0.963,
+          "away": -0.963
+        },
+        "suffices": false
+      },
+      "tilt": {
+        "residual": {
+          "home": 0.0,
+          "draw": 0.577,
+          "away": -0.577
+        },
+        "suffices": false
+      }
+    }
+  }
+}

@@ -5,7 +5,29 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-08**, after the deployment assessment (§4.4) — which
+Last updated **2026-08-10**, after the B12 channels gate (§1.12) — which found
+that **shots and corners are worth −0.00217, about half what was predicted and
+55% of their own measured ceiling**, that **corners does 90% of the work while
+total shots is nearly redundant**, and that the gate's own positive control
+**fired its stop rule on a bar that had been mis-derived**. The gate ran past it
+by owner decision and its three rows are registered post-hoc. Read §1.12 before
+treating any of it as pre-registered.
+
+Before that, **2026-08-10**, after re-reading the closed decisions against the
+tipster objective that replaced the one they were closed under (§9) — which
+found that **P0-2's decisive argument is scoped to a market that is now 0% of
+the product**, and that the number 85.6% of the output depends on has never been
+calibration-checked.
+
+**§9.6 then tried to fix what §9.5 found and refuted two of its own
+conclusions along the way** — E0 cannot adjudicate a fix on its own data, its
+defect is a level offset rather than the separation effect that drives E1–E3,
+and B2's existing calibration moves one recommendation in five for **no change
+in strike rate** while making E0 worse. §9.5's *verdict* stands; the
+*explanation* attached to it does not, and is flagged in place. Read §9.6's
+correction blocks before building on either section.
+
+Before that, **2026-08-08**, after the deployment assessment (§4.4) — which
 found that **everything customer-facing is still uncommitted**, that a public
 host would publish a return through a page B7's honesty test does not cover,
 and that the hero image ships a green matte fringe.
@@ -43,6 +65,9 @@ bounded null that closes SPEC §3.6) →
 `P4_CHANNELS_PREGATE.md` / `CHANNELS.md` (the in-store channels — a pre-gate
 that refuted two of its own three predictions, voided one of its own stop
 rules, and says run the gate) →
+`P4_CHANNELS_PLAN.md` / `CHANNELS_GATE.md` (the gate itself — real at −0.00217
+but half the predicted size, carried almost entirely by **corners**, with §8 of
+the plan recording why its stop rule fired and why it was run past anyway) →
 `P5_META_PLAN.md` / `META.md` (the meta-label — pre-registration with §1
 reproducible as committed code, and the result: **a market follower**, where
 BOOK's apparent edge turns out to be cross-book price dispersion rather than
@@ -68,7 +93,7 @@ build-out `RUNBOOK.md` §8 leaves open).
 | P4 rest              | **Measured null, bounded at ~3.5%** — §1.5.                          |
 | P4 travel            | **Measured null, bounded at ~3.7%/500km** — §1.6.                     |
 | P4 congestion/stakes | Not started. **Both blocked**, and §1.6 closes SPEC §3.6.            |
-| P4 channels          | **Pre-gate run and positive — a gate is licensed, not written.** §1.7 |
+| P4 channels          | **Gate run. Real at −0.00217; corners carries it. Not adopted.** §1.12 |
 | P5 meta-label        | **Run. Market follower — do not adopt.** §1.9.                        |
 | Customer surface     | **Built to the owner's design — §1.11.** B6 done, B7 part done.      |
 | Hosting              | **Planned and agreed, not executed** — `DEPLOY.md`. §4.4.            |
@@ -77,10 +102,27 @@ build-out `RUNBOOK.md` §8 leaves open).
 **Frozen base head:** `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3` — the
 shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
 prior, COVID window embargoed from scoring. Artifact
-`p1-3a38e9d6ef1ca7ee`. **437 tests pass** (2026-08-07; the 379 this line used to
-quote was stale — re-run `pytest -q` rather than trusting it). Gate ledger holds **87 runs / 45
-questions / at least 167 configurations** — the last is the number that feeds
-deflation, and §3.2 explains why the other two mislead. **The audit in §8 added
+`p1-3a38e9d6ef1ca7ee` — **unchanged by §1.12**, which measured on a subclass of
+the served config precisely so the version string would not move. **470 tests
+pass, all green** (2026-08-10; re-run `pytest -q` rather than trusting this line
+— it has been stale twice). The two calendar-time-bomb failures found earlier
+the same day are fixed — §6. Gate ledger holds
+**98 runs / 55 questions / at least 189 configurations** — the last is the
+number that feeds deflation, and §3.2 explains why the other two mislead.
+§9.5 spent 4, §9.6 spent 6 (its step 1 probe spent none), and §1.12 spent 13.
+
+**Three of §1.12's four rows are post-hoc** and are named in
+`trials.POST_HOC_TRIALS` alongside `h19_alpha_interaction` and
+`p5_book_no_arb`. `count_configurations` reports them, so a future P6 read gets
+the warning without needing this paragraph — but the *reason* is only here and
+in `CHANNELS_GATE.md` §2: the gate's positive control missed a mis-derived bar,
+its stop rule fired, and it was run past by owner decision with real outcomes
+already in view.
+**The 87 / 45 / 167 this line used to carry did not reproduce**: re-derived
+immediately before §9.5 the true figure was 90 / 47 / **166**, so the run count
+was three low and the configuration count one high. §4.4 already quoted 90 rows
+against §0's 87 and the disagreement was not chased. §9.5 then added exactly the
+4 it declared. **The audit in §8 added
 no ledger rows**: `engine.odds.vig_per_leg` reads prices only, so it spends no
 information about any outcome, on the same accounting as `power.py`.
 
@@ -462,6 +504,80 @@ harness puts goals well above sot (0.528 vs 0.394). Unresolvable without the
 lost code. It does not unsettle the shots channel, which was established by
 H20's gate rather than by the pre-gate, but only the within-run contrasts and
 the noise control carry weight in `CHANNELS.md` §1.
+
+### 1.12 The channels gate is real, half-sized, and it is corners — **MEASURED 2026-08-10**
+
+Results in `CHANNELS_GATE.md`, pre-registration `P4_CHANNELS_PLAN.md`, code
+`engine/eval/channels_gate.py`, tests `tests/test_channel_blend.py`, ledger
+`h37_channels_oracle_control` (probe, 2), `h38_channel_blend` (5),
+`h39_channel_decomposition` (6), `h40_channels_divisions` (0). **13
+configurations, exactly as declared; 176 → 189.** The gate §1.7 licensed.
+**Nothing is adopted.**
+
+Against the shipped head, at the selected w = 0.30, on 21,896 matches:
+
+| arm | vs shipped | paired SE |
+| --- | --- | --- |
+| `+shots` | −0.00095 [−0.00143, −0.00048] | 4.0 |
+| **`+corners`** | **−0.00196** [−0.00276, −0.00116] | 4.7 |
+| **`+both`** | **−0.00217** [−0.00285, −0.00146] | 6.0 |
+| `+noise ×2` (control) | **+0.02101** [+0.01811, +0.02387] | 14.6 |
+| oracle ceiling | −0.00396 [−0.00477, −0.00320] | 9.9 |
+
+**Five of thirteen predictions right, and all eight misses are over-optimistic
+in the same direction.**
+
+Five things worth carrying forward:
+
+- **The stop rule fired on a mis-derived bar, and continuing cost the gate its
+  pre-registration.** H37's bar of ≤ −0.008 was copied from H25's sot oracle
+  without adjusting for H25 running at **w = 0.6** against a **goals-only**
+  baseline where H37 runs at **w = 0.3** against a baseline that already carries
+  real sot. At −0.00396 and 9.9 SE the instrument was plainly alive, so the
+  rule fired for a condition it was not written to detect — but the decision to
+  continue was taken with **real outcomes in view**, which is §1.6's line, so
+  `h38`/`h39`/`h40` are in `trials.POST_HOC_TRIALS`. The override is a
+  command-line flag, `--past-failed-control`, rather than a relaxed threshold,
+  so continuing past a stop rule is a recorded act.
+- **Reliability was over-read as deviance for the third time, and the bound was
+  available for 2 configurations.** `SHOTS_TARGET.md` §7 recorded it,
+  `CHANNELS.md` §6 warned about it explicitly, and `P4_CHANNELS_PLAN.md` §1 did
+  it again — extrapolating +0.0490/+0.0540 to −0.012 and discounting only to
+  −0.008 against a measured answer of −0.00217. **The fix is not another
+  caution.** Run the oracle first and read every prediction against the ceiling
+  it produces; here that would have refuted the headline prediction before any
+  real arm ran, which is exactly what it did once the order was forced.
+- **`CHANNELS.md` §1's "complementary, not redundant" does not survive the
+  translation to deviance.** Corners is worth **2.1×** shots, and adding shots
+  on top of corners is worth −0.00021 — smaller than the paired SE of either
+  arm. `goals + sot + corners` captures **90%** of the gain with one fewer
+  channel and is the version to consider if the head is ever changed. Note the
+  paired comparison between `+corners` and `+both` was **not** run, so that is a
+  point estimate, not a measured null.
+- **E3 does not resolve** — −0.00088 [−0.00208, +0.00030] — breaking both the
+  "all four divisions" prediction and the 3× spread bar (3.23×). It is also the
+  division where the head captures least of the market's edge, so the division
+  with the most room gains least. §3.1's asymmetry gets a fourth measurement
+  and no explanation.
+- **The served head did not move, by construction.** The k-channel blend is
+  carried on a `ChannelBlendConfig` subclass because `artifact.freeze` hashes
+  `cfg.__dict__`, so a defaulted field on the served config would have retired
+  `p1-3a38e9d6ef1ca7ee` with no coefficient change — the thing `0c9eb06`
+  declined to do. Verified bit-for-bit against the pre-change module over all
+  27,815 walk-forward λs, and the `sot @ 0.3` arm reproduces the shipped head at
+  **exactly +0.00000** in the gate's own output.
+
+**Do not** re-litigate with per-channel weights, a per-side weight, fouls or
+cards, or a joint α sweep. The ceiling is −0.00396 and the arm reached 55% of
+it; the remaining headroom in this mechanism is under two thousandths of a nat,
+and `P4_CHANNELS_PLAN.md` §7 records what was held fixed.
+
+**It does not touch the book.** Pooled deficit +0.01230 → +0.01177, 4.3% of a
+gap whose vig is 0.02122 at average prices. `CALIBRATION.md` §5 stands.
+
+**Adoption is open and is the owner's.** It costs the five steps of §1.3,
+including re-running `engine/eval/tips.py`'s claims block, because the published
+strike rate is a property of the head rather than of the rule.
 
 ### 1.10 The product is a strike-rate tipster — **DECIDED AND WIRED 2026-08-06**
 
@@ -1085,6 +1201,29 @@ exist.
   results stay reproducible. `test_reproduces_the_p0_harness_exactly` pins the
   two together to 1e-9. **Delete it once §2.1 is re-run through the new
   harness** — `dispersion.py:338` is the only remaining production caller.
+- **The `test_run_cycle.py` calendar time bomb — FIXED 2026-08-10.** Two tests
+  began failing on 2026-08-09 without any code changing. They were the only ones
+  in the file calling `run_cycle.run()` **without pinning `today=`**, so they ran
+  `pd.Timestamp.now()` against an artifact fixture frozen at
+  `fitted_at="2026-08-01"`; once the wall clock passed `REFIT_AFTER_DAYS = 7`,
+  `_stale()` fired, serve refroze and published nothing, and tips reported
+  `no untipped predictions`. **Nothing in the product was ever broken** — the
+  staleness rule was working and the tests had aged out. Fixed with a named
+  constant `FRESH_ARTIFACT_DAY` and three call sites (the third was a
+  prophylactic pin on the one remaining unpinned call). **458 tests pass.**
+  Two things worth keeping:
+  - **A speculative second fix was measured and withdrawn.** `step_grade` is not
+    given the cycle's `today` and bounds on SQL `date('now')`, so a fixture dated
+    inside the real calendar eventually reads as played. That looked like a
+    second bomb due on 2026-08-15. Simulating it — setting `add_fixture`'s
+    default to a date already past — left **all 15 tests passing**, so the
+    grading path tolerates it and the "fix" was scope with nothing behind it. It
+    was reverted rather than kept as insurance.
+  - **The asymmetry itself is real and is left alone.** `run()` takes `today` and
+    threads it to `step_serve` but not to `step_grade`, so a cycle run with an
+    explicit `today` is only partly deterministic. Harmless today. The structural
+    fix is to thread `today` through, which is a production change and wants its
+    own decision rather than arriving inside a test repair.
 - `engine/eval/p1.py` trips a cognitive-complexity lint in `h9_baseline` and
   carries two duplicated string literals. Cosmetic.
 - `db/artifacts/` is gitignored as reproducible output. If artifacts that
@@ -1193,3 +1332,506 @@ Every cross-document reference resolves (`META.md` is a forward reference from
 `SHOTS_TARGET.md` §3 is **not** a defect — BASELINE requires prices. Stale
 figures inside `BASELINE.md` §3+ and `P3_PLAN.md` are correct to leave: both are
 explicitly unedited so their predictions can still be scored.
+
+---
+
+## 9. Re-review under the tipster objective — 2026-08-10
+
+P0–P5 answered *"can this beat the book"*. §1.10 replaced that objective with a
+strike-rate tipster and §1.11 shipped it. This section re-reads the closed
+decisions against the objective that replaced the one they were closed under.
+
+**No decision is reversed here.** Three items are arguments that have partly
+expired; the fourth is a priority, not a finding.
+
+**The bars that closed things were beat-the-book bars.** Three were used, and
+only the third has a live consequence:
+
+1. **"Does it add information *given the price*?"** — H12's ablation (§1.0),
+   §1.9's `MODEL − BOOK`. A tipster competes with nothing, so the bar does not
+   apply — but nothing was closed on it that a tipster wants back. §1.9 and §1.0
+   stay closed on their own terms.
+2. **"Is it worth enough against the gap to the market?"** — P0-2's first reason
+   scales τ's −0.000145 against the head's 0.0098–0.0141 nat deficit
+   (`MEASURED_AND_CLOSED.md` P0-2, reason 1). That deficit is a beat-the-book
+   yardstick. It does not follow that the effect is negligible in the product's
+   own units, which are one 0/1 call per match.
+3. **"Does it move 1X2 or O/U 2.5?"** — the served markets *at the time*. The
+   product now publishes five and **85.6% of its output is double chance**.
+   This is where the re-review earns its keep.
+
+### 9.1 P0-2's decisive argument is scoped to a market that is now 0% of output
+
+`MEASURED_AND_CLOSED.md` P0-2 declines the Dixon–Coles τ on three reasons, and
+flags reason 2 as **"the one argument no re-measurement can touch"**: τ
+redistributes mass among the 0-0, 1-0, 0-1 and 1-1 cells, whose totals are 0, 1,
+1 and 2, all below the 2.5 line, so no redistribution among them can move an
+O/U 2.5 probability by any amount.
+
+**That is correct, and it is exclusively true of O/U 2.5.** Against the menu
+`engine/serve/tips.py` actually publishes:
+
+| menu item | cells τ touches | moves? |
+| --- | --- | --- |
+| O/U 2.5 | all four, adjustments sum to zero | **no** — as documented |
+| **draw, and `12`** | 0-0, 1-1 | **yes** |
+| **`1X` / `X2`** | 0-0, 1-1, and one of 1-0 / 0-1 | **yes** |
+| **O/U 0.5, 1.5** (B4) | 0-0; 0-0 + 1-0 + 0-1 | **yes** |
+
+`score_matrix(..., rho)` already implements τ (`engine/eval/dispersion.py:50`)
+and the whole served path calls it at `rho=0`, through `metrics.model_probs`
+(`engine/eval/metrics.py:75`) for the `predictions` table and
+`selection.raw_probs` (`engine/eval/selection.py:82`) for the tip rule.
+
+**The sharp version: `12` loses if and only if the match is a draw, and `12` is
+65.0% of all recommendations.** Two thirds of the product is a pure draw
+forecast, and the draw is the one quantity P0-2 measured the head getting wrong:
+
+| division | draw deficit (P0 instrument) | 95% CI |
+| --- | --- | --- |
+| E0 | **+0.01 pts** | [−1.19, +1.18] |
+| E1 | +1.24 pts | [+0.24, +2.33] |
+| E2 | +0.96 pts | [−0.11, +1.94] |
+| E3 | +1.13 pts | [+0.13, +2.22] |
+
+The direction is the unhelpful one — the head **under-predicts draws**, so it
+**over-states P(`12`)**, the product's largest market. Neither this nor the
+under-confidence of §1.10 is **visible in goal Poisson deviance**, which is what
+convention 2 selects on. *(§9.5 measured this. The draw error is real and
+pooled-resolved, the per-division split does not reproduce on the served head,
+and the draw turns out not to be the largest error in the vector.)*
+
+**Reason 3 survives and now argues the other way.** P0-2 rejected τ partly
+because τ is global while the deficit is not, which would impose a diagonal
+correction on E0 where there is nothing to correct. Under a per-division served
+product that is an argument for a **per-division** ρ, not against a correction.
+
+**Two things make this a measurement rather than a conclusion:**
+
+- **The deficit has never been measured on the served head.** P0-2 ran on the P0
+  instrument — frozen H=200, α=1.0, fortnightly refit — not on
+  `H400/a0.1/weekly/E0+E1+E2+E3+EC/sot0.3`. Same staleness §2.3 flags for
+  `CALIBRATION.md`, under a number the product now depends on.
+- **The union has never been calibration-checked at all.** `BACKLOG.md` B3's own
+  scoping note asked "whether the head is calibrated on the *union* `p_h + p_d`"
+  and B2's asked the same. Neither is in `engine/eval/selection.py` or
+  `docs/selection_results.json` — the only calibration table there is the pooled
+  1X2 argmax, and there is no per-division breakdown of anything.
+
+**Expect the effect to be small.** τ at ρ = −0.0213 moves P(draw) by about
++0.5 points, which closes 56% of a deficit that is itself around 1 point. On a
+72.5% realised strike rate that is not where a product is won. What it changes
+with certainty is **what the product can honestly claim**, which is B7's open
+half; what it changes uncertainly is **selection at the floor and the ceiling**,
+where a 1-point shift moves fixtures across a boundary.
+
+#### Pre-registered, before the diagnostic ran
+
+Written 2026-08-10 ahead of `engine/eval/draws.py`. Four arms declared:
+`rho=0` (shipped), pooled walk-forward ρ, per-division walk-forward ρ, and a
+planted ρ as the positive control convention 8 requires — a null on the first
+three means nothing without evidence the instrument can see a draw correction at
+all.
+
+1. The draw deficit **survives on the served head** at ≥ +0.5 pts pooled, and
+   the E0-versus-E1–E3 split survives with E0 inside [−0.5, +0.5].
+2. Walk-forward ρ on the served head lands within P0-2's [−0.0343, −0.0070].
+3. **`12` is over-confident** — claims more than it delivers — and `1X`/`X2` are
+   under-confident, in E1–E3 and not in E0.
+4. Applying ρ **changes fewer than 5% of recommendations** at the shipped floor
+   0.55 / ceiling 0.85.
+5. Strike rate moves by **less than the ~0.7 pt** that population resolves, so
+   the honest read will be a calibration result and not a strike-rate result.
+6. The planted control **does** move recommendations, at a rate the fitted arms
+   do not reach.
+
+Results in §9.5. **Cost: 4 configurations**, declared here before running.
+
+### 9.5 The draw-mass diagnostic — **MEASURED 2026-08-10. P0-2 stands.**
+
+Code `engine/eval/draws.py`, tests `tests/test_draws.py`, results
+`docs/draw_mass_results.json`, ledger `draw_mass_tipster` (4 configurations,
+166 → **170**). 15,824 out-of-sample matches, 2014-15 → 2022-23 — the same
+population B2 and B3 report on. **Five of six predictions right, and the sixth
+is the one worth reading.**
+
+**Do not adopt τ.** The decision P0-2 reached survives, and it now survives a
+test aimed at the objective that replaced its own.
+
+#### ρ reproduces; the division story does not
+
+Walk-forward ρ on the served head is stable across all eight folds (−0.0147 to
+−0.0286) and the full-sample fit is **−0.02539**, against P0-2's −0.0213
+[−0.0343, −0.0070] on the P0 instrument. Prediction 2 right.
+
+| division | deficit, served head | 95% block CI | (P0-2, P0 instrument) |
+| --- | --- | --- | --- |
+| pooled | **+0.75 pts** | [+0.03, +1.43] ✱ | +0.90 |
+| E0 | +0.40 | [−1.17, +1.96] | **+0.01** |
+| E1 | +1.19 | [−0.20, +2.51] | +1.24 |
+| E2 | +0.75 | [−0.51, +2.03] | +0.96 |
+| E3 | +0.55 | [−0.77, +1.78] | +1.13 |
+
+The pooled deficit survives and resolves. **The per-division split does not.**
+No division's deficit excludes zero, and the gradient that P0-2 made OPEN-6's
+third line of evidence — *"the Premier League has no draw deficit at all"* — is
+flat on the served head: E0 +0.40 against E3 +0.55. Prediction 1 passes on its
+literal wording (pooled ≥ 0.5, E0 within ±0.5) and **the claim behind it does
+not**. Recorded rather than reworded, per the P0-2 precedent.
+
+#### The draw is not the largest error in the vector — and nobody had looked
+
+The first outcome-level decomposition of the served head. Delivered minus
+claimed, ✱ = excludes zero:
+
+| population | home | draw | away |
+| --- | --- | --- | --- |
+| pooled | +0.33 | +0.75 ✱ | **−1.07 ✱** |
+| E0 | **+1.77 ✱** | +0.40 | **−2.17 ✱** |
+| E1 | +0.38 | +1.19 | −1.56 ✱ |
+| E2 | +0.23 | +0.75 | −0.98 |
+| E3 | −0.61 | +0.55 | +0.07 |
+
+**The away win is over-predicted by −1.07 points, and it is the largest resolved
+miscalibration the head has.** τ is a diagonal correction and cannot address it.
+This is the substantive answer to §9.1: the draw is not what is most wrong with
+the 1X2 vector, it is what P0-2 happened to ask about, and a union table read on
+its own cannot tell the two apart because `1X`, `X2` and `12` count every
+outcome twice and their three gaps must sum to zero. `test_draws.py` pins that
+identity.
+
+**E0 is the most miscalibrated division, not the cleanest.** Its home and away
+errors are the largest in the corpus and both resolve, and they **nearly cancel
+inside `12`** (+1.77 − 2.17 = −0.40), which is why `12` reads calibrated there.
+P0-2's "E0 has no draw deficit" was true and misleading. **This corrects
+OPEN-6's third line of evidence** (§2.1, §3.3): E0 *is* a separate population,
+and the axis is the result, not the draw.
+
+#### The union markets, calibrated for the first time
+
+`BACKLOG.md` B2 and B3 both asked for this and neither delivered it. Pooled,
+with the paired block bootstrap rather than the binomial half-width
+`selection.calibration_table` uses:
+
+| market | share of output | claims | delivers | gap | verdict |
+| --- | --- | --- | --- | --- | --- |
+| **`12`** | **65.0%** | 74.39% | 73.64% | **−0.75** [−1.43, −0.02] | **over-confident** |
+| **`1X`** | 17.6% | 68.64% | 69.72% | **+1.07** [+0.37, +1.78] | under-confident |
+| `X2` | 3.0% | 56.97% | 56.64% | −0.33 [−1.15, +0.45] | calibrated |
+
+**The product's two largest markets are miscalibrated in opposite directions**,
+and `12` — two thirds of what ships — is the one that over-claims. Prediction 3
+right. Per division only the pooled figures resolve; `1X` also resolves in E0
+(+2.16) and E1 (+1.56), and `X2` is over-confident in E0 (−1.77).
+
+This is the number **B7 is still missing** (§1.11, `BACKLOG.md` B7). It is small
+and it is in the direction that matters for a published claim.
+
+#### The strike-rate gain is real, and it is not τ's
+
+At the shipped floor 0.55 / ceiling 0.85, against the shipped arm, **paired**
+per convention 3 — the marginal CIs are ~2.4× wider and make every comparison
+here vacuous:
+
+| arm | recommendations changed | strike | vs shipped, paired | mix `12`/`1X` |
+| --- | --- | --- | --- | --- |
+| ρ = 0 (shipped) | — | 72.49% | — | 65.0 / 17.6 |
+| ρ pooled | 6.29% | 72.78% | +0.291 [−0.000, +0.576] | 59.3 / 22.7 |
+| ρ per-division | 6.41% | 72.83% | **+0.341 [+0.045, +0.637] ✱** | 59.4 / 22.5 |
+| **ρ planted (−0.10)** | **27.62%** | **73.12%** | **+0.626 [+0.019, +1.199] ✱** | 39.4 / 38.9 |
+
+**Prediction 4 was wrong** — 6.29% of recommendations change, not under 5%. A
+correction worth half a point of draw probability moves one call in sixteen,
+because the fallback comparison `1X` beats `12` iff `p_d > p_a` sits close to
+the margin for a lot of fixtures.
+
+**And prediction 6 is right in a way that kills the result.** Strike rate is
+**monotone in |ρ| well past the fitted value**: the planted ρ, five times too
+large and fitted to nothing, is the *best* arm. If the gain came from ρ being
+correct, an over-large ρ would be worse. So it is not a draw correction that is
+being measured — but **what it is instead is now an open question, not the
+answer originally written here.**
+
+> **Correction 2026-08-10, from §9.6 step 3.** This section attributed the gain
+> to the fallback ordering shifting from `12` to `1X`, on the reasoning that
+> `12` carries the over-predicted away win while `1X` carries the two
+> under-predicted outcomes. **That explanation is not supported.** B2's
+> calibration shifts the same mix **three times harder** — `12` 65.0% → 47.7%, a
+> 17.3-point move against τ's 5.7 — and returns **+0.088 [−0.410, +0.556]**,
+> unresolved. A larger shift through the same channel should have paid more.
+> **The verdict below is unaffected** — τ stays declined, on the stronger ground
+> that a 5×-wrong ρ was the best arm — but why strike rate is monotone in |ρ|
+> is **unexplained**. Do not build on the mechanism as stated.
+
+**Four things worth carrying forward:**
+
+- **A planted control protects a positive, not only a null.** Convention 8 was
+  written so a null could not be confused with a dead instrument. Here the arms
+  were positive and the control showed the positive is **not attributable to the
+  mechanism under test**. §1.7 recorded the mirror image — a positive result
+  needing a planted negative — and said the lesson should be read as covering
+  both directions. **This is the first time the control caught a live
+  misattribution rather than a hypothetical one**, and convention 8 should be
+  restated as: every gate carries the control that could falsify the result it
+  actually got.
+- **Adopting τ here would bank an ordering effect under a distributional
+  label.** The +0.341 is real and it would be logged as "the Dixon–Coles
+  correction is worth a third of a point". The next head change would move it
+  unpredictably and nothing would explain why.
+- **The defect worth fixing is `12`-versus-`1X`, and it is a new question.** The
+  head over-states `12` by 0.75 points and under-states `1X` by 1.07, and the
+  rule picks between them on a margin. That should be pre-registered on its own
+  terms — not smuggled in as a τ result — and it interacts with the `ALLOW_12`
+  owner decision, which the strike numbers above suggest is costing strike rate
+  rather than only specificity (`BACKLOG.md` B3).
+- **P0-2's reason 2 is still exactly true and is now pinned in code.**
+  `test_tau_cannot_move_an_over_under_2_5_probability` asserts it to 1e-12, and
+  a companion test asserts that τ *does* move the 0.5 and 1.5 lines B4 wants to
+  publish. The argument was never wrong; it was scoped, and the scope is now a
+  test rather than a paragraph.
+
+**Do not** re-litigate τ with a finer ρ grid, a per-season ρ, or a ρ × division
+interaction. The instrument resolves the effect, the effect is present, and the
+measured benefit is attributable to something else — which more ρ arms cannot
+fix and would spend the budget hiding.
+
+### 9.6 The E0 follow-up — **MEASURED 2026-08-10. Three steps, two of my own conclusions refuted.**
+
+Code `engine/eval/home_term.py`, results `docs/home_term_results.json` /
+`home_term_step2.json` / `home_term_step3.json`, ledger `home_term_power`
+(probe, 0 configurations), `home_term_dispersion` (3) and
+`b2_calibration_in_product` (3). **170 → 176.**
+
+§9.5 found E0 under-predicting home wins by +1.77 pts and over-predicting away
+by −2.17, both resolved, and called E0 "the most miscalibrated division". This
+is the attempt to fix it. **Nothing is adopted, and the most useful output is
+the list of things that turned out not to be true.**
+
+#### Step 1 — E0 cannot adjudicate its own fix (0 configurations)
+
+Poisson score information on the fitted λs, no outcomes read, same licence as
+`power.py`:
+
+| correction | required | resolvable (contrast) | t |
+| --- | --- | --- | --- |
+| home rate alone | 5.30% | 4.38% | **1.21** |
+| tilt (home up, away down) | 3.14% | 4.38% | **0.72** |
+
+Both under 1.96; even the optimistic "everything else fixed" bound (2.94%) only
+reaches t = 1.80. **E0's 2,948 matches cannot resolve a home-term fix of the
+size its own gap implies.** Note the tilt scores *worse* because it is the more
+efficient correction — a smaller parameter change does the same job, so it is
+harder to see. This is the §1.4 shape, caught for nothing before spending.
+
+> **Correction: step 1's second conclusion was over-confident, and is
+> withdrawn.** It reported that neither parameterisation reproduces E0's
+> three-cell geometry, on residuals of +0.96 (home-only) and +0.58 (tilt)
+> against a **±0.5 pt** threshold. E0's measured draw gap is +0.40 **[−1.17,
+> +1.95]** — a measurement CI of ±1.5 pts. A 0.5-pt threshold on a 1.5-pt
+> measurement decides nothing. **The home-term explanation was never actually
+> refuted**; it was declared dead on a bar the data cannot support.
+
+#### Step 2 — the dispersion hypothesis: half right, and my reading of it was wrong
+
+The successor hypothesis was that a global ridge α over-shrinks strength
+dispersion, worst where true dispersion is widest. A stretch on the **centred**
+separation `d = (log λ_h − log λ_a)/2` tests it while holding home advantage and
+the total goal rate fixed, so a positive result could not be step 1 returning
+under another name.
+
+**The separation-dependence is real.** The home calibration gap rises with how
+lopsided the fixture is predicted to be — pooled slope **+5.66 [+1.7, +9.4]** pts
+per unit d, sign flipping in away-leaning fixtures. *(Step 2 first reported
++6.58 from a `polyfit` over five bucket means with no interval. The per-match
+regression with a block-bootstrap CI, added in step 3, is the figure to quote.)*
+
+**The shrinkage explanation is not.** The deviance-optimal stretch is ~1.05
+pooled, and **E0 wants the least of the four** — E0 ~1.02, E1 ~1.12, E2 ~1.13,
+E3 **~0.95** (compression). Applying any arm leaves every gap where it was:
+E0's home +1.77 → +1.74. The λs are correctly scaled *for goals*; the defect is
+in the λ → outcome mapping, which convention 2's metric is structurally blind to.
+
+> **Correction: "E0 is not special, it just has more spread" is refuted.** I
+> claimed E0 sits further out on a curve everyone is on. The decomposition says
+> otherwise:
+>
+> | | E0 | E1 | E2 | E3 |
+> | --- | --- | --- | --- | --- |
+> | **mean d** | **+0.102** | +0.101 | +0.101 | +0.102 |
+> | sd(d) | 0.315 | 0.148 | 0.150 | 0.125 |
+> | intercept | **+1.69** | −0.32 | −1.00 | −2.22 |
+> | slope | **+0.79** | +6.85 | +12.22 | +15.73 |
+>
+> **Mean separation is identical in all four divisions**, so a slope acting on
+> `d` cannot produce a division-specific mean gap — arithmetic, no interval
+> needed. E0 has the *flattest* slope, not the steepest, and applying the E1–E3
+> curve to E0's own fixtures predicts **+0.00** against **+1.77** measured.
+> **E0's defect is a level offset; the separation slope lives in E1–E3.**
+> `OPEN-6` (§3.3) is reinstated, not replaced.
+
+#### The control step 2 should have carried, run afterwards
+
+Step 2 produced a positive and shipped without the control §9.5 itself says
+every gate needs. Run during a grounding pass, on synthetic outcomes, so it
+spends nothing:
+
+- **Null A** — goals simulated from the served λs, mapping correct by
+  construction: slope **+0.10 ± 1.49**. The instrument returns zero when nothing
+  is wrong, so the measured +5.66 is ~4σ out.
+- **The P0-1 artifact sweep** — stratifying on a λ carrying log-noise, the exact
+  trap P0-1 fell into. Home slope at noise 0.00 / 0.05 / 0.10 / 0.15 / 0.20:
+  **−0.27 / −3.82 / −14.26 / −27.57 / −53.12**. **Monotonically negative at
+  every level**, so λ noise can only ever *mask* a positive slope, never
+  manufacture one. The finding is not the P0-1 artifact and is if anything
+  understated.
+
+**Do not skip this control if the slope is ever revisited.** It is the second
+time this project has had to ask whether a clean monotone gradient was an
+artifact of stratifying on an estimate, and the answer differed both times.
+
+#### Step 3 — B2's calibration already exists. Wiring it in buys nothing.
+
+The shipped tip rule runs on the **raw** pmf: `tips.py` reads `predictions`,
+which `metrics.model_probs` fills uncalibrated. B2's walk-forward vector scaling
+is built, tested and unused, and it halves the separation slope. Three arms —
+raw, calibrated, and a magnitude-matched sham blind to every outcome.
+
+| arm | changed | strike | vs shipped, **paired** |
+| --- | --- | --- | --- |
+| raw (shipped) | — | 72.49% | — |
+| **B2 calibrated** | **18.42%** | 72.58% | **+0.088 [−0.410, +0.556]** |
+| sham (control) | 18.42% | 67.76% | −4.733 [−5.08, −4.37] ✱ |
+
+**It moves one recommendation in five and the strike rate does not move.**
+
+**It relocates the miscalibration rather than removing it.** Pooled, delivered
+minus claimed:
+
+| | home | draw | away | `12` | `1X` | `X2` |
+| --- | --- | --- | --- | --- | --- | --- |
+| raw | +0.33 | +0.75 ✱ | −1.07 ✱ | −0.75 ✱ | +1.07 ✱ | −0.33 |
+| calibrated | **+1.17 ✱** | −0.66 | −0.51 | +0.66 | +0.51 | **−1.17 ✱** |
+
+Four resolved gaps become two — it fixes the draw, away, `12` and `1X`, and
+**breaks home and `X2`, which were fine.** It does remove the separation
+slope (+5.66 ✱ → +2.36, no longer resolved; E3 stays resolved at +12.13).
+
+**And it makes E0 worse** — home **+1.77 ✱ → +2.37 ✱**, `X2` −1.77 ✱ → −2.37 ✱.
+Expected, once E0's defect is known to be a level offset in the opposite
+direction to what a pooled fit learns from E1–E3.
+
+**Three things worth carrying forward:**
+
+- **The published number is already honest.** Delivered minus claimed on the
+  actual published pick is **−0.06 pts** raw (claims 72.55%, delivers 72.49%);
+  calibrated it becomes +0.50. The market-level gaps largely cancel in the
+  published mix. That is the number **B7** needs and it is currently fine —
+  which is a different claim from "the head is calibrated", and the difference
+  should not be blurred when B7 is closed.
+- **The only real change is the mix**, and it is an owner decision rather than a
+  measurement. `12` — the least specific thing the product can say — falls from
+  **65.0% to 47.7%**, and `1X` rises 17.6% → 30.5%, at no cost in strike rate or
+  honesty. `BACKLOG.md` B3 recorded the `12`-heavy mix as a knowing trade; this
+  is the price of reversing it, and the price is approximately zero.
+- **The control was weaker than it should have been.** The sham matched the
+  18.42% change rate but moved the mix toward **H** (11.8 → 27.5), not toward
+  `1X`. It decisively rules out "any perturbation of this size helps"; it does
+  **not** isolate the `12`→`1X` confound §9.5 named. A properly matched control
+  would move the mix the same way and differ only in carrying no information.
+
+> **This undercuts §9.5's explanation, and the flag belongs there as well.**
+> §9.5 attributed τ's strike gain to the fallback shifting `12` → `1X`. B2
+> shifts that mix **three times harder** (17.3 points against τ's 5.7) and gains
+> **+0.088, unresolved**. If the mechanism were the one §9.5 named, the larger
+> shift should have paid more. **§9.5's verdict stands and its explanation does
+> not** — τ is still declined, on the stronger ground that a 5×-wrong ρ was the
+> best arm. Why strike rate was monotone in |ρ| is **unexplained and open**.
+
+#### Where this leaves E0
+
+**Real, marginal, and not adjudicable on E0's own data.** The gap is +1.77
+[+0.05, +3.43] — barely resolved — step 1 puts any one-parameter fix at
+t = 0.72–1.80, and the one correction already built makes it worse. The
+home-term explanation is **reopened** by step 1's withdrawn verdict and is the
+natural shape for a level offset, but it cannot be settled here.
+
+**Do not** spend further configurations on E0 in isolation. If it is revisited,
+the only defensible route is a **per-division intercept fitted pooled** — where
+the information exists — with the geometry check from step 1 rerun against a
+threshold the measurement can actually support.
+
+### 9.2 The goal-line tails were validated for markets the product does not serve
+
+**Not measured yet. This is the second-priority diagnostic and it blocks B4.**
+
+`BACKLOG.md` B4 extends over/under to 0.5–5.5. The pmf's fitness for that was
+established by two P0 results, and both were scoped elsewhere:
+
+- **P0-1 closed "keep Poisson" on a variance ratio** — 1.0103 [0.9915, 1.0313]
+  — which is a statement about dispersion near the mode. It is not a statement
+  about tail fit at over 4.5 or under 1.5.
+- **P0-3's caveat was filed as an Asian handicap problem.** \|margin\| ≥ 3 and
+  ≥ 4 are over-predicted at 0.984 and 0.965, and the note reads *"those
+  thresholds are the region most Asian handicap lines actually sit in"*. AH is
+  not served and is deferred post-launch (§5), so the caveat went with it — but
+  the same tail is what over 3.5 and over 4.5 are priced from.
+
+**P0-1 also supplies the mechanism**, though not the magnitude. It showed that
+λ estimation noise alone reproduces the λ-quartile dispersion gradient
+(1.1550 / 1.0260 / 1.0148 / 0.9622) under a pure-Poisson null, which was
+recorded as a reason *not* to read over-dispersion into the data. The corollary
+was never drawn: **λ noise biases tail-line probabilities harder than central
+ones**, because the tail of a Poisson pmf is convex in λ, and the lines B4 wants
+to publish are exactly the tails.
+
+> **Correction, 2026-08-10.** An earlier draft of this section said P0-1
+> *measured* the served λ as carrying log-scale noise of **sd 0.20**. It did
+> not. That figure is a parameter of P0-1's synthetic demonstration
+> (`test_lambda_quartile_gradient_appears_under_a_pure_poisson_null`), chosen
+> alongside a true log-λ sd of 0.33 to reproduce the observed gradient — a
+> reliability of about 0.73. **The served head's actual `Var(log λ_h)` is
+> 0.0453**, so sd-0.20 noise would imply 88% of its spread is error, which is
+> absurd. The noise level the served λ really carries is **not measured
+> anywhere**, and that strengthens rather than weakens B11: the tail bias cannot
+> be reasoned about from a number that does not exist, so it has to be measured
+> against realised results.
+
+**And nothing downstream can catch it.** The five new lines are unpriced
+(`PRODUCT.md` §2), so there is no CLV, no return and no market comparison — the
+only honesty instrument available is claimed-versus-delivered against the
+result. **That check should run before B4 ships, not after.**
+
+Cheap: bucket by predicted probability at each of the six lines, per division,
+on stored λs. No new fit, no new data.
+
+### 9.3 §1.7's closing demerit does not count against a tipster
+
+**Not a mis-context, a mis-priority.** `CHANNELS.md` and §1.7 close with *"it
+also does not touch the book — §2.3 stands"*. That was the right thing to say to
+a project trying to beat the book, and it is why a licensed, positive, unwritten
+gate has sat behind hosting and surface work.
+
+Under a tipster it is not a demerit at all. Shots + corners gains
+**+0.0490 / +0.0540** split-half reliability over the shipped `goals+sot`,
+against a NOISE control at −0.0008 — the same order as the addition that became
+−0.00422 nats and shipped (§1.3). A better λ improves **every item on the
+menu at once**: the 1X2 outrights, all three double chances (which are marginals
+of the same joint), and all six goal lines.
+
+**It is the largest measured prediction gain available to the product**, and the
+argument that deprioritised it was an argument about a market that is switched
+off. §1.7's own cautions stand unchanged — split-half reliability is not
+deviance, and the per-side blend weight costs 2 configurations rather than 36.
+
+### 9.4 OPEN-3's rejection was a single-head objection — weakest of the four
+
+The season-boundary shrink helps lower-division O/U and degrades E0 1X2
+(+0.00259 [+0.00121, +0.00389]), and §5 deferred it as *"not a global
+hyperparameter"*. That is a constraint on a single head serving a single market.
+A product that picks one item per match from a five-item menu can in principle
+scope adoption per division and per market.
+
+**Listed for completeness, and not recommended.** It would require amending
+convention 2, it multiplies the configuration count by the number of
+populations, and §1.7 is a better use of the same budget. Revisit only if §1.7
+is done and the division asymmetry (§3.1) is still unexplained.

@@ -45,6 +45,15 @@ def artifact():
     )
 
 
+#: A `today` close enough to the `artifact` fixture's `fitted_at` (2026-08-01)
+#: that `_stale` does not fire. **Any test reaching `step_serve` with a real
+#: artifact must pin this.** Two did not, and began failing on 2026-08-09 when
+#: the wall clock passed `REFIT_AFTER_DAYS`: serve refroze the stub, published
+#: nothing, and tips reported "no untipped predictions". Nothing was broken in
+#: the product -- the staleness rule was working and the tests had aged out.
+FRESH_ARTIFACT_DAY = pd.Timestamp("2026-08-02")
+
+
 def add_fixture(conn, division, home_id, away_id, date="2026-08-15"):
     conn.execute(
         "INSERT INTO fixtures (division, match_date, home_team_id, away_team_id,"
@@ -68,7 +77,8 @@ def test_an_empty_feed_is_attention_not_success(conn, tmp_path, monkeypatch):
     path.write_text(feed("SC0,08/08/2026,15:00,Celtic,Rangers,2,3,4,2,3,4,2,2,0,2,2"),
                     encoding="utf-8")
 
-    report = run_cycle.run(conn, file=path, dry_run=True)
+    report = run_cycle.run(conn, file=path, dry_run=True,
+                           today=FRESH_ARTIFACT_DAY)
     sync = next(s for s in report.steps if s.name == "sync")
     assert sync.status is Status.ATTENTION
     assert "NO ENGLISH ROWS" in sync.detail
@@ -255,7 +265,7 @@ def test_the_cycle_publishes_tips_for_the_fixtures_it_just_priced(
     path = tmp_path / "feed.csv"
     path.write_text(feed(), encoding="utf-8")
 
-    report = run_cycle.run(conn, file=path)
+    report = run_cycle.run(conn, file=path, today=FRESH_ARTIFACT_DAY)
 
     step = next(s for s in report.steps if s.name == "tips")
     published = conn.execute("SELECT COUNT(*) FROM tips").fetchone()[0]
@@ -279,7 +289,7 @@ def test_a_fixture_below_the_floor_falls_back_rather_than_going_untipped(
     path = tmp_path / "feed.csv"
     path.write_text(feed(), encoding="utf-8")
 
-    report = run_cycle.run(conn, file=path)
+    report = run_cycle.run(conn, file=path, today=FRESH_ARTIFACT_DAY)
 
     step = next(s for s in report.steps if s.name == "tips")
     assert step.status is Status.OK, step.detail

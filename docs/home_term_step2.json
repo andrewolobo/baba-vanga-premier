@@ -1,0 +1,211 @@
+{
+  "step2": {
+    "diagnostic": {
+      "rows": [
+        {
+          "bucket": 0,
+          "n": 3165,
+          "mean_d": -0.152,
+          "home": -0.262,
+          "home_ci": [
+            -1.89,
+            1.4
+          ],
+          "home_excludes_zero": false,
+          "away": 0.575,
+          "away_ci": [
+            -1.14,
+            2.34
+          ],
+          "away_excludes_zero": false
+        },
+        {
+          "bucket": 1,
+          "n": 3165,
+          "mean_d": 0.0195,
+          "home": -0.86,
+          "home_ci": [
+            -2.52,
+            0.77
+          ],
+          "home_excludes_zero": false,
+          "away": 0.007,
+          "away_ci": [
+            -1.59,
+            1.72
+          ],
+          "away_excludes_zero": false
+        },
+        {
+          "bucket": 2,
+          "n": 3164,
+          "mean_d": 0.1017,
+          "home": -0.443,
+          "home_ci": [
+            -2.18,
+            1.27
+          ],
+          "home_excludes_zero": false,
+          "away": -2.239,
+          "away_ci": [
+            -3.82,
+            -0.56
+          ],
+          "away_excludes_zero": true
+        },
+        {
+          "bucket": 3,
+          "n": 3165,
+          "mean_d": 0.1838,
+          "home": 0.081,
+          "home_ci": [
+            -1.64,
+            1.77
+          ],
+          "home_excludes_zero": false,
+          "away": -0.866,
+          "away_ci": [
+            -2.44,
+            0.65
+          ],
+          "away_excludes_zero": false
+        },
+        {
+          "bucket": 4,
+          "n": 3165,
+          "mean_d": 0.3532,
+          "home": 3.116,
+          "home_ci": [
+            1.51,
+            4.75
+          ],
+          "home_excludes_zero": true,
+          "away": -2.849,
+          "away_ci": [
+            -4.01,
+            -1.63
+          ],
+          "away_excludes_zero": true
+        }
+      ],
+      "slopes": {
+        "home": 6.578004363225127,
+        "away": -6.636892992304871
+      }
+    },
+    "gaps": [
+      {
+        "arm": "s = 1 (shipped)",
+        "population": "pooled",
+        "home": 0.327,
+        "home_excludes_zero": false,
+        "draw": 0.748,
+        "draw_excludes_zero": true,
+        "away": -1.074,
+        "away_excludes_zero": true
+      },
+      {
+        "arm": "s = 1 (shipped)",
+        "population": "E0",
+        "home": 1.766,
+        "home_excludes_zero": true,
+        "draw": 0.399,
+        "draw_excludes_zero": false,
+        "away": -2.165,
+        "away_excludes_zero": true
+      },
+      {
+        "arm": "s fitted pooled",
+        "population": "pooled",
+        "home": 0.322,
+        "home_excludes_zero": false,
+        "draw": 0.802,
+        "draw_excludes_zero": true,
+        "away": -1.124,
+        "away_excludes_zero": true
+      },
+      {
+        "arm": "s fitted pooled",
+        "population": "E0",
+        "home": 1.738,
+        "home_excludes_zero": true,
+        "draw": 0.53,
+        "draw_excludes_zero": false,
+        "away": -2.269,
+        "away_excludes_zero": true
+      },
+      {
+        "arm": "s per-division",
+        "population": "pooled",
+        "home": 0.321,
+        "home_excludes_zero": false,
+        "draw": 0.821,
+        "draw_excludes_zero": true,
+        "away": -1.142,
+        "away_excludes_zero": true
+      },
+      {
+        "arm": "s per-division",
+        "population": "E0",
+        "home": 1.751,
+        "home_excludes_zero": true,
+        "draw": 0.461,
+        "draw_excludes_zero": false,
+        "away": -2.211,
+        "away_excludes_zero": true
+      }
+    ],
+    "s_pooled": [
+      0.9466,
+      0.9844,
+      1.0037,
+      1.0411,
+      1.0466,
+      1.0502,
+      1.0584,
+      1.064
+    ],
+    "s_by_division": {
+      "E0": [
+        0.9661,
+        0.9836,
+        1.0123,
+        1.0185,
+        1.0195,
+        1.027,
+        1.0294,
+        1.0307
+      ],
+      "E1": [
+        0.9237,
+        1.0652,
+        1.1046,
+        1.1131,
+        1.1151,
+        1.1212,
+        1.1262,
+        1.1308
+      ],
+      "E2": [
+        0.9798,
+        1.0753,
+        1.0964,
+        1.1249,
+        1.1278,
+        1.1595,
+        1.1739,
+        1.175
+      ],
+      "E3": [
+        0.6761,
+        0.7631,
+        0.8945,
+        0.9483,
+        0.9502,
+        0.9614,
+        0.9721,
+        1.0086
+      ]
+    }
+  }
+}

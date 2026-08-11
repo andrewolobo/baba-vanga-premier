@@ -9,7 +9,11 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-06**.
+Last updated **2026-08-10**, after the B12 channels gate (`OUTSTANDING.md`
+§1.12) closed the highest-value open modelling item and opened B14, the owner
+decision on whether to adopt it. Before that, the tipster re-review
+(`OUTSTANDING.md` §9) and the draw-mass diagnostic (§9.5), which added B10–B12
+and gated B4.
 
 ---
 
@@ -22,7 +26,12 @@ Last updated **2026-08-06**.
 | **B3** | Double chance below a threshold | **done** — floor **0.55**, `12` on | 4 spent | B0 |
 | **B8** | Ship the B3 rule into `serve/tips.py` | **done** 2026-08-06 | 0 | — |
 | **B1** | Agreement filter: tip only when model and market name the same side | open, **deprioritised** | ~2 | — |
-| **B4** | Extend over/under to lines 0.5–5.5 | open | ~4 | B0 (now unblocked) |
+| **B4** | Extend over/under to lines 0.5–5.5 | open, **gated on B11** | ~4 | B0, B11 |
+| **B10** | `12`-versus-`1X` ordering | open, **downgraded** — §9.6 | ~3 | — |
+| **B11** | Per-line calibration for the six goal lines | open | ~1 | — |
+| **B12** | Shots + corners channel gate (§1.7, licensed and unwritten) | **done — measured 2026-08-10, not adopted** | 13 spent | — |
+| **B13** | Owner call: run the tip rule on B2's calibrated probabilities? | **open — decision, not measurement** | 0 | — |
+| **B14** | Owner call: adopt the corners channel into the head? | **open — decision, not measurement** | 0 | B12 |
 
 ## Later
 
@@ -224,6 +233,14 @@ rate at each candidate T; how often double chance displaces an outright, per
 division; and whether the head is calibrated on the union rather than the
 outright.
 
+> **The union question went unanswered for four days and is now closed —
+> `OUTSTANDING.md` §9.5.** Neither B2 nor B3 delivered it despite both scoping
+> notes asking for it; the only calibration table either produced was on the
+> 1X2 `argmax`. Measured 2026-08-10: **`12` over-confident −0.75 [−1.43, −0.02],
+> `1X` under-confident +1.07 [+0.37, +1.78], `X2` calibrated.** The head is
+> *not* calibrated on the union, the two largest markets are wrong in opposite
+> directions, and that is B10.
+
 **No double-chance prices exist**, but they are derivable from 1X2 as
 `1/(1/o_h + 1/o_d)`. Real double-chance markets carry their own margin and are
 usually worse than that combination, so a derived price is an **upper bound** on
@@ -244,6 +261,195 @@ because every honesty check built so far leans on having a price.
 **This is where the model earns its keep**, and the only place identified so far
 that it does: it can rank a line before a price exists, which reading the odds
 cannot.
+
+## B10 — `12` versus `1X`, the defect §9.5 actually found
+
+**This is the highest-value open modelling item, and it is not the one anyone
+was looking for.** `OUTSTANDING.md` §9.5 decomposed the served head's 1X2 vector
+for the first time. Delivered minus claimed, pooled, on 15,824 out-of-sample
+matches:
+
+| outcome | gap | resolves? |
+| --- | --- | --- |
+| home | +0.33 | no |
+| draw | +0.75 | yes |
+| **away** | **−1.07** | **yes** |
+
+The away win is over-predicted and it is the largest miscalibration the head
+has. It lands squarely on the product: **`12` = home + away carries it in full
+and is 65.0% of output**, measured over-confident at −0.75 [−1.43, −0.02];
+**`1X` = home + draw carries the two under-predicted outcomes** and is
+under-confident at +1.07 [+0.37, +1.78]. The rule picks between them on the
+margin `p_d > p_a`.
+
+**Why this is a real lead and not a restatement of B2.** B2 fitted vector
+scaling to the 1X2 argmax and moved the top bucket only; the defect here is on
+the away leg across the whole distribution, and it is invisible to a table built
+on `argmax`. It is also invisible to goal Poisson deviance, which convention 2
+selects on.
+
+> **Updated 2026-08-10 by `OUTSTANDING.md` §9.6, and the lead is weaker than
+> this section first claimed.** The indirect evidence used to be "every
+> perturbation shifting `12` toward `1X` raised strike rate, including a planted
+> ρ five times too large." **§9.6 step 3 refutes that reading**: B2's
+> calibration shifts the same mix three times harder and returns **+0.088
+> [−0.410, +0.556]**, unresolved. So the ordering is *not* demonstrably
+> mispriced, and why §9.5's arms were monotone in |ρ| is unexplained.
+>
+> **What survives is the calibration fact itself** — `12` over-confident −0.75,
+> `1X` under-confident +1.07, pooled — and the fact that **no correction tried
+> so far improves strike rate**. Treat B10 as an open question about the
+> *published claim*, not as a strike-rate opportunity. Anyone reopening it
+> should read §9.6 first: three arms have now failed to move strike rate, and a
+> fourth needs a reason the first three did not have.
+
+**Pre-register before running**, and state what a win is including the minimum
+volume that is still a product. The tip population resolves roughly 1.5 points
+(B1's note), and §9.5's effects are a third of that, so **this needs a paired
+comparison against the shipped rule, never a marginal one** — the marginal CIs
+there were 2.4× wider and would have called every arm a null.
+
+**Carry the control forward.** §9.5's lesson is that a planted arm must be able
+to falsify the result you actually got, not only the one you feared. Any arm
+that improves strike rate here needs a planted counterpart showing the gain does
+not also arrive from an unrelated perturbation of the same size.
+
+## B13 — Run the tip rule on calibrated probabilities? **(owner decision)**
+
+**Measured in `OUTSTANDING.md` §9.6 step 3, ledger `b2_calibration_in_product`.
+No further measurement is needed and none should be spent.** B2's walk-forward
+vector scaling already exists and is tested; the shipped rule does not use it,
+because `tips.py` reads the raw pmf from `predictions`.
+
+What switching to it does, on 15,824 out-of-sample matches:
+
+| | raw (shipped) | B2 calibrated |
+| --- | --- | --- |
+| strike rate | 72.49% | 72.58% — **+0.088 [−0.410, +0.556]**, unresolved |
+| coverage | 100% | 100% |
+| honesty gap on the published pick | **−0.06 pts** | +0.50 pts |
+| `12` share | **65.0%** | **47.7%** |
+| `1X` share | 17.6% | 30.5% |
+| recommendations changed | — | 18.42% |
+
+**The trade, stated plainly.** It costs nothing in strike rate and nothing in
+honesty, and it cuts the least specific recommendation the product makes from
+two thirds of output to under half. Against that: it makes **E0's** home
+calibration worse (+1.77 → +2.37) and breaks two pooled gaps that were fine
+(home, `X2`) while fixing four that were not.
+
+**This is the same trade B3 already made once**, in the other direction, when
+`12` was switched on and the mix went to 65% — recorded there as the owner's
+call. B13 is that decision offered again with a price attached, and the price is
+approximately zero.
+
+## B11 — Per-line calibration for the six goal lines **(gates B4)**
+
+`OUTSTANDING.md` §9.2. B4 publishes over/under 0.5–5.5, and the pmf's fitness
+for those lines rests on two P0 results that were scoped elsewhere: P0-1 closed
+"keep Poisson" on a **variance ratio**, which describes the mode rather than the
+tails, and P0-3's over-prediction caveat at \|margin\| ≥ 3 and ≥ 4 was filed as
+an **Asian handicap** problem and deferred with AH.
+
+P0-1 supplies the mechanism but **not** the magnitude: tail probabilities are
+convex in λ, so estimation noise biases the extreme lines harder than the
+central one. **How much noise the served λ carries is not measured anywhere** —
+the sd 0.20 an earlier draft of this item quoted is a parameter of P0-1's
+synthetic control, not a property of the head (`OUTSTANDING.md` §9.2's
+correction). Since the five new lines are **unpriced**, claimed-versus-delivered
+against the result is the only honesty instrument available for them, and it is
+the only way to find out.
+
+**Cheap: bucket by predicted probability at each of the six lines, per division,
+on stored λs. No new fit, no new data.** Run it before B4 ships, not after.
+
+## B12 — The shots + corners channel gate — **MEASURED 2026-08-10**
+
+Results in `CHANNELS_GATE.md`, pre-registration `P4_CHANNELS_PLAN.md`,
+`OUTSTANDING.md` §1.12. **Real, and half the size this item predicted.**
+
+| arm | vs the shipped head | |
+| --- | --- | --- |
+| `+shots` | −0.00095 [−0.00143, −0.00048] | 4.0 SE |
+| **`+corners`** | **−0.00196** [−0.00276, −0.00116] | 4.7 SE |
+| **`+both`** | **−0.00217** [−0.00285, −0.00146] | 6.0 SE |
+| `+noise ×2` (control) | +0.02101 | fails by 10× the effect |
+| oracle ceiling | −0.00396 | the arm reaches 55% of it |
+
+**Three things this item got wrong**, kept rather than reworded:
+
+- **"The same order as the addition that became −0.00422 and shipped."** It is
+  **51%** of it. The +0.0490/+0.0540 split-half gain does not map to deviance at
+  the rate this section assumed, and `CHANNELS_GATE.md` §3 records that as the
+  third instance of the same over-reading.
+- **"Cost is 2 configurations."** Corrected below before the gate ran; it cost
+  **13**, and three of its four rows ended up **post-hoc** because the positive
+  control fired a stop rule on a mis-derived bar.
+- **"A better λ improves every item on the menu at once."** True in principle
+  and small in practice: 1X2 improves 0.00053 and O/U 2.5 improves 0.00074.
+
+**What survives, and it is the useful part: corners is the channel, not shots.**
+Corners is worth 2.1× shots, and shots on top of corners adds −0.00021 —
+smaller than the paired SE. `goals + sot + corners` gets **90%** of the gain
+with one fewer channel, and it is already measured as arm 4 of
+`h39_channel_decomposition`, so adopting it needs no further gate. **B14.**
+
+**Do not** re-litigate with per-channel weights, a per-side weight, fouls or
+cards, or a joint α sweep. The ceiling is −0.00396 and 55% of it is banked.
+
+## B14 — Adopt the corners channel? **(owner decision)**
+
+**No further measurement is needed and none should be spent.** B12 measured
+both candidate heads out of sample; what remains is a judgement about whether
+the gain is worth a head change.
+
+| | shipped | `+corners` | `+both` |
+| --- | --- | --- | --- |
+| goal deviance vs shipped | — | **−0.00196** | **−0.00217** |
+| divisions resolving | — | — | 3 of 4 (E3 does not) |
+| 1X2 / O/U 2.5 | — | −0.00033 / −0.00074 | −0.00053 / −0.00074 |
+| pooled deficit to the market | +0.01230 | — | +0.01177 |
+| new data required | — | none | none |
+
+**The price is not the code, it is the five steps of `OUTSTANDING.md` §1.3.** A
+head change retires `p1-3a38e9d6ef1ca7ee`, re-issues `BASELINE.md` §1–2,
+restates `DEFLATION.md` §5 criterion 2, updates the share-of-market-edge table,
+and **re-runs `engine/eval/tips.py`'s claims block — because the published
+strike rate is a property of the head, not of the tip rule.** That last one
+touches what the customer is told, so it is not a silent upgrade.
+
+**Recommendation: `+corners` rather than `+both`.** It is 90% of the gain, one
+fewer channel, and one fewer thing to be wrong about later. `+both` is better by
+−0.00021, which nothing measured here resolves.
+
+## B12 (original scoping note)
+
+Licensed by `CHANNELS.md` and `OUTSTANDING.md` §1.7 and never written. Split-half
+reliability gain over the shipped `goals+sot` is **+0.0490 attack / +0.0540
+defence**, against a NOISE control at −0.0008 — the same order as the addition
+that became −0.00422 nats and shipped (§1.3).
+
+**It was deprioritised on a beat-the-book argument that no longer applies**
+(§9.3): §1.7 closes with *"it also does not touch the book"*, which was the
+right thing to say to a project trying to beat the book and is not a demerit for
+a tipster. A better λ improves **every item on the menu at once** — the
+outrights, all three double chances, and all six goal lines, because they are
+all marginals of the same joint.
+
+**Cost is 13 configurations, pre-registered in `P4_CHANNELS_PLAN.md` §5.**
+
+> **The "2 configurations" this item used to quote was a mis-transcription,
+> corrected 2026-08-10.** It imported §1.7's fourth bullet, which prices
+> identifying the **per-side** (att/dfn) weight for the *already-shipped* sot
+> channel — a different question, and one this gate does not ask. Nothing had
+> ever costed the shots+corners gate itself. The bullet's real instruction
+> survives and is obeyed: **do not build a 6×6 grid.** The weight is a single
+> 5-point sweep over one shared composite weight, and the per-side weight is
+> explicitly not in the budget.
+
+**Read §1.7's cautions first** — split-half reliability is not deviance,
+`SHOTS_TARGET.md` §7 records over-estimating that mapping once, and row 53 is
+not reproducible.
 
 ## B5 — Prices for goal lines other than 2.5
 
@@ -303,6 +509,14 @@ record rather than as the absence of one.
 population, which will be small and noisy for most of a first season, and
 nothing stops the two being quoted interchangeably. `OUTSTANDING.md` §1.10
 records that the regulatory exposure is the owner's and is flagged.
+
+**And there is now a number on the claim itself.** §9.5 measured the head
+over-stating `12` — 65.0% of everything published — by **0.75 points**, claiming
+74.39% and delivering 73.64%. Small, resolved, and in the direction that
+matters: the product's largest market over-claims rather than under-claims. The
+B7 honesty argument to date has rested on the head being *under*-confident and
+therefore conservative (§1.10), and **that is true of the outrights and false of
+`12`**. Worth stating before any published confidence figure leans on it.
 
 ---
 

@@ -67,7 +67,18 @@ class TrialCount:
 
 #: Recorded as post-hoc at the time it was run. Excluded from any claim that the
 #: selection was pre-registered; see `docs/DEFLATION.md` §4.
-POST_HOC_TRIALS: tuple[str, ...] = ("h19_alpha_interaction", "p5_book_no_arb")
+#:
+#: The three B12 rows are here for a reason worth reading before trusting them:
+#: `P4_CHANNELS_PLAN.md` §4 made the positive control a stop condition, the
+#: control returned -0.00396 against a bar of -0.008, and the gate was run
+#: anyway by owner decision. The bar was mis-derived and the instrument was
+#: plainly alive at ~10 paired SE -- but the decision to continue was taken
+#: **after seeing a result scored on real outcomes**, which is the line
+#: `OUTSTANDING.md` §1.6 draws. `CHANNELS_GATE.md` §2 has the full account.
+POST_HOC_TRIALS: tuple[str, ...] = (
+    "h19_alpha_interaction", "p5_book_no_arb",
+    "h38_channel_blend", "h39_channel_decomposition", "h40_channels_divisions",
+)
 
 
 def _arms_in(detail) -> int | None:

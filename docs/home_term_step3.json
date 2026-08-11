@@ -1,0 +1,317 @@
+{
+  "step3": {
+    "temperature": 1.4093309787857213,
+    "slopes": [
+      {
+        "arm": "raw (shipped)",
+        "population": "pooled",
+        "slope": 5.656,
+        "ci": [
+          1.71,
+          9.41
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "raw (shipped)",
+        "population": "E0",
+        "slope": 0.788,
+        "ci": [
+          -3.9,
+          5.54
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "population": "E1",
+        "slope": 6.849,
+        "ci": [
+          -2.42,
+          16.0
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "population": "E2",
+        "slope": 12.224,
+        "ci": [
+          2.58,
+          21.62
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "raw (shipped)",
+        "population": "E3",
+        "slope": 15.732,
+        "ci": [
+          5.62,
+          26.15
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "B2 calibrated",
+        "population": "pooled",
+        "slope": 2.363,
+        "ci": [
+          -1.61,
+          6.08
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "B2 calibrated",
+        "population": "E0",
+        "slope": -2.227,
+        "ci": [
+          -6.88,
+          2.5
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "B2 calibrated",
+        "population": "E1",
+        "slope": 3.343,
+        "ci": [
+          -5.9,
+          12.47
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "B2 calibrated",
+        "population": "E2",
+        "slope": 8.511,
+        "ci": [
+          -1.13,
+          17.9
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "B2 calibrated",
+        "population": "E3",
+        "slope": 12.133,
+        "ci": [
+          2.04,
+          22.59
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "sham (control)",
+        "population": "pooled",
+        "slope": -14.651,
+        "ci": [
+          -18.61,
+          -10.9
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "sham (control)",
+        "population": "E0",
+        "slope": -15.918,
+        "ci": [
+          -20.63,
+          -11.14
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "sham (control)",
+        "population": "E1",
+        "slope": -17.077,
+        "ci": [
+          -26.4,
+          -8.0
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "sham (control)",
+        "population": "E2",
+        "slope": -12.044,
+        "ci": [
+          -21.68,
+          -2.68
+        ],
+        "excludes_zero": true
+      },
+      {
+        "arm": "sham (control)",
+        "population": "E3",
+        "slope": -9.476,
+        "ci": [
+          -19.58,
+          0.89
+        ],
+        "excludes_zero": false
+      }
+    ],
+    "gaps": [
+      {
+        "arm": "raw (shipped)",
+        "population": "pooled",
+        "home": 0.33,
+        "home_sig": false,
+        "draw": 0.75,
+        "draw_sig": true,
+        "away": -1.07,
+        "away_sig": true,
+        "12": -0.75,
+        "12_sig": true,
+        "1X": 1.07,
+        "1X_sig": true,
+        "X2": -0.33,
+        "X2_sig": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "population": "E0",
+        "home": 1.77,
+        "home_sig": true,
+        "draw": 0.4,
+        "draw_sig": false,
+        "away": -2.16,
+        "away_sig": true,
+        "12": -0.4,
+        "12_sig": false,
+        "1X": 2.16,
+        "1X_sig": true,
+        "X2": -1.77,
+        "X2_sig": true
+      },
+      {
+        "arm": "B2 calibrated",
+        "population": "pooled",
+        "home": 1.17,
+        "home_sig": true,
+        "draw": -0.66,
+        "draw_sig": false,
+        "away": -0.51,
+        "away_sig": false,
+        "12": 0.66,
+        "12_sig": false,
+        "1X": 0.51,
+        "1X_sig": false,
+        "X2": -1.17,
+        "X2_sig": true
+      },
+      {
+        "arm": "B2 calibrated",
+        "population": "E0",
+        "home": 2.37,
+        "home_sig": true,
+        "draw": -0.5,
+        "draw_sig": false,
+        "away": -1.87,
+        "away_sig": true,
+        "12": 0.5,
+        "12_sig": false,
+        "1X": 1.87,
+        "1X_sig": true,
+        "X2": -2.37,
+        "X2_sig": true
+      },
+      {
+        "arm": "sham (control)",
+        "population": "pooled",
+        "home": -3.48,
+        "home_sig": true,
+        "draw": 3.87,
+        "draw_sig": true,
+        "away": -0.39,
+        "away_sig": false,
+        "12": -3.87,
+        "12_sig": true,
+        "1X": 0.39,
+        "1X_sig": false,
+        "X2": 3.48,
+        "X2_sig": true
+      },
+      {
+        "arm": "sham (control)",
+        "population": "E0",
+        "home": -1.81,
+        "home_sig": true,
+        "draw": 4.31,
+        "draw_sig": true,
+        "away": -2.5,
+        "away_sig": true,
+        "12": -4.31,
+        "12_sig": true,
+        "1X": 2.5,
+        "1X_sig": true,
+        "X2": 1.81,
+        "X2_sig": true
+      }
+    ],
+    "product": [
+      {
+        "arm": "raw (shipped)",
+        "changed_share": 0.0,
+        "strike": 0.7249,
+        "claimed": 0.7255,
+        "vs_shipped": 0.0,
+        "vs_shipped_ci": [
+          0.0,
+          0.0
+        ],
+        "vs_shipped_excludes_zero": false,
+        "honesty_gap": -0.06,
+        "mix": {
+          "12": 0.6499,
+          "1X": 0.1761,
+          "X2": 0.0305,
+          "H": 0.1184,
+          "A": 0.0252
+        }
+      },
+      {
+        "arm": "B2 calibrated",
+        "changed_share": 0.1842,
+        "strike": 0.7258,
+        "claimed": 0.7208,
+        "vs_shipped": 0.00088,
+        "vs_shipped_ci": [
+          -0.0041,
+          0.00556
+        ],
+        "vs_shipped_excludes_zero": false,
+        "honesty_gap": 0.5,
+        "mix": {
+          "12": 0.4769,
+          "1X": 0.3049,
+          "X2": 0.0707,
+          "H": 0.1182,
+          "A": 0.0293
+        }
+      },
+      {
+        "arm": "sham (control)",
+        "changed_share": 0.1842,
+        "strike": 0.6776,
+        "claimed": 0.7244,
+        "vs_shipped": -0.04733,
+        "vs_shipped_ci": [
+          -0.05084,
+          -0.04369
+        ],
+        "vs_shipped_excludes_zero": true,
+        "honesty_gap": -4.68,
+        "mix": {
+          "12": 0.5897,
+          "1X": 0.0683,
+          "X2": 0.0142,
+          "H": 0.275,
+          "A": 0.0528
+        }
+      }
+    ]
+  }
+}

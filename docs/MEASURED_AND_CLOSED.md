@@ -74,6 +74,19 @@ structure underneath.
 **Decision: do not implement the Dixon–Coles τ correction.** The draw deficit is
 real; τ is the wrong instrument for it and buys nothing on either served market.
 
+> **Re-read 2026-08-10 under the tipster objective, and the decision stands —
+> `OUTSTANDING.md` §9.1/§9.5.** Reason 2 below is scoped to O/U 2.5 and does not
+> transfer to the double chances that are now 85.6% of what the product
+> publishes, so it was re-measured on the served head rather than inherited.
+> **Three things below did not reproduce, and none of them changes the verdict.**
+> ρ is −0.0254 rather than −0.0146; the pooled deficit is +0.75 pts and **no
+> per-division deficit resolves**, so "the Premier League has no draw deficit at
+> all" is a statement about the P0 instrument and not about what is served; and
+> the largest miscalibration in the 1X2 vector turns out to be the **away win**
+> at −1.07 pts, which τ cannot touch. Reason 2 is now pinned by
+> `tests/test_draws.py` rather than argued. Figures in this section are the P0
+> ones and are correct to leave — `dispersion.py` still reproduces them.
+
 | | value | 95% CI | (originally) |
 | --- | --- | --- | --- |
 | realised draws | 26.35% | | 26.26% |

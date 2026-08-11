@@ -99,6 +99,38 @@ class WalkForwardConfig:
         return "/".join(bits)
 
 
+#: Auxiliary channels the blend uses when nothing says otherwise -- the shipped
+#: head. Each name resolves to the `home_<name>` / `away_<name>` column pair.
+DEFAULT_BLEND_CHANNELS: tuple[str, ...] = ("sot",)
+
+
+@dataclass(frozen=True)
+class ChannelBlendConfig(WalkForwardConfig):
+    """B12. `WalkForwardConfig` plus the list of channels the blend averages.
+
+    **A subclass rather than a field on the parent, and that is load-bearing.**
+    `serve.artifact.freeze` hashes `cfg.__dict__` into the artifact version, so
+    adding even a defaulted field to `WalkForwardConfig` would change the
+    version string of a head whose coefficients had not moved -- retiring
+    `p1-3a38e9d6ef1ca7ee`, which the documents cite and which `p2.py`, `p3.py`
+    and `p4_shots.py` pin. Commit `0c9eb06` declined to do that for a better
+    reason than this one. Promoting the field is part of adopting the channel,
+    not part of measuring it.
+    """
+
+    blend_channels: tuple[str, ...] = DEFAULT_BLEND_CHANNELS
+
+    def label(self) -> str:
+        base = super().label()
+        if self.shots_blend and tuple(self.blend_channels) != DEFAULT_BLEND_CHANNELS:
+            return base + "/" + "+".join(self.blend_channels)
+        return base
+
+
+def _channels_of(cfg: WalkForwardConfig) -> tuple[str, ...]:
+    return tuple(getattr(cfg, "blend_channels", DEFAULT_BLEND_CHANNELS))
+
+
 # --- effective time --------------------------------------------------------
 
 
@@ -150,6 +182,14 @@ def effective_ages(dates: pd.Series, cutoff: pd.Timestamp,
 MIN_SOT_EVIDENCE = 10.0
 
 
+@dataclass(frozen=True)
+class _Channel:
+    """One auxiliary count channel, and where it is actually observed."""
+    home: np.ndarray
+    away: np.ndarray
+    present: np.ndarray
+
+
 @dataclass
 class _Indexed:
     """Team indices and arrays, built once and reused across every refit."""
@@ -160,21 +200,25 @@ class _Indexed:
     goals_a: np.ndarray
     dates: pd.Series
     in_fit_divisions: np.ndarray
-    sot_h: np.ndarray | None = None
-    sot_a: np.ndarray | None = None
-    has_sot: np.ndarray | None = None
+    channels: dict[str, _Channel] = field(default_factory=dict)
 
 
-def _index(frame: pd.DataFrame, fit_divisions: tuple[str, ...]) -> _Indexed:
+def _index(frame: pd.DataFrame, fit_divisions: tuple[str, ...],
+           channels: tuple[str, ...] = DEFAULT_BLEND_CHANNELS) -> _Indexed:
     teams = tuple(sorted(set(frame["home_team"]) | set(frame["away_team"])))
     lookup = {name: i for i, name in enumerate(teams)}
-    sot_h = sot_a = has_sot = None
-    if {"home_sot", "away_sot"} <= set(frame.columns):
-        raw_h = pd.to_numeric(frame["home_sot"], errors="coerce")
-        raw_a = pd.to_numeric(frame["away_sot"], errors="coerce")
-        has_sot = (raw_h.notna() & raw_a.notna()).to_numpy()
-        sot_h = raw_h.fillna(0).to_numpy(dtype=float)
-        sot_a = raw_a.fillna(0).to_numpy(dtype=float)
+    columns = set(frame.columns)
+    built = {}
+    for name in channels:
+        home_col, away_col = f"home_{name}", f"away_{name}"
+        if {home_col, away_col} <= columns:
+            raw_h = pd.to_numeric(frame[home_col], errors="coerce")
+            raw_a = pd.to_numeric(frame[away_col], errors="coerce")
+            built[name] = _Channel(
+                home=raw_h.fillna(0).to_numpy(dtype=float),
+                away=raw_a.fillna(0).to_numpy(dtype=float),
+                present=(raw_h.notna() & raw_a.notna()).to_numpy(),
+            )
     return _Indexed(
         teams=teams,
         home_idx=frame["home_team"].map(lookup).to_numpy(),
@@ -183,56 +227,105 @@ def _index(frame: pd.DataFrame, fit_divisions: tuple[str, ...]) -> _Indexed:
         goals_a=frame["ftag"].astype(int).to_numpy(),
         dates=frame["match_date"],
         in_fit_divisions=frame["division"].isin(fit_divisions).to_numpy(),
-        sot_h=sot_h, sot_a=sot_a, has_sot=has_sot,
+        channels=built,
     )
 
 
-def _blend_shots(model, idx: _Indexed, rows: np.ndarray, weights: np.ndarray,
-                 cfg: WalkForwardConfig):
-    """Fold a shots-on-target strength fit into the goal-fitted strengths.
+def _channel_fits(idx: _Indexed, rows: np.ndarray, weights: np.ndarray,
+                  cfg: WalkForwardConfig):
+    """One Poisson fit per requested channel, and the clubs all of them measure.
 
-    A second Poisson on the identical design matrix with sot as the count. Both
-    are log-link over the same teams at the same cutoff, so the coefficients
-    share a scale up to the intercept -- were conversion constant,
-    log E[goals] = log(conv) + log E[sot] exactly. They differ in magnitude
-    because sot counts are ~3.5x higher and so take relatively less shrinkage
-    from the same ridge, which the sd ratio below removes.
-
-    Blended per team and only where the club has real shot evidence. The
-    National League has no shot statistics from 2016-17, and the ridge would
-    hand those clubs `att_s ~ 0` -- not "average" but fabricated -- which a
-    promoted club would then carry into E3. See `MIN_SOT_EVIDENCE`.
+    Returns `(fits, measured)`, or `(None, None)` if any channel is absent or
+    too thin -- in which case the caller leaves the goal fit alone rather than
+    blending a partial set, since which channels went in would otherwise vary
+    silently by cutoff.
     """
-    if idx.has_sot is None:
-        return model
-    usable = rows & idx.has_sot
-    if usable.sum() < cfg.min_train_matches:
+    fits, measured = [], None
+    for name in _channels_of(cfg):
+        channel = idx.channels.get(name)
+        if channel is None:
+            return None, None
+        usable = rows & channel.present
+        if usable.sum() < cfg.min_train_matches:
+            return None, None
+
+        # `weights` is ordered by the True positions of `rows`, so the same
+        # boolean restricted to those positions selects exactly the usable
+        # ones, in order.
+        w_channel = weights[channel.present[rows]]
+        fits.append(poisson_model.fit(
+            idx.home_idx[usable], idx.away_idx[usable],
+            channel.home[usable], channel.away[usable],
+            w_channel, len(idx.teams), alpha=cfg.alpha,
+        ))
+        evidence = (np.bincount(idx.home_idx[usable], w_channel, minlength=len(idx.teams))
+                    + np.bincount(idx.away_idx[usable], w_channel, minlength=len(idx.teams)))
+        seen = evidence >= MIN_SOT_EVIDENCE
+        measured = seen if measured is None else (measured & seen)
+    return fits, measured
+
+
+def auxiliary_term(base: np.ndarray, others: list[np.ndarray],
+                   measured: np.ndarray, weight: float) -> np.ndarray:
+    """The term `w · C` of the blend: the channels on `base`'s scale, averaged.
+
+    Module-level and tested directly, because what it has to get right is not
+    visible through a fit. **The single-channel branch reproduces the shipped
+    expression down to its association order** -- `w * att_c * scale` and
+    `w * (att_c * scale)` differ by one ulp, the served head must not move at
+    all, and whether a synthetic corpus exposes that is luck, since the
+    discrepancy is usually absorbed by the `(1-w)·base` term it is added to.
+
+    Above one channel the average is **renormalised**. Averaging k
+    imperfectly-correlated vectors shrinks the result, and shrinkage alone
+    moves deviance; without this a real k-channel arm and a noise control would
+    carry different auxiliary dispersion and so would differ in two ways rather
+    than one. `OUTSTANDING.md` 9.6 records a control that failed exactly that
+    test.
+    """
+    base_sd = base[measured].std()
+    scales = [(base_sd / sd if (sd := other[measured].std()) else 0.0)
+              for other in others]
+    if len(others) == 1:
+        return weight * others[0][measured] * scales[0]
+    agg = np.mean([other[measured] * scale
+                   for other, scale in zip(others, scales)], axis=0)
+    spread = agg.std()
+    return weight * (agg * (base_sd / spread) if spread else agg)
+
+
+def _blend_channels(model, idx: _Indexed, rows: np.ndarray, weights: np.ndarray,
+                    cfg: WalkForwardConfig):
+    """Fold auxiliary count-channel strength fits into the goal-fitted ones.
+
+    One further Poisson per channel on the identical design matrix, with that
+    channel's count instead of goals. All are log-link over the same teams at
+    the same cutoff, so the coefficients share a scale up to the intercept --
+    were conversion constant, log E[goals] = log(conv) + log E[sot] exactly.
+    They differ in magnitude because the auxiliary counts are several times
+    higher and so take relatively less shrinkage from the same ridge, which the
+    sd ratio in `composite` removes.
+
+    Blended per team and only where the club has real evidence in **every**
+    requested channel. The National League has no shot statistics from 2016-17,
+    and the ridge would hand those clubs `att_s ~ 0` -- not "average" but
+    fabricated -- which a promoted club would then carry into E3. See
+    `MIN_SOT_EVIDENCE`.
+    """
+    fits, measured = _channel_fits(idx, rows, weights, cfg)
+    if measured is None or not measured.any():
         return model
 
-    # `weights` is ordered by the True positions of `rows`, so the same boolean
-    # restricted to those positions selects exactly the usable ones, in order.
-    w_sot = weights[idx.has_sot[rows]]
-    shots = poisson_model.fit(
-        idx.home_idx[usable], idx.away_idx[usable],
-        idx.sot_h[usable], idx.sot_a[usable],
-        w_sot, len(idx.teams), alpha=cfg.alpha,
-    )
-
-    evidence = (np.bincount(idx.home_idx[usable], w_sot, minlength=len(idx.teams))
-                + np.bincount(idx.away_idx[usable], w_sot, minlength=len(idx.teams)))
-    measured = evidence >= MIN_SOT_EVIDENCE
-    if not measured.any():
-        return model
-
-    def fold(base, other):
-        scale = base[measured].std() / other[measured].std() if other[measured].std() else 0.0
+    def fold(base, others):
         out = base.copy()
         out[measured] = (1.0 - cfg.shots_blend) * base[measured] + \
-            cfg.shots_blend * other[measured] * scale
+            auxiliary_term(base, others, measured, cfg.shots_blend)
         return out
 
-    att = fold(model.att, shots.att) if cfg.shots_blend_sides in ("both", "att") else model.att
-    dfn = fold(model.dfn, shots.dfn) if cfg.shots_blend_sides in ("both", "dfn") else model.dfn
+    att = (fold(model.att, [f.att for f in fits])
+           if cfg.shots_blend_sides in ("both", "att") else model.att)
+    dfn = (fold(model.dfn, [f.dfn for f in fits])
+           if cfg.shots_blend_sides in ("both", "dfn") else model.dfn)
     return poisson_model.PoissonFit(model.intercept, model.home, att, dfn, model.n_train)
 
 
@@ -262,7 +355,7 @@ def _fit_at(idx: _Indexed, cutoff: pd.Timestamp, cfg: WalkForwardConfig,
     )
 
     if cfg.shots_blend:
-        model = _blend_shots(model, idx, rows, weights, cfg)
+        model = _blend_channels(model, idx, rows, weights, cfg)
 
     stale_share = 0.0
     if cfg.season_boundary_shrink is not None:
@@ -292,7 +385,7 @@ def lambdas_at(frame: pd.DataFrame, cutoff, cfg: WalkForwardConfig | None = None
     cfg = cfg or WalkForwardConfig()
     cutoff = pd.Timestamp(cutoff)
     work = frame.reset_index(drop=True)
-    idx = _index(work, cfg.fit_divisions)
+    idx = _index(work, cfg.fit_divisions, _channels_of(cfg))
     if targets is None:
         selected = (work["match_date"] >= cutoff).to_numpy()
     else:
@@ -343,7 +436,7 @@ def walk_forward(frame: pd.DataFrame, cfg: WalkForwardConfig | None = None,
     """
     cfg = cfg or WalkForwardConfig()
     work = frame.sort_values("match_date").reset_index(drop=True)
-    idx = _index(work, cfg.fit_divisions)
+    idx = _index(work, cfg.fit_divisions, _channels_of(cfg))
 
     n = len(work)
     lam_h = np.full(n, np.nan)
