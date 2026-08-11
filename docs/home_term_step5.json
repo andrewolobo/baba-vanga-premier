@@ -1,0 +1,467 @@
+{
+  "step5": {
+    "temperature": 1.4093309787857213,
+    "null_sd": {
+      "pooled": {
+        "home": 2.074,
+        "away": 1.73
+      },
+      "E0": {
+        "home": 2.167,
+        "away": 2.32
+      },
+      "E1": {
+        "home": 4.662,
+        "away": 4.59
+      },
+      "E2": {
+        "home": 4.721,
+        "away": 4.553
+      },
+      "E3": {
+        "home": 6.232,
+        "away": 5.143
+      }
+    },
+    "slopes": [
+      {
+        "arm": "raw (shipped)",
+        "leg": "home",
+        "population": "pooled",
+        "slope": 5.656,
+        "ci": [
+          1.71,
+          9.41
+        ],
+        "excludes_zero": true,
+        "null_sd": 2.074,
+        "sigma": 2.73
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "home",
+        "population": "E0",
+        "slope": 0.788,
+        "ci": [
+          -3.9,
+          5.54
+        ],
+        "excludes_zero": false,
+        "null_sd": 2.167,
+        "sigma": 0.36,
+        "bonferroni_ci": [
+          -5.45,
+          7.61
+        ],
+        "survives_bonferroni": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "home",
+        "population": "E1",
+        "slope": 6.849,
+        "ci": [
+          -2.42,
+          16.0
+        ],
+        "excludes_zero": false,
+        "null_sd": 4.662,
+        "sigma": 1.47,
+        "bonferroni_ci": [
+          -4.98,
+          19.42
+        ],
+        "survives_bonferroni": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "home",
+        "population": "E2",
+        "slope": 12.224,
+        "ci": [
+          2.58,
+          21.62
+        ],
+        "excludes_zero": true,
+        "null_sd": 4.721,
+        "sigma": 2.59,
+        "bonferroni_ci": [
+          -1.45,
+          25.97
+        ],
+        "survives_bonferroni": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "home",
+        "population": "E3",
+        "slope": 15.732,
+        "ci": [
+          5.62,
+          26.15
+        ],
+        "excludes_zero": true,
+        "null_sd": 6.232,
+        "sigma": 2.52,
+        "bonferroni_ci": [
+          1.39,
+          29.79
+        ],
+        "survives_bonferroni": true
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "away",
+        "population": "pooled",
+        "slope": -6.115,
+        "ci": [
+          -9.75,
+          -2.44
+        ],
+        "excludes_zero": true,
+        "null_sd": 1.73,
+        "sigma": -3.53
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "away",
+        "population": "E0",
+        "slope": -2.363,
+        "ci": [
+          -6.58,
+          1.67
+        ],
+        "excludes_zero": false,
+        "null_sd": 2.32,
+        "sigma": -1.02,
+        "bonferroni_ci": [
+          -8.67,
+          3.65
+        ],
+        "survives_bonferroni": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "away",
+        "population": "E1",
+        "slope": -8.249,
+        "ci": [
+          -17.3,
+          1.16
+        ],
+        "excludes_zero": false,
+        "null_sd": 4.59,
+        "sigma": -1.8,
+        "bonferroni_ci": [
+          -19.97,
+          4.89
+        ],
+        "survives_bonferroni": false
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "away",
+        "population": "E2",
+        "slope": -14.8,
+        "ci": [
+          -23.27,
+          -6.21
+        ],
+        "excludes_zero": true,
+        "null_sd": 4.553,
+        "sigma": -3.25,
+        "bonferroni_ci": [
+          -26.17,
+          -2.87
+        ],
+        "survives_bonferroni": true
+      },
+      {
+        "arm": "raw (shipped)",
+        "leg": "away",
+        "population": "E3",
+        "slope": -7.011,
+        "ci": [
+          -17.59,
+          3.48
+        ],
+        "excludes_zero": false,
+        "null_sd": 5.143,
+        "sigma": -1.36,
+        "bonferroni_ci": [
+          -20.91,
+          7.46
+        ],
+        "survives_bonferroni": false
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "home",
+        "population": "pooled",
+        "slope": 2.363,
+        "ci": [
+          -1.61,
+          6.08
+        ],
+        "excludes_zero": false,
+        "null_sd": 2.074,
+        "sigma": 1.14
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "home",
+        "population": "E0",
+        "slope": -2.227,
+        "ci": [
+          -6.88,
+          2.5
+        ],
+        "excludes_zero": false,
+        "null_sd": 2.167,
+        "sigma": -1.03
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "home",
+        "population": "E1",
+        "slope": 3.343,
+        "ci": [
+          -5.9,
+          12.47
+        ],
+        "excludes_zero": false,
+        "null_sd": 4.662,
+        "sigma": 0.72
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "home",
+        "population": "E2",
+        "slope": 8.511,
+        "ci": [
+          -1.13,
+          17.9
+        ],
+        "excludes_zero": false,
+        "null_sd": 4.721,
+        "sigma": 1.8
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "home",
+        "population": "E3",
+        "slope": 12.133,
+        "ci": [
+          2.04,
+          22.59
+        ],
+        "excludes_zero": true,
+        "null_sd": 6.232,
+        "sigma": 1.95
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "away",
+        "population": "pooled",
+        "slope": -2.715,
+        "ci": [
+          -6.32,
+          1.04
+        ],
+        "excludes_zero": false,
+        "null_sd": 1.73,
+        "sigma": -1.57
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "away",
+        "population": "E0",
+        "slope": 0.762,
+        "ci": [
+          -3.46,
+          4.84
+        ],
+        "excludes_zero": false,
+        "null_sd": 2.32,
+        "sigma": 0.33
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "away",
+        "population": "E1",
+        "slope": -4.639,
+        "ci": [
+          -13.87,
+          4.81
+        ],
+        "excludes_zero": false,
+        "null_sd": 4.59,
+        "sigma": -1.01
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "away",
+        "population": "E2",
+        "slope": -10.846,
+        "ci": [
+          -19.37,
+          -2.42
+        ],
+        "excludes_zero": true,
+        "null_sd": 4.553,
+        "sigma": -2.38
+      },
+      {
+        "arm": "B2 calibrated",
+        "leg": "away",
+        "population": "E3",
+        "slope": -3.496,
+        "ci": [
+          -14.09,
+          6.98
+        ],
+        "excludes_zero": false,
+        "null_sd": 5.143,
+        "sigma": -0.68
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "home",
+        "population": "pooled",
+        "slope": -14.651,
+        "ci": [
+          -18.61,
+          -10.9
+        ],
+        "excludes_zero": true,
+        "null_sd": 2.074,
+        "sigma": -7.06
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "home",
+        "population": "E0",
+        "slope": -15.918,
+        "ci": [
+          -20.63,
+          -11.14
+        ],
+        "excludes_zero": true,
+        "null_sd": 2.167,
+        "sigma": -7.35
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "home",
+        "population": "E1",
+        "slope": -17.077,
+        "ci": [
+          -26.4,
+          -8.0
+        ],
+        "excludes_zero": true,
+        "null_sd": 4.662,
+        "sigma": -3.66
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "home",
+        "population": "E2",
+        "slope": -12.044,
+        "ci": [
+          -21.68,
+          -2.68
+        ],
+        "excludes_zero": true,
+        "null_sd": 4.721,
+        "sigma": -2.55
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "home",
+        "population": "E3",
+        "slope": -9.476,
+        "ci": [
+          -19.58,
+          0.89
+        ],
+        "excludes_zero": false,
+        "null_sd": 6.232,
+        "sigma": -1.52
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "away",
+        "population": "pooled",
+        "slope": 11.785,
+        "ci": [
+          8.2,
+          15.47
+        ],
+        "excludes_zero": true,
+        "null_sd": 1.73,
+        "sigma": 6.81
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "away",
+        "population": "E0",
+        "slope": 13.036,
+        "ci": [
+          8.85,
+          17.09
+        ],
+        "excludes_zero": true,
+        "null_sd": 2.32,
+        "sigma": 5.62
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "away",
+        "population": "E1",
+        "slope": 12.097,
+        "ci": [
+          3.0,
+          21.56
+        ],
+        "excludes_zero": true,
+        "null_sd": 4.59,
+        "sigma": 2.64
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "away",
+        "population": "E2",
+        "slope": 6.062,
+        "ci": [
+          -2.49,
+          14.7
+        ],
+        "excludes_zero": false,
+        "null_sd": 4.553,
+        "sigma": 1.33
+      },
+      {
+        "arm": "sham (control)",
+        "leg": "away",
+        "population": "E3",
+        "slope": 14.098,
+        "ci": [
+          3.54,
+          24.65
+        ],
+        "excludes_zero": true,
+        "null_sd": 5.143,
+        "sigma": 2.74
+      }
+    ],
+    "bonferroni_cells": 8,
+    "survives_bonferroni": [
+      "home E3",
+      "away E2"
+    ],
+    "lost_to_bonferroni": [
+      "home E2"
+    ]
+  }
+}

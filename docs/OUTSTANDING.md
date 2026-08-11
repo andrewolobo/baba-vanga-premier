@@ -5,7 +5,47 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-10**, after the B12 channels gate (§1.12) — which found
+Last updated **2026-08-11**, after the **linearity control** (§9.11) — which
+**refuted its own test for 0 configurations**: over-shrinkage and a tail step
+produce curvature only **1.46σ / 1.67σ** apart against a single measurement's
+noise, so the corpus cannot decide the mechanism, and closing it would take
+**1.38× the corpus — the entire holdout, clearing by 135 matches**. §3's
+"flat then a step" reading is weakened on two counts and corrected in place.
+**§9.7 item 4 is all that remains.**
+
+Before that, **2026-08-11**, after measuring the separation slope's **away
+leg** for the first time (§9.10) — which found it is the **larger error and the
+better-resolved one** (−6.12 ✱ at 3.5σ against home's +5.66 at 2.7σ), that the
+**two legs have different division profiles** so §9.6's "the slope lives in
+E1–E3" is home-leg only, that **Bonferroni across the eight cells kills home
+E2** — a cell `SEPARATION_SLOPE.md` §1 published as resolved — and that the
+**blind sham moves the slope further than the real defect on both legs**. Gate,
+**3 configurations by owner decision, 189 → 192**.
+
+Before that, **2026-08-11**, after committing the separation slope's two
+missing controls (§9.9) — which found the estimator **unbiased on both legs**,
+`slope_ci`'s coverage **nominal at 4/80**, the noise ladder's **sign reproduced
+and its magnitudes 2.6× smaller** than §9.6's prose, and step 2's headline
+re-read as **2.77 null sd rather than ~4σ**. Probe row, 0 configurations, 189
+unchanged. `SEPARATION_SLOPE.md` §2 has it.
+
+Before that, **2026-08-11**, after a review of whether the head's
+hyperparameters were tuned blind to the product (§9.8) — which found that
+**every sweep already recorded `ll_1x2` on every arm**, so the counterfactual
+needed no new measurement; that **three of the four named parameters have both
+objectives choosing the same arm**; and that on the fourth, `H`, the **two
+served markets sit on opposite sides of the deviance choice**, so re-selecting
+on 1X2 trades O/U away rather than fixing an error. Nothing was measured; no
+ledger row. `SELECTION_OBJECTIVE.md` has it.
+
+Before that, **2026-08-11**, after a review of §9.6's separation slope (§9.7) —
+which found that the **controls licensing it exist only as prose in this file
+and cannot be re-run**, that on the home leg the effect is a **top-quintile step
+rather than a gradient**, that the away leg has never had an interval at all,
+and that the slope and **B13 are the same decision**. Nothing was measured;
+no ledger row. `SEPARATION_SLOPE.md` has it.
+
+Before that, **2026-08-10**, after the B12 channels gate (§1.12) — which found
 that **shots and corners are worth −0.00217, about half what was predicted and
 55% of their own measured ceiling**, that **corners does 90% of the work while
 total shots is nearly redundant**, and that the gate's own positive control
@@ -72,6 +112,13 @@ the plan recording why its stop rule fired and why it was run past anyway) →
 reproducible as committed code, and the result: **a market follower**, where
 BOOK's apparent edge turns out to be cross-book price dispersion rather than
 forecasting, and `choice_mattered` is shown to have a hole) →
+`SEPARATION_SLOPE.md` (review of §9.6's λ → outcome defect — the finding
+survives, its controls are not reproducible, and on the home leg it is a
+top-quintile step rather than the gradient it is written up as) →
+`SELECTION_OBJECTIVE.md` (review of the claim that the head was tuned blind to
+the product — the counterfactual was already recorded in every sweep, three of
+the four hyperparameters have both objectives choosing the same arm, and on the
+fourth the two served markets pull in opposite directions) →
 `DEPLOY.md` (hosting on one Azure Ubuntu VM by `git pull`: the three blockers,
 what does not fit a public single-VM deployment, and the fault-tolerance
 build-out `RUNBOOK.md` §8 leaves open).
@@ -103,13 +150,17 @@ build-out `RUNBOOK.md` §8 leaves open).
 shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
 prior, COVID window embargoed from scoring. Artifact
 `p1-3a38e9d6ef1ca7ee` — **unchanged by §1.12**, which measured on a subclass of
-the served config precisely so the version string would not move. **470 tests
-pass, all green** (2026-08-10; re-run `pytest -q` rather than trusting this line
+the served config precisely so the version string would not move. **484 tests
+pass, all green** (2026-08-11; re-run `pytest -q` rather than trusting this line
 — it has been stale twice). The two calendar-time-bomb failures found earlier
-the same day are fixed — §6. Gate ledger holds
-**98 runs / 55 questions / at least 189 configurations** — the last is the
+on 2026-08-10 are fixed — §6. Gate ledger holds
+**101 runs / 58 questions / at least 192 configurations** — the last is the
 number that feeds deflation, and §3.2 explains why the other two mislead.
-§9.5 spent 4, §9.6 spent 6 (its step 1 probe spent none), and §1.12 spent 13.
+§9.5 spent 4, §9.6 spent 6 (its step 1 probe spent none), §1.12 spent 13,
+**§9.9 spent none** — a probe on synthetic outcomes, which is why runs and
+questions moved and configurations did not — **§9.10 spent 3 by owner
+decision**, where `SEPARATION_SLOPE.md` §8 had named 0 or 1, and **§9.11 spent
+none**, another synthetic-outcome probe.
 
 **Three of §1.12's four rows are post-hoc** and are named in
 `trials.POST_HOC_TRIALS` alongside `h19_alpha_interaction` and
@@ -1759,6 +1810,275 @@ natural shape for a level offset, but it cannot be settled here.
 the only defensible route is a **per-division intercept fitted pooled** — where
 the information exists — with the geometry check from step 1 rerun against a
 threshold the measurement can actually support.
+
+### 9.7 The separation slope, reviewed — **2026-08-11. No measurement, no row.**
+
+Full account in `SEPARATION_SLOPE.md`. §9.6 step 2's finding — the λ → outcome
+mapping is miscalibrated in predicted separation, and goal deviance is
+structurally blind to it — **survives review**. Its framing does not.
+
+- ~~**The controls are not reproducible.**~~ **FIXED 2026-08-11 — see §9.9.**
+  Null A and the P0-1 noise sweep existed **only** in §9.6's prose, which was
+  §1.7's row-53 defect landing on the control that licenses the project's only
+  live modelling finding. Both are now committed as `--step 4`, ledger
+  `home_term_slope_controls`, **0 configurations**. The finding survives; two of
+  §9.6's numbers do not.
+- **On the home leg it is a step, not a gradient.** The five bucket means are
+  −0.26, −0.86, −0.44, +0.08, **+3.12 ✱** — four flat and unresolved, the fifth
+  jumping. Dropping the top quintile takes step 2's polyfit slope from **+6.58
+  to +0.80**. Over-shrinkage predicts a smooth gradient; this is *the most
+  lopsided fifth of fixtures under-predicts home wins by ~3.1 points, and the
+  rest is calibrated*. Different mechanism, different fix. (Shape diagnostic on
+  the interval-free estimator, not a test — §3 of the doc is explicit.)
+  > **Weakened 2026-08-11 by §9.11.** The buckets are **unevenly spaced** in `d`
+  > (0.172 / 0.082 / 0.082 / 0.169), so a pure gradient already yields a
+  > flat-middle, jumping-ends profile; and the residuals from the full line are
+  > **+1.08, −0.65, −0.77, −0.79, +1.13**, which is **convexity, not a step**.
+  > All of it sits inside the bucket CIs, and §9.11 shows the corpus **cannot
+  > resolve** gradient from tail effect. Read this bullet as "the linear reading
+  > is unsafe", not as "it is a step".
+- ~~**The away leg has never had an interval.**~~ **MEASURED 2026-08-11 —
+  §9.10.** It is the larger error and the better-resolved one, exactly as this
+  bullet predicted: **−6.12 [−9.8, −2.4] ✱ at 3.5σ** against home's +5.66 at
+  2.7σ. What was not predicted is that **the two legs have different division
+  profiles** — home rises monotonically E0 → E3, away peaks at E2 and collapses
+  at E3.
+- **"No stretch fixes it" was never tested.** `fit_stretch` minimises goal
+  deviance by design, so step 2 refuted the *deviance-optimal* stretch, not all
+  stretches. The sham control drives the pooled slope to **−14.65 ✱** carrying
+  no outcome information, so a zero crossing exists — which also means zeroing
+  the slope proves nothing. Price the zeroing stretch in deviance as a
+  *diagnostic*; do not fit a fourth dial to it.
+- **The slope and B13 are the same decision.** The published claim is honest
+  (−0.06 pts) because `12` = home + away **cancels the two legs**, and `12` is
+  65% of output. B13 cuts `12` to 47.7%, which stops the cancellation: honesty
+  gap −0.06 → +0.50, pooled slope +5.66 ✱ → +2.36, **E3 still resolved at
+  +12.13 ✱**. Recorded in `BACKLOG.md` B13.
+
+Two smaller corrections: the per-division slopes are **uncorrected** across
+eight cells and Bonferroni **has not been checked** (§1.5's precedent), and
+scaled by each division's own sd(d) the E0-to-E3 gradient is **8×, not 20×**.
+§9.6's "E0 is a level offset, the slope lives in E1–E3" stands, noting E1 does
+not resolve. *(Bonferroni checked 2026-08-11 — §9.10. **Home E2 does not
+survive it**, and §9.6's E1–E3 claim turns out to be home-leg only.)*
+
+**Do not** attempt a fix before the linearity test. Three arms have moved this
+dial and none bought strike rate; a fourth needs a reason the first three
+lacked. *(Updated 2026-08-11 — §9.11. **The linearity test cannot be run.** It
+was going to supply that reason and this corpus cannot resolve it, so the case
+for a fix is now weaker, not stronger. Item 4, the zeroing stretch, is all that
+remains.)*
+
+### 9.8 Was the head tuned blind to the product? — **2026-08-11. No measurement, no row.**
+
+Full account in `SELECTION_OBJECTIVE.md`. The claim under review: `H=400`,
+`α=0.1`, the sot weight `0.3` and EC inclusion were each chosen on goal
+deviance under the beat-the-book objective, convention 9 is exactly that
+warning, and re-sweeping them under a loss sensitive to the λ → outcome mapping
+is the highest-ceiling lever available. **The premise is right on the facts and
+the conclusion does not follow.**
+
+- **The counterfactual was already recorded.** `sweep.run` computes `ll_1x2` on
+  every arm of every sweep (`sweep.py:183`), by design. "Chosen on deviance" is
+  true of *selection* and false of *measurement*. Reading the column nobody had
+  ranked costs 0 configurations.
+- **Three of the four named parameters have both objectives choosing the same
+  arm.** α: both argmin 0.05, the chosen 0.1 costs **+0.000018** ll_1x2. Both
+  blend weights: deviance choice *is* the 1X2 argmin, checked twice in
+  independent gates — and in h38 the 1-SE rule pulled 0.45 back to 0.30, which
+  is the 1X2 optimum, so convention 2's shrinkage preference has been doing the
+  1X2 objective's work for free. EC agrees on all three metrics and resolves.
+- **`H` disagrees, it replicates across three sweeps, and it is a trade rather
+  than a gain.** ll_1x2 wants ~300, deviance 400, ll_ou25 ~650 — **the two
+  served markets sit on opposite sides of the deviance choice.** H 400 → 300
+  buys −0.00029 on 1X2 and costs +0.00068 on O/U. Goal deviance is not blind to
+  the mapping; it is the joint objective over both count margins and it lands
+  between the two markets it induces. Re-selecting on 1X2 alone is §9.4's
+  problem — it needs convention 2 amended, which is an owner decision.
+- **The class of change cannot reach the defect that motivates it.** All four
+  parameters move λ; the mapping is fixed at `rho=0`. The dedicated dial on that
+  axis is `home_term.stretch`, whose own docstring declines the 1X2-fitted
+  version on convention 2 grounds, and §9.6 step 2 showed the deviance-fitted
+  version moves no gap. The untested arm is `SEPARATION_SLOPE.md` §5's
+  zeroing stretch, **already pre-registered at ~1 configuration**.
+- **The ceiling is one thousandth of a nat**, against a shots channel that
+  shipped for −0.00179 and a market gap of +0.01410. Best case ~7% of the gap,
+  half of it handed back on O/U.
+- **The strike-rate exchange rate is unmeasured and the nearest datapoint is
+  null.** B2's vector scaling *is* multiclass-log-loss optimisation, applied at
+  the mapping level where leverage is highest: 18.42% of recommendations changed
+  for **+0.088 [−0.410, +0.556]**. Three arms have now moved this mapping and
+  none bought strike rate.
+
+**Two things do survive, and neither is the objective.** **(a)** `H=400` was
+swept at **α=1.0** and **before the sot channel shipped**, and h2 has never been
+re-run on the served head — that is convention 9's real complaint and it applies
+to goal deviance too. **(b)** **No hyperparameter arm anywhere carries an
+interval on `ll_1x2`** — `sweep.py:177` bootstraps deviance only, in both `run`
+and `compare` — so every 1X2 figure above is a bare point estimate and may be
+noise. The machinery exists at `p3.py:168`.
+
+**Do not** sweep the four jointly: 9 × 8 × 5 × 2 = **720 configurations**
+against a ledger of 189.
+
+### 9.9 The separation slope's controls, committed — **MEASURED 2026-08-11. It survives.**
+
+Code `engine/eval/home_term.py --step 4`, tests `tests/test_home_term.py`,
+results `docs/home_term_step4.json`, ledger `home_term_slope_controls` (probe).
+**Runs 98 → 99, questions 55 → 56, configurations 189 → 189** — verified with
+`trials.count_configurations` after the run rather than asserted before it.
+`SEPARATION_SLOPE.md` §2 has the full account. **§9.7's item 1, and the first
+thing in that document's recommended order.**
+
+Every outcome is Poisson-resampled from the fitted λs, so this reads no real
+match outcome and spends nothing — the same licence as `power.py`,
+`h34_travel_power` and step 1. `test_the_controls_read_no_real_match_outcome`
+makes that a property of the data rather than a claim about the code: corrupt
+every `ftr` in the frame and every number is identical.
+
+**Null A — the instrument is unbiased on both legs**, over 40 draws: home
+**−0.01 ± 2.05** (sem 0.32), away **+0.00 ± 1.79** (sem 0.28). §9.6 step 2's
+positive is not the instrument.
+
+**Four things worth carrying forward:**
+
+- **The published interval is honest, and nobody had checked.** §9.6 asked only
+  whether the slope was zero under the null. Running `slope_ci` on every null
+  draw makes coverage measurable: **4/80 false positives across both legs, 5.0%
+  against a nominal 5%**, with the sd the interval implies matching the true
+  null spread at 0.90 (home) and 1.00 (away). **The intervals in §9.6, §9.7 and
+  step 3 are not too narrow.** This was a live possibility and it is now closed.
+- **The headline is resolved by a second route, and it is smaller than §9.6
+  claimed.** Step 2's pooled home slope of +5.66 is **2.77 null sd** — resolved
+  without leaning on the block bootstrap at all, but well short of the "~4σ"
+  §9.6's prose derived from ±1.49. **The true null sd is wider than that figure
+  implied.** Real, and nearer the boundary than advertised.
+- **The noise sweep reproduces its sign and not its magnitudes.** Home slope at
+  noise 0.00 / 0.05 / 0.10 / 0.15 / 0.20 is **+0.39 / −1.55 / −6.75 / −13.64 /
+  −20.45**, strictly decreasing as claimed, against §9.6's −0.27 / −3.82 /
+  −14.26 / −27.57 / **−53.12** — **2.6× smaller at the top**. The load-bearing
+  claim is the *sign*: λ noise can only **mask** a positive slope, never
+  manufacture one. That holds. Per §1.7's row-53 precedent **§9.6's quoted
+  magnitudes stay unattributable** and only this run's own contrasts count.
+- **Six draws would have produced a false alarm, and nearly did.** The first run
+  used this project's usual six. Draw 0 came in at +5.95 — the maximum of the
+  eventual 40 — with an interval excluding zero, which reads as *the instrument
+  fires under a correct-by-construction null*. Six draws also put the null sd at
+  2.89 against a true 2.05. **Null A estimates a distribution, not a mean**, and
+  the six-draw convention that serves `REST.md` H33 and `TRAVEL.md` H34 is the
+  wrong size for it. `NULL_DRAWS = 40`.
+
+**This licenses §9.7's item 2.** The away leg now has a reference distribution
+before it is ever measured on real data — unbiased, null sd **1.79**, honest
+intervals — where previously it had none.
+
+### 9.10 The away leg — **MEASURED 2026-08-11. It is the larger error.**
+
+Code `engine/eval/home_term.py --step 5`, results `docs/home_term_step5.json`,
+ledger `home_term_away_leg` (gate, **3 configurations, 189 → 192**).
+`SEPARATION_SLOPE.md` §9 has the full account. §9.7's item 2, licensed by §9.9.
+
+**The accounting was an owner decision and is recorded as one.**
+`SEPARATION_SLOPE.md` §8 item 2 named 0 or 1; the owner chose **3** — one per
+arm, symmetric with `b2_calibration_in_product` costing the identical three arms
+on the home leg. More than either figure the document named, which is §2.2's
+inflating direction. The arm list is **one entry per arm, not per reported
+cell**: 3 arms × 2 legs × 5 populations would have booked **30**, and
+`count_configurations` sums `len(arms)` with no guard against that.
+`test_the_away_leg_ledger_row_carries_one_entry_per_arm` now is the guard.
+
+The shipped arm, both legs, with σ against a per-population null sd from 200
+synthetic draws:
+
+| leg | pooled | E0 | E1 | E2 | E3 |
+| --- | --- | --- | --- | --- | --- |
+| home | **+5.66** ✱ (2.7σ) | +0.79 | +6.85 | +12.22 ✱ | **+15.73** ✱ |
+| **away** | **−6.12** ✱ **(3.5σ)** | −2.36 | −8.25 | **−14.80** ✱ **(3.3σ)** | −7.01 |
+
+**Four things worth carrying forward:**
+
+- **§9.7's prediction holds and the home leg reproduces exactly.** Away is the
+  larger error and resolves more strongly. All five home figures match step 3 to
+  the last decimal, which is what says nothing else moved.
+- **The two legs have different division profiles, and nobody had looked.** Home
+  rises monotonically E0 → E3. Away peaks at **E2** and **collapses at E3**
+  (−7.01, unresolved, below E1). **§9.6's "the separation slope lives in E1–E3"
+  is a home-leg statement**; on away it is an E2 statement. Any mechanism story
+  has to explain both profiles, and none currently does.
+- **Bonferroni costs a published cell.** Across the eight division × leg cells,
+  **home E3 and away E2 survive; home E2 does not** ([−1.45, +25.97]).
+  `SEPARATION_SLOPE.md` §1 published E2 as resolved and is corrected in place.
+  §6 guessed the intervals were "wide enough that they plausibly do" survive —
+  wrong, and §1.5's ≤3-days-rest precedent was the right one to cite. Pooled is
+  a single pre-specified test and both legs resolve there.
+- **The blind sham beats the real defect on both legs.** Home **−14.65
+  (−7.1σ)**, away **+11.79 (+5.5σ)** — a temperature sharpener carrying no
+  outcome information moves the slope *further* than the miscalibration actually
+  present. This is the strongest form yet of `SEPARATION_SLOPE.md` §5's warning:
+  **zeroing the slope is not evidence of having found the mechanism.**
+
+**B2's calibration removes the resolved pooled slope on both legs** — home +2.36
+(1.1σ), away −2.71 (−1.6σ) — while leaving E3 home (+12.13 ✱) and E2 away
+(−10.85 ✱). No change to B13; §9.7's coupling note stands.
+
+**Do not** read the away result as a new lead. Nothing here moved strike rate,
+nothing was adopted, and §9.7's closing warning is unchanged: three arms have
+moved this dial and none bought anything. **Item 3 — the linearity test — is
+still the next thing, and it now has two legs to test rather than one.**
+
+### 9.11 The linearity test — **CONTROLLED 2026-08-11. Do not run it.**
+
+Code `engine/eval/home_term.py --step 6`, results `docs/home_term_step6.json`,
+ledger `linearity_controls` (probe, **0 configurations, 192 unchanged**).
+`SEPARATION_SLOPE.md` §10 has the full account. §9.7's item 3.
+
+**The control refuted the test before it ran, for nothing.** §8 item 3 priced a
+linearity test at ~1 configuration and said it would decide whether the
+separation defect is over-shrinkage or a tail effect. **It would not.** Planted
+at the level that reproduces the observed +5.66 home slope:
+
+| leg | shrinkage implies | step implies | apart | null sd | σ |
+| --- | --- | --- | --- | --- | --- |
+| home | +0.20 | +6.38 | 6.18 | 4.24 | **1.46** |
+| away | **+4.39** | **−3.57** | 7.96 | 4.76 | **1.67** |
+
+Neither reaches 1.96, so **one real measurement cannot tell the two mechanisms
+apart.** The statistic is sound — C1 returns +0.45 ± 4.24 (home) and −0.32 ±
+4.76 (away) under a correct mapping, with coverage nominal at 5/80 — it simply
+has no resolution here, because **the quadratic's null sd is ~2.8× the
+linear's**. Asking about shape costs a lot more than asking about direction.
+
+**Four things worth carrying forward:**
+
+- **This is §1.12's lesson working, and it is the first time it has paid in
+  advance.** H37 refuted B12's headline prediction *after* the plan was written
+  and the stop rule had been mis-derived. Here the control ran first and alone,
+  and killed the measurement before a configuration was spent.
+- **The away leg is the better instrument and the two mechanisms have opposite
+  signs on it** — shrinkage +4.39 against a step's −3.57, where on home both are
+  positive. If this is ever revisited, **the away quadratic is the statistic and
+  its sign is the read.** §3 of `SEPARATION_SLOPE.md` is a home-leg argument and
+  would not have suggested it.
+- **Closing it costs exactly the whole holdout.** σ scales as √n, so 1.96 needs
+  **1.38× this corpus — 21,797 matches against 15,824, i.e. 5,973 more.** The
+  three sealed seasons are 2,036 each, **6,108 total**: unsealing all of them
+  crosses the threshold with **135 matches to spare**. The most expensive act
+  available, spent on a diagnostic that decides no adoption. Unlike §1.4, where
+  the same act does not reach the answer at all, here it technically does — and
+  the answer is still not worth it.
+- **§3's "flat then a step" reading is weaker than it looked, on two counts.**
+  The five quantile buckets are **unevenly spaced** in `d` (0.172 / 0.082 /
+  0.082 / 0.169), so a pure gradient already produces a flat-middle,
+  jumping-ends profile. And the residuals from the full line are **+1.08, −0.65,
+  −0.77, −0.79, +1.13** — both ends high, which is **convexity, not a step**.
+  Both sit inside the bucket CIs. Corrected in place in §3.
+
+**The honest statement of the home leg is now weaker:** the gap rises with
+predicted separation, and whether that is a gradient or a tail effect **is not
+resolvable on this corpus**.
+
+**This leaves §9.7 item 4 as the only remaining item** — the zeroing stretch,
+priced in goal deviance. §10 confirms it does not depend on item 3.
 
 ### 9.2 The goal-line tails were validated for markets the product does not serve
 

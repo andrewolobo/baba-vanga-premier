@@ -539,6 +539,649 @@ def step3(frame, scored) -> dict:
             "product": product}
 
 
+# --- step 4: the controls step 2 should have carried -----------------------
+
+#: Draws for the noise ladder. Six is this project's control size (`REST.md`
+#: H33, `TRAVEL.md` H34, `TOD_SLOT.md` H29) and the effect there is large and
+#: monotone, so six resolves it.
+SWEEP_DRAWS = 6
+
+#: Draws for Null A, which is doing a harder job: it has to estimate the null
+#: *distribution* of the slope, not just show that its mean is zero. Six draws
+#: put a 30% error on an sd, and the sd is what step 2's interval has to be read
+#: against. Every draw's own slope is reported rather than a count of how many
+#: "passed", because §1.9's seed collision was invisible in the count and
+#: obvious in the spread.
+NULL_DRAWS = 40
+
+#: Draws behind the per-population null sd in step 5. Far more than NULL_DRAWS
+#: because these are point slopes with no bootstrap behind them, so they cost
+#: almost nothing -- and the sd is being used as a yardstick, where 40 draws
+#: leave ~11% on it and a sigma reading inherits that.
+NULL_SD_DRAWS = 200
+
+#: Bootstrap replicates behind each null draw's interval. Named so the
+#: false-positive check tests the *published* estimator at its real setting, and
+#: so tests can turn it down without changing what is being tested.
+CONTROL_REPS = bootstrap.DEFAULT_REPS
+
+#: What step 2 measured on real outcomes, for the sigma comparison below. Not an
+#: input to anything -- the controls never see it.
+STEP2_POOLED_HOME_SLOPE = 5.66
+
+#: Log-scale noise on the lambda the arm predicts with and stratifies on. P0-1's
+#: demonstration ran at 0.20; the ladder is what turns "could this be that
+#: artifact" into a signed answer.
+NOISE_LEVELS = (0.00, 0.05, 0.10, 0.15, 0.20)
+
+CONTROL_SEED = 20260811
+
+#: What `OUTSTANDING.md` §9.6 claims in prose, carried here so a rebuild is read
+#: against it rather than quietly replacing it. `CHANNELS.md` §7's row 53 is the
+#: precedent: a lost harness rebuilt is a new measurement until it reproduces.
+QUOTED_NULL_A = 0.10
+QUOTED_NOISE_HOME = (-0.27, -3.82, -14.26, -27.57, -53.12)
+
+
+def _rng(kind: int, draw: int, extra: int = 0):
+    """A distinct stream per (purpose, draw, level).
+
+    §1.9's seed collision made a reference arm an exact oracle because two
+    series were drawn from colliding seeds, and the only symptom was a control
+    that was incoherent rather than wrong-looking. Keying the stream on all
+    three indices makes the collision impossible rather than unlikely.
+    """
+    return np.random.default_rng([CONTROL_SEED, kind, draw, extra])
+
+
+def simulate_ftr(lam_h, lam_a, rng) -> np.ndarray:
+    """Poisson goals from the given rates, as a 1X2 label."""
+    goals_h = rng.poisson(lam_h)
+    goals_a = rng.poisson(lam_a)
+    return np.where(goals_h > goals_a, "H", np.where(goals_h == goals_a, "D", "A"))
+
+
+def _leg_slope(d, ftr, probs, code: str, col: int) -> float:
+    """Point slope of the calibration gap on `d`, in points per unit d."""
+    gap = 100.0 * ((ftr == code).astype(float) - probs[:, col])
+    return float(np.polyfit(d, gap, 1)[0])
+
+
+#: Both legs, because `home_term.py`'s step 3 regresses the home gap only and
+#: `SEPARATION_SLOPE.md` §4 argues the away leg is the larger error and the
+#: likelier true gradient. On synthetic outcomes the second leg costs nothing.
+LEGS = (("home", "H", 0), ("away", "A", 2))
+
+
+def _summarise(per_draw: list[float]) -> dict:
+    values = np.asarray(per_draw, float)
+    return {"per_draw": [round(v, 3) for v in per_draw],
+            "mean": round(float(values.mean()), 3),
+            "sd": round(float(values.std(ddof=1)), 3)}
+
+
+def null_a(lam_h, lam_a, blocks) -> dict:
+    """Goals drawn from the served lambdas, so the mapping is right by construction.
+
+    Two questions, and §9.6 only asked the first.
+
+    **Is the estimator unbiased?** The instrument must return zero here. Step
+    2's +5.66 is a finding only if a head whose lambda -> outcome mapping is
+    correct produces no slope.
+
+    **Is the estimator's published interval honest?** `slope_ci` is the interval
+    step 2 and step 3 both quote. Running it on every null draw turns that into
+    a measurable false-positive rate: under a correct-by-construction mapping it
+    should exclude zero in about 5% of draws. If it does so far more often, the
+    interval is too narrow and every slope this module has published is
+    over-resolved. Nothing outside this control can detect that, which is
+    exactly the argument for having the control.
+    """
+    _, d = separation(lam_h, lam_a)
+    probs = np.column_stack(outcome_probs(score_matrix(lam_h, lam_a)))
+    outcomes = [simulate_ftr(lam_h, lam_a, _rng(0, i)) for i in range(NULL_DRAWS)]
+
+    print(f"\n  NULL A  goals drawn from the served lambdas -- mapping correct "
+          f"by construction ({NULL_DRAWS} draws)")
+    print(f"    {'leg':>5} {'slope: mean +/- sd':>22} {'min':>8} {'max':>8} "
+          f"{'mean CI half-width':>20} {'excludes zero':>15}")
+
+    out = {}
+    for name, code, col in LEGS:
+        per_draw, half_widths, false_positives = [], [], 0
+        for ftr in outcomes:
+            gap = 100.0 * ((ftr == code).astype(float) - probs[:, col])
+            b, (lo, hi) = slope_ci(d, gap, blocks, reps=CONTROL_REPS)
+            per_draw.append(b)
+            half_widths.append((hi - lo) / 2.0)
+            false_positives += int(lo > 0 or hi < 0)
+
+        cell = _summarise(per_draw)
+        cell["min"] = round(min(per_draw), 3)
+        cell["max"] = round(max(per_draw), 3)
+        cell["mean_ci_half_width"] = round(float(np.mean(half_widths)), 3)
+        # The interval the estimator claims, against the spread it actually has.
+        cell["implied_sd_from_ci"] = round(cell["mean_ci_half_width"] / Z, 3)
+        cell["false_positive_rate"] = round(false_positives / NULL_DRAWS, 3)
+        cell["false_positives"] = false_positives
+        out[name] = cell
+        print(f"    {name:>5} {cell['mean']:>+13.2f} +/-{cell['sd']:>6.2f} "
+              f"{cell['min']:>+8.2f} {cell['max']:>+8.2f} "
+              f"{cell['mean_ci_half_width']:>20.2f} "
+              f"{false_positives:>8}/{NULL_DRAWS}"
+              f"{'  <- nominal is 5%' if false_positives > 0.05 * NULL_DRAWS else ''}")
+
+    print(f"\n    the published interval against the spread it should cover:")
+    for name in ("home", "away"):
+        cell = out[name]
+        print(f"      {name:>5}  slope_ci implies sd {cell['implied_sd_from_ci']:>5.2f}"
+              f"   true null sd {cell['sd']:>5.2f}"
+              f"   ratio {cell['implied_sd_from_ci'] / cell['sd']:>5.2f}")
+    sigma = STEP2_POOLED_HOME_SLOPE / out["home"]["sd"]
+    out["step2_home_slope_in_null_sd"] = round(float(sigma), 2)
+    print(f"      step 2's pooled home slope {STEP2_POOLED_HOME_SLOPE:+.2f} is "
+          f"{sigma:.2f} null sd -- {'resolved' if sigma > Z else 'NOT resolved'} "
+          f"against this control")
+    return out
+
+
+def noise_sweep(lam_h, lam_a, blocks) -> dict:
+    """Stratify on a lambda carrying log-noise -- the exact trap P0-1 fell into.
+
+    Outcomes come from the CLEAN lambdas; the noisy lambda is what the arm both
+    predicts with and stratifies on, which is the real situation -- an estimate
+    is used for both at once. Regression to the mean then inflates the estimated
+    separation in the top bucket, so P(home) is over-stated exactly where the
+    measured effect is positive.
+
+    The outcome draw is held fixed across the ladder and only the noise moves,
+    so the levels are paired and the trend is not reading a different sample at
+    each step. If the slope runs negative with noise, lambda noise can only
+    *mask* step 2's positive finding, never manufacture it.
+    """
+    print("\n  P0-1 ARTIFACT SWEEP  stratifying on a lambda carrying log-noise")
+    print(f"    {'noise':>6} {'home, mean +/- sd':>22} {'away, mean +/- sd':>22}"
+          f"   {'quoted (home)':>14}")
+
+    rows = []
+    for level_index, sigma in enumerate(NOISE_LEVELS):
+        legs = {}
+        for name, code, col in LEGS:
+            per_draw = []
+            for i in range(SWEEP_DRAWS):
+                ftr = simulate_ftr(lam_h, lam_a, _rng(1, i))
+                eps = _rng(2, i, level_index)
+                noisy_h = lam_h * np.exp(eps.normal(0.0, sigma, len(lam_h)))
+                noisy_a = lam_a * np.exp(eps.normal(0.0, sigma, len(lam_a)))
+                _, d_hat = separation(noisy_h, noisy_a)
+                probs = np.column_stack(
+                    outcome_probs(score_matrix(noisy_h, noisy_a)))
+                per_draw.append(_leg_slope(d_hat, ftr, probs, code, col))
+            legs[name] = _summarise(per_draw)
+        rows.append({"noise": sigma, **legs})
+        print(f"    {sigma:>6.2f} {legs['home']['mean']:>+15.2f} "
+              f"+/-{legs['home']['sd']:>5.2f} {legs['away']['mean']:>+15.2f} "
+              f"+/-{legs['away']['sd']:>5.2f}   "
+              f"{QUOTED_NOISE_HOME[level_index]:>+13.2f}")
+
+    home_means = [r["home"]["mean"] for r in rows]
+    monotone = all(b < a for a, b in zip(home_means, home_means[1:]))
+    print(f"    -> home slope strictly decreasing in noise: "
+          f"{'YES' if monotone else 'NO'}")
+    return {"rows": rows, "home_monotone_decreasing": bool(monotone)}
+
+
+def step4(frame, scored) -> dict:
+    """The two controls `OUTSTANDING.md` §9.6 describes and never committed.
+
+    **No real match outcome is read.** Every outcome below is Poisson-resampled
+    from the fitted lambdas, so this runs under the same licence as step 1,
+    `power.py` and `h34_travel_power`, and spends no configuration.
+    """
+    print(f"\nSTEP 4  the controls step 2 should have carried "
+          f"({int(scored.sum()):,} matches, synthetic outcomes throughout)")
+
+    lam_h = frame.lam_h.to_numpy(float)[scored]
+    lam_a = frame.lam_a.to_numpy(float)[scored]
+    blocks = bootstrap.week_blocks(frame.match_date[scored])
+
+    a = null_a(lam_h, lam_a, blocks)
+    sweep_result = noise_sweep(lam_h, lam_a, blocks)
+
+    # --- what the controls establish, stated as pass/fail ------------------
+    # Standard error of the mean over the draws, which is the right yardstick
+    # for "is the estimator centred on zero" -- not the per-draw sd, which is
+    # the yardstick for "is a single measured slope large".
+    verdicts = {}
+    for name in ("home", "away"):
+        cell = a[name]
+        sem = cell["sd"] / np.sqrt(NULL_DRAWS)
+        verdicts[name] = {
+            "unbiased": bool(abs(cell["mean"]) <= Z * sem),
+            "interval_honest": bool(cell["false_positive_rate"] <= 0.15),
+            "sem": round(float(sem), 3)}
+
+    print("\n  what the controls establish:")
+    for name in ("home", "away"):
+        v, cell = verdicts[name], a[name]
+        print(f"    {name:>5}  unbiased: {'YES' if v['unbiased'] else 'NO'}"
+              f" (mean {cell['mean']:+.2f}, sem {v['sem']:.2f})"
+              f"   interval honest: {'YES' if v['interval_honest'] else 'NO'}"
+              f" ({cell['false_positives']}/{NULL_DRAWS} at nominal 5%)")
+
+    # Read the rebuild against the prose it reconstructs rather than letting a
+    # new number silently replace a quoted one. CHANNELS.md §7's row 53 is the
+    # precedent for what happens when nobody does this.
+    consistent = abs(a["home"]["mean"] - QUOTED_NULL_A) <= a["home"]["sd"]
+    magnitudes = [r["home"]["mean"] for r in sweep_result["rows"]]
+    ratio = magnitudes[-1] / QUOTED_NOISE_HOME[-1]
+    print("\n  against OUTSTANDING.md §9.6's prose:")
+    print(f"    Null A home slope   quoted {QUOTED_NULL_A:+.2f} +/- 1.49   "
+          f"rebuilt {a['home']['mean']:+.2f} +/- {a['home']['sd']:.2f}   "
+          f"-> {'consistent' if consistent else 'DOES NOT REPRODUCE'}")
+    print(f"    noise ladder sign   quoted monotonically negative   "
+          f"rebuilt {'monotonically negative' if sweep_result['home_monotone_decreasing'] else 'NOT monotone'}"
+          f"   -> {'reproduces' if sweep_result['home_monotone_decreasing'] else 'DOES NOT'}")
+    print(f"    noise ladder size   quoted {QUOTED_NOISE_HOME[-1]:+.2f} at 0.20   "
+          f"rebuilt {magnitudes[-1]:+.2f}   -> {1 / ratio:.1f}x SMALLER, "
+          f"magnitudes do NOT reproduce")
+    print("    the load-bearing claim is the SIGN -- lambda noise biases the "
+          "slope negative, so it can only mask step 2's positive finding, never")
+    print("    manufacture it. That reproduces. The quoted magnitudes do not, "
+          "and per CHANNELS.md §7 they stay unattributable.")
+
+    return {"null_a": a, "noise_sweep": sweep_result, "verdicts": verdicts,
+            "quoted": {"null_a_home": QUOTED_NULL_A,
+                       "noise_home": list(QUOTED_NOISE_HOME)},
+            "null_a_consistent_with_quoted": bool(consistent),
+            "noise_magnitudes_reproduce": False,
+            "reads_real_outcomes": False}
+
+
+# --- step 5: the away leg, which has never had an interval -----------------
+
+POPULATIONS = ("pooled", "E0", "E1", "E2", "E3")
+
+#: §6 of SEPARATION_SLOPE.md: four divisions x two legs is eight cells, and
+#: whether E2 and E3 survive correction has never been checked. `REST.md` §1.5's
+#: <=3-days-rest finding is the precedent for this going the other way. Pooled is
+#: a single pre-specified test and is deliberately NOT in the family.
+BONFERRONI_CELLS = 8
+
+
+def _population_mask(frame, scored, label):
+    return scored if label == "pooled" else (
+        scored & (frame.division == label).to_numpy())
+
+
+def null_sd_by_population(frame, scored) -> dict:
+    """Null sd of the slope per population and leg, from synthetic outcomes.
+
+    Step 4 established the pooled null spread. A division holds a fifth of the
+    corpus or less, so its null sd is much wider and the pooled figure cannot be
+    reused -- E0 is 2,948 matches against 15,824. Reads no real outcome, so this
+    is free and rides along with the gate rather than needing its own row.
+    """
+    out = {}
+    for label in POPULATIONS:
+        sel = _population_mask(frame, scored, label)
+        lam_h = frame.lam_h.to_numpy(float)[sel]
+        lam_a = frame.lam_a.to_numpy(float)[sel]
+        _, d = separation(lam_h, lam_a)
+        probs = np.column_stack(outcome_probs(score_matrix(lam_h, lam_a)))
+        cell = {}
+        for name, code, col in LEGS:
+            slopes = [_leg_slope(d, simulate_ftr(lam_h, lam_a, _rng(3, i)),
+                                 probs, code, col)
+                      for i in range(NULL_SD_DRAWS)]
+            cell[name] = round(float(np.std(slopes, ddof=1)), 3)
+        out[label] = cell
+    return out
+
+
+def step5(frame, scored) -> dict:
+    """`slope_ci` on BOTH legs, for the three arms step 3 already ran.
+
+    `home_term.py`'s step 3 regresses the home gap only, so the away leg has
+    never carried an interval in any division for any arm -- while §9.5 makes it
+    the *larger* error (pooled −1.07 resolved, against home +0.33 unresolved)
+    and `SEPARATION_SLOPE.md` §4 argues it is the real gradient. The arms are
+    not re-chosen: they are exactly step 3's raw / B2-calibrated / matched sham.
+
+    Home is recomputed alongside, which doubles as a reproduction check on step
+    3 -- if those numbers move, something else changed.
+    """
+    print(f"\nSTEP 5  the away leg ({int(scored.sum()):,} matches, "
+          f"floor {SHIPPED_FLOOR}, ceiling {CEILING})")
+
+    raw = selection.raw_probs(frame)
+    cal = selection.walk_forward_calibrate(frame, raw)
+    sham, t = matched_sham(frame, raw, cal, scored)
+    print(f"  arms are step 3's, unchanged: raw, B2 calibrated, sham at t = {t:.3f}")
+
+    null_sd = null_sd_by_population(frame, scored)
+    print("\n  null sd of the slope per population (synthetic outcomes, "
+          f"{NULL_SD_DRAWS} draws) -- the yardstick each cell is read against")
+    print(f"    {'':>10} " + " ".join(f"{p:>8}" for p in POPULATIONS))
+    for leg in ("home", "away"):
+        print(f"    {leg:>10} " + " ".join(f"{null_sd[p][leg]:>8.2f}"
+                                           for p in POPULATIONS))
+
+    ftr = frame.ftr.to_numpy()
+    lam_h = frame.lam_h.to_numpy(float)
+    lam_a = frame.lam_a.to_numpy(float)
+    _, d_all = separation(lam_h, lam_a)
+
+    rows = []
+    for arm_name, probs in (("raw (shipped)", raw), ("B2 calibrated", cal),
+                            ("sham (control)", sham)):
+        print(f"\n  {arm_name}  (slope, 95% block CI, and slope in null sd)")
+        print(f"    {'leg':>5} " + " ".join(f"{p:>26}" for p in POPULATIONS))
+        for leg, code, col in LEGS:
+            cells = []
+            for label in POPULATIONS:
+                j = np.flatnonzero(_population_mask(frame, scored, label))
+                blocks = bootstrap.week_blocks(frame.match_date.iloc[j])
+                gap = 100.0 * ((ftr[j] == code).astype(float) - probs[j, col])
+                b, (lo, hi) = slope_ci(d_all[j], gap, blocks)
+                sigma = b / null_sd[label][leg]
+                row = {"arm": arm_name, "leg": leg, "population": label,
+                       "slope": round(b, 3), "ci": [round(lo, 2), round(hi, 2)],
+                       "excludes_zero": bool(lo > 0 or hi < 0),
+                       "null_sd": null_sd[label][leg], "sigma": round(sigma, 2)}
+                # The correction §6 flags as unchecked, on the family it names.
+                if arm_name == "raw (shipped)" and label != "pooled":
+                    _, (blo, bhi) = slope_ci(d_all[j], gap, blocks,
+                                             alpha=0.05 / BONFERRONI_CELLS)
+                    row["bonferroni_ci"] = [round(blo, 2), round(bhi, 2)]
+                    row["survives_bonferroni"] = bool(blo > 0 or bhi < 0)
+                rows.append(row)
+                cells.append(f"{b:>+6.2f} [{lo:>+5.1f},{hi:>+5.1f}]"
+                             f"{'*' if row['excludes_zero'] else ' '}"
+                             f"{sigma:>+5.1f}s")
+            print(f"    {leg:>5} " + " ".join(f"{c:>26}" for c in cells))
+
+    print(f"\n  Bonferroni across the {BONFERRONI_CELLS} division x leg cells "
+          f"of the shipped arm (SEPARATION_SLOPE.md §6)")
+    print(f"    {'leg':>5} {'div':>5} {'slope':>8} {'uncorrected':>18} "
+          f"{'corrected':>18} {'survives':>9}")
+    survivors = []
+    for row in rows:
+        if "bonferroni_ci" not in row:
+            continue
+        if row["excludes_zero"]:
+            survivors.append((row["leg"], row["population"],
+                              row["survives_bonferroni"]))
+        print(f"    {row['leg']:>5} {row['population']:>5} "
+              f"{row['slope']:>+8.2f} "
+              f"[{row['ci'][0]:>+6.2f},{row['ci'][1]:>+6.2f}] "
+              f"[{row['bonferroni_ci'][0]:>+6.2f},{row['bonferroni_ci'][1]:>+6.2f}] "
+              f"{'YES' if row['survives_bonferroni'] else 'no':>9}")
+    kept = [f"{leg} {div}" for leg, div, ok in survivors if ok]
+    lost = [f"{leg} {div}" for leg, div, ok in survivors if not ok]
+    print(f"    -> survive: {', '.join(kept) if kept else 'none'}")
+    print(f"    -> lost to correction: {', '.join(lost) if lost else 'none'}")
+
+    return {"temperature": t, "null_sd": null_sd, "slopes": rows,
+            "bonferroni_cells": BONFERRONI_CELLS,
+            "survives_bonferroni": kept, "lost_to_bonferroni": lost}
+
+
+def away_leg_arms(result: dict) -> list[dict]:
+    """The ledger arm list for step 5: ONE ENTRY PER ARM, not per cell.
+
+    `trials.count_configurations` sums `len(arms)` over a row, so handing it all
+    30 leg x population cells would book 30 configurations against a gate that
+    ran three arms. `b2_calibration_in_product` recorded these same three for the
+    home leg and cost 3; this is the away leg at the same rate. The pooled away
+    slope is what carries each arm's identity into the ledger.
+    """
+    return [{"arm": r["arm"], "leg": r["leg"], "slope": r["slope"],
+             "excludes_zero": r["excludes_zero"]}
+            for r in result["slopes"]
+            if r["population"] == "pooled" and r["leg"] == "away"]
+
+
+# --- step 6: is the gap linear in d? the controls ---------------------------
+
+#: Draws per control cell. The output is a CONTRAST between two planted
+#: mechanisms, so each planted mean has to be pinned tightly enough that the
+#: contrast is not mostly draw noise -- at 12 draws the per-cell sem was ~1.2
+#: against a contrast of ~5.8, which is not good enough to decide whether a test
+#: is worth running.
+MECHANISM_DRAWS = 40
+
+#: Over-shrinkage levels. `s` is the factor by which TRUE centred separation
+#: exceeds the head's, so outcomes are drawn from stretched lambdas and scored
+#: against unstretched ones -- the defect §9.6 step 2 hypothesised, planted.
+#: 1.12 is in the grid so a level lands near the observed slope without
+#: interpolating between two coarse ones.
+SHRINK_LEVELS = (1.05, 1.10, 1.12, 1.15, 1.20)
+
+#: Top-quintile step sizes, in points of home probability. The competing
+#: mechanism §3 of SEPARATION_SLOPE.md describes: the most lopsided fifth of
+#: fixtures is mis-mapped and the rest is fine.
+STEP_LEVELS = (1.0, 2.0, 3.0, 4.0, 4.5)
+
+TOP_QUINTILE = 0.8
+
+
+def curvature(d, gap):
+    """(linear, quadratic) coefficients of `gap` on CENTRED d.
+
+    Centred so the two coefficients are near-orthogonal: on raw d the quadratic
+    term is strongly collinear with the linear one and the split between them
+    stops meaning anything. Fitted per match, which is also what makes this
+    immune to the uneven bucket spacing that makes the five-point diagnostic in
+    `SEPARATION_SLOPE.md` §3 hard to read -- the top and bottom buckets are
+    ~0.17 wide in d and the middle three ~0.08.
+    """
+    dc = np.asarray(d, float) - float(np.mean(d))
+    quad, lin, _ = np.polyfit(dc, np.asarray(gap, float), 2)
+    return float(lin), float(quad)
+
+
+def curvature_ci(d, gap, blocks, *, reps: int = bootstrap.DEFAULT_REPS,
+                 alpha: float = 0.05):
+    """Block-bootstrapped interval on the quadratic coefficient."""
+    d = np.asarray(d, float)
+    gap = np.asarray(gap, float)
+    _, pos = np.unique(np.asarray(blocks), return_inverse=True)
+    by_block = [np.flatnonzero(pos == b) for b in range(pos.max() + 1)]
+
+    rng = np.random.default_rng(bootstrap.RNG_SEED)
+    draws = rng.integers(0, len(by_block), size=(reps, len(by_block)))
+    out = []
+    for row in draws:
+        idx = np.concatenate([by_block[b] for b in row])
+        out.append(curvature(d[idx], gap[idx])[1])
+    lo, hi = np.quantile(out, [alpha / 2, 1 - alpha / 2])
+    return curvature(d, gap), (float(lo), float(hi))
+
+
+def _gap_vs(ftr, probs, code, col):
+    return 100.0 * ((ftr == code).astype(float) - probs[:, col])
+
+
+def _shrunk_truth(lam_h, lam_a, s: float):
+    """Lambdas whose centred separation is `s` times the head's."""
+    _, d = separation(lam_h, lam_a)
+    return stretch(lam_h, lam_a, s, float(d.mean()))
+
+
+def _stepped_truth(lam_h, lam_a, target_pts: float):
+    """Lambdas tilted in the top quintile of d only, by `target_pts` of P(home)."""
+    _, d = separation(lam_h, lam_a)
+    top = d >= np.quantile(d, TOP_QUINTILE)
+    m = multiplier_closing_home(lam_h[top], lam_a[top], target_pts, tilt=True)
+    out_h, out_a = lam_h.copy(), lam_a.copy()
+    out_h[top] *= m
+    out_a[top] /= m
+    return out_h, out_a
+
+
+def _mechanism_cell(lam_h, lam_a, truth_h, truth_a, kind: int, level_index: int):
+    """(linear, quadratic) per leg, averaged over draws, for one planted truth.
+
+    Outcomes come from the planted TRUTH; the gap is measured against the head's
+    own unperturbed probabilities, which is what a real defect looks like.
+    """
+    _, d = separation(lam_h, lam_a)
+    probs = np.column_stack(outcome_probs(score_matrix(lam_h, lam_a)))
+    cell = {}
+    for name, code, col in LEGS:
+        lin, quad = [], []
+        for i in range(MECHANISM_DRAWS):
+            ftr = simulate_ftr(truth_h, truth_a, _rng(kind, i, level_index))
+            b, c = curvature(d, _gap_vs(ftr, probs, code, col))
+            lin.append(b)
+            quad.append(c)
+        cell[name] = {"linear": round(float(np.mean(lin)), 2),
+                      "linear_sd": round(float(np.std(lin, ddof=1)), 2),
+                      "quadratic": round(float(np.mean(quad)), 2),
+                      "quadratic_sd": round(float(np.std(quad, ddof=1)), 2)}
+    return cell
+
+
+def step6(frame, scored) -> dict:
+    """Can the curvature statistic tell over-shrinkage from a tail effect?
+
+    **This is the control, and it runs alone and first.** §1.12's lesson is that
+    a ceiling read before any real arm refutes bad predictions for free; here the
+    question is sharper than a ceiling, because the two candidate mechanisms make
+    *different* predictions and the whole value of item 3 is telling them apart.
+    If both produce the same curvature signature the test cannot discriminate and
+    should not be run on real data at all.
+
+    No real match outcome is read: every outcome is Poisson-resampled from a
+    planted truth. Same licence as steps 1 and 4.
+    """
+    print(f"\nSTEP 6  linearity controls "
+          f"({int(scored.sum()):,} matches, synthetic outcomes throughout)")
+
+    lam_h = frame.lam_h.to_numpy(float)[scored]
+    lam_a = frame.lam_a.to_numpy(float)[scored]
+    blocks = bootstrap.week_blocks(frame.match_date[scored])
+    _, d = separation(lam_h, lam_a)
+    probs = np.column_stack(outcome_probs(score_matrix(lam_h, lam_a)))
+
+    # C1 -- the null. Both coefficients must be zero, and the interval on the
+    # quadratic must have honest coverage or a curvature finding means nothing.
+    print(f"\n  C1 NULL  correct mapping ({NULL_DRAWS} draws)")
+    print(f"    {'leg':>5} {'linear':>18} {'quadratic':>18} "
+          f"{'quad excludes zero':>20}")
+    null = {}
+    for name, code, col in LEGS:
+        lin, quad, fp = [], [], 0
+        for i in range(NULL_DRAWS):
+            ftr = simulate_ftr(lam_h, lam_a, _rng(4, i))
+            gap = _gap_vs(ftr, probs, code, col)
+            (b, c), (lo, hi) = curvature_ci(d, gap, blocks, reps=CONTROL_REPS)
+            lin.append(b)
+            quad.append(c)
+            fp += int(lo > 0 or hi < 0)
+        null[name] = {
+            "linear": round(float(np.mean(lin)), 2),
+            "linear_sd": round(float(np.std(lin, ddof=1)), 2),
+            "quadratic": round(float(np.mean(quad)), 2),
+            "quadratic_sd": round(float(np.std(quad, ddof=1)), 2),
+            "false_positives": fp, "draws": NULL_DRAWS}
+        n = null[name]
+        print(f"    {name:>5} {n['linear']:>+10.2f} +/-{n['linear_sd']:>5.2f} "
+              f"{n['quadratic']:>+10.2f} +/-{n['quadratic_sd']:>5.2f} "
+              f"{fp:>13}/{NULL_DRAWS}")
+
+    families = {}
+    for label, kind, levels, build in (
+            ("C2 OVER-SHRINKAGE", 5, SHRINK_LEVELS,
+             lambda v: _shrunk_truth(lam_h, lam_a, v)),
+            ("C3 TOP-QUINTILE STEP", 6, STEP_LEVELS,
+             lambda v: _stepped_truth(lam_h, lam_a, v))):
+        print(f"\n  {label}  ({MECHANISM_DRAWS} draws per level)")
+        print(f"    {'level':>6} {'home linear':>16} {'home quad':>16} "
+              f"{'away linear':>16} {'away quad':>16}")
+        rows = []
+        for j, value in enumerate(levels):
+            truth_h, truth_a = build(value)
+            cell = _mechanism_cell(lam_h, lam_a, truth_h, truth_a, kind, j)
+            rows.append({"level": value, **cell})
+            print(f"    {value:>6.2f} "
+                  f"{cell['home']['linear']:>+10.2f} +/-{cell['home']['linear_sd']:>4.2f} "
+                  f"{cell['home']['quadratic']:>+10.2f} +/-{cell['home']['quadratic_sd']:>4.2f} "
+                  f"{cell['away']['linear']:>+10.2f} +/-{cell['away']['linear_sd']:>4.2f} "
+                  f"{cell['away']['quadratic']:>+10.2f} +/-{cell['away']['quadratic_sd']:>4.2f}")
+        families[label] = rows
+
+    # The discriminating read: at the level that reproduces the OBSERVED linear
+    # slope, what curvature does each mechanism imply?
+    print(f"\n  discrimination -- matched on the observed home linear slope "
+          f"{STEP2_POOLED_HOME_SLOPE:+.2f}")
+    print(f"    {'mechanism':>22} {'level':>7} {'home linear':>13} "
+          f"{'home quadratic implied':>24}")
+    implied = {}
+    for label, rows in families.items():
+        best = min(rows, key=lambda r: abs(r["home"]["linear"]
+                                           - STEP2_POOLED_HOME_SLOPE))
+        implied[label] = {"level": best["level"],
+                          "home_linear": best["home"]["linear"],
+                          "home_quadratic": best["home"]["quadratic"],
+                          "away_linear": best["away"]["linear"],
+                          "away_quadratic": best["away"]["quadratic"]}
+        print(f"    {label:>22} {best['level']:>7.2f} "
+              f"{best['home']['linear']:>+13.2f} "
+              f"{best['home']['quadratic']:>+24.2f}")
+
+    # A real run yields ONE measurement, so the yardstick is the null sd of a
+    # single draw -- not the sem of the planted means, which more draws can
+    # always shrink. This is the question "could one measurement tell these
+    # apart", and it is the one that decides whether to spend.
+    print(f"\n    could ONE real measurement tell the two apart?")
+    print(f"    {'leg':>5} {'shrinkage':>11} {'step':>11} {'apart':>8} "
+          f"{'null sd':>9} {'sigma':>7} {'verdict':>18}")
+    discrimination = {}
+    for leg in ("home", "away"):
+        shrink = implied["C2 OVER-SHRINKAGE"][f"{leg}_quadratic"]
+        stepped = implied["C3 TOP-QUINTILE STEP"][f"{leg}_quadratic"]
+        apart = abs(shrink - stepped)
+        sd = null[leg]["quadratic_sd"]
+        sigma = apart / sd
+        discrimination[leg] = {
+            "shrinkage_quadratic": shrink, "step_quadratic": stepped,
+            "apart": round(float(apart), 2), "null_sd": sd,
+            "sigma": round(float(sigma), 2), "separates": bool(sigma > Z)}
+        print(f"    {leg:>5} {shrink:>+11.2f} {stepped:>+11.2f} "
+              f"{apart:>8.2f} {sd:>9.2f} {sigma:>7.2f} "
+              f"{('SEPARATES' if sigma > Z else 'cannot separate'):>18}")
+
+    # What would close it. Sigma scales as sqrt(n), so the corpus multiple is
+    # (Z/sigma)^2 -- the same arithmetic §1.4 and §1.6 report for their nulls.
+    n = int(scored.sum())
+    best = max(discrimination.values(), key=lambda v: v["sigma"])
+    multiple = (Z / best["sigma"]) ** 2
+    discrimination["required_corpus_multiple"] = round(float(multiple), 2)
+    discrimination["required_matches"] = int(round(n * multiple))
+    print(f"\n    what would close it: {multiple:.2f}x this corpus "
+          f"({n * multiple:,.0f} matches against {n:,}), i.e. "
+          f"{n * multiple - n:,.0f} more")
+
+    any_leg = any(v["separates"] for v in discrimination.values()
+                  if isinstance(v, dict) and "separates" in v)
+    print(f"\n    -> the curvature test {'IS' if any_leg else 'IS NOT'} worth "
+          f"running on real data")
+    if not any_leg:
+        print("       Both mechanisms produce the same curvature to within the "
+              "noise of a single measurement. Running it would spend a")
+        print("       configuration on a statistic that cannot answer the "
+              "question it was designed for. This is the §1.4 shape, caught")
+        print("       for 0 configurations -- exactly what §1.12 says a control "
+              "run first is for.")
+
+    return {"null": null, "families": families, "implied": implied,
+            "discrimination": discrimination,
+            "worth_running": bool(any_leg),
+            "reads_real_outcomes": False}
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--step", type=int, default=1)
@@ -565,6 +1208,81 @@ def main(argv=None) -> int:
                    "carries no arm list and adds no configuration, on the same "
                    "accounting as power.py and h34_travel_power."}
         cost = "0 configurations"
+    elif args.step == 4:
+        results = {"step4": step4(frame, scored)}
+        row = {
+            "kind": ledger.PROBE, "name": "home_term_slope_controls",
+            "reason":
+                   "SEPARATION_SLOPE.md §8 item 1. Step 2 shipped a positive "
+                   "result without the control §9.5 says every gate needs, and "
+                   "the two controls run afterwards were never committed -- they "
+                   "exist only as prose in OUTSTANDING.md §9.6, so the one live "
+                   "modelling finding this project has is licensed by numbers "
+                   "nobody can re-derive. This commits both. Null A resamples "
+                   "goals from the served lambdas, making the lambda -> outcome "
+                   "mapping correct by construction, so the instrument must "
+                   "return a zero slope. The P0-1 artifact sweep stratifies on a "
+                   "lambda carrying log-noise, which is the trap P0-1 fell into "
+                   "once already, and establishes the SIGN of that bias. Both "
+                   "legs are reported, because step 3 regresses the home gap "
+                   "only and the away leg has never had an interval. Reads no "
+                   "real match outcome -- every outcome is Poisson-resampled "
+                   "from fitted lambdas -- so it carries no arm list and adds no "
+                   "configuration, on the same accounting as power.py, "
+                   "h34_travel_power and step 1."}
+        cost = "0 configurations"
+    elif args.step == 6:
+        results = {"step6": step6(frame, scored)}
+        row = {
+            "kind": ledger.PROBE, "name": "linearity_controls",
+            "reason":
+                   "SEPARATION_SLOPE.md §8 item 3, the control that runs first "
+                   "and alone. Item 3 asks whether the separation gap is linear "
+                   "in d or a tail effect, because the two imply different "
+                   "mechanisms and different fixes. This checks the statistic "
+                   "can tell them apart BEFORE it is pointed at real outcomes: "
+                   "C1 plants a correct mapping and requires both coefficients "
+                   "zero with honest coverage on the quadratic, C2 plants the "
+                   "over-shrinkage §9.6 step 2 hypothesised at four levels, and "
+                   "C3 plants a top-quintile step at four sizes. The read is the "
+                   "curvature each mechanism implies AT THE LEVEL THAT "
+                   "REPRODUCES THE OBSERVED LINEAR SLOPE -- if they agree there, "
+                   "the test cannot discriminate and should not be run at all. "
+                   "§1.12's lesson, applied before the fact. Reads no real match "
+                   "outcome: every outcome is Poisson-resampled from a planted "
+                   "truth, so it carries no arm list and adds no configuration, "
+                   "on the same accounting as power.py, step 1 and step 4."}
+        cost = "0 configurations"
+    elif args.step == 5:
+        results = {"step5": step5(frame, scored)}
+        arms = away_leg_arms(results["step5"])
+        row = {
+            "kind": ledger.GATE, "name": "home_term_away_leg",
+            "detail_extra": {"arms": arms},
+            "reason":
+                   "SEPARATION_SLOPE.md §8 item 2. `home_term.py` step 3 "
+                   "regresses the HOME calibration gap only, so the away leg has "
+                   "never carried an interval in any division for any arm -- "
+                   "while §9.5 makes it the larger error (pooled -1.07 resolved "
+                   "against home +0.33 unresolved) and §4 of that document argues "
+                   "it is the real gradient while home is a top-quintile step. "
+                   "This runs `slope_ci` on both legs for the three arms step 3 "
+                   "already ran; the arms are inherited, not re-chosen. It also "
+                   "closes §6's open question by applying Bonferroni across the "
+                   "eight division x leg cells, which had never been checked, "
+                   "and reads every slope against a per-population null sd from "
+                   "synthetic outcomes -- the pooled figure from step 4 cannot be "
+                   "reused because a division is a fifth of the corpus or less. "
+                   "ACCOUNTING: §8 item 2 left this an owner call between 0 (a "
+                   "re-report of `b2_calibration_in_product`'s arms under a "
+                   "second statistic) and 1. The owner chose THREE, 2026-08-11 "
+                   "-- one per arm, symmetric with how `b2_calibration_in_product` "
+                   "costed the identical three arms on the home leg. That is "
+                   "more than either figure §8 named and is the inflating "
+                   "direction, per §2.2. The arm list is one entry per ARM, not "
+                   "per reported cell: 3 arms x 2 legs x 5 populations would "
+                   "otherwise book 30."}
+        cost = "3 configurations (owner decision -- see the reason field)"
     elif args.step == 3:
         results = {"step3": step3(frame, scored)}
         arms = [{"arm": r["arm"], "strike": r["strike"],

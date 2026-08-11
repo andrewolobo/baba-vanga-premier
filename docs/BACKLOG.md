@@ -9,7 +9,12 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-10**, after the B12 channels gate (`OUTSTANDING.md`
+Last updated **2026-08-11**, after the selection-objective review
+(`SELECTION_OBJECTIVE.md`, `OUTSTANDING.md` §9.8), which opened **B15** and
+changed no status. Before that, the separation-slope review
+(`SEPARATION_SLOPE.md`, `OUTSTANDING.md` §9.7), which added a consideration to
+**B13** and did not change any status. Before that, **2026-08-10**, after the
+B12 channels gate (`OUTSTANDING.md`
 §1.12) closed the highest-value open modelling item and opened B14, the owner
 decision on whether to adopt it. Before that, the tipster re-review
 (`OUTSTANDING.md` §9) and the draw-mass diagnostic (§9.5), which added B10–B12
@@ -32,6 +37,7 @@ and gated B4.
 | **B12** | Shots + corners channel gate (§1.7, licensed and unwritten) | **done — measured 2026-08-10, not adopted** | 13 spent | — |
 | **B13** | Owner call: run the tip rule on B2's calibrated probabilities? | **open — decision, not measurement** | 0 | — |
 | **B14** | Owner call: adopt the corners channel into the head? | **open — decision, not measurement** | 0 | B12 |
+| **B15** | Half-life `H` — stale, and the one axis where the objectives disagree | open, **gated on paired ll_1x2 intervals** | ~0–1 then ~9 | — |
 
 ## Later
 
@@ -342,6 +348,69 @@ calibration worse (+1.77 → +2.37) and breaks two pooled gaps that were fine
 `12` was switched on and the mix went to 65% — recorded there as the owner's
 call. B13 is that decision offered again with a price attached, and the price is
 approximately zero.
+
+> **Added 2026-08-11 by `SEPARATION_SLOPE.md` §7 — one consideration this item
+> did not carry.** The price is approximately zero *in strike rate*. What the
+> change also does is alter **why** the published claim is honest. The −0.06 pt
+> honesty gap on the raw arm is a **cancellation**: `12` = home + away carries
+> §9.5's two opposite-signed legs (home +0.33, away −1.07 ✱) and nets them out,
+> and `12` is 65% of output. Cutting it to 47.7% stops that cancelling, and the
+> claim starts resting on the calibrated mapping instead — which still carries a
+> **resolved separation slope in E3 (+12.13 ✱)**.
+>
+> This is not obviously an argument against B13: +0.50 is small and it is the
+> conservative direction (the product would deliver more than it claims).
+> **Neither honesty gap has a confidence interval** — `home_term.step3` computes
+> the point estimate only — so "−0.06 versus +0.50" is a comparison of two
+> unbounded numbers. Worth knowing before deciding, not worth a new gate.
+
+## B15 — The half-life, and the only objective disagreement in the ledger
+
+`OUTSTANDING.md` §9.8, full account in `SELECTION_OBJECTIVE.md`. **Two separate
+problems that happen to share a parameter. Neither is the "objective-blindness"
+the item was raised as.**
+
+**Problem 1 — `H=400` is stale, on goal deviance, never mind anything else.**
+h2 swept the half-life at **α=1.0**, an order of magnitude more shrinkage than
+the α=0.1 finally chosen; h3 then swept α at H=400. The only joint check is
+h4's four-point star. And **h2 has never been re-run since the sot channel
+shipped** — `p1_results_shots_head.json` carries `base_score` and
+`pooled_deficit` only. This is convention 9 for real, and it needs no new
+objective to justify: adding a channel changes the information content, which
+is exactly what a decay horizon trades against.
+
+**Problem 2 — it is the one parameter where the two objectives disagree, and
+they disagree by trading the served markets against each other.**
+
+| | deviance | ll_1x2 | ll_ou25 |
+| --- | --- | --- | --- |
+| argmin (h2) | **400** | **300** | **650** |
+| argmin (h2-guard) | 300 | 240 | 650 |
+
+Moving H 400 → 300 buys **−0.00029** on 1X2 and costs **+0.00068** on O/U.
+`H330/a0.05` buys −0.00096 and costs +0.00059. **Goal deviance is landing
+between the two markets it induces, not blind to them.** Re-selecting on 1X2
+alone is a decision to prefer one served market, which needs convention 2
+amended — `OUTSTANDING.md` §9.4's problem, and an owner call.
+
+**The precondition, and it blocks both.** **No hyperparameter arm anywhere
+carries a paired interval on `ll_1x2`** — `sweep.py:177` bootstraps goal
+deviance only, in both `run` and `compare`. Every 1X2 number above is a bare
+point estimate. The machinery is already used at `p3.py:168`. Until that runs on
+the h4 star and the h2 grid, **problem 2 may not exist at all.**
+
+**Cost.** The interval work re-scores grids already in the ledger, so the
+accounting is the same owner call `SEPARATION_SLOPE.md` §8 item 2 raises —
+arguably 0, arguably 1. A real re-sweep of `H` on the served head is the
+9-point grid.
+
+**Do not** sweep `H` × α × `w` × EC jointly — 720 configurations against a
+ledger of 189 — and do not touch α, either blend weight, or EC on objective
+grounds: §9.8 measured all four and the objectives agree on every one.
+
+**Read `SELECTION_OBJECTIVE.md` §4 before framing this as a fix for the
+separation slope.** All four parameters move λ; the mapping is fixed at
+`rho=0`. Three arms have already moved that mapping and none bought strike rate.
 
 ## B11 — Per-line calibration for the six goal lines **(gates B4)**
 
