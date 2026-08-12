@@ -13,11 +13,12 @@ every future thread to re-derive the count with `trials.count_configurations`
 *rather than trusting the prose* -- which makes that table the authority -- and
 the pre-committed P6 read depends on it.
 
-90 rows is 202 KB of text. So the honest backup is not a 44 MB binary copied to
-object storage on a timer: it is a small, diffable, sorted text file in the
-repository, for which git and GitHub already provide off-machine durability and
-history. `docs/DEPLOY.md` §6.1 covers the server's database, which holds a
-different irreplaceable thing (what was predicted, and when).
+The whole ledger is a couple of hundred KB of text. So the honest backup is not
+a 44 MB binary copied to object storage on a timer: it is a small, diffable,
+sorted text file in the repository, for which git and GitHub already provide
+off-machine durability and history. `docs/DEPLOY.md` §6.1 covers the server's
+database, which holds a different irreplaceable thing (what was predicted, and
+when).
 
 **This is an export, not a mirror.** Nothing here writes to `gate_ledger`, and
 there is deliberately no import path -- `OUTSTANDING.md` §7.5 makes the ledger

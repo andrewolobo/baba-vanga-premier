@@ -870,9 +870,10 @@ protects the older asset.
 
 **Built 2026-08-08, and the development half is already done.**
 
-`scripts/export_ledger.py` writes `docs/gate_ledger.jsonl` — 90 rows, 202 KB of
-sorted, key-ordered JSON. **That file is the backup**, and committing it means
-git and GitHub provide off-machine durability and full history for free. No
+`scripts/export_ledger.py` writes `docs/gate_ledger.jsonl` — the whole ledger as
+sorted, key-ordered JSON, a couple of hundred KB. **That file is the backup**,
+and committing it means git and GitHub provide off-machine durability and full
+history for free. No
 storage account, no timer, no restore drill: the thing that could not be
 reconstructed is now text in a repository with a remote.
 
