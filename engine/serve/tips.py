@@ -79,6 +79,23 @@ COMPONENTS = {"H": ("H",), "D": ("D",), "A": ("A",),
               "1X": ("H", "D"), "X2": ("A", "D"), "12": ("H", "A")}
 
 
+#: How far ahead of kickoff a tip may publish, in days. **0 means matchday.**
+#:
+#: A tip is published once and never revised -- `UNIQUE (fixture_id,
+#: rule_version)`, migration 003 -- so whenever it is published is the head that
+#: the customer gets. While the only fixture source was football-data's rolling
+#: ~7-day window this bounded itself. `services.bbc_calendar` removed that bound,
+#: and an ungated rule would lock in a call weeks early from an artifact that
+#: refreezes every 7 days (`serve/cycle.py`), publishing a measurably staler
+#: forecast than the one `engine/eval/selection.py` measured.
+#:
+#: The window is closed at both ends. The upper bound keeps the head fresh; the
+#: **lower** bound stops a missed cycle publishing a call on a match that has
+#: already been played, which a forward calendar makes reachable for the first
+#: time. A fixture whose day is missed stays untipped, which is the same rule
+#: predictions already follow (`README.md`).
+PUBLISH_WITHIN_DAYS = 0
+
 #: Served predictions for fixtures this rule has not tipped yet, joined to the
 #: prices the fixture carried. Only the newest prediction per fixture is
 #: considered: re-serving appends rather than overwrites, and tipping an
@@ -96,6 +113,7 @@ UNTIPPED = """
               SELECT MAX(prediction_id) FROM predictions GROUP BY fixture_id)
       AND NOT EXISTS (SELECT 1 FROM tips t
                       WHERE t.fixture_id = p.fixture_id AND t.rule_version = ?)
+      AND f.match_date BETWEEN date('now') AND date('now', ? || ' days')
     ORDER BY f.match_date, f.fixture_id
 """
 
@@ -150,9 +168,11 @@ def select(predictions: pd.DataFrame, *, floor: float = DEFAULT_FLOOR,
     return out
 
 
-def untipped(conn: sqlite3.Connection, *,
-             rule_version: str = RULE_VERSION) -> pd.DataFrame:
-    return pd.read_sql_query(UNTIPPED, conn, params=[rule_version])
+def untipped(conn: sqlite3.Connection, *, rule_version: str = RULE_VERSION,
+             within_days: int = PUBLISH_WITHIN_DAYS) -> pd.DataFrame:
+    """Predictions eligible to be tipped now. See `PUBLISH_WITHIN_DAYS`."""
+    return pd.read_sql_query(
+        UNTIPPED, conn, params=[rule_version, f"+{int(within_days)}"])
 
 
 def publish(conn: sqlite3.Connection, tips: pd.DataFrame, *,
@@ -188,14 +208,17 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--floor", type=float, default=DEFAULT_FLOOR)
     parser.add_argument("--ceiling", type=float, default=DEFAULT_CEILING)
+    parser.add_argument("--within-days", type=int, default=PUBLISH_WITHIN_DAYS,
+                        help="publish window ahead of kickoff (0 = matchday)")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
 
     conn = db.connect()
     db.migrate(conn)
-    predictions = untipped(conn)
+    predictions = untipped(conn, within_days=args.within_days)
     if predictions.empty:
-        print("nothing untipped -- run the serving cycle first")
+        print(f"nothing untipped within {args.within_days} day(s) of kickoff "
+              "-- run the serving cycle first")
         return 2
 
     tips = select(predictions, floor=args.floor, ceiling=args.ceiling)

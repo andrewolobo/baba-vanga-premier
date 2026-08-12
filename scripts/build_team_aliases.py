@@ -28,6 +28,7 @@ from engine.seasons import DIVISIONS, SEASONS
 
 FOOTBALL_DATA = "football-data"
 FBREF = "fbref"
+BBC = "bbc"
 
 #: fbref squad name -> football-data name, for pairs the normaliser cannot
 #: reach (football-data drops the suffix: "Birmingham City" -> "Birmingham").
@@ -100,6 +101,23 @@ FD_SELF_ALIASES = {
 _SUFFIX = re.compile(r"\b(fc|afc)\b")
 
 
+def _read_bbc_teams(path: Path) -> list[tuple[str, str]]:
+    """(canonical_name, bbc_urn) from the hand-reviewed reference file.
+
+    Unlike the other two sources, BBC names are not derivable from anything on
+    disk -- they come from a live page -- so the mapping is authored once into
+    `reference/bbc_teams.csv` and reviewed there rather than in a dict here.
+    The alias stored is the **URN**, not the display name: it is present on
+    every English side, it is stable across renames, and it makes the lookup a
+    machine key rather than a spelling.
+    """
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        return [(row["canonical_name"].strip(), row["bbc_urn"].strip())
+                for row in csv.DictReader(fh)]
+
+
 def normalise(name: str) -> str:
     s = name.lower().replace("&", "and").replace("'", "").replace("’", "")
     s = re.sub(r"[^a-z0-9 ]", " ", s)
@@ -142,6 +160,23 @@ def collect_names() -> tuple[set[str], set[str]]:
     return fd, fb
 
 
+def bbc_rows(canonicals: set[str]) -> tuple[list[tuple[str, str, str]], list[str]]:
+    """(rows, unresolved) for the BBC source.
+
+    The reference file already carries the canonical name, so the only thing to
+    check is that it names a club that actually exists. That check is the point:
+    a typo would otherwise mint a phantom canonical club that nothing else in
+    the corpus refers to, and the bridge would resolve to it happily.
+    """
+    rows, unresolved = [], []
+    for canonical, urn in _read_bbc_teams(config.BBC_TEAMS_CSV):
+        if canonical not in canonicals:
+            unresolved.append(f"{urn!r} -> {canonical!r} (no such canonical club)")
+            continue
+        rows.append((canonical, BBC, urn))
+    return rows, unresolved
+
+
 def build_rows() -> list[tuple[str, str, str]]:
     fd_names, fb_names = collect_names()
 
@@ -172,10 +207,14 @@ def build_rows() -> list[tuple[str, str, str]]:
             canonical = hits[0]
         rows.append((canonical, FBREF, fb_name))
 
+    bbc, bbc_unresolved = bbc_rows(canonicals)
+    rows.extend(bbc)
+    unresolved.extend(bbc_unresolved)
+
     if unresolved:
         raise SystemExit(
-            "Cannot bridge these names; add them to MANUAL_FBREF_TO_FD:\n  "
-            + "\n  ".join(unresolved)
+            "Cannot bridge these names; fix MANUAL_FBREF_TO_FD or "
+            "reference/bbc_teams.csv:\n  " + "\n  ".join(unresolved)
         )
     return sorted(set(rows))
 
@@ -208,10 +247,11 @@ def main() -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
     clubs = len({r[0] for r in rows})
-    fd_n = sum(1 for r in rows if r[1] == FOOTBALL_DATA)
-    fb_n = sum(1 for r in rows if r[1] == FBREF)
+    counts = {source: sum(1 for r in rows if r[1] == source)
+              for source in (FOOTBALL_DATA, FBREF, BBC)}
     print(f"wrote {path}")
-    print(f"  {clubs} canonical clubs, {fd_n} football-data aliases, {fb_n} fbref aliases")
+    print(f"  {clubs} canonical clubs, "
+          + ", ".join(f"{n} {source} aliases" for source, n in counts.items()))
     return 0
 
 

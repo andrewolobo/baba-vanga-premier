@@ -122,6 +122,32 @@ def test_first_seen_is_preserved_across_updates(conn):
     assert first_seen is not None
 
 
+def test_a_blank_time_does_not_erase_a_known_kickoff(conn):
+    """The merge hazard a second fixture source creates.
+
+    `services.bbc_calendar` publishes a kickoff for every match; this feed omits
+    `Time` on some rows. A plain assignment would blank the known value the
+    moment the feed republished the fixture without one.
+    """
+    fixture_sync.sync(conn, feed(ARSENAL_CHELSEA), "day1")
+    timeless = ARSENAL_CHELSEA.replace("15/08/2026,15:00,", "15/08/2026,,")
+    fixture_sync.sync(conn, feed(timeless), "day2")
+
+    row = conn.execute("SELECT kickoff_time, avg_h FROM fixtures").fetchone()
+    assert row["kickoff_time"] == "15:00"
+    assert row["avg_h"] == 1.78, "prices must still update normally"
+
+
+def test_a_withdrawn_price_is_still_written_as_null(conn):
+    """The other half of the same rule. A price the feed has stopped carrying is
+    real news -- unlike a missing kickoff, it must not be preserved."""
+    fixture_sync.sync(conn, feed(ARSENAL_CHELSEA), "day1")
+    pulled = ARSENAL_CHELSEA.replace(",1.78,3.55,4.40,", ",,,,")
+    fixture_sync.sync(conn, feed(pulled), "day2")
+
+    assert conn.execute("SELECT avg_h FROM fixtures").fetchone()["avg_h"] is None
+
+
 def test_dry_run_writes_nothing(conn):
     report = fixture_sync.sync(conn, feed(ARSENAL_CHELSEA), "test", dry_run=True)
     assert report.inserted == 1

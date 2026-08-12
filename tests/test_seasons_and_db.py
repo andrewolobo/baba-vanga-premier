@@ -209,3 +209,45 @@ def test_ledger_stores_detail_as_json(conn):
     ledger.record(conn, kind=ledger.PROBE, name="dispersion", detail={"var_ratio": 0.978})
     row = conn.execute("SELECT detail FROM gate_ledger").fetchone()
     assert row["detail"] == '{"var_ratio": 0.978}'
+
+
+# --- settings resolution ---------------------------------------------------
+
+
+def test_dotenv_parses_comments_blanks_and_quotes(tmp_path):
+    from engine import config
+
+    path = tmp_path / ".env"
+    path.write_text("# a comment\n\nBVP_A=1\nBVP_B = \"two\" \nBVP_C='three'\n"
+                    "not_a_pair\n", encoding="utf-8")
+
+    assert config._dotenv(path) == {"BVP_A": "1", "BVP_B": "two", "BVP_C": "three"}
+
+
+def test_a_missing_dotenv_is_not_an_error(tmp_path):
+    from engine import config
+
+    assert config._dotenv(tmp_path / "nope") == {}
+
+
+def test_the_environment_beats_dotenv(monkeypatch):
+    """The order that keeps the server honest: a systemd `Environment=` line
+    must not be silently overridden by a stale `.env` in the checkout."""
+    from engine import config
+
+    monkeypatch.setitem(config._FILE, "BVP_THING", "from-file")
+    assert config.setting("BVP_THING") == "from-file"
+
+    monkeypatch.setenv("BVP_THING", "from-env")
+    assert config.setting("BVP_THING") == "from-env"
+
+
+def test_dotenv_beats_the_default(monkeypatch):
+    from engine import config
+
+    monkeypatch.delenv("BVP_THING", raising=False)
+    monkeypatch.setitem(config._FILE, "BVP_THING", "from-file")
+    assert config.setting("BVP_THING", "fallback") == "from-file"
+
+    monkeypatch.delitem(config._FILE, "BVP_THING")
+    assert config.setting("BVP_THING", "fallback") == "fallback"

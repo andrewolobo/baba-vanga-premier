@@ -14,17 +14,18 @@ Everything below is arranged around not losing a matchday.
 ## 0. What runs
 
 ```
-python -m services.run_cycle          # sync -> serve -> tips -> grade -> record
+python -m services.run_cycle          # sync -> calendar -> serve -> tips -> grade -> record
 ```
 
-Four independent steps. Each records its own outcome; the cycle reports the
+Five independent steps. Each records its own outcome; the cycle reports the
 worst one and always writes a `serving_state` row, including when it failed.
 
 | step | does | needs the network? |
 | --- | --- | --- |
 | `sync` | pull the rolling fixtures feed, upsert fixtures + prices | yes |
+| `calendar` | fill fixture gaps from the second source — **off by default** (§5.8) | yes |
 | `serve` | refit if stale, price every pending fixture it can | no |
-| `tips` | publish one recommendation per priced fixture | no |
+| `tips` | publish one recommendation per fixture **played today** (§5.7) | no |
 | `grade` | settle played fixtures, write CLV, settle tips | yes |
 
 **The book does not run.** It is measured-negative and absent from the runner
@@ -96,6 +97,7 @@ curl.exe http://127.0.0.1:8000/health
 | --- | --- |
 | no fixtures | the feed carries no English rows yet (§5.1) |
 | no predictions | nothing to price until fixtures exist |
+| fixtures but **no tips** until matchday | by design — the rule publishes on the day (§5.7) |
 | **empty book, always** | the betting rule is **off by decision** — `CALIBRATION.md` §5 |
 | `"model": null` on `/health` | no non-dry-run cycle has been run yet |
 | `calibrated: false` | flagged on the wire on purpose — P3 found calibration null/harmful |
@@ -260,6 +262,13 @@ curl.exe -s https://www.football-data.co.uk/fixtures.csv | Select-Object -First 
 - **The file is empty or 404** → the publisher is down. Predictions can still be
   made from any other source that writes a `fixtures` row (§5.5).
 
+**Observed 2026-08-12, three days before the EFL opening weekend:** 78 rows,
+zero E0–E3, and a window that had not rolled past the *previous* weekend. So
+this is not only a close-season state. If the second calendar is enabled (§5.8)
+the `calendar` step covers it and `serve` still prices the weekend; the `sync`
+ATTENTION is still correct and still worth reading, because prices are missing
+even when fixtures are not.
+
 ### 5.2 `sync` says unbridged club name(s)
 
 A club is playing in E0–E3 that the alias table does not know.
@@ -324,6 +333,56 @@ WAL still allows only **one writer at a time**. So if you see it now, it is two
 *writers* — two cycles overlapping, which nothing in the application prevents
 (§8). Check for a second `python -m services.run_cycle`, and re-run once it is
 gone; re-running is safe (§6).
+
+### 5.7 `tips` says nothing untipped within 0 day(s) of kickoff
+
+**Expected on any day without matches.** The rule publishes on matchday only
+(`tips.PUBLISH_WITHIN_DAYS`), because a tip is published once and never revised,
+so publishing early would lock in a call from a staler head
+(`OUTSTANDING.md` §4.6).
+
+A problem only if it says this **on a day with fixtures**. Check that the
+fixtures were actually priced — an unpriced fixture cannot be tipped:
+
+```powershell
+python -c "from engine import db; c=db.connect(); print(c.execute(\"SELECT COUNT(*) FROM fixtures WHERE match_date = date('now')\").fetchone()[0])"
+```
+
+To see what *would* publish over the coming week without publishing it:
+
+```powershell
+python -m engine.serve.tips --within-days 7 --dry-run
+```
+
+### 5.8 The second calendar (`calendar` step)
+
+Off unless `BVP_BBC_CALENDAR=1`. It is a **pre-release validation aid with an
+exit condition** — retire it when a commercial feed is sourced or at public
+launch, whichever is first (`OUTSTANDING.md` §4.5). Read that entry before
+enabling it on any machine.
+
+- **`disabled (BVP_BBC_CALENDAR unset)`** → the default. Nothing was requested.
+- **`unbridged club(s)`** → a club is playing in E0–E3 that
+  `reference/bbc_teams.csv` does not know. This is the designed behaviour, not a
+  fault: it is excluded by name and counted rather than guessed at. Fix it with
+  the club's real URN, read from the feed rather than invented:
+
+  ```powershell
+  python -m services.bbc_calendar --dry-run      # names the club
+  # add its bbc_urn/bbc_name/canonical_name row, then:
+  python scripts\build_team_aliases.py
+  python scripts\build_team_aliases.py --check
+  ```
+
+  Happened once on the first live run (Burnley — a real corpus club absent from
+  the sampled dates), and will happen again on promotion and at season turn.
+- **The step failed** → the cycle continues by design; `serve` still prices
+  whatever `sync` provided. Nothing to do urgently.
+- **Tips publishing with no price** is the expected state while this feed is
+  carrying fixtures alone. It raises ATTENTION and exits 2 every matchday until
+  football-data's prices arrive. Correct, and the reason is real: without a
+  price the product's P&L columns cannot be filled. The strike rate — the only
+  thing published — is unaffected.
 
 ## 6. Re-running is safe
 

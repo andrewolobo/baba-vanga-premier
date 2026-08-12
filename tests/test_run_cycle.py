@@ -54,10 +54,19 @@ def artifact():
 FRESH_ARTIFACT_DAY = pd.Timestamp("2026-08-02")
 
 
-def add_fixture(conn, division, home_id, away_id, date="2026-08-15"):
+def add_fixture(conn, division, home_id, away_id, date=None):
+    """A fixture, defaulting to **today** rather than to a fixed date.
+
+    The tip rule publishes on matchday only (`tips.PUBLISH_WITHIN_DAYS`), so a
+    hardcoded date is a test that stops exercising the tip path the moment the
+    wall clock passes it -- the same way two artifact tests aged out on
+    2026-08-09 (see `FRESH_ARTIFACT_DAY`). Tests that care about a specific day
+    still pass one explicitly.
+    """
     conn.execute(
         "INSERT INTO fixtures (division, match_date, home_team_id, away_team_id,"
-        " source_file) VALUES (?, ?, ?, ?, 'test')", (division, date, home_id, away_id))
+        " source_file) VALUES (?, COALESCE(?, date('now')), ?, ?, 'test')",
+        (division, date, home_id, away_id))
     conn.commit()
 
 
@@ -243,6 +252,60 @@ def _empty_feed(tmp=[]):  # noqa: B006 -- module-local cache, not user-facing
     return tmp[0]
 
 
+# --- the second calendar ---------------------------------------------------
+
+
+def test_the_calendar_step_is_off_unless_the_flag_is_set(conn, monkeypatch):
+    """Running a second source is a recorded decision with an exit condition
+    (`OUTSTANDING.md` §4.5), not a default. Off must mean no request at all."""
+    def explode(*a, **k):
+        raise AssertionError("must not reach the network when disabled")
+
+    monkeypatch.setattr(run_cycle.bbc_calendar, "fetch", explode)
+    monkeypatch.setattr(run_cycle.config, "BBC_CALENDAR_ENABLED", False)
+
+    step = run_cycle.step_calendar(conn, dry_run=True)
+
+    assert step.status is Status.OK
+    assert "disabled" in step.detail
+
+
+def test_the_calendar_step_fills_gaps_when_enabled(conn, monkeypatch):
+    """It inserts what football-data does not have -- the empty-English-rows
+    case this exists for -- and reports what it did."""
+    from tests.test_bbc_calendar import event, page
+
+    monkeypatch.setattr(run_cycle.config, "BBC_CALENDAR_ENABLED", True)
+    today = str(pd.Timestamp.now().date())
+    html = page(event("bolton-wanderers", "preston-north-end", date=today))
+    monkeypatch.setattr(run_cycle.bbc_calendar, "collect",
+                        lambda *a, **k: [("bbc", html)])
+    conn.execute("INSERT INTO teams (team_id, canonical_name)"
+                 " VALUES (90, 'Bolton'), (91, 'Preston')")
+    conn.commit()
+
+    step = run_cycle.step_calendar(conn, dry_run=True)
+
+    assert step.status is Status.OK, step.detail
+    assert "1 new" in step.detail
+
+
+def test_a_failing_calendar_does_not_stop_the_cycle(conn, monkeypatch):
+    """Steps are independent: a dead second source must not cost a matchday."""
+    monkeypatch.setattr(run_cycle.config, "BBC_CALENDAR_ENABLED", True)
+
+    def boom(*a, **k):
+        raise TimeoutError("bbc.com unreachable")
+
+    monkeypatch.setattr(run_cycle.bbc_calendar, "collect", boom)
+
+    step = run_cycle.step_calendar(conn, dry_run=True)
+
+    assert step.status is Status.FAILED
+    assert "TimeoutError" in step.detail
+    assert step.trace is not None
+
+
 # --- the tip step ----------------------------------------------------------
 
 
@@ -258,6 +321,11 @@ def test_the_cycle_publishes_tips_for_the_fixtures_it_just_priced(
     """
     monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
     monkeypatch.setattr(run_cycle, "TIP_FLOOR", 0.50)
+    # Tips publish on matchday, and `step_grade`'s bound is `match_date <=
+    # today`, so the tip this cycle writes is immediately in scope for grading
+    # in the same run. It settles nothing -- the match has not kicked off -- but
+    # it would reach for a results CSV, and no test may touch the network.
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "")
     add_fixture(conn, "E0", 1, 2)
     conn.execute("UPDATE fixtures SET max_h=1.5, max_d=4.0, max_a=7.0,"
                  " avg_h=1.45, avg_d=3.9, avg_a=6.8 WHERE 1=1")
@@ -282,6 +350,7 @@ def test_a_fixture_below_the_floor_falls_back_rather_than_going_untipped(
     0.55, so the cycle must publish a double chance rather than nothing -- v1
     published nothing here, and that 14.4% coverage is what B8 replaced."""
     monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "")
     add_fixture(conn, "E0", 1, 2)
     conn.execute("UPDATE fixtures SET max_h=1.9, max_d=3.6, max_a=4.2,"
                  " avg_h=1.85, avg_d=3.5, avg_a=4.1")

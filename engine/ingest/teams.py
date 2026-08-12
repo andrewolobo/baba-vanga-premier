@@ -21,6 +21,10 @@ from engine import config
 
 FOOTBALL_DATA = "football-data"
 FBREF = "fbref"
+#: BBC aliases are the stable team URN, not the display name -- the feed carries
+#: one on every English side and it does not move when a club's rendered name
+#: does. `Telford United` (FINDINGS.md) is what name-keyed bridging costs.
+BBC = "bbc"
 
 
 class UnbridgedTeam(KeyError):

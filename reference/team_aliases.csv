@@ -1,86 +1,118 @@
 canonical_name,source,alias
+AFC Wimbledon,bbc,urn:bbc:sportsdata:football:team:afc-wimbledon
 AFC Wimbledon,fbref,AFC Wimbledon
 AFC Wimbledon,football-data,AFC Wimbledon
+Accrington,bbc,urn:bbc:sportsdata:football:team:accrington-stanley
 Accrington,fbref,Accrington
 Accrington,football-data,Accrington
+Aldershot,bbc,urn:bbc:sportsdata:football:team:aldershot-town
 Aldershot,fbref,Aldershot Town
 Aldershot,football-data,Aldershot
 Alfreton Town,fbref,Alfreton Town
 Alfreton Town,football-data,Alfreton Town
+Altrincham,bbc,urn:bbc:sportsdata:football:team:altrincham
 Altrincham,fbref,Altrincham
 Altrincham,football-data,Altrincham
+Arsenal,bbc,urn:bbc:sportsdata:football:team:arsenal
 Arsenal,fbref,Arsenal
 Arsenal,football-data,Arsenal
 Aston Villa,fbref,Aston Villa
 Aston Villa,football-data,Aston Villa
+Barnet,bbc,urn:bbc:sportsdata:football:team:barnet
 Barnet,fbref,Barnet
 Barnet,football-data,Barnet
+Barnsley,bbc,urn:bbc:sportsdata:football:team:barnsley
 Barnsley,fbref,Barnsley
 Barnsley,football-data,Barnsley
+Barrow,bbc,urn:bbc:sportsdata:football:team:barrow
 Barrow,fbref,Barrow
 Barrow,football-data,Barrow
 Bath City,fbref,Bath City
 Bath City,football-data,Bath City
+Birmingham,bbc,urn:bbc:sportsdata:football:team:birmingham-city
 Birmingham,fbref,Birmingham City
 Birmingham,football-data,Birmingham
+Blackburn,bbc,urn:bbc:sportsdata:football:team:blackburn-rovers
 Blackburn,fbref,Blackburn
 Blackburn,football-data,Blackburn
+Blackpool,bbc,urn:bbc:sportsdata:football:team:blackpool
 Blackpool,fbref,Blackpool
 Blackpool,football-data,Blackpool
+Bolton,bbc,urn:bbc:sportsdata:football:team:bolton-wanderers
 Bolton,fbref,Bolton
 Bolton,football-data,Bolton
+Boreham Wood,bbc,urn:bbc:sportsdata:football:team:boreham-wood
 Boreham Wood,fbref,Boreham Wood
 Boreham Wood,football-data,Boreham Wood
+Boston Utd,bbc,urn:bbc:sportsdata:football:team:boston-united
 Boston Utd,fbref,Boston United
 Boston Utd,football-data,Boston Utd
 Bournemouth,fbref,Bournemouth
 Bournemouth,football-data,Bournemouth
 Brackley Town,fbref,Brackley Town
 Brackley Town,football-data,Brackley Town
+Bradford,bbc,urn:bbc:sportsdata:football:team:bradford-city
 Bradford,fbref,Bradford City
 Bradford,football-data,Bradford
 Braintree Town,fbref,Braintree Town
 Braintree Town,football-data,Braintree Town
+Brentford,bbc,urn:bbc:sportsdata:football:team:brentford
 Brentford,fbref,Brentford
 Brentford,football-data,Brentford
+Brighton,bbc,urn:bbc:sportsdata:football:team:brighton-and-hove-albion
 Brighton,fbref,Brighton
 Brighton,football-data,Brighton
+Bristol City,bbc,urn:bbc:sportsdata:football:team:bristol-city
 Bristol City,fbref,Bristol City
 Bristol City,football-data,Bristol City
+Bristol Rvs,bbc,urn:bbc:sportsdata:football:team:bristol-rovers
 Bristol Rvs,fbref,Bristol Rovers
 Bristol Rvs,football-data,Bristol Rvs
+Bromley,bbc,urn:bbc:sportsdata:football:team:bromley
 Bromley,fbref,Bromley
 Bromley,football-data,Bromley
+Burnley,bbc,urn:bbc:sportsdata:football:team:burnley
 Burnley,fbref,Burnley
 Burnley,football-data,Burnley
+Burton,bbc,urn:bbc:sportsdata:football:team:burton-albion
 Burton,fbref,Burton Albion
 Burton,football-data,Burton
 Bury,fbref,Bury
 Bury,football-data,Bury
+Cambridge,bbc,urn:bbc:sportsdata:football:team:cambridge-united
 Cambridge,fbref,Cambridge
 Cambridge,football-data,Cambridge
+Cardiff,bbc,urn:bbc:sportsdata:football:team:cardiff-city
 Cardiff,fbref,Cardiff City
 Cardiff,football-data,Cardiff
+Carlisle,bbc,urn:bbc:sportsdata:football:team:carlisle-united
 Carlisle,fbref,Carlisle United
 Carlisle,football-data,Carlisle
+Charlton,bbc,urn:bbc:sportsdata:football:team:charlton-athletic
 Charlton,fbref,Charlton Athletic
 Charlton,football-data,Charlton
 Chelsea,fbref,Chelsea
 Chelsea,football-data,Chelsea
+Cheltenham,bbc,urn:bbc:sportsdata:football:team:cheltenham-town
 Cheltenham,fbref,Cheltenham
 Cheltenham,football-data,Cheltenham
 Chester,fbref,Chester
 Chester,football-data,Chester
+Chesterfield,bbc,urn:bbc:sportsdata:football:team:chesterfield
 Chesterfield,fbref,Chesterfield
 Chesterfield,football-data,Chesterfield
 Chorley,fbref,Chorley FC
 Chorley,football-data,Chorley
+Colchester,bbc,urn:bbc:sportsdata:football:team:colchester-united
 Colchester,fbref,Colchester
 Colchester,football-data,Colchester
+Coventry,bbc,urn:bbc:sportsdata:football:team:coventry-city
 Coventry,fbref,Coventry City
 Coventry,football-data,Coventry
+Crawley Town,bbc,urn:bbc:sportsdata:football:team:crawley-town
 Crawley Town,fbref,Crawley Town
 Crawley Town,football-data,Crawley Town
+Crewe,bbc,urn:bbc:sportsdata:football:team:crewe-alexandra
 Crewe,fbref,Crewe Alexandra
 Crewe,football-data,Crewe
 Crystal Palace,fbref,Crystal Palace
@@ -91,8 +123,10 @@ Darlington,fbref,Darlington
 Darlington,football-data,Darlington
 Dartford,fbref,Dartford
 Dartford,football-data,Dartford
+Derby,bbc,urn:bbc:sportsdata:football:team:derby-county
 Derby,fbref,Derby County
 Derby,football-data,Derby
+Doncaster,bbc,urn:bbc:sportsdata:football:team:doncaster-rovers
 Doncaster,fbref,Doncaster
 Doncaster,football-data,Doncaster
 Dorking,fbref,Dorking
@@ -101,34 +135,46 @@ Dover Athletic,fbref,Dover Athletic
 Dover Athletic,football-data,Dover Athletic
 Eastbourne Borough,fbref,Eastbourne
 Eastbourne Borough,football-data,Eastbourne Borough
+Eastleigh,bbc,urn:bbc:sportsdata:football:team:eastleigh
 Eastleigh,fbref,Eastleigh
 Eastleigh,football-data,Eastleigh
 Ebbsfleet,fbref,Ebbsfleet United
 Ebbsfleet,football-data,Ebbsfleet
 Everton,fbref,Everton
 Everton,football-data,Everton
+Exeter,bbc,urn:bbc:sportsdata:football:team:exeter-city
 Exeter,fbref,Exeter City
 Exeter,football-data,Exeter
+Fleetwood Town,bbc,urn:bbc:sportsdata:football:team:fleetwood-town
 Fleetwood Town,fbref,Fleetwood Town
 Fleetwood Town,football-data,Fleetwood Town
+Forest Green,bbc,urn:bbc:sportsdata:football:team:forest-green-rovers
 Forest Green,fbref,Forest Green
 Forest Green,football-data,Forest Green
+Fulham,bbc,urn:bbc:sportsdata:football:team:fulham
 Fulham,fbref,Fulham
 Fulham,football-data,Fulham
+Fylde,bbc,urn:bbc:sportsdata:football:team:afc-fylde
 Fylde,fbref,Fylde
 Fylde,football-data,Fylde
+Gateshead,bbc,urn:bbc:sportsdata:football:team:gateshead
 Gateshead,fbref,Gateshead
 Gateshead,football-data,Gateshead
+Gillingham,bbc,urn:bbc:sportsdata:football:team:gillingham
 Gillingham,fbref,Gillingham
 Gillingham,football-data,Gillingham
+Grimsby,bbc,urn:bbc:sportsdata:football:team:grimsby-town
 Grimsby,fbref,Grimsby Town
 Grimsby,football-data,Grimsby
 Guiseley,fbref,Guiseley
 Guiseley,football-data,Guiseley
+Halifax,bbc,urn:bbc:sportsdata:football:team:halifax
 Halifax,fbref,FC Halifax Town
 Halifax,football-data,Halifax
+Harrogate,bbc,urn:bbc:sportsdata:football:team:harrogate-town
 Harrogate,fbref,Harrogate Town
 Harrogate,football-data,Harrogate
+Hartlepool,bbc,urn:bbc:sportsdata:football:team:hartlepool-united
 Hartlepool,fbref,Hartlepool
 Hartlepool,football-data,Hartlepool
 Havant & Waterlooville,fbref,Havant & W'ville
@@ -139,16 +185,20 @@ Hereford,fbref,Hereford United
 Hereford,football-data,Hereford
 Histon,fbref,Histon
 Histon,football-data,Histon
+Huddersfield,bbc,urn:bbc:sportsdata:football:team:huddersfield-town
 Huddersfield,fbref,Huddersfield
 Huddersfield,football-data,Huddersfield
+Hull,bbc,urn:bbc:sportsdata:football:team:hull-city
 Hull,fbref,Hull City
 Hull,football-data,Hull
 Hyde United,fbref,Hyde
 Hyde United,football-data,Hyde United
+Ipswich,bbc,urn:bbc:sportsdata:football:team:ipswich-town
 Ipswich,fbref,Ipswich Town
 Ipswich,football-data,Ipswich
 Kettering Town,fbref,Kettering Town
 Kettering Town,football-data,Kettering Town
+Kidderminster,bbc,urn:bbc:sportsdata:football:team:kidderminster-harriers
 Kidderminster,fbref,Harriers
 Kidderminster,fbref,Kidderminster
 Kidderminster,football-data,Kidderminster
@@ -156,14 +206,18 @@ King’s Lynn,fbref,King's Lynn
 King’s Lynn,football-data,King’s Lynn
 Leeds,fbref,Leeds United
 Leeds,football-data,Leeds
+Leicester,bbc,urn:bbc:sportsdata:football:team:leicester-city
 Leicester,fbref,Leicester City
 Leicester,football-data,Leicester
+Leyton Orient,bbc,urn:bbc:sportsdata:football:team:leyton-orient
 Leyton Orient,fbref,Leyton Orient
 Leyton Orient,football-data,Leyton Orient
+Lincoln,bbc,urn:bbc:sportsdata:football:team:lincoln-city
 Lincoln,fbref,Lincoln City
 Lincoln,football-data,Lincoln
 Liverpool,fbref,Liverpool
 Liverpool,football-data,Liverpool
+Luton,bbc,urn:bbc:sportsdata:football:team:luton-town
 Luton,fbref,Luton Town
 Luton,football-data,Luton
 Macclesfield,fbref,Macclesfield
@@ -176,92 +230,128 @@ Man City,fbref,Manchester City
 Man City,football-data,Man City
 Man United,fbref,Manchester Utd
 Man United,football-data,Man United
+Mansfield,bbc,urn:bbc:sportsdata:football:team:mansfield-town
 Mansfield,fbref,Mansfield Town
 Mansfield,football-data,Mansfield
+Middlesbrough,bbc,urn:bbc:sportsdata:football:team:middlesbrough
 Middlesbrough,fbref,Middlesbrough
 Middlesbrough,football-data,Middlesbrough
+Millwall,bbc,urn:bbc:sportsdata:football:team:millwall
 Millwall,fbref,Millwall
 Millwall,football-data,Millwall
+Milton Keynes Dons,bbc,urn:bbc:sportsdata:football:team:milton-keynes-dons
 Milton Keynes Dons,fbref,MK Dons
 Milton Keynes Dons,football-data,Milton Keynes Dons
 Morecambe,fbref,Morecambe
 Morecambe,football-data,Morecambe
+Newcastle,bbc,urn:bbc:sportsdata:football:team:newcastle-united
 Newcastle,fbref,Newcastle
 Newcastle,football-data,Newcastle
+Newport County,bbc,urn:bbc:sportsdata:football:team:newport-county
 Newport County,fbref,Newport County
 Newport County,football-data,Newport County
 North Ferriby,fbref,N Ferriby Utd
 North Ferriby,football-data,North Ferriby
+Northampton,bbc,urn:bbc:sportsdata:football:team:northampton-town
 Northampton,fbref,Northampton
 Northampton,football-data,Northampton
+Norwich,bbc,urn:bbc:sportsdata:football:team:norwich-city
 Norwich,fbref,Norwich City
 Norwich,football-data,Norwich
 Nott'm Forest,fbref,Nottingham
 Nott'm Forest,football-data,Nott'm Forest
+Notts County,bbc,urn:bbc:sportsdata:football:team:notts-county
 Notts County,fbref,Notts County
 Notts County,football-data,Notts County
 Nuneaton Town,fbref,Nuneaton Town
 Nuneaton Town,football-data,Nuneaton Town
+Oldham,bbc,urn:bbc:sportsdata:football:team:oldham-athletic
 Oldham,fbref,Oldham Athletic
 Oldham,football-data,Oldham
+Oxford,bbc,urn:bbc:sportsdata:football:team:oxford-united
 Oxford,fbref,Oxford United
 Oxford,football-data,Oxford
 Oxford City,fbref,Oxford City FC
 Oxford City,football-data,Oxford City
+Peterboro,bbc,urn:bbc:sportsdata:football:team:peterborough-united
 Peterboro,fbref,Peterborough
 Peterboro,football-data,Peterboro
+Plymouth,bbc,urn:bbc:sportsdata:football:team:plymouth-argyle
 Plymouth,fbref,Plymouth Argyle
 Plymouth,football-data,Plymouth
+Port Vale,bbc,urn:bbc:sportsdata:football:team:port-vale
 Port Vale,fbref,Port Vale
 Port Vale,football-data,Port Vale
+Portsmouth,bbc,urn:bbc:sportsdata:football:team:portsmouth
 Portsmouth,fbref,Portsmouth
 Portsmouth,football-data,Portsmouth
+Preston,bbc,urn:bbc:sportsdata:football:team:preston-north-end
 Preston,fbref,Preston
 Preston,football-data,Preston
+QPR,bbc,urn:bbc:sportsdata:football:team:queens-park-rangers
 QPR,fbref,QPR
 QPR,football-data,QPR
+Reading,bbc,urn:bbc:sportsdata:football:team:reading
 Reading,fbref,Reading
 Reading,football-data,Reading
+Rochdale,bbc,urn:bbc:sportsdata:football:team:rochdale
 Rochdale,fbref,Rochdale
 Rochdale,football-data,Rochdale
+Rotherham,bbc,urn:bbc:sportsdata:football:team:rotherham-united
 Rotherham,fbref,Rotherham
 Rotherham,football-data,Rotherham
 Rushden & D,fbref,R&D
 Rushden & D,football-data,Rushden & D
+Salford,bbc,urn:bbc:sportsdata:football:team:salford-city
 Salford,fbref,Salford City FC
 Salford,football-data,Salford
 Salisbury,fbref,Salisbury City
 Salisbury,football-data,Salisbury
+Scunthorpe,bbc,urn:bbc:sportsdata:football:team:scunthorpe-united
 Scunthorpe,fbref,Scunthorpe
 Scunthorpe,football-data,Scunthorpe
+Sheffield United,bbc,urn:bbc:sportsdata:football:team:sheffield-united
 Sheffield United,fbref,Sheffield United
 Sheffield United,football-data,Sheffield United
+Sheffield Weds,bbc,urn:bbc:sportsdata:football:team:sheffield-wednesday
 Sheffield Weds,fbref,Sheffield Weds
 Sheffield Weds,football-data,Sheffield Weds
+Shrewsbury,bbc,urn:bbc:sportsdata:football:team:shrewsbury-town
 Shrewsbury,fbref,Shrewsbury
 Shrewsbury,football-data,Shrewsbury
+Solihull,bbc,urn:bbc:sportsdata:football:team:solihull-moors
 Solihull,fbref,Solihull Moors
 Solihull,football-data,Solihull
+Southampton,bbc,urn:bbc:sportsdata:football:team:southampton
 Southampton,fbref,Southampton
 Southampton,football-data,Southampton
+Southend,bbc,urn:bbc:sportsdata:football:team:southend-united
 Southend,fbref,Southend United
 Southend,football-data,Southend
 Southport,fbref,Southport
 Southport,football-data,Southport
+Stevenage,bbc,urn:bbc:sportsdata:football:team:stevenage
 Stevenage,fbref,Stevenage
 Stevenage,football-data,Stevenage
+Stockport,bbc,urn:bbc:sportsdata:football:team:stockport-county
 Stockport,fbref,Stockport
 Stockport,football-data,Stockport
+Stoke,bbc,urn:bbc:sportsdata:football:team:stoke-city
 Stoke,fbref,Stoke City
 Stoke,football-data,Stoke
+Sunderland,bbc,urn:bbc:sportsdata:football:team:sunderland
 Sunderland,fbref,Sunderland
 Sunderland,football-data,Sunderland
+Sutton,bbc,urn:bbc:sportsdata:football:team:sutton-united
 Sutton,fbref,Sutton United
 Sutton,football-data,Sutton
+Swansea,bbc,urn:bbc:sportsdata:football:team:swansea-city
 Swansea,fbref,Swansea City
 Swansea,football-data,Swansea
+Swindon,bbc,urn:bbc:sportsdata:football:team:swindon-town
 Swindon,fbref,Swindon Town
 Swindon,football-data,Swindon
+Tamworth,bbc,urn:bbc:sportsdata:football:team:tamworth
 Tamworth,fbref,Tamworth
 Tamworth,football-data,Tamworth
 Telford United,fbref,Telford United
@@ -272,35 +362,48 @@ Torquay,fbref,Torquay United
 Torquay,football-data,Torquay
 Tottenham,fbref,Tottenham
 Tottenham,football-data,Tottenham
+Tranmere,bbc,urn:bbc:sportsdata:football:team:tranmere-rovers
 Tranmere,fbref,Tranmere Rovers
 Tranmere,football-data,Tranmere
 Truro,fbref,Truro City FC
 Truro,football-data,Truro
+Walsall,bbc,urn:bbc:sportsdata:football:team:walsall
 Walsall,fbref,Walsall
 Walsall,football-data,Walsall
+Watford,bbc,urn:bbc:sportsdata:football:team:watford
 Watford,fbref,Watford
 Watford,football-data,Watford
+Wealdstone,bbc,urn:bbc:sportsdata:football:team:wealdstone
 Wealdstone,fbref,Wealdstone FC
 Wealdstone,football-data,Wealdstone
 Welling United,fbref,Welling United
 Welling United,football-data,Welling United
+West Brom,bbc,urn:bbc:sportsdata:football:team:west-bromwich-albion
 West Brom,fbref,West Brom
 West Brom,football-data,West Brom
+West Ham,bbc,urn:bbc:sportsdata:football:team:west-ham-united
 West Ham,fbref,West Ham
 West Ham,football-data,West Ham
 Weymouth,fbref,Weymouth
 Weymouth,football-data,Weymouth
+Wigan,bbc,urn:bbc:sportsdata:football:team:wigan-athletic
 Wigan,fbref,Wigan Athletic
 Wigan,football-data,Wigan
+Woking,bbc,urn:bbc:sportsdata:football:team:woking
 Woking,fbref,Woking
 Woking,football-data,Woking
+Wolves,bbc,urn:bbc:sportsdata:football:team:wolverhampton-wanderers
 Wolves,fbref,Wolves
 Wolves,football-data,Wolves
+Wrexham,bbc,urn:bbc:sportsdata:football:team:wrexham
 Wrexham,fbref,Wrexham
 Wrexham,football-data,Wrexham
+Wycombe,bbc,urn:bbc:sportsdata:football:team:wycombe-wanderers
 Wycombe,fbref,Wycombe
 Wycombe,football-data,Wycombe
+Yeovil,bbc,urn:bbc:sportsdata:football:team:yeovil-town
 Yeovil,fbref,Yeovil Town
 Yeovil,football-data,Yeovil
+York,bbc,urn:bbc:sportsdata:football:team:york-city
 York,fbref,York City
 York,football-data,York

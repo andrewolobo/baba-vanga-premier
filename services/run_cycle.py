@@ -45,9 +45,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from engine import db
+from engine import config, db
 from engine.serve import cycle, tips
-from services import csv_grader, fixture_sync
+from services import bbc_calendar, csv_grader, fixture_sync
 
 #: Refit once the frozen artifact is older than this. P1's H1 measured
 #: day-frozen refits worth 0.00007 nats over weekly, so weekly is what the base
@@ -67,6 +67,12 @@ RULE_VERSION = "book-off"
 #: strike rate.
 TIP_FLOOR = tips.DEFAULT_FLOOR
 TIP_CEILING = tips.DEFAULT_CEILING
+
+#: How many date pages the second calendar pulls when it is enabled. Seven
+#: matches the artifact's refit cadence, so no fixture is ever priced by a head
+#: more than one refit old -- the same horizon football-data's feed gives when
+#: it is working, which is what keeps this a fallback rather than a new product.
+CALENDAR_DAYS = 7
 
 
 class Status(IntEnum):
@@ -162,6 +168,36 @@ def step_sync(conn: sqlite3.Connection, *, dry_run: bool, url: str,
                       "unbridged club name(s); re-run scripts/build_team_aliases.py")
 
     return _guard(Step("sync"), work)
+
+
+def step_calendar(conn: sqlite3.Connection, *, dry_run: bool,
+                  days: int = CALENDAR_DAYS) -> Step:
+    """Fill fixture gaps from the second calendar. Additive, never destructive.
+
+    Runs **after** `sync` so football-data keeps first claim on every row it
+    publishes: this step inserts only fixtures that feed does not have, and
+    never updates one, because it carries no odds and an update would write
+    NULL over prices (`services/bbc_calendar.py`).
+
+    Enabled only by `BVP_BBC_CALENDAR=1`. A missing English fixture list is the
+    failure this exists for, so an empty result is reported rather than passed
+    over -- but the step failing must not stop serving, which is why it is a
+    step of its own like every other.
+    """
+
+    def work(step: Step) -> None:
+        report = bbc_calendar.sync(
+            conn, bbc_calendar.collect(days), dry_run=dry_run)
+        step.detail = (f"{report.pages} page(s), {report.english} English; "
+                       f"{report.inserted} new, "
+                       f"{report.already_known} already known")
+        if not report.report.clean:
+            step.flag(Status.ATTENTION,
+                      "unbridged club(s); add to reference/bbc_teams.csv")
+
+    if not config.BBC_CALENDAR_ENABLED:
+        return Step("calendar", detail="disabled (BVP_BBC_CALENDAR unset)")
+    return _guard(Step("calendar"), work)
 
 
 def step_serve(conn: sqlite3.Connection, report: CycleReport, *,
@@ -266,7 +302,12 @@ def step_tips(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
     def work(step: Step) -> None:
         pending = tips.untipped(conn)
         if pending.empty:
-            step.detail = "no untipped predictions"
+            # Not "nothing to do": with a forward calendar there are usually
+            # plenty of untipped predictions, just none for a match played
+            # today. Saying which is the difference between a quiet day and a
+            # broken rule (`tips.PUBLISH_WITHIN_DAYS`).
+            step.detail = (f"nothing untipped within "
+                           f"{tips.PUBLISH_WITHIN_DAYS} day(s) of kickoff")
             return
         selected = tips.select(pending, floor=TIP_FLOOR, ceiling=TIP_CEILING)
         written = tips.publish(conn, selected, dry_run=dry_run)
@@ -301,6 +342,7 @@ def run(conn: sqlite3.Connection, *, dry_run: bool = False, refreeze: bool = Fal
     report = CycleReport(label=str(today.date()))
 
     report.steps.append(step_sync(conn, dry_run=dry_run, url=url, file=file))
+    report.steps.append(step_calendar(conn, dry_run=dry_run))
     report.steps.append(step_serve(conn, report, dry_run=dry_run,
                                    refreeze=refreeze, today=today))
     report.steps.append(step_tips(conn, dry_run=dry_run))

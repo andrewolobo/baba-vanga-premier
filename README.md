@@ -15,7 +15,7 @@ Getting this distinction right is most of operating it.
 
 | piece | what it is | how it runs |
 | --- | --- | --- |
-| `services.run_cycle` | a **batch job that exits** — sync → serve → tips → grade | systemd **timer**, daily 06:00 UTC |
+| `services.run_cycle` | a **batch job that exits** — sync → calendar → serve → tips → grade | systemd **timer**, daily 06:00 UTC |
 | `api.main:app` | a read-only FastAPI over what the cycle wrote | systemd **service**, always up |
 | `web/build` | a **static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx |
 
@@ -99,8 +99,8 @@ Three constraints that bite if forgotten:
   they agree only on a UTC machine.
 - **Never edit a tracked file on the server.** Everything environment-specific
   goes in an env var or a systemd unit. The overridable settings are
-  `BVP_DB_PATH`, `BVP_DATA_DIR`, `BVP_REFERENCE_DIR`, and `BVP_API_URL` /
-  `BVP_API_PORT` for Vite dev.
+  `BVP_DB_PATH`, `BVP_DATA_DIR`, `BVP_REFERENCE_DIR`, `BVP_BBC_CALENDAR`, and
+  `BVP_API_URL` / `BVP_API_PORT` for Vite dev.
 
 ---
 

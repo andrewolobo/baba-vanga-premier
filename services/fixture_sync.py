@@ -51,6 +51,20 @@ _ODDS_COLUMNS = {
 
 UPSERT_COLUMNS = ("kickoff_time", *_ODDS_COLUMNS.values())
 
+#: Columns an update must not blank. The feed omits `Time` on some rows, and a
+#: fixture may already carry a kickoff written by `services.bbc_calendar`, which
+#: publishes one for every match. A plain assignment would overwrite the known
+#: value with NULL -- so this column keeps whatever it has when the feed brings
+#: nothing. Prices are deliberately NOT in here: a republished row with a
+#: withdrawn price is the feed saying the price is gone, and that is real news.
+PRESERVE_IF_NULL = frozenset({"kickoff_time"})
+
+
+def _assignment(column: str) -> str:
+    """`col=?`, or a COALESCE for columns that must survive a null update."""
+    return (f"{column}=COALESCE(?, {column})" if column in PRESERVE_IF_NULL
+            else f"{column}=?")
+
 
 @dataclass
 class SyncReport:
@@ -153,7 +167,7 @@ def sync(conn: sqlite3.Connection, text: str, source_file: str,
         if existing:
             out.updated += 1
             if not dry_run:
-                assignments = ", ".join(f"{c}=?" for c in UPSERT_COLUMNS)
+                assignments = ", ".join(_assignment(c) for c in UPSERT_COLUMNS)
                 conn.execute(
                     f"UPDATE fixtures SET {assignments}, updated_at=datetime('now'), "
                     "source_file=? WHERE fixture_id=?",

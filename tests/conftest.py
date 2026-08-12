@@ -10,8 +10,21 @@ from __future__ import annotations
 
 import pytest
 
-from engine import db
+from engine import config, db
 from engine.ingest.teams import FBREF, FOOTBALL_DATA, TeamBridge
+
+
+@pytest.fixture(autouse=True)
+def _calendar_off(monkeypatch):
+    """The second fixture calendar is off for every test unless one asks for it.
+
+    `config.BBC_CALENDAR_ENABLED` now resolves through `.env`, so without this
+    the suite's behaviour depends on a gitignored file on the developer's
+    machine: `run_cycle.run()` would reach bbc.com, and a green run here would
+    not mean a green run in CI or on a colleague's checkout. Tests that want the
+    step enabled patch it back on themselves.
+    """
+    monkeypatch.setattr(config, "BBC_CALENDAR_ENABLED", False)
 
 # Header of the Betbrain era (2010-11..2018-19): no Time, no market Avg/Max.
 BETBRAIN_HEADER = (

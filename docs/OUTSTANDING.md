@@ -1268,6 +1268,86 @@ Also not started: `RUNBOOK.md` §0.2/§2 still document Task Scheduler on Window
 so an operator following it against the Ubuntu VM finds half its commands do not
 exist.
 
+### 4.5 Second fixture calendar — **BUILT 2026-08-12, owner decision, time-limited**
+
+`services/bbc_calendar.py`, off unless `BVP_BBC_CALENDAR=1`. Tests
+`tests/test_bbc_calendar.py`; reviewed club map `reference/bbc_teams.csv`.
+
+**Why it exists, measured rather than argued.** On 2026-08-12, three days before
+the EFL opening weekend, `fixtures.csv` carried **78 rows and zero E0–E3** — and
+its window was `07/08` → `10/08`, i.e. it had not rolled forward past the
+*previous* weekend. It held 12 EC rows for a round already played. The same day,
+BBC listed **44 English league fixtures for 15 August**. §4.1 kept the FBref
+scraper as the fallback "if English rows never appear in the football-data.co.uk
+feed"; that condition arrived, and the FBref route was unavailable for the three
+reasons recorded there. A full cycle with the calendar on:
+
+    [!!] sync      78 row(s), 0 English; NO ENGLISH ROWS in the feed
+    [ok] calendar  7 page(s), 36 English; 36 new
+    [ok] serve     36 pending, 36 priced
+
+**Scope, and the condition that retires it.** This is a **pre-release
+validation aid**, not a production feed. BBC's `robots.txt` prohibits scraping,
+systematic extraction and business use without permission; the owner's decision
+of 2026-08-12 is to run it at **one pass per day over a 7-day window** for
+validation only, and to **retire it on whichever comes first**: a commercial
+fixture feed being sourced, or public launch. It must not be running when the
+product is commercial. *(The fixture facts themselves are a separate question —
+CJEU C-604/10 held football fixture lists are not protected by database right —
+but that is about the data, not about terms of access to bbc.com.)*
+
+**Why it is safe to have a second writer on `fixtures`.** Three properties,
+each tested:
+
+- **Insert-only.** football-data owns every row it publishes. This feed carries
+  no odds, so an update would write NULL over prices and make CLV ungradeable.
+- **Future fixtures only.** A past fixture inserted here would be priced by the
+  next serve using today's artifact — backfilling a prediction, which the record
+  must never contain.
+- **Bridged on the team URN**, not the display name. Present on 168/168 English
+  sides sampled, and stable across renames.
+
+**What it does not solve.** No odds, so `fixture_sync` is still required for
+prices and CLV, and `csv_grader` still grades from football-data results CSVs.
+Two consequences worth expecting rather than discovering: every tip on a
+BBC-only fixture publishes with a NULL price, so `step_tips` raises ATTENTION
+and the cycle exits 2 on matchday until the price feed catches up; and
+`source_file` is overwritten when football-data later publishes a fixture this
+module inserted, so provenance records the most recent writer rather than the
+original one. That is a schema question (one NOT NULL column), deliberately not
+fixed here.
+
+**It forced one product change, §4.6.**
+
+### 4.6 Tips publish on matchday only — **2026-08-12**
+
+`tips.PUBLISH_WITHIN_DAYS = 0`, a window closed at **both** ends.
+
+A tip is published once and never revised — `UNIQUE (fixture_id, rule_version)`,
+migration 003 — so *when* it publishes is the head the customer gets. While the
+only source was a rolling ~7-day feed this bounded itself. A forward calendar
+removes that bound, and an ungated rule would lock in a call weeks early from an
+artifact that refreezes every 7 days: a measurably staler forecast than the one
+`engine/eval/selection.py` measured 72.5% on.
+
+The **lower** bound matters as much and is new: without it, a missed cycle could
+publish a call on a match already played. A fixture whose day is missed stays
+untipped, which is the rule predictions already follow.
+
+**The alternative, and why it was not built.** Publishing revisions across the
+whole horizon and grading the last one before kickoff is strictly more capable —
+customers see the long view *and* the graded call is fresh. It needs a migration
+touching `tips`, the grader and `/tips/record` (the record must count fixtures,
+not rows, or one match enters the strike rate several times). Deferred as its
+own decision rather than smuggled in with a fixture source.
+
+**One interaction to know about.** `step_tips` runs before `step_grade`, whose
+bound is `match_date <= date('now')`, so a tip published on matchday morning is
+in scope for grading in the same run. It settles nothing — the match has not
+kicked off — but it does fetch a results CSV per division. Harmless, one
+redundant fetch per division per matchday, and left alone rather than tightened
+to `<` because that would change grading semantics for an evening manual run.
+
 ---
 
 ## 5. Deferred by decision (not forgotten)

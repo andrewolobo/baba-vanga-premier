@@ -115,7 +115,12 @@ def test_the_published_columns_are_stable():
 
 @pytest.fixture
 def conn(tmp_path):
-    """Two fixtures, both priced, both predicted, neither tipped."""
+    """Two fixtures, both priced, both predicted, neither tipped.
+
+    Both are dated **today**: the rule publishes on matchday only
+    (`tips.PUBLISH_WITHIN_DAYS`), so a fixed future date would make every test
+    below assert on an empty frame rather than on the tip rule.
+    """
     from engine import db
 
     connection = db.connect(tmp_path / "tips.db")
@@ -128,7 +133,7 @@ def conn(tmp_path):
         connection.execute(
             "INSERT INTO fixtures (fixture_id, division, match_date, home_team_id,"
             " away_team_id, max_h, max_d, max_a, avg_h, avg_d, avg_a, source_file)"
-            " VALUES (?, 'E0', '2026-08-15', ?, ?, ?, ?, ?, ?, ?, ?, 'test')",
+            " VALUES (?, 'E0', date('now'), ?, ?, ?, ?, ?, ?, ?, ?, 'test')",
             (fid, home, away, *prices, *[p * 0.95 for p in prices]))
     for pid, fid, probs in ((10, 1, (0.62, 0.24, 0.14)), (11, 2, (0.44, 0.28, 0.28))):
         connection.execute(
@@ -139,6 +144,31 @@ def conn(tmp_path):
     connection.commit()
     yield connection
     connection.close()
+
+
+def test_a_fixture_beyond_the_publish_window_is_not_tipped_yet(conn):
+    """The gate a second fixture calendar makes necessary.
+
+    A tip is published once and never revised, so publishing weeks early locks
+    in a call from an artifact that refreezes every 7 days. While the only
+    source was football-data's rolling window this bounded itself; a forward
+    calendar removes that bound and this restores it.
+    """
+    conn.execute("UPDATE fixtures SET match_date = date('now', '+6 days')")
+    conn.commit()
+
+    assert tips.untipped(conn).empty
+    assert len(tips.untipped(conn, within_days=7)) == 2
+
+
+def test_a_fixture_already_played_is_never_tipped(conn):
+    """The lower bound. A missed cycle must not publish a call on a match whose
+    result is already known -- unreachable before a forward calendar existed."""
+    conn.execute("UPDATE fixtures SET match_date = date('now', '-1 day')")
+    conn.commit()
+
+    assert tips.untipped(conn).empty
+    assert tips.untipped(conn, within_days=30).empty, "a wider window must not reach back"
 
 
 def test_untipped_returns_predictions_joined_to_their_prices(conn):
