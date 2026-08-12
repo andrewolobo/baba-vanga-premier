@@ -883,6 +883,15 @@ re-exporting, which is the normal case. A file that **disagrees on rows it
 already had** is the append-only convention (`OUTSTANDING.md` §7.5) being
 violated, and says so. Run it after any gate.
 
+**"Run it after any gate" was the whole control, and it failed.** The export sat
+12 rows behind from 2026-08-08 to 2026-08-12 — §1.12 and every step of §9.5–9.12
+— so four days of gates lived only in the gitignored database they were meant to
+be backed up from. `tests/test_trials.py::test_the_ledger_export_is_current` now
+enforces it: on a machine that has a ledger, `pytest -q` goes red until the
+export is current. **That red is expected after a gate and is the reminder**, not
+a broken build. It skips where the ledger is empty, so fresh checkouts and the
+serving host are unaffected (the same carve-out as `DEPLOY.md` §5.4).
+
 **There is deliberately no import path.** §7.5 makes the ledger append-only and
 says a helper to update or delete it "would defeat the purpose". Whether
 *restoring* a store from this export counts as reconstitution rather than

@@ -12,11 +12,13 @@ oracle arm -- a null is not a result without a positive control.
 
 from __future__ import annotations
 
+import importlib.util
+
 import numpy as np
 import pandas as pd
 import pytest
 
-from engine import db, ledger
+from engine import config, db, ledger
 from engine.eval import trials
 
 RNG = np.random.default_rng(11)
@@ -172,6 +174,53 @@ def test_the_real_ledger_holds_more_configurations_than_rows():
         pytest.skip("no gate ledger in this database -- nothing to guard")
     assert count.configurations > count.runs
     assert count.configurations >= 133
+
+
+def test_the_ledger_export_is_current():
+    """The backup is only a backup while it is current, and nothing enforced it.
+
+    `docs/gate_ledger.jsonl` is the *only* off-machine copy of `gate_ledger`
+    (`DEPLOY.md` §6.1): the rest of `db/premier.db` rebuilds from the tracked
+    CSVs, and this table does not, because it records which measurements were
+    run rather than anything about the corpus. Keeping it current was a manual
+    step -- "run it after any gate" -- and it was missed twelve times running,
+    leaving rows 91-102 on one gitignored file with no second copy for four
+    days. A convention that has already failed is not a control.
+
+    Skipped on an empty ledger for the same reason as the test above: a fresh
+    checkout and every deployed server have no rows here, and `pytest -q` must
+    not go red on the serving host over a development-machine backup.
+
+    **This test is expected to fail on this machine after a gate runs**, until
+    `python scripts/export_ledger.py` is re-run and the diff committed. That is
+    the point -- the red is the reminder that the manual step did not fire.
+    """
+    conn = db.connect()
+    if trials.count_configurations(conn).runs == 0:
+        pytest.skip("no gate ledger in this database -- nothing to back up")
+
+    export = _export_ledger_module()
+    expected = export.render(export.rows(conn))
+    assert export.OUT.exists(), f"{config.relpath(export.OUT)} is missing"
+    # Deliberately not re-deriving *how* it differs. `--check` already separates
+    # the file merely being BEHIND from it DISAGREEING on rows it already had --
+    # the append-only violation -- and duplicating that here would give two
+    # accounts of the same thing, free to drift apart.
+    assert export.OUT.read_text(encoding="utf-8") == expected, (
+        f"{config.relpath(export.OUT)} no longer matches gate_ledger. Run "
+        f"`python scripts/export_ledger.py --check` for the shape of the "
+        f"difference, then re-export and commit the diff.")
+
+
+def _export_ledger_module():
+    """`scripts/` is not a package and the script is invoked by path, so it is
+    loaded by location. Importing it rather than re-implementing the comparison
+    is what stops the test and the export drifting apart."""
+    path = config.REPO_ROOT / "scripts" / "export_ledger.py"
+    spec = importlib.util.spec_from_file_location("export_ledger", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 # --- re-runs: which spend again, and which do not -------------------------

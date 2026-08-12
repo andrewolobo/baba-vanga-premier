@@ -1318,6 +1318,18 @@ obvious from the code alone.
    with the ridge target pinned at zero, which silently decided how much any
    future prior could ever matter (`PLAYER_PRIOR.md` §2). Before sweeping a
    parameter, write down what is being held fixed and whether the two interact.
+10. **Re-export the gate ledger after every gate.** Run
+    `python scripts/export_ledger.py` and commit `docs/gate_ledger.jsonl` in the
+    same commit as the gate's results. `docs/gate_ledger.jsonl` is the only
+    off-machine copy of the only table that does not rebuild from the tracked
+    CSVs (`DEPLOY.md` §6.1), and convention 5 makes those rows unrecoverable if
+    the file holding them is lost. **Leaving this to memory already failed** —
+    the export sat 12 rows behind for four days, covering §1.12 and every step
+    of §9.5–§9.12, so the whole of that work existed on one gitignored file.
+    `test_the_ledger_export_is_current` now fails on the development machine
+    until the export is re-run, so a gate is not finished until it is committed.
+    The test skips where the ledger is empty, so a fresh checkout and the
+    serving host stay green.
 
 ---
 
