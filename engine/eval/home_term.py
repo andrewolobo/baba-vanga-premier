@@ -512,6 +512,12 @@ def step3(frame, scored) -> dict:
         if base_won is None:
             base_won, base_market = won, market
         cmp = bootstrap.paired(won[idx], base_won[idx], blocks)
+        # Delivered minus claimed on the published pick, bounded the same way the
+        # market gaps above are. It was a bare point estimate until 2026-08-12,
+        # while every other statistic in this function carried an interval --
+        # which left `BACKLOG.md` B13 comparing -0.06 against +0.50 with nothing
+        # to say whether they differ.
+        honesty = bootstrap.paired(won[idx], p[idx], blocks)
         mix = {m: round(float((market[idx] == m).mean()), 4)
                for m in ("12", "1X", "X2", "H", "A")}
         row = {"arm": name,
@@ -522,6 +528,9 @@ def step3(frame, scored) -> dict:
                "vs_shipped_ci": [round(cmp.ci[0], 5), round(cmp.ci[1], 5)],
                "vs_shipped_excludes_zero": bool(cmp.excludes_zero),
                "honesty_gap": round(float(won[idx].mean() - p[idx].mean()) * 100, 2),
+               "honesty_gap_ci": [round(100 * honesty.ci[0], 2),
+                                  round(100 * honesty.ci[1], 2)],
+               "honesty_gap_excludes_zero": bool(honesty.excludes_zero),
                "mix": mix}
         product.append(row)
         print(f"    {name:>15} {100*row['changed_share']:>7.2f}% "
@@ -533,7 +542,9 @@ def step3(frame, scored) -> dict:
               + " ".join(f"{100*v:.1f}" for v in mix.values()))
     print("\n    honesty gap = delivered minus claimed on the published pick:")
     for row in product:
-        print(f"      {row['arm']:>15} {row['honesty_gap']:>+6.2f} pts")
+        print(f"      {row['arm']:>15} {row['honesty_gap']:>+6.2f} pts "
+              f"[{row['honesty_gap_ci'][0]:>+6.2f},{row['honesty_gap_ci'][1]:>+6.2f}]"
+              f"{'*' if row['honesty_gap_excludes_zero'] else ' '}")
 
     return {"temperature": t, "slopes": slopes, "gaps": gaps,
             "product": product}
@@ -1182,6 +1193,151 @@ def step6(frame, scored) -> dict:
             "reads_real_outcomes": False}
 
 
+# --- step 7: price the slope-zeroing stretch in goal deviance --------------
+
+#: Yardsticks, both measured and both committed. The shots channel is the best
+#: thing ever adopted here; the channels gate is the best thing measured and not
+#: adopted. A deviance cost is "a lot" if it undoes more than the latter.
+SHOTS_CHANNEL_GAIN = 0.00422
+CHANNELS_GATE_GAIN = 0.00217
+
+
+def _stretched_probs(lam_h, lam_a, d_bar, s):
+    sh, sa = stretch(lam_h, lam_a, s, d_bar)
+    return np.column_stack(outcome_probs(score_matrix(sh, sa)))
+
+
+def _stretched_deviance(lam_h, lam_a, d_bar, goals_h, goals_a, s):
+    """Per-match goal deviance series under a stretch, for a paired bootstrap."""
+    sh, sa = stretch(lam_h, lam_a, s, d_bar)
+    return metrics.goal_deviance(pd.DataFrame({
+        "lam_h": sh, "lam_a": sa, "fthg": goals_h, "ftag": goals_a}))
+
+
+def zeroing_stretch(lam_h, lam_a, d_all, d_bar, ftr, code, col) -> float:
+    """The stretch that drives one leg's separation slope to zero.
+
+    Fitted on the SLOPE, which is the whole point -- `fit_stretch` minimises goal
+    deviance and so can only ever find the stretch goals want. §5 of
+    `SEPARATION_SLOPE.md`: step 2 refuted the deviance-optimal stretch, not all
+    stretches, and the documents stated the stronger claim.
+
+    Stratification stays on the UNSTRETCHED `d`, matching steps 3 and 5 -- every
+    arm is read against the same x-axis or the slopes are not comparable.
+
+    In-sample by design. This is a diagnostic, not a candidate correction, and an
+    in-sample fit is the setting most favourable to the mapping-fix -- so a large
+    deviance price here is a lower bound on the real one.
+    """
+    def slope_at(s):
+        return _leg_slope(d_all, ftr,
+                          _stretched_probs(lam_h, lam_a, d_bar, s), code, col)
+
+    lo, hi = 0.7, 1.8
+    if slope_at(lo) * slope_at(hi) > 0:
+        return float("nan")
+    return float(optimize.brentq(slope_at, lo, hi, xtol=1e-5))
+
+
+def step7(frame, scored) -> dict:
+    """What does zeroing the separation slope cost in goals?
+
+    §5's diagnostic, and the last item in `SEPARATION_SLOPE.md` §8. The read is
+    pre-registered in §11 of that document:
+
+    * **costs a lot** -- paired delta excludes zero AND exceeds the channels
+      gate's 0.00217 -- then "the lambdas are fine and the mapping is broken" is
+      CONFIRMED and has a number for the first time.
+    * **costs little** -- the delta does not exclude zero -- then the conclusion
+      is WRONG, and the defect is in lambda somewhere goal deviance cannot see.
+    """
+    print(f"\nSTEP 7  the price of zeroing the separation slope "
+          f"({int(scored.sum()):,} matches)")
+
+    lam_h = frame.lam_h.to_numpy(float)[scored]
+    lam_a = frame.lam_a.to_numpy(float)[scored]
+    goals_h = frame.fthg.to_numpy(float)[scored]
+    goals_a = frame.ftag.to_numpy(float)[scored]
+    ftr = frame.ftr.to_numpy()[scored]
+    blocks = bootstrap.week_blocks(frame.match_date[scored])
+    _, d_all = separation(lam_h, lam_a)
+    d_bar = float(d_all.mean())
+
+    # Reference points. s=1 is the shipped head; s_dev is step 2's arm refitted
+    # in-sample so all three stretches sit on the same footing -- already paid
+    # for by `home_term_dispersion`, so it is a reference and not a new arm.
+    base_loss = _stretched_deviance(lam_h, lam_a, d_bar, goals_h, goals_a, 1.0)
+    s_dev = float(optimize.minimize_scalar(
+        lambda s: float(_stretched_deviance(
+            lam_h, lam_a, d_bar, goals_h, goals_a, s).mean()),
+        bounds=(0.7, 1.8), method="bounded").x)
+
+    fitted = {"s_dev (reference)": s_dev}
+    for leg, code, col in LEGS:
+        fitted[f"s_zero {leg}"] = zeroing_stretch(
+            lam_h, lam_a, d_all, d_bar, ftr, code, col)
+
+    print("\n  fitted stretches (in-sample)")
+    for name, s in fitted.items():
+        print(f"    {name:>20} {s:.4f}")
+
+    print(f"\n  what each stretch does, to BOTH legs and to goals")
+    print(f"    {'stretch':>20} {'s':>7} {'home slope':>12} {'away slope':>12} "
+          f"{'deviance vs shipped, PAIRED':>34}")
+    rows = []
+    for name, s in fitted.items():
+        probs = _stretched_probs(lam_h, lam_a, d_bar, s)
+        slopes = {leg: _leg_slope(d_all, ftr, probs, code, col)
+                  for leg, code, col in LEGS}
+        cmp = bootstrap.paired(
+            _stretched_deviance(lam_h, lam_a, d_bar, goals_h, goals_a, s),
+            base_loss, blocks)
+        row = {"arm": name, "s": round(s, 4),
+               "home_slope": round(slopes["home"], 3),
+               "away_slope": round(slopes["away"], 3),
+               "deviance_delta": round(float(cmp.delta), 6),
+               "ci": [round(cmp.ci[0], 6), round(cmp.ci[1], 6)],
+               "excludes_zero": bool(cmp.excludes_zero)}
+        rows.append(row)
+        print(f"    {name:>20} {s:>7.4f} {slopes['home']:>+12.2f} "
+              f"{slopes['away']:>+12.2f} "
+              f"{cmp.delta:>+14.5f} [{cmp.ci[0]:>+9.5f},{cmp.ci[1]:>+9.5f}]"
+              f"{'*' if cmp.excludes_zero else ' '}")
+
+    # The §5 read, on the home-zeroing stretch.
+    home_row = next(r for r in rows if r["arm"] == "s_zero home")
+    cost = home_row["deviance_delta"]
+    a_lot = home_row["excludes_zero"] and cost > CHANNELS_GATE_GAIN
+    a_little = not home_row["excludes_zero"]
+
+    print(f"\n  the §5 read, on the home-zeroing stretch")
+    print(f"    deviance cost vs shipped   {cost:+.5f} "
+          f"{home_row['ci']}  {'resolves' if home_row['excludes_zero'] else 'does not resolve'}")
+    print(f"    against the channels gate  {CHANNELS_GATE_GAIN:+.5f} "
+          f"-> {abs(cost) / CHANNELS_GATE_GAIN:.2f}x")
+    print(f"    against the shots channel  {SHOTS_CHANNEL_GAIN:+.5f} "
+          f"-> {abs(cost) / SHOTS_CHANNEL_GAIN:.2f}x")
+    verdict = ("CONFIRMED -- the lambdas are fine and the mapping is broken"
+               if a_lot else
+               "REFUTED -- a deviance-cheap lambda change zeroes the slope"
+               if a_little else
+               "NEITHER -- resolves but is smaller than the channels gate")
+    print(f"    -> {verdict}")
+
+    # Do the two legs want the same stretch? §9.10 found different division
+    # profiles, so whether one dial fixes both is a mechanism question.
+    s_h, s_a = fitted["s_zero home"], fitted["s_zero away"]
+    one_dial = abs(s_h - s_a) < 0.03
+    print(f"\n    home wants {s_h:.4f}, away wants {s_a:.4f}, apart "
+          f"{abs(s_h - s_a):.4f} -> "
+          f"{'ONE dial plausibly fixes both' if one_dial else 'the legs want DIFFERENT stretches'}")
+
+    return {"fitted": {k: round(v, 4) for k, v in fitted.items()},
+            "arms": rows, "verdict": verdict,
+            "cost_vs_channels_gate": round(abs(cost) / CHANNELS_GATE_GAIN, 2),
+            "one_dial_fixes_both": bool(one_dial)}
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--step", type=int, default=1)
@@ -1231,6 +1387,39 @@ def main(argv=None) -> int:
                    "configuration, on the same accounting as power.py, "
                    "h34_travel_power and step 1."}
         cost = "0 configurations"
+    elif args.step == 7:
+        results = {"step7": step7(frame, scored)}
+        # TWO arms: the home-zeroing and away-zeroing stretches. `s_dev` is a
+        # reference -- `home_term_dispersion` already spent on the
+        # deviance-optimal stretch and this is that arm refitted in-sample.
+        arms = [{"arm": r["arm"], "s": r["s"],
+                 "deviance_delta": r["deviance_delta"],
+                 "excludes_zero": r["excludes_zero"]}
+                for r in results["step7"]["arms"] if r["arm"].startswith("s_zero")]
+        row = {
+            "kind": ledger.GATE, "name": "slope_zeroing_stretch",
+            "detail_extra": {"arms": arms},
+            "reason":
+                   "SEPARATION_SLOPE.md §8 item 4, the last one, pre-registered "
+                   "at §11. §5 established that step 2 refuted only the "
+                   "DEVIANCE-OPTIMAL stretch -- `fit_stretch` minimises goal "
+                   "deviance by construction -- while the documents stated the "
+                   "stronger claim that no stretch moves the outcome gap. Step "
+                   "3's blind sham drove the pooled slope to -14.65, so a zero "
+                   "crossing exists and nobody had looked for it. This finds the "
+                   "stretch that zeroes each leg's slope, fitted on the SLOPE "
+                   "rather than on deviance, and prices it in goal deviance "
+                   "against the shipped head with a paired block bootstrap. It "
+                   "is a DIAGNOSTIC, not a candidate correction: §5 is explicit "
+                   "that a blind sharpener can zero the slope too, so zeroing it "
+                   "is not evidence of a mechanism. The read is pre-registered "
+                   "-- a large price confirms 'the lambdas are fine and the "
+                   "mapping is broken' and puts a number on it, a small price "
+                   "refutes it. In-sample by design, which is the setting most "
+                   "favourable to the fix and therefore a lower bound on the "
+                   "price. TWO configurations, one per leg; `s_dev` is a "
+                   "reference already paid for by `home_term_dispersion`."}
+        cost = "2 configurations"
     elif args.step == 6:
         results = {"step6": step6(frame, scored)}
         row = {

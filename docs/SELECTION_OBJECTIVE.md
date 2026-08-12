@@ -168,6 +168,28 @@ efficient single dial —
 stretch ~1.05 pooled, and applying it leaves every calibration gap where it was
 (pooled home +0.33 → +0.32, E0 +1.77 ✱ → +1.74 ✱).
 
+> **Correction 2026-08-11, from `OUTSTANDING.md` §9.12.** That is not what step
+> 2 established. The stretch is **centred**, so it cannot move a *mean*, and the
+> gaps quoted above are means — step 2 never computed the **slope** under a
+> stretched head. Measured: the deviance-optimal stretch is **1.0936**, not
+> ~1.05, and it takes the home slope from **+5.66 to +0.83**. **The class of
+> change CAN reach the defect**, and this section's mechanism argument is wrong
+> as stated.
+>
+> **The parameter verdicts in §§1–3 are unaffected**, and the reason matters:
+> what works is a **post-hoc stretch on centred separation**, not a re-sweep of
+> α, either blend weight, or EC. The α grid is flat and both objectives pick the
+> same arm, so lowering α is not the dial — §1's table stands as measured.
+>
+> **What it changes is §7's direction.** The head is roughly **10%
+> under-dispersed** in strength, and §2's H disagreement — 1X2 wanting a shorter
+> half-life, i.e. more responsive and more dispersed strengths, than goal
+> deviance does — is the **same fact by a second route**. Two independent
+> measurements now put the dispersion axis where the outcome-level objectives
+> and goal deviance part company. **That is the defensible residue of the
+> "objective-blindness" criticism this document was written to assess** — and it
+> is not any of the four hyperparameters the criticism named.
+
 `SEPARATION_SLOPE.md` §5 names the untested arm precisely: the stretch that
 **zeroes** the slope, priced in goal deviance, as a **diagnostic**. It also
 records why fitting to it is a trap — the sham in §9.6 step 3, a temperature

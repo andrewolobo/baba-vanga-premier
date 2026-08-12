@@ -1,0 +1,50 @@
+{
+  "step7": {
+    "fitted": {
+      "s_dev (reference)": 1.0936,
+      "s_zero home": 1.1101,
+      "s_zero away": 1.1278
+    },
+    "arms": [
+      {
+        "arm": "s_dev (reference)",
+        "s": 1.0936,
+        "home_slope": 0.833,
+        "away_slope": -1.614,
+        "deviance_delta": -0.000431,
+        "ci": [
+          -0.000904,
+          6e-05
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "s_zero home",
+        "s": 1.1101,
+        "home_slope": -0.0,
+        "away_slope": -0.834,
+        "deviance_delta": -0.000417,
+        "ci": [
+          -0.000976,
+          0.00016
+        ],
+        "excludes_zero": false
+      },
+      {
+        "arm": "s_zero away",
+        "s": 1.1278,
+        "home_slope": -0.89,
+        "away_slope": 0.0,
+        "deviance_delta": -0.000373,
+        "ci": [
+          -0.001024,
+          0.000302
+        ],
+        "excludes_zero": false
+      }
+    ],
+    "verdict": "REFUTED -- a deviance-cheap lambda change zeroes the slope",
+    "cost_vs_channels_gate": 0.19,
+    "one_dial_fixes_both": true
+  }
+}

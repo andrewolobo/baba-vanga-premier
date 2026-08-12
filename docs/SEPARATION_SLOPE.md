@@ -4,10 +4,15 @@ Written **2026-08-11** as a review; **§2's item was then executed the same day*
 and that section now carries a result. Nothing here was run against a *real*
 match outcome. Every number is quoted from `OUTSTANDING.md` §9.6, re-derived
 from the committed `docs/home_term_step2.json` / `docs/home_term_step3.json`,
-or — in §2 — produced by `--step 4` on **synthetic** outcomes. **§9 is the
-exception and is a real gate**: `--step 5` reads real outcomes on the away leg,
-booked by the owner at 3 configurations. Ledger: `home_term_slope_controls`
-(probe, 0) and `home_term_away_leg` (gate, 3). **189 → 192.**
+or — in §§2 and 10 — produced on **synthetic** outcomes. **§§9 and 12 are real
+gates.** Ledger: `home_term_slope_controls` (probe, 0), `home_term_away_leg`
+(gate, 3, booked by the owner), `linearity_controls` (probe, 0),
+`slope_zeroing_stretch` (gate, 2). **189 → 194.**
+
+> **Read §12 first.** This document's central claim — §1's "the defect is in the
+> λ → outcome mapping and goal deviance is structurally blind to it" — **was
+> refuted by its own last step.** §1 carries the correction in place. The
+> sections below are preserved as written so the reasoning stays scoreable.
 
 Subject: the finding in `OUTSTANDING.md` §9.6 step 2 — that the head's outcome
 probabilities are miscalibrated as a function of how lopsided the fixture is
@@ -75,6 +80,26 @@ metrics point in opposite directions in the same division.
 **That is the whole finding: the defect is in the λ → outcome mapping, and goal
 Poisson deviance — convention 2's selection metric — is structurally blind to
 it.** It is the reason this survived every gate the project has run.
+
+> **REFUTED 2026-08-11 by §12. Do not build on the paragraph above.** Both of
+> its supports fail.
+>
+> **"Applying it leaves every gap where it was" is nearly an identity.** The
+> stretch is *centred*, so it cannot move a mean — pinned by
+> `test_the_stretch_leaves_the_mean_separation_alone`. The gaps are means; the
+> slope is a gradient. `home_term_step2.json`'s per-arm rows carry only
+> home/draw/away means, and its slope diagnostic ran on the raw frame before any
+> arm, so **the slope under a stretched head had never been measured**.
+>
+> **"~1.05" was a transient.** Step 2's walk-forward `s_dev` climbs
+> monotonically across folds — 0.947 … 1.064, still rising at the last — and
+> in-sample on the whole population it is **1.0936**.
+>
+> **Measured, the deviance-optimal stretch nearly zeroes the slope**: home
+> +5.66 → **+0.83**, away −6.12 → **−1.61**. The corrected statement is that
+> goal deviance points the *right* way and is too **flat** to resolve it
+> (−0.00043 [−0.00090, +0.00006]), not that it is blind. The head's strength
+> dispersion is about **10% too low** and both objectives want it raised.
 
 ---
 
@@ -370,6 +395,157 @@ remaining item in §8 and it stands on its own.
 
 ---
 
+## 11. Pre-registration — the slope-zeroing stretch
+
+**Written before `--step 7` was run.** §8 item 4, and the last of them.
+
+### What it does
+
+`fit_stretch` minimises goal deviance, so step 2 could only ever find the
+stretch **goals** want, and it refuted that one. §5's point is that the
+documents then stated the stronger claim — that no stretch moves the outcome
+gap — which was never tested. Step 3's blind sham drove the pooled slope to
+**−14.65 ✱**, so a zero crossing exists between it and the shipped +5.66.
+
+`zeroing_stretch` finds it: the stretch `s` that drives a leg's separation slope
+to zero, fitted **on the slope**, then priced in goal deviance against the
+shipped head with a paired block bootstrap. Stratification stays on the
+**unstretched** `d`, matching steps 3 and 5. **In-sample by design** — this is a
+diagnostic, not a candidate correction, and an in-sample fit is the setting most
+favourable to the mapping-fix, so a large price here is a **lower bound**.
+
+### The read, fixed in advance
+
+| outcome | conclusion |
+| --- | --- |
+| delta **excludes zero AND exceeds 0.00217** (the channels gate) | **"the λs are fine and the mapping is broken" CONFIRMED**, with a number for the first time |
+| delta **does not exclude zero** | **REFUTED** — a deviance-cheap λ change zeroes the slope, and the defect is in λ where deviance cannot see it |
+| resolves but under 0.00217 | neither; report the number and draw no conclusion |
+
+### Six predictions, declared now
+
+Predictions 1–3 come from §10's C2 family, which is committed synthetic data and
+cost nothing — the calibration is `measured slope ≈ 49.2 × (s−1)` on home and
+`−45.0 × (s−1)` on away.
+
+1. **s_zero(home) = 1.115**, inside [1.08, 1.15].
+2. **s_zero(away) = 1.136**, inside [1.10, 1.17].
+3. **s_zero > s_dev on both legs.** Step 2's walk-forward `s_dev` runs 0.947 to
+   1.064; the slope wants appreciably more stretch than goals do.
+4. **The two legs want nearly the same stretch** — within 0.03 — despite §9.10
+   finding different *division* profiles, because pooled they are near mirror
+   images (+5.66 against −6.12).
+5. **The deviance cost of s_zero versus shipped is positive and resolves.**
+   Zeroing the slope should make goals measurably worse.
+6. **The cost is smaller than the shots channel's 0.00422.** A one-parameter
+   stretch is a small perturbation and should not undo the best feature ever
+   adopted here.
+
+**Cost: 2 configurations**, one per leg. `s_dev` is a reference —
+`home_term_dispersion` already spent on the deviance-optimal stretch and this is
+that arm refitted in-sample.
+
+### What this cannot do
+
+**It cannot license a fix**, and a small price would not either. §5's second
+edge is the sharper one: a blind temperature sharpener zeroes the slope while
+carrying no outcome information at all, so **zeroing the slope is not evidence
+of having found the mechanism**. §10 has since removed the one thing that would
+have justified a fourth corrective arm — knowing the defect's shape — so this
+step ends the sequence whatever it returns.
+
+---
+
+## 12. The price of zeroing the slope — **MEASURED 2026-08-11. §1's headline is refuted.**
+
+`--step 7`, ledger `slope_zeroing_stretch` (gate, **2 configurations, 192 →
+194**), results `docs/home_term_step7.json`. Pre-registered at §11.
+**Four of six predictions right, and the two misses overturn this document's
+central claim.**
+
+| stretch | s | home slope | away slope | goal deviance vs shipped, paired |
+| --- | --- | --- | --- | --- |
+| shipped | 1.0000 | +5.66 | −6.12 | — |
+| **s_dev (deviance-optimal)** | **1.0936** | **+0.83** | **−1.61** | **−0.00043 [−0.00090, +0.00006]** |
+| s_zero home | 1.1101 | −0.00 | −0.83 | −0.00042 [−0.00098, +0.00016] |
+| s_zero away | 1.1278 | −0.89 | +0.00 | −0.00037 [−0.00102, +0.00030] |
+
+**The pre-registered read returns REFUTED.** The deviance cost of zeroing the
+slope is **−0.00042** — the *point estimate is an improvement* — and it does not
+resolve. "The λs are fine and the mapping is broken" is wrong.
+
+### Why §1 got it backwards, and it is not a close call
+
+§1 says *"The λs are not the problem… applying it leaves every gap where it was
+— pooled home +0.33 → +0.32."* Two things are wrong with that.
+
+**The stretch is CENTRED, so it cannot move a mean.** That is a property of the
+transform, pinned since the first commit by
+`test_the_stretch_leaves_the_mean_separation_alone`. Reporting that the *gaps*
+— which are means — did not move is very nearly a mathematical identity, not
+evidence about the slope, which is a *gradient*. Checked at source:
+`home_term_step2.json`'s per-arm rows carry `home` / `draw` / `away` and
+**nothing else**, and its one slope diagnostic ran on the raw frame *before* any
+arm. **The slope under a stretched head had never been computed.**
+
+**And "~1.05" was a transient.** Step 2's `s_dev` is walk-forward, and its
+per-fold values are **monotone increasing** — 0.947, 0.984, 1.004, 1.041, 1.047,
+1.050, 1.058, **1.064** — still climbing at the last fold, because the early
+folds are data-poor. Fitted in-sample on the whole scored population it is
+**1.0936**, and that is the value the sequence was heading for.
+
+### The corrected diagnosis
+
+Not *"goal deviance is blind to this defect"*. **Goal deviance points straight at
+it and cannot resolve it.** Its optimum, 1.0936, sits almost exactly on the
+slope-zeroing stretch, 1.1101 — and applying the *deviance-optimal* stretch
+alone takes the home slope from +5.66 to +0.83 and the away slope from −6.12 to
+−1.61. The two objectives **agree on direction**. They differ only in sharpness:
+along this axis deviance is flat, −0.00043 [−0.00090, +0.00006] over a range
+that swings the slope by six points, so the 1-SE selection machinery had no
+reason to move off s = 1 and never would have.
+
+**The one-line statement: the head's strength dispersion is about 10% too low,
+both objectives want it raised, and only the outcome-level one can see it.**
+
+### The predictions
+
+| # | prediction | outcome |
+| --- | --- | --- |
+| 1 | s_zero(home) = 1.115, in [1.08, 1.15] | **right** — 1.1101 |
+| 2 | s_zero(away) = 1.136, in [1.10, 1.17] | **right** — 1.1278 |
+| 3 | s_zero > s_dev on both legs | right in sign, **wrong in size** — 0.016 apart, not ~0.07 |
+| 4 | the legs want stretches within 0.03 | **right** — 0.0177 apart |
+| 5 | deviance cost positive and resolves | **WRONG** — −0.00042, and unresolved |
+| 6 | cost under the shots channel's 0.00422 | right — 0.10× |
+
+Predictions 1, 2 and 4 came from §10's C2 calibration on committed synthetic
+data and cost nothing, which is the second time in this sequence that the free
+control priced the real answer before it was measured.
+
+### What this does and does not license
+
+**It removes the argument that stopped a fix, and supplies the reason §10 took
+away.** §8 said a fourth corrective arm needs a reason the first three lacked.
+τ was declined because a 5×-wrong ρ was the best arm; B2 relocated the
+miscalibration; the deviance-optimal stretch was declined because it "left every
+gap where it was" — **and that third reason is now void.** A stretch of ~1.10
+zeroes both legs' slopes, costs nothing measurable in goals, and one dial does
+both (the legs are 0.0177 apart).
+
+**It still does not show the fix is worth anything.** §5's second edge stands
+untouched: a blind sharpener also zeroes the slope, so zeroing it is not
+evidence of a mechanism. And **nothing here was measured in the product's
+currency.** Three arms have moved these dials and none bought strike rate; this
+is a fourth dial with a better justification and no strike-rate number attached.
+
+**The open question is now well-posed for the first time:** does a walk-forward
+dispersion stretch of ~1.10 change the published strike rate, against a
+magnitude-matched blind control? That is a gate, it is not this document's, and
+it should be pre-registered on its own terms.
+
+---
+
 ## 4. The two legs behave differently, and only one has ever had an interval
 
 The away leg does *not* collapse when the top bucket is dropped (−6.64 → −6.11),
@@ -535,18 +711,26 @@ a consideration the item does not currently carry, and B13 is an owner call.
    single measurement, so the statistic cannot decide the mechanism. Closing it
    needs 1.38× this corpus, and the entire holdout clears that by 135 matches.
    **The real measurement was never run and should not be.**
-4. **Find the stretch that zeroes the slope and price it in goal deviance.**
-   **~1 configuration.** Diagnostic, per §5 — it tests the "the mapping is
-   broken, not the λs" conclusion rather than attempting a correction. **Now the
-   only remaining item**, and §10 confirms it does not depend on item 3: it
-   prices a stretch in deviance rather than needing the defect's shape.
+4. ~~**Find the stretch that zeroes the slope and price it in goal deviance.**~~
+   **DONE 2026-08-11 — §12.** Ledger `slope_zeroing_stretch`, gate,
+   **2 configurations, 192 → 194.** Pre-registered at §11, four of six
+   predictions right. **The read came back REFUTED**: zeroing the slope costs
+   **−0.00042 [−0.00098, +0.00016]**, an unresolved *improvement*, and the
+   deviance-optimal stretch alone takes the home slope from +5.66 to +0.83.
+   §1's headline is corrected in place.
 
-**Do not** reach for a fix. Three arms have now moved this dial and none bought
-strike rate — the deviance-optimal stretch, B2's calibration, and τ — and §9.5's
-monotone-in-|ρ| result is still unexplained. A fourth arm needs a reason the
-first three did not have. **Knowing the shape of the defect was going to be that
-reason, and §10 establishes that this corpus cannot supply it** — which makes
-the case for a fix weaker than when this document was written, not stronger.
+**All four items are closed.** The sequence ends with the document's central
+claim overturned by its own last step.
+
+**Where the "do not reach for a fix" advice now stands.** It was: three arms
+have moved this dial and none bought strike rate, and a fourth needs a reason
+the first three lacked. §10 removed the reason it expected (the defect's shape,
+unresolvable here) — and **§12 supplied a different and better one.** The third
+arm was declined because the deviance-optimal stretch "left every gap where it
+was", and that reason is void: it zeroes the slope and costs nothing measurable
+in goals. What is still missing is **any strike-rate number**, and §5's second
+edge is untouched — a blind sharpener zeroes the slope too. The honest position
+is that a fix is now *worth pre-registering*, not that it is justified.
 
 **Do not** treat this document as licensing a head change. `OUTSTANDING.md`
 §1.3 lists what a head change owes. §§2, 9 and 10 are measurements; the rest of

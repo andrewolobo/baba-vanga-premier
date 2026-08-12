@@ -5,7 +5,32 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-11**, after the **linearity control** (§9.11) — which
+Last updated **2026-08-12**, after measuring **B14 in the product's currency**
+(§9.13) — which **closes B14 as do-not-adopt**. The corners channel is worth
+**−0.095 [−0.352, +0.175]** points of strike rate, an unresolved *negative*,
+while a blind sham moving the **identical 6.914%** of recommendations loses
+**1.643 ✱**. The instrument is alive and the channel is not in it. **Four of
+four predictions right**, a first here. Two things came free: what costs strike
+rate is the **published mix, not the change rate** — C2 changes 3.4× as many
+recommendations and loses less than half as much, because C1 is a sharpener that
+takes H from 11.8% to 17.8% — and **§9.3's "a better λ improves every item on
+the menu" does not survive its own test**. Gate, **3 configurations, 194 → 197**.
+Before it, a free probe ran first and alone and could have closed B14 for
+nothing. **`home_term --step 3`'s honesty gap now carries an interval**: both
+B13 arms are unresolved and overlap, so honesty is neutral to B13.
+
+Before that, **2026-08-11**, after pricing the **slope-zeroing stretch**
+(§9.12) — which **refuted §9.6 step 2's headline**. Zeroing the separation slope
+costs **−0.00042 [−0.00098, +0.00016]**, an unresolved *improvement*; the
+deviance-optimal stretch is **1.0936**, not the ~1.05 step 2 quoted, and it
+alone takes the home slope from **+5.66 to +0.83**. Step 2 concluded about a
+*gradient* from a measurement of *means*, and a centred stretch cannot move a
+mean. **Goal deviance is not blind to this defect — it points the right way and
+is too flat to resolve it.** The head is ~10% under-dispersed, which is the same
+fact §9.8 reached on the half-life axis. Gate, **2 configurations, 192 → 194**.
+**All four of §9.7's items are now closed.**
+
+Before that, **2026-08-11**, after the **linearity control** (§9.11) — which
 **refuted its own test for 0 configurations**: over-shrinkage and a tail step
 produce curvature only **1.46σ / 1.67σ** apart against a single measurement's
 noise, so the corpus cannot decide the mechanism, and closing it would take
@@ -150,17 +175,30 @@ build-out `RUNBOOK.md` §8 leaves open).
 shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
 prior, COVID window embargoed from scoring. Artifact
 `p1-3a38e9d6ef1ca7ee` — **unchanged by §1.12**, which measured on a subclass of
-the served config precisely so the version string would not move. **484 tests
-pass, all green** (2026-08-11; re-run `pytest -q` rather than trusting this line
+the served config precisely so the version string would not move. **492 tests
+pass, all green** (2026-08-12; re-run `pytest -q` rather than trusting this line
 — it has been stale twice). The two calendar-time-bomb failures found earlier
 on 2026-08-10 are fixed — §6. Gate ledger holds
-**101 runs / 58 questions / at least 192 configurations** — the last is the
+**103 runs / 60 questions / at least 197 configurations** — the last is the
 number that feeds deflation, and §3.2 explains why the other two mislead.
 §9.5 spent 4, §9.6 spent 6 (its step 1 probe spent none), §1.12 spent 13,
 **§9.9 spent none** — a probe on synthetic outcomes, which is why runs and
 questions moved and configurations did not — **§9.10 spent 3 by owner
-decision**, where `SEPARATION_SLOPE.md` §8 had named 0 or 1, and **§9.11 spent
-none**, another synthetic-outcome probe.
+decision**, where `SEPARATION_SLOPE.md` §8 had named 0 or 1, **§9.11 spent
+none**, another synthetic-outcome probe, **§9.12 spent 2** — one per leg,
+`s_dev` being a reference `home_term_dispersion` already paid for — and
+**§9.13 spent 3 by owner decision**, one per arm, its free probe spending none.
+
+**`docs/gate_ledger.jsonl` is the off-machine copy, and keeping it current is
+now enforced rather than remembered.** It was found **12 rows behind** on
+2026-08-12 — missing every row from the B12 gate through §9.12, four days with
+rows 91–102 on one gitignored file and no second copy. Brought current by
+`392d1f0`; `ab70827` then added
+`tests/test_trials.py::test_the_ledger_export_is_current`, which fails when the
+file stops matching `gate_ledger`. **That test is expected to go red on this
+machine after any gate**, until `python scripts/export_ledger.py` is re-run and
+the diff committed — the red is the reminder. It skips on an empty ledger so a
+server's `pytest -q` does not go red over a development-machine backup.
 
 **Three of §1.12's four rows are post-hoc** and are named in
 `trials.POST_HOC_TRIALS` alongside `h19_alpha_interaction` and
@@ -1861,6 +1899,13 @@ structurally blind to it — **survives review**. Its framing does not.
   no outcome information, so a zero crossing exists — which also means zeroing
   the slope proves nothing. Price the zeroing stretch in deviance as a
   *diagnostic*; do not fit a fourth dial to it.
+  > **DONE 2026-08-11 — §9.12, and it went further than this bullet expected.**
+  > The zeroing stretch is **1.1101** and costs **−0.00042 [−0.00098, +0.00016]**
+  > — unresolved, and an improvement on the point estimate. More: the
+  > **deviance-optimal** stretch is **1.0936**, not the ~1.05 step 2 quoted, and
+  > it alone takes the home slope from +5.66 to **+0.83**. So step 2 did not
+  > refute the deviance-optimal stretch either; it never measured the slope
+  > under it. §9.6 step 2's headline does not survive.
 - **The slope and B13 are the same decision.** The published claim is honest
   (−0.06 pts) because `12` = home + away **cancels the two legs**, and `12` is
   65% of output. B13 cuts `12` to 47.7%, which stops the cancellation: honesty
@@ -2091,6 +2136,133 @@ resolvable on this corpus**.
 
 **This leaves §9.7 item 4 as the only remaining item** — the zeroing stretch,
 priced in goal deviance. §10 confirms it does not depend on item 3.
+
+### 9.12 The slope-zeroing stretch — **MEASURED 2026-08-11. §9.6 step 2's headline is refuted.**
+
+Code `engine/eval/home_term.py --step 7`, results `docs/home_term_step7.json`,
+ledger `slope_zeroing_stretch` (gate, **2 configurations, 192 → 194**).
+Pre-registered at `SEPARATION_SLOPE.md` §11, results in §12. §9.7's item 4, and
+the last of the four. **Four of six predictions right; the two misses overturn
+the finding the whole sequence was built on.**
+
+| stretch | s | home slope | away slope | goal deviance vs shipped, paired |
+| --- | --- | --- | --- | --- |
+| shipped | 1.0000 | +5.66 | −6.12 | — |
+| **s_dev (deviance-optimal)** | **1.0936** | **+0.83** | **−1.61** | **−0.00043 [−0.00090, +0.00006]** |
+| s_zero home | 1.1101 | −0.00 | −0.83 | −0.00042 [−0.00098, +0.00016] |
+| s_zero away | 1.1278 | −0.89 | +0.00 | −0.00037 [−0.00102, +0.00030] |
+
+**The pre-registered read returns REFUTED.** Zeroing the slope costs
+**−0.00042** — the point estimate is an *improvement* — and does not resolve.
+§9.6 step 2's *"the λs are correctly scaled for goals; the defect is in the λ →
+outcome mapping, which convention 2's metric is structurally blind to"* **does
+not survive.**
+
+**Four things worth carrying forward:**
+
+- **Step 2 concluded about a gradient from a measurement of means, and the
+  stretch cannot move a mean.** It reported *"applying it leaves every gap where
+  it was"* — but the stretch is **centred**, so leaving means alone is a
+  property of the transform, pinned since the first commit by
+  `test_the_stretch_leaves_the_mean_separation_alone`. Checked at source:
+  `home_term_step2.json`'s per-arm rows carry home/draw/away and nothing else,
+  and its slope diagnostic ran on the raw frame *before* any arm. **The slope
+  under a stretched head had never been computed.** This is the §9.5 shape —
+  a verdict resting on a statistic that could not address it.
+- **"~1.05" was a transient, not a value.** The walk-forward `s_dev` climbs
+  monotonically across folds — 0.947, 0.984, 1.004, 1.041, 1.047, 1.050, 1.058,
+  **1.064**, still rising at the last — because early folds are data-poor.
+  In-sample on the whole scored population it is **1.0936**. Quoting a
+  walk-forward average as the converged answer hid a third of the effect.
+- **The corrected diagnosis is sharper and more useful.** Not *"deviance is
+  blind"* — **deviance points the right way and is too flat to resolve it.** Its
+  optimum sits essentially on the slope-zeroing stretch, and the
+  deviance-optimal stretch *alone* takes the home slope from +5.66 to +0.83.
+  Over a range that swings the slope six points, deviance moves −0.00043
+  [−0.00090, +0.00006]. The 1-SE machinery had no reason to leave s = 1 and
+  never would have. **The head's strength dispersion is ~10% too low, both
+  objectives want it raised, and only the outcome-level one can see it.**
+- **This is consistent with §9.8's H finding and reached by a different route.**
+  There, 1X2 logloss prefers a shorter half-life — more responsive, more
+  dispersed strengths — than goal deviance does, while deviance sits between the
+  two served markets. Here the outcome slope wants more separation than deviance
+  can resolve. **Both say the head is slightly under-dispersed for
+  outcome-level accuracy.** §9.8's parameter-by-parameter verdicts are
+  unaffected — α, both blend weights and EC remain dead levers, and the α sweep
+  is flat with both objectives agreeing — because **the correction here is a
+  post-hoc stretch, not a refit of any of those four.**
+
+**What it does not do.** §5's second edge is untouched: a blind sharpener also
+zeroes the slope, so zeroing it is not evidence of a mechanism. And **nothing
+was measured in the product's currency** — this is a fourth dial with a better
+justification and no strike-rate number.
+
+**The open question, well-posed for the first time:** does a walk-forward
+dispersion stretch of ~1.10 move the published strike rate, against a
+magnitude-matched blind control? A gate, not yet written, to be pre-registered
+on its own terms. It is the natural successor to B10 and should be read against
+`BACKLOG.md` B13 and B15, which touch the same dispersion axis.
+
+### 9.13 B14 in the product's currency — **MEASURED 2026-08-12. Do not adopt.**
+
+Code `engine/eval/channels_product.py`, tests `tests/test_channels_product.py`,
+results `docs/channels_product_results.json`, ledger `b14_corners_in_product`
+(gate, **3 configurations by owner decision, 194 → 197**). Pre-registered in
+`BACKLOG.md` B14 before running; results there in full. **Four of four
+predictions right**, which has not happened before on this project.
+
+`CHANNELS_GATE.md` priced the corners channel in goal deviance at −0.00196 and
+B14 then offered adoption as a judgement on that number. **The product is sold
+on strike rate and nothing had measured it there** — the criticism §9.12 made of
+itself, applied to an open decision.
+
+| arm | changed | strike | vs shipped, **paired** |
+| --- | --- | --- | --- |
+| shipped | — | 72.491% | — |
+| **A1 `+corners`** | 6.914% | 72.396% | **−0.095 [−0.352, +0.175]** |
+| C1 sham (matched, blind) | 6.914% | 70.848% | **−1.643 [−1.857, −1.429] ✱** |
+| C2 `+noise1` (structural) | 23.275% | 71.752% | **−0.739 [−1.220, −0.256] ✱** |
+
+**Five things worth carrying forward:**
+
+- **A free probe ran first and alone, and it could have closed B14 for
+  nothing.** Comparing the two recommendation vectors to each other without
+  scoring either against a result reads no outcome and carries no arm list — the
+  `power.py` licence. It found 6.914% of recommendations change, so the question
+  was live. This is §9.11's discipline paying for the second time.
+- **The probe also caught a control that would have been built wrong.** A
+  change-rate-matched blind arm **cannot** be made by lowering the composite
+  weight: at w = 0.02–0.05 the arm differs from the shipped head both by
+  carrying noise *and* by having almost no auxiliary layer, so its change rate
+  sits at ~8.8% for every weight in that range. Two causes, one knob. The
+  matched control has to be the temperature sham.
+- **This is a real null, and C1 is what says so.** A blind perturbation moving
+  the *identical* 6.914% of recommendations loses **1.643 points, resolved** —
+  seventeen times the real channel's move. The rule is exquisitely sensitive at
+  this magnitude; corners is simply not a perturbation of it.
+- **What costs strike rate is the published mix, not the change rate.** C1
+  changes 6.9% and loses 1.643; C2 changes **23.3%**, 3.4× as many, and loses
+  **0.739**. C1 is a sharpener and takes **H from 11.8% to 17.8%** — naming a
+  team far more often — while C2 stays near the shipped shape. **Naming teams
+  costs strike rate**, which is independent evidence on the `12`-versus-`1X`
+  axis of `BACKLOG.md` B10 and B13, from a gate that was not about them.
+- **§9.3's argument for this channel does not survive its own test.** It reads
+  *"a better λ improves every item on the menu at once… the largest measured
+  prediction gain available to the product"*. True in deviance; measured at
+  **−0.095, unresolved**, in the product. The step from "better λ" to "better
+  product" had never been checked, and it is the same shape as the
+  reliability→deviance over-reading `CHANNELS_GATE.md` §3 records three times.
+
+**B12 is not retracted.** The deviance gain is real at 4.7 paired SE and stands.
+What is refuted is the inference to the product. **This is the §1.4
+real-but-not-adoptable shape for the third time**, after the kickoff slot and
+travel, and it is the first time that shape has been established in the
+product's own metric rather than in nats.
+
+**Do not** re-run this with `+both`, a different floor, or a per-division
+adoption. `+both` changes *fewer* recommendations than `+corners` (6.566%) for a
+deviance difference of −0.00021 that nothing resolves, and the division cells
+here neither resolve nor survive Bonferroni.
 
 ### 9.2 The goal-line tails were validated for markets the product does not serve
 

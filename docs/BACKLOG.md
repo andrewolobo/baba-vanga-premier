@@ -9,7 +9,16 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-11**, after the selection-objective review
+Last updated **2026-08-12**, after **B14 was measured in strike rate and
+closed** — the corners channel is worth **−0.095 [−0.352, +0.175]** points to
+the product, an unresolved *negative*, against a blind control at −1.643 ✱ on
+the identical change rate. **Do not adopt.** The same run found that what costs
+strike rate is the published *mix*, not the change rate, which is free evidence
+for **B10** and **B13**. Before that, **2026-08-12**, the honesty gap in
+`home_term --step 3` gained a block-bootstrap interval: **both B13 arms are
+unresolved and overlap**, so honesty is neutral to that decision.
+
+Before that, **2026-08-11**, after the selection-objective review
 (`SELECTION_OBJECTIVE.md`, `OUTSTANDING.md` §9.8), which opened **B15** and
 changed no status. Before that, the separation-slope review
 (`SEPARATION_SLOPE.md`, `OUTSTANDING.md` §9.7), which added a consideration to
@@ -36,7 +45,7 @@ and gated B4.
 | **B11** | Per-line calibration for the six goal lines | open | ~1 | — |
 | **B12** | Shots + corners channel gate (§1.7, licensed and unwritten) | **done — measured 2026-08-10, not adopted** | 13 spent | — |
 | **B13** | Owner call: run the tip rule on B2's calibrated probabilities? | **open — decision, not measurement** | 0 | — |
-| **B14** | Owner call: adopt the corners channel into the head? | **open — decision, not measurement** | 0 | B12 |
+| **B14** | Owner call: adopt the corners channel into the head? | **closed 2026-08-12 — do not adopt.** Null in strike rate | 3 spent | B12 |
 | **B15** | Half-life `H` — stale, and the one axis where the objectives disagree | open, **gated on paired ll_1x2 intervals** | ~0–1 then ~9 | — |
 
 ## Later
@@ -490,6 +499,142 @@ touches what the customer is told, so it is not a silent upgrade.
 **Recommendation: `+corners` rather than `+both`.** It is 90% of the gain, one
 fewer channel, and one fewer thing to be wrong about later. `+both` is better by
 −0.00021, which nothing measured here resolves.
+
+> **Amended 2026-08-12. "No further measurement is needed" was wrong, and the
+> reason is the one §9.12 raised against itself.** Everything above prices the
+> channel in **goal deviance**. The product is sold on **strike rate**, and
+> nothing has ever measured what this channel does to it. B12's own
+> product-facing numbers are 1X2 −0.00033 and O/U −0.00074 for `+corners` — an
+> order of magnitude below the channel that shipped — so "a better λ improves
+> every item on the menu" is true and may be far too small to see. Settling an
+> owner decision on a currency the product does not sell is the same error
+> `OUTSTANDING.md` §9.12 recorded when it noted that **nothing was measured in
+> the product's currency**. The gate below fixes that.
+
+### Pre-registration — B14 in the product's currency
+
+**Written 2026-08-12, before `channels_product.py` ran.** Population: the
+15,824 out-of-sample matches of §9.5/§9.6, floor 0.55 / ceiling 0.85, `12`
+enabled. Ledger `b14_corners_in_product`, **3 configurations by owner
+decision** — one per arm, the same accounting `home_term_away_leg` used.
+
+**A free probe ran first and alone**, per §9.11's precedent, comparing the two
+recommendation vectors to each other without scoring either against a result.
+It could have closed B14 for nothing and did not:
+
+| | shipped | `+corners` | `+both` |
+| --- | --- | --- | --- |
+| recommendations changed | — | **6.914%** | 6.566% |
+| mean \|Δp_home\| | — | 0.01103 | 0.01006 |
+| claimed strike rate | 72.553% | **72.550%** | 72.566% |
+| mix `12`/`1X` | 65.0 / 17.6 | 65.5 / 16.9 | 65.7 / 16.5 |
+
+Two things it fixed before they became mistakes. **The claim side does not
+move** (−0.003 pts), so this is purely a question about delivery — unlike B13,
+where the honesty gap moved because the *claim* fell. And **a change-rate
+matched control cannot be built by tuning the blend weight**: at w = 0.02–0.05
+the arm differs from the shipped head both by carrying noise and by having
+almost no auxiliary layer, so the change rate sits at ~8.8% for every weight in
+that range. The matched control has to be the temperature sham.
+
+| arm | what it is |
+| --- | --- |
+| **A1 `+corners`** | `sot+corners` @ w = 0.30, the adoption candidate |
+| **C1 sham** | `home_term.matched_sham` tuned to A1's change rate, blind to every outcome |
+| **C2 `+noise1`** | `sot+noise1` @ w = 0.30 — structural parallel, carries no information |
+
+**Two controls because they fail in different ways.** C1 matches the
+product-visible magnitude but perturbs probabilities rather than strengths; C2
+is the exact structural parallel — same code path, same weight, same channel
+count — but changes **23.3%** of recommendations against A1's 6.9%, because a
+real channel is coherent with the existing head and noise scatters.
+
+**Resolution, anchored and not analogised.** §9.5's τ arm changed **6.29%** of
+recommendations, within a point of A1, and returned a half-width of **±0.29
+points**. That is what this instrument resolves at this change rate.
+
+**Four predictions, declared now:**
+
+1. A1's paired delta lands in **[−0.10, +0.35]** and **does not resolve**.
+   `+corners` improves 1X2 log loss by 0.00033 nats; B2's vector scaling, fitted
+   directly on 1X2, moved 18.42% of recommendations for **+0.088** unresolved.
+2. **C1 does not gain.** §9.6 step 3 refuted "any perturbation of this size
+   raises strike rate" — B2 shifted the mix three times harder for nothing.
+3. **C2 loses and resolves.** B12 measured the noise channel ten times worse
+   than the real effect on goal deviance.
+4. A1 beats both controls on the point estimate.
+
+**The read, fixed in advance:**
+
+| outcome | conclusion |
+| --- | --- |
+| A1 excludes zero **and** exceeds C1 | **GO** — adoption has a product-currency justification |
+| A1 does not resolve | **NO-GO** — real in nats, not adoptable on the metric the product is sold on. The §1.4 shape, with a number |
+| C1 also gains and resolves | **VOID** — the instrument measures perturbation, not information. Report and conclude nothing |
+
+**A NO-GO is the predicted outcome and is still worth 3 configurations**: it
+converts B14 from a judgement call into a bounded answer in the currency that
+decides it, and §1.4 and §1.6 are both precedents for a measured null being the
+useful output. **It does not retract B12** — the deviance gain is real, resolved
+at 4.7 paired SE, and would stand.
+
+### Result — **MEASURED 2026-08-12. NO-GO.**
+
+Code `engine/eval/channels_product.py`, tests `tests/test_channels_product.py`,
+results `docs/channels_product_results.json`, ledger `b14_corners_in_product`
+(gate, **3 configurations, 194 → 197**, verified with
+`trials.count_configurations` after the run). **Four of four predictions right**,
+which has not happened before on this project.
+
+| arm | changed | strike | vs shipped, **paired** | claimed | mix `12`/`1X`/H |
+| --- | --- | --- | --- | --- | --- |
+| shipped | — | 72.491% | — | 72.553% | 65.0 / 17.6 / 11.8 |
+| **A1 `+corners`** | 6.914% | 72.396% | **−0.095 [−0.352, +0.175]** | 72.550% | 65.5 / 16.9 / 12.1 |
+| C1 sham | 6.914% | 70.848% | **−1.643 [−1.857, −1.429] ✱** | 72.526% | 63.7 / 12.7 / 17.8 |
+| C2 `+noise1` | 23.275% | 71.752% | **−0.739 [−1.220, −0.256] ✱** | 72.391% | 60.4 / 18.6 / 13.7 |
+
+**The corners channel is worth nothing to the product, and the point estimate is
+negative.** It does not resolve, so the honest statement is that its strike-rate
+value is bounded within roughly ±0.35 points of zero.
+
+**Four things worth carrying forward:**
+
+- **This is a real null, not a dead instrument.** C1 moves the *same* 6.914% of
+  recommendations and loses **1.643 points, resolved** — seventeen times what
+  the real channel moved. The rule is highly sensitive to a perturbation of this
+  size; corners simply is not one.
+- **Change rate does not drive the damage — the published mix does, and this was
+  free.** C1 changes 6.9% and loses 1.643; C2 changes **23.3%**, 3.4× as many,
+  and loses only 0.739. The difference is where each pushes the mix: C1 is a
+  sharpener and takes **H from 11.8% to 17.8%**, naming a team far more often,
+  while C2 stays near the shipped shape. **Naming teams costs strike rate**,
+  which is independent evidence on the `12`-versus-`1X` axis of **B10** and
+  **B13**, arriving from a gate that was not about them.
+- **§9.3's argument for this channel does not survive its own test.** It reads
+  *"a better λ improves every item on the menu at once… the largest measured
+  prediction gain available to the product"*. The first clause is true in
+  deviance and the second is now measured at **−0.095 points, unresolved**. The
+  step from "better λ" to "better product" had never been checked, and it is the
+  same shape as the reliability→deviance over-reading `CHANNELS_GATE.md` §3
+  records three times.
+- **Deviance and strike rate rank the divisions differently.** B12 had E0
+  resolved at −0.00223 and E3 weakest; here **E0 is the best cell (+0.509
+  [−0.036, +1.082]) and E2/E3 are negative**. Nothing resolves and Bonferroni
+  across four cells would remove anything that did, so this is a caution rather
+  than a finding: **do not assume the deviance division profile transfers.**
+
+**The published claim is untouched either way** — honesty gap −0.06 [−0.80,
++0.67] shipped against −0.15 [−0.87, +0.57] for A1.
+
+**B14 settles: do not adopt.** Not because the channel is not real — B12 stands,
+resolved at 4.7 paired SE — but because it buys nothing in the currency the
+product is sold on, and adoption costs the five steps of `OUTSTANDING.md` §1.3
+plus the `travel.HEAD` re-basing that §1.3 does not list. **This is the §1.4
+shape for the third time**: real, measured, and not adoptable.
+
+**`+both` was not measured in strike rate** and should not be. It changes 6.566%
+of recommendations against A1's 6.914% and is a strictly larger head change for
+a deviance difference of −0.00021 that nothing resolves.
 
 ## B12 (original scoping note)
 

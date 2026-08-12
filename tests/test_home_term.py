@@ -93,6 +93,26 @@ def test_sharpening_raises_the_largest_probability():
     assert sharper[0, 1] < probs[0, 1]
 
 
+def test_the_honesty_gap_interval_bounds_the_number_step_3_publishes():
+    """The gap and its interval must be the same statistic.
+
+    Step 3 publishes `honesty_gap` as a plain difference of means and bounds it
+    with `bootstrap.paired`, and `BACKLOG.md` B13 turns on comparing two of them.
+    If `paired`'s point estimate ever stops reproducing that difference -- a
+    trimmed or median estimator would do it -- the published number and its
+    interval would describe different quantities and nothing else would say so.
+    """
+    won = np.array([1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0])
+    claimed = np.array([0.72, 0.68, 0.81, 0.75, 0.60, 0.77, 0.70, 0.66])
+    blocks = np.repeat([0, 1, 2, 3], 2)
+
+    cmp = home_term.bootstrap.paired(won, claimed, blocks)
+
+    assert 100 * cmp.delta == pytest.approx(
+        (won.mean() - claimed.mean()) * 100)
+    assert cmp.ci[0] <= cmp.delta <= cmp.ci[1]
+
+
 def test_the_scored_mask_drops_exactly_the_burn_in_seasons():
     """The §9.5 population. If this drifts, every gap in §9.6 is measured on a
     different set of matches from the one it is compared against."""
@@ -341,6 +361,62 @@ def test_the_linearity_controls_read_no_real_match_outcome(monkeypatch):
 
     assert (home_term.step6(frame, scored)
             == home_term.step6(corrupted, scored))
+
+
+def test_a_stretch_of_one_leaves_goal_deviance_alone():
+    """s = 1 must price identically to the shipped head, or every delta in step
+    7 is measured against a baseline that is already perturbed."""
+    rng = np.random.default_rng(37)
+    n = 500
+    lam_h = np.exp(rng.normal(0.30, 0.30, n))
+    lam_a = np.exp(rng.normal(0.10, 0.30, n))
+    goals_h = rng.poisson(lam_h).astype(float)
+    goals_a = rng.poisson(lam_a).astype(float)
+    _, d = home_term.separation(lam_h, lam_a)
+
+    stretched = home_term._stretched_deviance(
+        lam_h, lam_a, float(d.mean()), goals_h, goals_a, 1.0)
+    plain = home_term.metrics.goal_deviance(pd.DataFrame({
+        "lam_h": lam_h, "lam_a": lam_a, "fthg": goals_h, "ftag": goals_a}))
+
+    assert np.asarray(stretched) == pytest.approx(np.asarray(plain))
+
+
+def test_the_zeroing_stretch_recovers_a_planted_under_dispersion():
+    """The load-bearing property of step 7. If the head's separation is a factor
+    `s` too small, the stretch that zeroes the slope must be about `s` -- fitted
+    on the SLOPE, with no reference to goal deviance anywhere."""
+    rng = np.random.default_rng(41)
+    n = 30000
+    lam_h = np.exp(rng.normal(0.30, 0.32, n))
+    lam_a = np.exp(rng.normal(0.10, 0.32, n))
+    _, d = home_term.separation(lam_h, lam_a)
+    d_bar = float(d.mean())
+
+    planted = 1.15
+    truth_h, truth_a = home_term.stretch(lam_h, lam_a, planted, d_bar)
+    ftr = home_term.simulate_ftr(truth_h, truth_a, np.random.default_rng(43))
+
+    found = home_term.zeroing_stretch(lam_h, lam_a, d, d_bar, ftr, "H", 0)
+
+    assert found == pytest.approx(planted, abs=0.04)
+
+
+def test_the_zeroing_stretch_actually_zeroes_the_slope():
+    """Round trip: whatever it returns must leave no slope behind."""
+    rng = np.random.default_rng(47)
+    n = 20000
+    lam_h = np.exp(rng.normal(0.30, 0.32, n))
+    lam_a = np.exp(rng.normal(0.10, 0.32, n))
+    _, d = home_term.separation(lam_h, lam_a)
+    d_bar = float(d.mean())
+    truth_h, truth_a = home_term.stretch(lam_h, lam_a, 1.12, d_bar)
+    ftr = home_term.simulate_ftr(truth_h, truth_a, np.random.default_rng(53))
+
+    s = home_term.zeroing_stretch(lam_h, lam_a, d, d_bar, ftr, "H", 0)
+    probs = home_term._stretched_probs(lam_h, lam_a, d_bar, s)
+
+    assert home_term._leg_slope(d, ftr, probs, "H", 0) == pytest.approx(0.0, abs=0.05)
 
 
 def test_the_controls_read_no_real_match_outcome(monkeypatch):

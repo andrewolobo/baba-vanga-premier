@@ -1,0 +1,168 @@
+{
+  "probe": {
+    "shipped": {
+      "changed_share": 0.0,
+      "mean_abs_dp_home": 0.0,
+      "claimed": 0.72553,
+      "mix": {
+        "12": 0.6499,
+        "1X": 0.1761,
+        "X2": 0.0305,
+        "H": 0.1184,
+        "A": 0.0252
+      }
+    },
+    "+corners": {
+      "changed_share": 0.06914,
+      "mean_abs_dp_home": 0.01103,
+      "claimed": 0.7255,
+      "mix": {
+        "12": 0.6551,
+        "1X": 0.1689,
+        "X2": 0.0282,
+        "H": 0.1212,
+        "A": 0.0265
+      }
+    }
+  },
+  "gate": {
+    "temperature": 1.1583894428353076,
+    "verdict": "NO-GO",
+    "arms": [
+      {
+        "arm": "shipped",
+        "changed_share": 0.0,
+        "strike": 0.72491,
+        "claimed": 0.72553,
+        "vs_shipped": 0.0,
+        "vs_shipped_ci": [
+          0.0,
+          0.0
+        ],
+        "vs_shipped_excludes_zero": false,
+        "honesty_gap": -0.06,
+        "honesty_gap_ci": [
+          -0.8,
+          0.67
+        ],
+        "mix": {
+          "12": 0.6499,
+          "1X": 0.1761,
+          "X2": 0.0305,
+          "H": 0.1184,
+          "A": 0.0252
+        }
+      },
+      {
+        "arm": "A1 +corners",
+        "changed_share": 0.06914,
+        "strike": 0.72396,
+        "claimed": 0.7255,
+        "vs_shipped": -0.095,
+        "vs_shipped_ci": [
+          -0.352,
+          0.175
+        ],
+        "vs_shipped_excludes_zero": false,
+        "honesty_gap": -0.15,
+        "honesty_gap_ci": [
+          -0.87,
+          0.57
+        ],
+        "mix": {
+          "12": 0.6551,
+          "1X": 0.1689,
+          "X2": 0.0282,
+          "H": 0.1212,
+          "A": 0.0265
+        }
+      },
+      {
+        "arm": "C1 sham",
+        "changed_share": 0.06914,
+        "strike": 0.70848,
+        "claimed": 0.72526,
+        "vs_shipped": -1.643,
+        "vs_shipped_ci": [
+          -1.857,
+          -1.429
+        ],
+        "vs_shipped_excludes_zero": true,
+        "honesty_gap": -1.68,
+        "honesty_gap_ci": [
+          -2.41,
+          -0.95
+        ],
+        "mix": {
+          "12": 0.6369,
+          "1X": 0.1268,
+          "X2": 0.0236,
+          "H": 0.1776,
+          "A": 0.0351
+        }
+      },
+      {
+        "arm": "C2 +noise1",
+        "changed_share": 0.23275,
+        "strike": 0.71752,
+        "claimed": 0.72391,
+        "vs_shipped": -0.739,
+        "vs_shipped_ci": [
+          -1.22,
+          -0.256
+        ],
+        "vs_shipped_excludes_zero": true,
+        "honesty_gap": -0.64,
+        "honesty_gap_ci": [
+          -1.37,
+          0.1
+        ],
+        "mix": {
+          "12": 0.6043,
+          "1X": 0.1864,
+          "X2": 0.0425,
+          "H": 0.1372,
+          "A": 0.0295
+        }
+      }
+    ],
+    "per_division": {
+      "E0": {
+        "delta": 0.509,
+        "ci": [
+          -0.036,
+          1.082
+        ],
+        "excludes_zero": false,
+        "n": 2948
+      },
+      "E1": {
+        "delta": 0.046,
+        "ci": [
+          -0.455,
+          0.567
+        ],
+        "excludes_zero": false,
+        "n": 4308
+      },
+      "E2": {
+        "delta": -0.446,
+        "ci": [
+          -0.932,
+          0.051
+        ],
+        "excludes_zero": false,
+        "n": 4264
+      },
+      "E3": {
+        "delta": -0.302,
+        "ci": [
+          -0.857,
+          0.287
+        ],
+        "excludes_zero": false,
+        "n": 4304
+      }
+    }
+  }
+}
