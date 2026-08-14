@@ -98,6 +98,7 @@ def test_a_club_the_artifact_never_saw_does_not_take_the_matchday_down(
         conn, artifact, monkeypatch):
     """One National League newcomer must not cost the Premier League its prices."""
     monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "")
     add_fixture(conn, "E0", 1, 2)          # priceable
     add_fixture(conn, "EC", 3, 1)          # Aldershot: unknown to the artifact
 
@@ -164,6 +165,12 @@ def test_a_dead_feed_does_not_stop_serving_or_grading(conn, artifact, monkeypatc
         raise OSError("feed unreachable")
 
     monkeypatch.setattr(run_cycle.fixture_sync, "fetch", explode)
+    # The fixture is dated today, so the cycle tips it and `step_grade` then
+    # reaches for a results file. Stubbed because this test is about the steps
+    # being independent, not about the results feed -- unstubbed it was a live
+    # call to football-data, and it passed only because a redirect and a BOM
+    # cancelled out to "0 rows, OK".
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "")
     add_fixture(conn, "E0", 1, 2)
 
     report = run_cycle.run(conn, today=pd.Timestamp("2026-08-02"))
@@ -425,3 +432,53 @@ def test_grading_still_runs_when_only_tips_are_unsettled(conn, monkeypatch):
 
     assert seen.get("called"), "an unsettled tip must pull the results feed"
     assert step.status is not Status.FAILED, step.detail
+
+
+def _unsettled_tip(conn, division="E1", date="2026-08-14"):
+    add_fixture(conn, division, 1, 2, date=date)
+    fixture_id = conn.execute("SELECT fixture_id FROM fixtures").fetchone()[0]
+    conn.execute(
+        "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
+        " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
+        " p_over25, p_under25) VALUES (1, ?, 'v1', 'pre_close', '2026-08-13',"
+        " 1.5, 1.0, 0.62, 0.24, 0.14, 0.5, 0.5)", (fixture_id,))
+    conn.execute(
+        "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
+        " best_price, avg_price, rule_version) VALUES (1, ?, 'H', 0.62, 0.55,"
+        " 1.6, 1.5, 'confidence-v2')", (fixture_id,))
+    conn.commit()
+
+
+def test_a_season_that_has_not_published_results_yet_is_attention_not_failure(
+        conn, monkeypatch):
+    """The 2026-08-14 cycle exited 1 on this. For the first week or so of a
+    season a division can have a played fixture pending settlement while
+    football-data has not put that division's file up -- which is nobody's bug
+    and must not take the matchday's cycle down."""
+    _unsettled_tip(conn)
+
+    def unpublished(division, season, **kwargs):
+        raise run_cycle.csv_grader.ResultsNotPublished(f"{division} {season}: not yet")
+
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", unpublished)
+
+    step = run_cycle.step_grade(conn, dry_run=True)
+
+    assert step.status is Status.ATTENTION, step.detail
+    assert "no results file published yet" in step.detail
+    assert "E1/2627" in step.detail
+
+
+def test_a_results_file_carrying_none_of_its_own_division_is_attention(
+        conn, monkeypatch):
+    """The shape the BOM defect took: rows fetched, rows parsed, every one
+    dropped at the division filter, nothing settled, exit 0."""
+    _unsettled_tip(conn)
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "text")
+    monkeypatch.setattr(run_cycle.csv_grader, "parse_results",
+                        lambda text: [{"division": None}, {"division": None}])
+
+    step = run_cycle.step_grade(conn, dry_run=True)
+
+    assert step.status is Status.ATTENTION, step.detail
+    assert "carried no row of that division" in step.detail

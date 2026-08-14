@@ -244,6 +244,14 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
     off, so there are never unsettled bets, so the step returned early and no
     tip would ever have been graded. The product's own strike rate would have
     stayed empty forever while the cycle reported success.
+
+    **A season boundary is not a failure.** For the first week or so of a
+    season a division can have played fixtures pending settlement while
+    football-data has not published that division's file yet. That is
+    ATTENTION, not FAILED -- the tips really are going ungraded, so it is not
+    passed over, but it is nobody's bug and must not take a matchday's cycle
+    down with an exit 1. `csv_grader.ResultsNotPublished` is the whole of that
+    condition, including the redirect shape that returns a 200.
     """
 
     def work(step: Step) -> None:
@@ -268,17 +276,38 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
         seasons = {(r["division"], csv_grader.season_for(r["match_date"]))
                    for r in pending}
         total = csv_grader.GradeReport()
+        unpublished, mismatched = [], []
         for division, season in sorted(seasons):
-            rows = [r for r in csv_grader.parse_results(
-                csv_grader.fetch(division, season)) if r["division"] == division]
+            try:
+                text = csv_grader.fetch(division, season)
+            except csv_grader.ResultsNotPublished:
+                unpublished.append(f"{division}/{season}")
+                continue
+            parsed = csv_grader.parse_results(text)
+            rows = [r for r in parsed if r["division"] == division]
+            if parsed and not rows:
+                # A file we asked for, fetched and parsed, that yields nothing
+                # to grade. The BOM defect looked exactly like this for two
+                # seasons and would have read as a quiet success.
+                mismatched.append(f"{division}/{season}")
             got = csv_grader.grade(conn, rows, dry_run=dry_run)
             total.results_seen += got.results_seen
             total.settled += got.settled
             total.graded += got.graded
             total.tips_settled += got.tips_settled
+        # Set before flagging: `flag` appends to `detail`, so an assignment
+        # after it would wipe the notes.
         step.detail = (f"{total.results_seen} result(s), {total.settled} settled, "
                        f"{total.graded} CLV grade(s), "
                        f"{total.tips_settled} tip(s) settled")
+        if unpublished:
+            step.flag(Status.ATTENTION,
+                      f"no results file published yet for {', '.join(unpublished)}; "
+                      "those tips stay unsettled")
+        if mismatched:
+            step.flag(Status.ATTENTION,
+                      f"{', '.join(mismatched)} parsed but carried no row of that "
+                      "division -- check the feed's Div column")
 
     return _guard(Step("grade"), work)
 

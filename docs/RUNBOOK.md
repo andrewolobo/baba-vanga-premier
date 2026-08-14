@@ -384,6 +384,38 @@ enabling it on any machine.
   price the product's P&L columns cannot be filled. The strike rate — the only
   thing published — is unaffected.
 
+### 5.9 `grade` says no results file published yet
+
+**Expected for the first week or so of a season, and only then.**
+football-data creates the season directory when its earliest league kicks off
+and adds each division's file once *that division* has played. So between the
+first English matchday and the file appearing, a division can have a played
+fixture carrying an unsettled tip and no results to settle it with. ATTENTION,
+exit 2, nothing to do but wait — the tips settle on the first cycle after the
+file goes up, because re-running is safe (§6) and nothing was consumed.
+
+Check whether it has arrived:
+
+```powershell
+python -c "from services import csv_grader; print(len(csv_grader.fetch('E1','2627')), 'chars')"
+```
+
+`ResultsNotPublished` means still not there. It covers **two** server answers:
+a 300 listing near-miss names, and a 301 redirect onto another division's file
+— asking for `E0` in an empty season directory returns the National League with
+a 200, and following that would grade Premier League fixtures against National
+League results (`OUTSTANDING.md` §4.7).
+
+**Escalate if it is still saying this a fortnight into the season**, or if it
+names a division whose results you can see on the website. Either means the URL
+or the publisher's naming has moved, not that the season is young.
+
+**Not to be confused with `parsed but carried no row of that division`.** That
+is the other new ATTENTION and it is never expected: a file was fetched and
+parsed and every row was discarded, which is what a changed column name or
+encoding looks like. That is a real defect — it was live for two seasons behind
+a UTF-8 BOM — and it wants a person, not a wait.
+
 ## 6. Re-running is safe
 
 Every write path is idempotent, which is what makes an unattended retry

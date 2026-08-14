@@ -12,6 +12,8 @@ development, which is why it gets an explicit test rather than a comment.
 
 from __future__ import annotations
 
+import urllib.error
+
 import pytest
 
 from engine import db
@@ -197,3 +199,82 @@ def test_season_path_follows_the_football_season_not_the_calendar_year():
     assert csv_grader.season_for("2026-08-15") == "2627"
     assert csv_grader.season_for("2027-05-20") == "2627"
     assert csv_grader.season_for("2026-06-30") == "2526"
+
+
+# --- the wire ---------------------------------------------------------------
+#
+# Every test above hands `parse_results` a string built in Python, so none of
+# them go through `fetch`. That is how a BOM sat in the feed for two seasons
+# making `division` None on every row -- 552 results fetched, 0 graded, exit 0
+# -- without a single test going red. These four cover the decode and the two
+# ways football-data says "not published yet".
+
+
+class _Response:
+    """The parts of an `HTTPResponse` that `fetch` touches."""
+
+    def __init__(self, body: bytes, url: str):
+        self._body, self.url = body, url
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def read(self) -> bytes:
+        return self._body
+
+
+def _serve(monkeypatch, body: bytes, *, landing: str | None = None):
+    def fake_urlopen(url, timeout=None):
+        return _Response(body, landing or url)
+
+    monkeypatch.setattr(csv_grader.urllib.request, "urlopen", fake_urlopen)
+
+
+def _refuse(monkeypatch, code: int, reason: str):
+    def fake_urlopen(url, timeout=None):
+        raise urllib.error.HTTPError(url, code, reason, {}, None)
+
+    monkeypatch.setattr(csv_grader.urllib.request, "urlopen", fake_urlopen)
+
+
+def test_the_feeds_utf8_bom_does_not_swallow_the_division_column(monkeypatch):
+    """Decoded as cp1252 the BOM renames `Div` to `ï»¿Div`, so every row parses
+    with `division` None and is dropped by the caller's division filter. The
+    grader settles nothing and reports success."""
+    _serve(monkeypatch, b"\xef\xbb\xbf" + results(ARSENAL_WIN).encode("cp1252"))
+
+    rows = csv_grader.parse_results(csv_grader.fetch("E0", "2627"))
+
+    assert [r["division"] for r in rows] == ["E0"]
+
+
+def test_a_season_file_that_is_not_published_yet_is_not_a_crash(monkeypatch):
+    """The first weeks of a season: the directory exists, the division's file
+    does not, and mod_speling answers 300 rather than 404."""
+    _refuse(monkeypatch, 300, "Multiple Choices")
+
+    with pytest.raises(csv_grader.ResultsNotPublished):
+        csv_grader.fetch("E1", "2627")
+
+
+def test_a_redirect_onto_another_division_is_refused(monkeypatch):
+    """mod_speling answers a single near-miss with a 301 that urllib follows,
+    so asking for the 2026-27 Premier League returns the National League with a
+    200. Grading E0's fixtures against EC's results is the failure to avoid."""
+    _serve(monkeypatch, results(ARSENAL_WIN).encode("cp1252"),
+           landing="https://www.football-data.co.uk/mmz4281/2627/EC.csv")
+
+    with pytest.raises(csv_grader.ResultsNotPublished):
+        csv_grader.fetch("E0", "2627")
+
+
+def test_a_real_http_failure_is_still_a_failure(monkeypatch):
+    """`ResultsNotPublished` is one narrow condition. A dead server must not be
+    laundered into 'the season has not started'."""
+    _refuse(monkeypatch, 500, "Internal Server Error")
+
+    with pytest.raises(urllib.error.HTTPError):
+        csv_grader.fetch("E0", "2526")

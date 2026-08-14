@@ -19,11 +19,11 @@ Written **2026-08-08**. Nothing here has been executed.
 Three pieces with different lifecycles. Getting this distinction right is most
 of the deployment.
 
-| piece                | what it is                                                  | how it runs                    |
-| -------------------- | ----------------------------------------------------------- | ------------------------------ |
-| `services.run_cycle` | a **batch job that exits** — sync → serve → tips → grade    | systemd **timer**, daily       |
-| `api.main:app`       | a read-only FastAPI over what the cycle wrote               | systemd **service**, always up |
-| `web/build`          | a **static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx          |
+| piece                | what it is                                                 | how it runs                   |
+| -------------------- | ---------------------------------------------------------- | ----------------------------- |
+| `services.run_cycle` | a**batch job that exits** — sync → serve → tips → grade    | systemd**timer**, daily       |
+| `api.main:app`       | a read-only FastAPI over what the cycle wrote              | systemd**service**, always up |
+| `web/build`          | a**static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx         |
 
 Nothing daemonises itself and nothing retries itself, by design
 (`services/run_cycle.py` docstring). The scheduler owns recurrence; the
@@ -140,8 +140,8 @@ cutoff, which is correct and expected (the runner refreezes past
 The server's first cycle froze `p1-89db580603366a9f`. The same config at the
 same cutoff on the development machine gives `p1-81b57865368de474`. **The
 inputs are identical and the outputs disagree**, which is worth having straight
-because `artifact.py` says *"Two artifacts with the same version must be the
-same artifact"*.
+because `artifact.py` says _"Two artifacts with the same version must be the
+same artifact"_.
 
 Isolated by elimination. `corpus_digest` is `4dbc6d849193e8f6` on both the
 development store and an independently rebuilt one, because `match_id` is a
@@ -161,14 +161,13 @@ in `model_runs` and writes the JSON to `db/artifacts/`. Changing the derivation
 would invalidate `p1-3a38e9d6ef1ca7ee`, which the documents cite and which
 `p2.py`/`p3.py`/`p4_shots.py` pin.
 
-**What it does break is one specific check.** `artifact.py`'s *"Re-running the
+**What it does break is one specific check.** `artifact.py`'s _"Re-running the
 same fit on the same data reproduces the string exactly, which is what makes a
-stored prediction reproducible months later"* holds **on one machine** and not
+stored prediction reproducible months later"_ holds **on one machine** and not
 across two. You cannot audit a server artifact by re-fitting on the development
 box and comparing version strings â€” compare coefficients within a tolerance
 instead. Anything that treats the version as a pure function of the inputs is
 overstating it by exactly this much.
-
 
 ### 2.3 The frontend build output is gitignored
 
@@ -398,8 +397,7 @@ memory.
 Azure Linux VMs default to UTC. **Keep it that way** and schedule the cycle at
 06:00 UTC. Setting the VM to `Europe/London` would put the two a day apart
 between 00:00 and 01:00 BST, which would silently move which fixtures
-`step_grade`'s `match_date <= date('now')` bound and `/tips`' `match_date >=
-date('now')` filter consider live.
+`step_grade`'s `match_date <= date('now')` bound and `/tips`' `match_date >= date('now')` filter consider live.
 
 ### 3.9 Two runtime dependencies on the public internet
 
@@ -427,9 +425,9 @@ VM; there is nothing there that needs it.
 
 |              | choice                                                          | why                                                                     |
 | ------------ | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| VM           | **2 vCPU / 4 GiB burstable** (B2s or the current v2 equivalent) | runtime needs ~200 MB; the 4 GiB is for `npm run build` and headroom    |
-| image        | Ubuntu Server **24.04 LTS**, Gen2                               | as specified                                                            |
-| OS disk      | 30 GiB Standard SSD, ext4                                       | repo 130 MB + DB 44 MB + `node_modules`; no IOPS pressure at this size  |
+| VM           | **2 vCPU / 4 GiB burstable** (B2s or the current v2 equivalent) | runtime needs ~200 MB; the 4 GiB is for`npm run build` and headroom     |
+| image        | Ubuntu Server**24.04 LTS**, Gen2                                | as specified                                                            |
+| OS disk      | 30 GiB Standard SSD, ext4                                       | repo 130 MB + DB 44 MB +`node_modules`; no IOPS pressure at this size   |
 | data disk    | none                                                            | see §3.2 — if one is added it must be a managed disk, never Azure Files |
 | public IP    | static                                                          | needed for a stable DNS A record and TLS                                |
 | NSG inbound  | 22 from your address only; 80 and 443 from anywhere             | 80 exists to redirect to 443 and for the ACME challenge                 |
@@ -606,15 +604,15 @@ server {
 Recorded because the diagnosis took four rounds and none of it was nginx.
 
 **§5.2's `az` commands created the inbound rules inline, so this document
-assumed the CLI path.** The VM was built in the Portal, whose *Select inbound
-ports* checkboxes had SSH only — so nginx served correctly on `0.0.0.0:80` and
+assumed the CLI path.** The VM was built in the Portal, whose _Select inbound
+ports_ checkboxes had SSH only — so nginx served correctly on `0.0.0.0:80` and
 nothing could reach it. **A Portal-built VM needs 80 and 443 added by hand**;
 add 443 at the same time or 5b needs a second trip.
 
 Three things worth keeping:
 
 - **A hang and a refusal are different diagnoses.** No response at all means a
-  packet was *dropped* — a firewall above the host. *Connection refused* means
+  packet was _dropped_ — a firewall above the host. _Connection refused_ means
   the host answered and nothing was listening. Reading a hang as "nginx is
   broken" is what sent this the wrong way first.
 - **`curl ifconfig.me` on the VM does not tell you the inbound address.** Azure
@@ -779,11 +777,11 @@ Four decisions worth stating outside the files:
 
 Three things this buys, mapped to what the Windows setup did:
 
-| Task Scheduler                 | systemd                              | note                                                                                                         |
-| ------------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| `-StartWhenAvailable`          | `Persistent=true`                    | catches up a run missed while the VM was down                                                                |
-| `-MultipleInstances IgnoreNew` | **free**                             | systemd will not run two instances of one unit — this closes `RUNBOOK.md` §8's "no lock file" gap at no cost |
-| `LastTaskResult`               | `systemctl status` / `journalctl -u` | plus §6.2's alerting, which Task Scheduler never had                                                         |
+| Task Scheduler                 | systemd                              | note                                                                                                        |
+| ------------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `-StartWhenAvailable`          | `Persistent=true`                    | catches up a run missed while the VM was down                                                               |
+| `-MultipleInstances IgnoreNew` | **free**                             | systemd will not run two instances of one unit — this closes`RUNBOOK.md` §8's "no lock file" gap at no cost |
+| `LastTaskResult`               | `systemctl status` / `journalctl -u` | plus §6.2's alerting, which Task Scheduler never had                                                        |
 
 `SuccessExitStatus=2` is load-bearing and is the direct translation of
 `RUNBOOK.md` §1. Without it systemd marks the unit **failed** every day of the
@@ -878,7 +876,7 @@ storage account, no timer, no restore drill: the thing that could not be
 reconstructed is now text in a repository with a remote.
 
 `--check` compares the database against the file and distinguishes the two
-failures that matter. A file that is merely *behind* has gained rows and wants
+failures that matter. A file that is merely _behind_ has gained rows and wants
 re-exporting, which is the normal case. A file that **disagrees on rows it
 already had** is the append-only convention (`OUTSTANDING.md` §7.5) being
 violated, and says so. Run it after any gate.
@@ -894,7 +892,7 @@ serving host are unaffected (the same carve-out as `DEPLOY.md` §5.4).
 
 **There is deliberately no import path.** §7.5 makes the ledger append-only and
 says a helper to update or delete it "would defeat the purpose". Whether
-*restoring* a store from this export counts as reconstitution rather than
+_restoring_ a store from this export counts as reconstitution rather than
 mutation is an owner decision that has not been taken, so the export is
 provenance you can read and diff, and re-populating from it is not offered.
 
@@ -943,11 +941,11 @@ Today nothing pushes. Failures are visible in the exit code, the log and
 `RUNBOOK.md` §1 turned into wiring, and collapsing them re-creates the problem
 that section exists to prevent.
 
-| condition                      | channel                                               | urgency                                 |
-| ------------------------------ | ----------------------------------------------------- | --------------------------------------- |
-| exit **1** — a step raised     | `OnFailure=bvp-alert@.service` → push (email/webhook) | same day                                |
-| exit **2** — ran, needs a look | append to a digest; one message Monday morning        | weekly, unless it repeats into matchday |
-| **no run at all**              | **dead-man's switch** — see below                     | same day                                |
+| condition                     | channel                                               | urgency                                 |
+| ----------------------------- | ----------------------------------------------------- | --------------------------------------- |
+| exit**1** — a step raised     | `OnFailure=bvp-alert@.service` → push (email/webhook) | same day                                |
+| exit**2** — ran, needs a look | append to a digest; one message Monday morning        | weekly, unless it repeats into matchday |
+| **no run at all**             | **dead-man's switch** — see below                     | same day                                |
 
 The third is the one that matters most and the one `OnFailure` **cannot**
 provide: if the VM is off, or the timer got disabled, or systemd never started
@@ -986,20 +984,20 @@ to prevent.
 
 ## 7. Sequence
 
-| #      | step                                                                               | gate                                                                          |
-| ------ | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------- |
-| #      | step                                                                               | gate                                                                          | state                  |
-| ---    | ---                                                                                | ---                                                                           | ---                    |
-| 1      | Commit + push everything; fix `player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved                                       | **done** `e840951`     |
-| 2      | Provision VM, harden, UTC confirmed                                                | ssh + `timedatectl`                                                           | **done** |
-| 3      | Clone, venv, `ingest.build`, `pytest -q`                                           | `all passed`; **414 passed, 2 skipped** (§5.4)                                | **done** 414/2 |
-| 4      | systemd units for API and cycle                                                    | API answers after `reboot`; `systemctl list-timers` shows the next run        | **done** |
-| **5a** | **nginx over HTTP, internal endpoints fenced by source IP**                        | the four curls in §5.3, against the public IP                                 | **done** HTTP only |
-| 6      | `deploy.sh`, run once against no changes                                           | `/api/health` answers afterwards                                              | **done** `3c58e43` |
-| 7      | Backup timer + first restore drill — **and the development machine first** (§6.1)  | a restored copy passes `integrity_check` and matches row counts               |                        |
-| 8      | Alerting: `OnFailure` + dead-man's switch                                          | **test all three** — break the cycle on purpose, and stop the timer for a day |                        |
-| **5b** | **Domain, TLS, basic auth**                                                        | `https://` serves; `/api/performance` is 401                                  | **blocked: no domain** |
-| 9      | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck                              | the runbook describes the machine that is serving                             |                        |
+| #      | step                                                                              | gate                                                                          |                        |
+| ------ | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------- |
+| #      | step                                                                              | gate                                                                          | state                  |
+| ---    | ---                                                                               | ---                                                                           | ---                    |
+| 1      | Commit + push everything; fix`player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved                                       | **done** `e840951`     |
+| 2      | Provision VM, harden, UTC confirmed                                               | ssh +`timedatectl`                                                            | **done**               |
+| 3      | Clone, venv,`ingest.build`, `pytest -q`                                           | `all passed`; **414 passed, 2 skipped** (§5.4)                                | **done** 414/2         |
+| 4      | systemd units for API and cycle                                                   | API answers after`reboot`; `systemctl list-timers` shows the next run         | **done**               |
+| **5a** | **nginx over HTTP, internal endpoints fenced by source IP**                       | the four curls in §5.3, against the public IP                                 | **done** HTTP only     |
+| 6      | `deploy.sh`, run once against no changes                                          | `/api/health` answers afterwards                                              | **done** `3c58e43`     |
+| 7      | Backup timer + first restore drill —**and the development machine first** (§6.1)  | a restored copy passes`integrity_check` and matches row counts                |                        |
+| 8      | Alerting:`OnFailure` + dead-man's switch                                          | **test all three** — break the cycle on purpose, and stop the timer for a day |                        |
+| **5b** | **Domain, TLS, basic auth**                                                       | `https://` serves; `/api/performance` is 401                                  | **blocked: no domain** |
+| 9      | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck                             | the runbook describes the machine that is serving                             |                        |
 
 **Step 5 splits and 5b moves to the end**, because there is no domain yet
 (§5.3). That is a deliberate reordering, not a deferral of the hard part: 5a

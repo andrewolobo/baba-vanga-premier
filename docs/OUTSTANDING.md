@@ -5,7 +5,21 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-12**, after measuring **B14 in the product's currency**
+Last updated **2026-08-14**, after the first cycle that ever reached the results
+feed **failed on it** (§4.7). The proximate cause is a season boundary —
+football-data has not published `E0`–`E3` for 2026-27 — and the fix is that a
+missing file is now ATTENTION rather than FAILED. **The defect found behind it
+is the one that matters**: the feed grew a UTF-8 BOM between 2023-24 and
+2024-25, `fetch` decodes cp1252, so the first column read as `ï»¿Div` and
+**`division` was `None` on every row of every file**. Grading would have
+fetched 552 results, settled none and **exited 0**. Also fixed: `urlopen`
+followed a mod_speling 301 that turns a request for the **Premier League into
+the National League** with a 200. **No ledger row** — nothing here reads a match
+outcome to make a decision. **522 tests pass**, six of them new, and the suite is
+now green with the network blocked; two tests were making live calls to
+football-data and passing only because the redirect and the BOM cancelled out.
+
+Before that, **2026-08-12**, after measuring **B14 in the product's currency**
 (§9.13) — which **closes B14 as do-not-adopt**. The corners channel is worth
 **−0.095 [−0.352, +0.175]** points of strike rate, an unresolved *negative*,
 while a blind sham moving the **identical 6.914%** of recommendations loses
@@ -175,9 +189,10 @@ build-out `RUNBOOK.md` §8 leaves open).
 shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
 prior, COVID window embargoed from scoring. Artifact
 `p1-3a38e9d6ef1ca7ee` — **unchanged by §1.12**, which measured on a subclass of
-the served config precisely so the version string would not move. **492 tests
-pass, all green** (2026-08-12; re-run `pytest -q` rather than trusting this line
-— it has been stale twice). The two calendar-time-bomb failures found earlier
+the served config precisely so the version string would not move. **522 tests
+pass, all green** (2026-08-14; re-run `pytest -q` rather than trusting this line
+— it has been stale three times, this one included: it said 492 on 2026-08-12
+and the true figure was already higher). The two calendar-time-bomb failures found earlier
 on 2026-08-10 are fixed — §6. Gate ledger holds
 **103 runs / 60 questions / at least 197 configurations** — the last is the
 number that feeds deflation, and §3.2 explains why the other two mislead.
@@ -1344,9 +1359,86 @@ own decision rather than smuggled in with a fixture source.
 **One interaction to know about.** `step_tips` runs before `step_grade`, whose
 bound is `match_date <= date('now')`, so a tip published on matchday morning is
 in scope for grading in the same run. It settles nothing — the match has not
-kicked off — but it does fetch a results CSV per division. Harmless, one
-redundant fetch per division per matchday, and left alone rather than tightened
-to `<` because that would change grading semantics for an evening manual run.
+kicked off — but it does fetch a results CSV per division. One redundant fetch
+per division per matchday, and left alone rather than tightened to `<` because
+that would change grading semantics for an evening manual run.
+
+**"Harmless" was wrong, and this is the paragraph that was wrong.** That
+redundant fetch is exactly what took the 2026-08-14 cycle down: on the morning
+of the season's first tipped fixture it reached for a file football-data had not
+published, and the exception failed the step (§4.7). The *judgement* survives —
+the fetch stays, the bound stays `<=` — because a missing file is now ATTENTION
+rather than an exception. What did not survive is the reasoning: "it settles
+nothing" was read as "it cannot fail", and a fetch that settles nothing still
+has to reach the network to find that out.
+
+### 4.7 The grader met the season boundary and the feed's BOM — **FIXED 2026-08-14**
+
+Code `services/csv_grader.py` (`fetch`, `ResultsNotPublished`, `main`'s
+`--file` path) and `services/run_cycle.py` (`step_grade`). Tests
+`tests/test_grader.py` (four new, under "the wire") and
+`tests/test_run_cycle.py` (two new). **No ledger row**: nothing here reads a
+match outcome to make a decision, on the same accounting as §1.11.
+
+**This was the first cycle in the project's history to reach the results feed.**
+Every prior run logged `nothing unsettled` — the book is off, so `paper_bets` is
+always empty, and until 2026-08-14 no tip had ever sat unsettled on a fixture
+dated today or earlier. The whole path below was unexercised in production and
+untested in `pytest`, because every grader test builds its CSV as a Python
+string and never goes through `fetch`.
+
+Three defects, in ascending order of how much they mattered.
+
+- **A season boundary failed the step.** `mmz4281/2627/` exists but holds only
+  the leagues that kick off earliest (`P1`, `N1`, `B1`, `EC`); `E0`–`E3` are not
+  published until those divisions have played. The server does **not** answer
+  the gap with a 404 — Apache's `mod_speling` returns **300 Multiple Choices**
+  listing near-miss names — and `fetch` had no handling, so the exception failed
+  the step and the cycle exited 1. It is now `ResultsNotPublished` and
+  **ATTENTION, exit 2**: the tips really are going ungraded so it is not passed
+  over, but it is nobody's bug and must not take a matchday down. **This recurs
+  every August.**
+- **`urlopen` followed a redirect onto another division.** With a *single*
+  near-miss `mod_speling` answers **301**, and urllib follows it silently:
+  `fetch("E0", "2627")` returned **the National League with a 200**. `E3` did the
+  same. `fetch` now refuses any landing URL that is not the file it asked for,
+  as the same not-published condition.
+- **`Div` had been unreadable since 2024-25, and this is the one that mattered.**
+  football-data added a **UTF-8 BOM** to these files between 2023-24 and
+  2024-25. Decoded as cp1252 those three bytes become `ï»¿`, renaming the first
+  column to `ï»¿Div`, so `raw.get("Div")` was `None` **on every row of every
+  division of every season**. `step_grade` filters `r["division"] == division`
+  and `grade` looks fixtures up with `WHERE division=?`, so both ends dropped
+  everything: **552 results fetched from `E1/2526`, 0 settled, status OK, exit
+  0.** Fixed by stripping the marker as bytes rather than switching to
+  `utf-8-sig`, so the decode stays cp1252 and a legacy file with high bytes
+  reads exactly as before. Verified: `E1/2526` now parses 552 rows as `E1`.
+
+Four things worth carrying forward.
+
+- **Today's crash is the reason the silent one never shipped.** The BOM defect
+  and the missing file were racing, and the loud bug won by two days. Had
+  football-data published `E1.csv` before the first tipped fixture, the cycle
+  would have reported success while grading nothing, and the product's strike
+  rate would have stayed empty — the §1.10 shape, for the third time. **It was
+  luck, not design.**
+- **Two tests were making live calls to football-data and passing by
+  coincidence.** `test_a_dead_feed_does_not_stop_serving_or_grading` and
+  `test_a_club_the_artifact_never_saw_does_not_take_the_matchday_down` add a
+  fixture dated today, so the cycle tipped it and `step_grade` hit the real
+  network. They went green only because the redirect returned EC data and the
+  BOM then made every row unmatchable — **two bugs cancelling inside an
+  assertion**. Both now stub `fetch`. The suite is green with `urlopen` blocked;
+  **keep it that way**, it is the only thing that makes "the tests pass" mean
+  anything about this path.
+- **A fetch that parses and yields nothing is now ATTENTION.** `step_grade`
+  flags when a file it fetched carried no row of the division it asked for.
+  That is the signature the BOM defect had for two seasons, and it is the
+  general detector — the redirect guard only catches the mechanism found today.
+- **§6's "the grading path tolerates it" did not hold.** The 2026-08-10 note
+  simulated fixtures dated in the past, saw 15 tests pass, and withdrew the fix
+  as scope with nothing behind it. The tests passed because two of them were
+  reaching a live server that happened to answer benignly. Corrected in place.
 
 ---
 
@@ -1388,6 +1480,14 @@ to `<` because that would change grading semantics for an evening manual run.
     default to a date already past — left **all 15 tests passing**, so the
     grading path tolerates it and the "fix" was scope with nothing behind it. It
     was reverted rather than kept as insurance.
+    **"The grading path tolerates it" was refuted on 2026-08-14, one day inside
+    the window this note named** — the bomb went off on the 14th, not the 15th,
+    and §4.7 has it. The 15 tests passed because two of them were making live
+    calls to football-data that happened to answer benignly; nothing in the
+    suite exercised `csv_grader.fetch` at all. **The withdrawal was still the
+    right call** — the real defect was in `fetch`, and pinning the test dates
+    would not have found it — but "the tests pass" was not evidence about the
+    grading path, because no test went near it.
   - **The asymmetry itself is real and is left alone.** `run()` takes `today` and
     threads it to `step_serve` but not to `step_grade`, so a cycle run with an
     explicit `today` is only partly deterministic. Harmless today. The structural

@@ -28,6 +28,7 @@ import argparse
 import csv
 import io
 import sqlite3
+import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -84,10 +85,60 @@ def season_for(date: str) -> str:
     return code[2:4] + code[4:6]       # '26' + '27'
 
 
+#: football-data added a UTF-8 BOM to these files between 2023-24 and 2024-25.
+#: Decoded as cp1252 those three bytes become `ï»¿` and rename the first column
+#: to `ï»¿Div`, so `raw.get("Div")` is None on every row and every result is
+#: then dropped by the caller's division filter -- a grader that fetches
+#: hundreds of results, settles nothing and reports success. Stripped as bytes
+#: rather than switching to `utf-8-sig` so the decode stays cp1252 and a legacy
+#: file carrying high bytes still reads exactly as it did before.
+_BOM = b"\xef\xbb\xbf"
+
+#: What "no such file" looks like here. The server does not answer with a plain
+#: 404: Apache's mod_speling hunts for near-miss names and returns 300 with the
+#: candidates listed. See `ResultsNotPublished`.
+_NO_SUCH_FILE = frozenset({300, 404})
+
+
+class ResultsNotPublished(Exception):
+    """This division has no season-to-date file on the server yet.
+
+    Expected for a week or so each August, and it is not an error in this code.
+    football-data creates the season directory when its earliest league kicks
+    off and adds each division's file once that division has played -- so a
+    fixture can be tipped, played and pending settlement while `E1.csv` does
+    not exist. Raised rather than swallowed because the tips do stay unsettled,
+    which is worth an ATTENTION even though it is nobody's bug.
+
+    **The missing file does not 404, and one of its shapes returns 200.** With
+    several near-miss names mod_speling answers 300 Multiple Choices; with a
+    single candidate it answers **301 onto another division's file**, which
+    urllib follows silently. Asking for the 2026-27 Premier League returns the
+    National League this way. That redirect is the same condition -- the file
+    we asked for is not there -- so it raises this too, rather than handing
+    back one division's results against another's fixtures.
+    """
+
+
 def fetch(division: str, season: str, timeout: int = 30) -> str:
+    """The division's season-to-date results CSV.
+
+    Raises `ResultsNotPublished` if the file is not on the server yet; any
+    other HTTP failure is a real one and propagates.
+    """
     url = RESULTS_URL.format(season=season, division=division)
-    with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310
-        return response.read().decode("cp1252")
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310
+            landed, data = response.url, response.read()
+    except urllib.error.HTTPError as exc:
+        if exc.code in _NO_SUCH_FILE:
+            raise ResultsNotPublished(
+                f"{division} {season}: no results file yet (HTTP {exc.code})") from exc
+        raise
+    if not landed.endswith(f"/{division}.csv"):
+        raise ResultsNotPublished(
+            f"{division} {season}: no results file yet (redirected to {landed})")
+    return data.removeprefix(_BOM).decode("cp1252")
 
 
 def _float(value):
@@ -294,7 +345,9 @@ def main(argv=None) -> int:
     db.migrate(conn)
 
     if args.file:
-        texts = [(args.division, args.file.read_text(encoding="cp1252"))]
+        # Bytes, not `read_text`: a snapshot saved from the feed carries the
+        # same BOM the feed does, and it costs the `Div` column the same way.
+        texts = [(args.division, args.file.read_bytes().removeprefix(_BOM).decode("cp1252"))]
     else:
         pending = conn.execute(
             "SELECT DISTINCT f.division, f.match_date FROM paper_bets b"
@@ -306,7 +359,12 @@ def main(argv=None) -> int:
             return 0
         seasons = {(r["division"], args.season or season_for(r["match_date"]))
                    for r in pending}
-        texts = [(division, fetch(division, season)) for division, season in sorted(seasons)]
+        texts = []
+        for division, season in sorted(seasons):
+            try:
+                texts.append((division, fetch(division, season)))
+            except ResultsNotPublished as exc:
+                print(f"skipped -- {exc}")
 
     total = GradeReport()
     for division, text in texts:
