@@ -9,7 +9,13 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-12**, after **B14 was measured in strike rate and
+Last updated **2026-08-15**, opening **B16** — the published strike rate pools
+every `rule_version`, so the protection `run_cycle.py` promises against mixing
+two products under one number is not actually implemented. Found while tracing
+why the 2026-08-14 tip was ungraded (it is not related: football-data has not
+published the 2026-27 files yet). No status changed.
+
+Before that, **2026-08-12**, after **B14 was measured in strike rate and
 closed** — the corners channel is worth **−0.095 [−0.352, +0.175]** points to
 the product, an unresolved *negative*, against a blind control at −1.643 ✱ on
 the identical change rate. **Do not adopt.** The same run found that what costs
@@ -55,6 +61,7 @@ and gated B4.
 | B5 | Acquire prices for goal lines other than 2.5 | open | 0 (acquisition) | — |
 | **B6** | Customer-facing surface for the tip list | **done** 2026-08-07 | 0 | B0 |
 | **B7** | Honesty check on how the strike rate is reported downstream | **part done** — see below | 0 | B6 |
+| **B16** | `/tips/record` pools every `rule_version` under one strike rate | **open** — latent until the floor is retuned | 0 | B7 |
 | **B9** | **Best-price execution — is it reachable?** | **scheduled: after B8 ships and a full season of tips is graded** | 0 (not modelling) | B8 |
 
 ## Scheduled, not now
@@ -731,6 +738,47 @@ matters: the product's largest market over-claims rather than under-claims. The
 B7 honesty argument to date has rested on the head being *under*-confident and
 therefore conservative (§1.10), and **that is true of the outrights and false of
 `12`**. Worth stating before any published confidence figure leans on it.
+
+**A second gap, opened 2026-08-15 as B16**: the published number pools every
+rule version, so the mixing this section exists to prevent is unguarded on the
+one axis that was supposed to be guarded.
+
+## B16 — The published strike rate pools every rule version
+
+`services/run_cycle.py:66-67` states that changing `TIP_FLOOR` or `TIP_CEILING`
+means bumping `tips.RULE_VERSION`, *"or the published history mixes two products
+under one strike rate"*. **Bumping it does not prevent the mixing.**
+
+`RECORD` (`api/main.py:228-242`) aggregates every row of `tips` with no
+`rule_version` predicate, and `/tips/record` then reports the **most recent**
+tip's rule beside the pooled figure (`api/main.py:263-265`). So the payload
+labels an all-versions strike rate with one version's name. The column exists,
+is written on every tip, is enforced by `UNIQUE (fixture_id, rule_version)` in
+migrations 003 and 004, and is read by nothing that computes the claim.
+
+**The version bump is not inert, which is what makes this a trap rather than an
+omission.** `tips.UNTIPPED` excludes a fixture only for the *current* version, so
+a bump re-opens every fixture inside the publish window. That window is
+`PUBLISH_WITHIN_DAYS = 0`, so the blast radius is one matchday — but retune the
+floor on a Saturday morning and the day's fixtures carry two live calls each,
+both settle, and both land in the same denominator. The `UNIQUE` constraint does
+not stop this; it is scoped per version by design.
+
+**Harmless today**: all 33 published tips are `confidence-v2`, and nothing has
+been graded yet. It goes live the first time the floor moves — which is **B10**
+and **B13** territory, both open, and B13 is an owner decision that could be
+taken at any time.
+
+**What it needs is a decision before it needs code.** Is the published strike
+rate per-rule-version, or all-time across versions? Per-version is the honest
+default and is what `run_cycle.py`'s comment already promises. It costs a
+`WHERE t.rule_version = ?` in `RECORD` — and an answer to the product question
+that falls out of it: on the day of a bump the headline number resets to null
+(`api/main.py:255-257`) and the graded history disappears from the surface.
+Whether that is acceptable, or whether the old version's record should still be
+shown beside the new one, is the owner's call and not a code one.
+
+**Cost 0** — reads no match outcomes, so it does not spend against the ledger.
 
 ---
 

@@ -5,7 +5,44 @@ sessions on this project. A thread picking up work should read this first, and
 should update it before finishing. Anything not written down here does not
 survive the end of a session.
 
-Last updated **2026-08-14**, after the first cycle that ever reached the results
+Last updated **2026-08-15**, after **running criterion 1 — and it PASSES**
+(`DEFLATION.md` §10). First PBO ever computed on the pooled selection matrix:
+**447 weeks × 38 columns** on 21,896 matches, **PBO 0.000**, degradation
++0.005, spread 0.0277 — the in-sample winner lands below the out-of-sample
+median in none of 12,870 splits. Per-grid, as §6's amendment now requires:
+half-life **0.002**, α **0.036**, shots blend **0.038** — all informative —
+and the squad-prior grid at **0.902 on a spread of 0.000018**, which is §6's
+trap arriving in the first real read: uninterpretable, satisfied on the
+negligible spread, **not** a failure. The pass does not lean on pooling
+heterogeneity — every grid a choice was made within clears 0.20 on its own.
+Ledger row **104** (`probe:p6_criterion1_pbo`), written before the number was
+printed; **104 runs / 61 questions / 197 configurations — the configuration
+count did not move**, per Decision 8. The column audit is §10.1–10.2, fixed
+before the number existed; its fail-loud completeness check caught one row the
+draft table had missed (`h2_covid_guard`, excluded on condition 3 alone — it
+*does* record a `chosen` arm). Code `engine/eval/p6.py`, tests
+`tests/test_p6.py` (25 new; **547 pass**). **Criterion 2 — the holdout —
+remains sealed and governed by §8 exactly as before.** What changed: the
+holdout read can no longer be wasted on a selection criterion 1 would have
+failed.
+
+Before that, earlier on **2026-08-15**, after asking whether a walk-forward on
+**2025-26** is available (§3.2) — which found that it **is the P6 holdout
+read** and nothing else. `seasons.py` seals 2025-26, the ledger carries **no
+unseal row**, and there are **no live predictions for that season** — all 38
+are 2026-27 — so there is no non-spending version of the question. **The
+finding that matters is that criterion 1 was never separable from criterion 2
+and should have been**: PBO is a **dev-side** statistic, so half the P6
+verdict is computable now for nothing, and **if it fails, the holdout read is
+pointless**. The only PBO ever run was the 8-arm α grid that `DEFLATION.md` §6
+calls *instrument validation* — the most homogeneous grid in the project —
+standing in for a claim about the whole selection. `DEFLATION.md` **§9 added
+Decisions 8 and 9**: the split, and the column rule §3 left unresolved. Counts
+re-derived, **149 → 197 configurations** over 103 rows, **57 of which carry no
+arm list and cannot be reconstructed**. Nothing was measured then and there
+was no ledger row — counting reads the ledger, not match outcomes.
+
+Before that, **2026-08-14**, after the first cycle that ever reached the results
 feed **failed on it** (§4.7). The proximate cause is a season boundary —
 football-data has not published `E0`–`E3` for 2026-27 — and the fix is that a
 missing file is now ATTENTION rather than FAILED. **The defect found behind it
@@ -134,7 +171,8 @@ below is the measurement history behind them.
 `P3_PLAN.md` / `CALIBRATION.md` (calibration, ablation, the launch decision) →
 `P2_PLAN.md` / `PLAYER_PRIOR.md` (the player prior, and why it is descoped) →
 `RUNBOOK.md` (how the thing is actually operated) →
-`DEFLATION.md` (multiple-testing treatment, pre-committed before the P6 read) →
+`DEFLATION.md` (multiple-testing treatment, pre-committed before the P6 read;
+§10: criterion 1 run 2026-08-15 and **passed**, holdout untouched) →
 `P4_SHOTS_PLAN.md` / `SHOTS_TARGET.md` (the shots channel — the first feature that works) →
 `TOD_SLOT.md` (the kickoff slot — real, and not measurable on this corpus) →
 `REST.md` (days since last match — a bounded null, and where §3.6 goes next) →
@@ -183,19 +221,20 @@ build-out `RUNBOOK.md` §8 leaves open).
 | P5 meta-label        | **Run. Market follower — do not adopt.** §1.9.                        |
 | Customer surface     | **Built to the owner's design — §1.11.** B6 done, B7 part done.      |
 | Hosting              | **Planned and agreed, not executed** — `DEPLOY.md`. §4.4.            |
-| P6                   | Not started. Not a launch gate — `DEFLATION.md` §8.                  |
+| P6                   | **Criterion 1 run and PASSED** (PBO 0.000, row 104) — `DEFLATION.md` §10. Criterion 2 / holdout still sealed, §8 governs. |
 
 **Frozen base head:** `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3` — the
 shots channel adopted 2026-08-04 (§1.3). No season-boundary shrink, no squad
 prior, COVID window embargoed from scoring. Artifact
 `p1-3a38e9d6ef1ca7ee` — **unchanged by §1.12**, which measured on a subclass of
-the served config precisely so the version string would not move. **522 tests
-pass, all green** (2026-08-14; re-run `pytest -q` rather than trusting this line
-— it has been stale three times, this one included: it said 492 on 2026-08-12
+the served config precisely so the version string would not move. **547 tests
+pass, all green** (2026-08-15; re-run `pytest -q` rather than trusting this line
+— it has been stale three times: it said 492 on 2026-08-12
 and the true figure was already higher). The two calendar-time-bomb failures found earlier
 on 2026-08-10 are fixed — §6. Gate ledger holds
-**103 runs / 60 questions / at least 197 configurations** — the last is the
+**104 runs / 61 questions / at least 197 configurations** — the last is the
 number that feeds deflation, and §3.2 explains why the other two mislead.
+Row 104 is the criterion-1 probe, which spent none (Decision 8).
 §9.5 spent 4, §9.6 spent 6 (its step 1 probe spent none), §1.12 spent 13,
 **§9.9 spent none** — a probe on synthetic outcomes, which is why runs and
 questions moved and configurations did not — **§9.10 spent 3 by owner
@@ -1014,6 +1053,43 @@ the choice was inconsequential, not overfit — handled explicitly by
 
 **P6 is not a launch gate**, and §8 says do not run it yet: no pending decision
 turns on it, and it can be spent only once.
+
+> **Amended 2026-08-15 — `DEFLATION.md` §9, Decisions 8 and 9.** §8's "not yet"
+> is **scoped to criterion 2 and the unseal**. Criterion 1 (PBO) is computed
+> entirely on the dev set — the validation probe is recorded against
+> `purpose: dev`, seasons 2010-11…2022-23 — so it **spends nothing and is not
+> deferred**. Run it first: if PBO > 0.20 with `choice_mattered` true, P6 fails
+> on criterion 1 and the holdout read is pointless, so the ordering can only
+> save the holdout.
+>
+> **What is not yet done, and is the open work**: PBO has **never been run on
+> the pooled selection matrix**. The single existing run (`probe:
+> deflation_instrument_validation`, PBO 0.022) is 8 arms of the α grid, which
+> §6 presents as evidence the *instrument* works. It is not evidence about the
+> *selection* — that grid is one homogeneous axis with a monotone deviance
+> surface, while the pooled matrix mixes half-life, α, shots blend, channel
+> sets, shrink and priors.
+>
+> Building it requires **re-scoring each configuration on the final corpus,
+> retaining per-week deviance**: ledger arms store scalars only (`deviance`,
+> `ll_1x2`, `stderr`, `n`), so nothing can be reused — which Decision 4 requires
+> anyway. Roughly 62 sweep configurations at ~1 min each. Decision 9 fixes which
+> columns qualify; **57 rows carry no arm list and are permanently
+> unreconstructible**, so the matrix under-counts multiplicity by an unknown
+> amount (Decision 6's "at least").
+>
+> Counts re-derived 2026-08-15: **103 runs / 60 questions / 197 configurations**
+> (62 sweep, 78 gate, 75 probe among rows recording arms; 24 post-hoc).
+> Re-derive again before building — do not quote these.
+>
+> **Done, later the same day — criterion 1 PASSES.** `engine/eval/p6.py`
+> built the matrix (447 weeks × 38 columns, 21,896 matches) and ran it:
+> pooled **PBO 0.000**, per-grid 0.002 / 0.036 / 0.038 informative and the
+> squad-prior grid uninformative at spread 0.000018 (§6's trap, handled by
+> the branch §6 fixed in advance). Ledger row 104; the configuration count
+> did not move. Full account in `DEFLATION.md` §10. **This section is now
+> closed on both halves**: criterion 1 measured and passed, criterion 2
+> deferred by §8 as always.
 
 ### 3.3 OPEN-6 — is the information-set split worth its cost?
 

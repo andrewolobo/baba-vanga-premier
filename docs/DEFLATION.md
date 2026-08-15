@@ -202,6 +202,20 @@ because a selection among indistinguishable options cannot have overfitted to
 anything. That is a substantive claim, written down now rather than discovered
 convenient later.
 
+> **Amended 2026-08-15, before any pooled PBO was computed.** `META.md` §8
+> exposed a hole in this guard that `OUTSTANDING.md` §1.9 directed be fixed
+> here: `choice_mattered` tests the spread across **all** columns, so one
+> clearly losing arm makes a field look separable while the arms that could
+> actually have been chosen are not — P5 measured PBO 0.631 on all four arms
+> and 0.000 on the only comparison that decided anything. The fix is not a new
+> statistic but a reporting rule: **any pooled PBO is reported together with
+> PBO on each selection grid separately** — the decision-relevant subsets,
+> since every selection this project made was within one grid — and all of
+> them are published regardless of what they show. A pooled matrix that mixes
+> grids of very different quality can only have its PBO read against those
+> per-grid views. This rule is fixed now, with §10's matrix defined but no
+> number yet computed.
+
 ## 7. What this does not claim
 
 - It does not establish that the head beats the market. It does not
@@ -220,3 +234,226 @@ accumulates independent evidence to compare against.
 
 Run it when there is a decision that the answer would change — and re-read §5
 before looking, not after.
+
+> **Scoped by §9 (2026-08-15).** "It" in this section is the **holdout read** —
+> criterion 2 and the unseal. **Criterion 1 is dev-side and is not deferred by
+> this section**; see Decision 8. A thread arriving here and stopping would
+> defer a measurement that costs nothing.
+
+## 9. Addendum — criterion 1 is separable, and what its columns are
+
+Added **2026-08-15**, with the holdout still sealed and no P6 read performed.
+**Nothing above is relaxed or restated.** This section resolves two things §3
+and §8 left implicit, and which a thread picking up criterion 1 would otherwise
+have to decide for itself — possibly after seeing a number.
+
+### 9.1 The two criteria have different costs, and §8 priced them as one
+
+§5's criterion 1 — PBO on the selection matrix — is computed **entirely on the
+development set**. `cscv_pbo` consumes a weeks × configurations matrix of dev
+performance; no sealed season enters it. That the instrument validation run
+(`probe:deflation_instrument_validation`) is recorded against `purpose: dev`,
+seasons 2010-11…2022-23, is not incidental. It is all the statistic needs.
+
+Criterion 2 needs the holdout by construction.
+
+§8 says "not yet", and its reasons — no pending decision turns on it, the
+holdout can be spent only once — **are reasons about criterion 2**. They were
+applied to the whole of P6 because the two criteria were written as one
+procedure. Criterion 1 spends nothing and can be run at any time.
+
+**Decision 8.** Criterion 1 may be computed and reported **independently of, and
+before, any holdout read**. §8's "not yet" is scoped to criterion 2 and to the
+unseal, not to the PBO computation.
+
+The ordering then follows rather than being a preference: **if PBO exceeds 0.20
+with `choice_mattered` true, P6 fails on criterion 1 and the holdout read is
+pointless.** Running criterion 1 first can only save the holdout; it cannot cost
+it.
+
+Two accounting notes for whoever runs it:
+
+- **It adds no configurations.** Re-scoring configurations already counted is
+  the identical computation on the same data, which Decision 4 and
+  `count_configurations` both treat as not spending again.
+- **It still gets a ledger row**, as a probe, on the convention that recorded
+  the instrument validation: every look at the dev set is recorded, including
+  one that changes no decision. Reading the ledger in order to *count* is not
+  such a look and needs no row.
+
+### 9.2 What the columns are
+
+§3 says the columns are "every distinct configuration in the selection grids".
+**The ledger carries no flag for "selection grid"**, so that phrase does not
+resolve to a query, and the choice would otherwise be made by whoever writes the
+first one.
+
+**Decision 9.** A configuration is a column if and only if all of:
+
+1. it belongs to a grid from which a selection was actually made;
+2. it is scored as **mean goal Poisson deviance** — the selection metric;
+3. on the **common dev scoring population**: E0–E3, COVID window embargoed from
+   scoring;
+4. re-scored on the **final corpus** (Decision 4); and
+5. it is not named in `POST_HOC_TRIALS` (Decision 5).
+
+Conditions 2 and 3 do most of the work, and they are mechanical rather than a
+matter of taste: CSCV compares columns against one another on a shared period
+axis, so a configuration scored on a different metric or a different population
+is not a worse column — it is **not commensurable** and cannot be one. B14, which
+was measured in strike rate, is excluded by condition 2 for that reason and not
+because of what it found.
+
+Everything excluded is **reported with its count and its reason**, in the same
+spirit as Decision 6.
+
+**The risk this rule accepts, stated plainly.** A narrower, more homogeneous
+column set can produce a *lower* PBO than a wider one, because a lucky in-sample
+winner is likelier when the field is heterogeneous. So Decision 9 is not
+obviously conservative, and "narrow the field" is exactly the shape a
+rationalisation would take. Three things bound it: the rule is mechanical, it is
+fixed here **before the matrix is built and before any PBO is computed**, and the
+excluded set is published beside the result rather than dropped. That is a
+defence, not a proof — the same standing as Decision 4's.
+
+### 9.3 The counts in §1 are stale, as §1 predicted
+
+Re-derived from the ledger on **2026-08-15** by `count_configurations`:
+
+| unit | §1, as at 2026-08-06 | **as at 2026-08-15** |
+| --- | --- | --- |
+| ledger rows ("trials") | 76 | **103** |
+| distinct questions | 41 | **60** |
+| **configurations actually scored** | **149** | **197** |
+| rows recording no arm list | 47 | **57** |
+
+Post-hoc and quarantined by Decision 5: **24 configurations** across the five
+named trials. By ledger kind, the configurations that recorded an arm list split
+**62 sweep / 78 gate / 75 probe** — the 62 sweep configurations are the clearest
+reading of "selection grids", and Decision 9 is what decides the rest.
+
+**57 rows carry no arm list, and their configurations cannot be reconstructed
+into columns at all.** That is permanent: the matrix under-represents
+multiplicity by an amount no re-run recovers. Decision 6 already requires the
+phrase "at least"; this is why.
+
+This table is not authoritative either. **Re-derive again immediately before
+building the matrix** — and note `count_configurations` needs
+`conn.row_factory = sqlite3.Row`, per §1.
+
+## 10. Criterion 1 executed — the column audit, fixed before the number
+
+Added **2026-08-15**, in two stages, and the order is the point: **§10.1–10.3
+were written with the matrix defined but no PBO computed**; §10.4 records the
+result afterwards. The holdout is untouched throughout. Code:
+`engine/eval/p6.py`, tests `tests/test_p6.py`.
+
+### 10.1 The condition-1 sub-rule Decision 9 needed
+
+Decision 9's condition 1 — "a grid from which a selection was actually made" —
+still required a reading for gates. The reading fixed here, before computing:
+**a selection was actually made iff the run's recorded detail designates a
+chosen arm via a comparative selection rule** (the sweeps' `chosen` under the
+1-SE rule). Gates that adjudicated a pre-registered accept/reject bar selected
+nothing among alternatives — a null kept the prior default — so they are not
+selection grids, and their multiplicity remains under Decision 6's "at least".
+This lands exactly on §9.3's "the 62 sweep configurations are the clearest
+reading of 'selection grids'".
+
+**The most contestable exclusion under this sub-rule is
+`h5_new1_ec_inclusion`**: EC-in-the-fit is a component of the served head and
+the gate compared two full configurations. It is excluded because its verdict
+mechanism was a pre-registered null bar, not a performance argmax — the default
+would have been kept at any point estimate inside the bar. If the owner rules
+the other way it adds 3 non-duplicate columns and the matrix is cheap to
+rebuild; recorded here so the call is visible rather than buried in code.
+
+### 10.2 The columns — 38, fixed
+
+Every distinct configuration from the non-post-hoc selection grids, re-scored
+on the final corpus (Decision 4), deduplicated on the bit-for-bit-identity
+rule (`squad_prior` and `shots_blend` of 0.0 equal None):
+
+- **h2_half_life, 11 columns** — H ∈ {100, 130, 160, 200, 240, 270, 300, 400,
+  500, 650, 800} at α = 1.0 (the default the sweep ran at). Union of the
+  pre-widening run-1 grid (rows 9) and the widened grid (rows 19, 30).
+- **h3_alpha, 18 further columns** — the run-1 grid {0.25, 0.5, 1.0, 2.0, 5.0}
+  at H = 300, and the widened grid {0.02, 0.05, 0.1, 0.25, 0.5, 1.0, 2.0, 5.0}
+  at H = 500 (row 20) and H = 400 (row 31); the three α = 1.0 members are h2
+  columns already.
+- **h14_squad_prior, 4 columns** — w ∈ {0.25, 0.5, 0.75, 1.0} on the frozen
+  head with the level prior rebuilt by `p2.py`'s own machinery. Selected on
+  the prior-seasons subset; commensurable as columns because the λs are
+  defined on the whole population and identical to the base head where no
+  prior exists.
+- **h20_shots_blend, 5 columns** — w ∈ {0.15, 0.3, 0.45, 0.6, 0.8} on the
+  frozen head.
+
+The base head itself is the h3 (H400, α0.1) column. The excluded set — every
+armed ledger row not above, each with its configuration count and its Decision
+9 condition — is printed by the run and recorded in the ledger row's detail;
+headline exclusions: `h38_channel_blend` (5, condition 5),
+`h19_alpha_interaction` (11, condition 5), every oracle/control (condition 1),
+every product-currency gate (condition 2, B14's reasoning), and the 57
+unattributed rows as Decision 6's permanent undercount.
+
+One row needed a classification the first draft of this audit missed, and the
+run's own completeness check found it before any number was computed:
+**`h2_covid_guard`** (rows 12/22/33, 25 configurations) records a `chosen` arm,
+so it passes the condition-1 sub-rule — its exclusion rests on **condition 3
+alone**: the guard scores with 2020-21 and 2021-22 dropped, which is not the
+common dev scoring population. The near-miss is worth keeping: an audit table
+plus a fail-loud check caught what the table alone would not have.
+
+### 10.3 What is reported
+
+Primary: `cscv_pbo` on the pooled 38-column weekly matrix — §5 criterion 1,
+verdict by §5/§6 as written. Companion, per §6's 2026-08-15 amendment:
+per-grid PBO on the h2 (11), h3 (21), h14 (5, with base) and h20 (6, with
+base) subsets of the same aligned matrix, all published regardless of outcome.
+One ledger probe row (`p6_criterion1_pbo`), which by Decision 8 spends no
+configurations and therefore carries no `arms` key.
+
+### 10.4 Result — criterion 1 PASSES
+
+Run **2026-08-15**, ledger row **104** (`probe:p6_criterion1_pbo`, written
+before the number was printed). Matrix: **447 weeks × 38 columns**, aligned on
+**21,896 matches** — the full common scoring population — over 12,870 splits.
+
+**Pooled: PBO 0.000, degradation +0.005013, spread 0.027723 — informative.**
+The in-sample winner lands below the out-of-sample median in none of the
+12,870 splits, and sits **above** it by 0.005 nats on average. The selection
+of the frozen head was not overfit; it is the α-grid validation's picture
+(0.022) reproduced on the full field.
+
+The per-grid companion (§6, as pre-declared in §10.3):
+
+| grid | PBO | spread | reading |
+| --- | --- | --- | --- |
+| h2_half_life | 0.002 | 0.021730 | informative, passes |
+| h3_alpha | 0.036 | 0.009673 | informative, passes |
+| h20_shots_blend | 0.038 | 0.008696 | informative, passes |
+| h14_squad_prior | 0.902 | **0.000018** | **uninformative** — §6's trap, arriving in the first real read |
+
+Two things the pooled 0.000 must be read with:
+
+- **Part of it is heterogeneity.** Columns like α = 5 or H = 100 are poor in
+  every split, which depresses the out-of-sample median the winner is ranked
+  against. That is exactly why §6's amendment requires the per-grid views —
+  and each grid a choice was actually made within clears the bar on its own,
+  at 0.038 or better. The pass does not lean on the pooling.
+- **h14 at PBO 0.902 is not a failure**, and reading it as one would be the
+  §6 error in mirror image: its spread is 0.000018 nats — eighteen
+  *millionths* — so its five columns are indistinguishable and the 1-SE rule's
+  choice of w = 0 could not have overfitted to anything. It is satisfied on
+  the negligible spread, per the branch §6 fixed in advance.
+
+**What this resolves:** half of P6 is now done, for nothing — no holdout
+spent, no configuration added (104 runs / 61 questions / 197 configurations
+after the row; the count did not move, per Decision 8). The excluded 140
+configurations across 24 names are recorded in the row's detail with their
+conditions. **Criterion 2 — the holdout read — remains sealed and governed by
+§8 exactly as before**: run it when a decision turns on it, and re-read §5
+first. What has changed is that the read is no longer hostage to an
+uncomputed dev-side statistic: if it is ever run, it cannot be wasted on a
+selection that criterion 1 would have failed.
