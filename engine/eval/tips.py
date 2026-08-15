@@ -12,6 +12,16 @@ and a return are different claims and only one of them is about money.
 and ROI are both functions of what happened, so unlike `meta.py` this spends
 information about a real answer and carries an arm list.
 
+**What this measures is the v1 rule -- outright favourite where it clears a
+threshold -- not the shipped v2 rule.** `engine/serve/tips.py` now steps down to
+a double chance below the floor (B8), and `engine/eval/selection.py` measures
+that rule's strike rate. Nothing measures the v2 rule's *return*: the "return
+NOT SUPPORTED" claim below is a property of the v1 outright tips, and extending
+it to v2 is a new gate that spends against the ledger, not an edit to this file.
+The threshold grid is centred on `DEFAULT_FLOOR` because v1's threshold and
+v2's floor are the same setting; `headline` requires the shipped value to be
+on the grid.
+
 Three results the product depends on, all measured here:
 
   - **The advertised strike rate is honest**, and slightly conservative. The
@@ -38,7 +48,7 @@ from engine.eval.travel import HEAD
 from engine.eval.walkforward import walk_forward
 from engine.odds import devig_probs
 from engine.seasons import DEV_SEASONS, SERVED_DIVISIONS
-from engine.serve.tips import DEFAULT_THRESHOLD
+from engine.serve.tips import DEFAULT_FLOOR
 
 #: Thresholds reported. A grid, so it spends five configurations and says so --
 #: and so the multiplicity is visible rather than hidden behind whichever
@@ -185,10 +195,10 @@ def market_favourite_only(frame: pd.DataFrame) -> list[dict]:
 def headline(results: dict) -> dict:
     """The two sentences the product may and may not say."""
     row = next(r for r in results["strike"]["rows"]
-               if r["threshold"] == DEFAULT_THRESHOLD)
+               if r["threshold"] == DEFAULT_FLOOR)
     sellable = [r for r in results["strike"]["rows"] if r["threshold"] >= 0.55]
     out = {
-        "default_threshold": DEFAULT_THRESHOLD,
+        "default_threshold": DEFAULT_FLOOR,
         "advertisable_strike": row["actual_strike"],
         "tips_per_week": row["tips_per_week"],
         "strike_claim_is_honest": all(
@@ -200,7 +210,7 @@ def headline(results: dict) -> dict:
     }
     print("\n--- what the product may claim ---")
     print(f"  strike rate {100*out['advertisable_strike']:.1f}% at threshold "
-          f"{DEFAULT_THRESHOLD}, {out['tips_per_week']} tips/week: "
+          f"{DEFAULT_FLOOR}, {out['tips_per_week']} tips/week: "
           f"{'HONEST' if out['strike_claim_is_honest'] else 'NOT SUPPORTED'}")
     print(f"  a return at prices customers actually get: "
           f"{'supported' if out['any_threshold_profitable_at_avg_prices'] else 'NOT SUPPORTED'}")

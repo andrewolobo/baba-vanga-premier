@@ -13,6 +13,7 @@ oracle arm -- a null is not a result without a positive control.
 from __future__ import annotations
 
 import importlib.util
+import sqlite3
 
 import numpy as np
 import pandas as pd
@@ -151,6 +152,27 @@ def test_the_post_hoc_trial_is_named_when_present(tmp_path):
     assert trials.count_configurations(conn).post_hoc == ("h19_alpha_interaction",)
 
 
+def _real_ledger_or_skip() -> sqlite3.Connection:
+    """The development machine's `gate_ledger`, or skip.
+
+    Three states look alike from a test and are all "nothing to guard": no
+    database file at all (a fresh checkout before `engine.ingest.build`), a file
+    without the table (connected to but never migrated), and a migrated ledger
+    with no rows (every deployed server). The first two used to raise `no such
+    table` rather than skip, and `db.connect()` also *creates* the empty file on
+    the way, so the file is checked before anything opens it.
+    """
+    if not config.DB_PATH.exists():
+        pytest.skip("no database on this checkout -- nothing to guard")
+    conn = db.connect()
+    table = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='gate_ledger'"
+    ).fetchone()
+    if table is None or trials.count_configurations(conn).runs == 0:
+        pytest.skip("no gate ledger in this database -- nothing to guard")
+    return conn
+
+
 def test_the_real_ledger_holds_more_configurations_than_rows():
     """Guards the finding itself against a future refactor quietly reverting it.
 
@@ -169,9 +191,7 @@ def test_the_real_ledger_holds_more_configurations_than_rows():
     catastrophe with much louder symptoms, and it is why `DEPLOY.md` §6.1 treats
     this file as irreplaceable rather than reproducible.
     """
-    count = trials.count_configurations(db.connect())
-    if count.runs == 0:
-        pytest.skip("no gate ledger in this database -- nothing to guard")
+    count = trials.count_configurations(_real_ledger_or_skip())
     assert count.configurations > count.runs
     assert count.configurations >= 133
 
@@ -195,9 +215,7 @@ def test_the_ledger_export_is_current():
     `python scripts/export_ledger.py` is re-run and the diff committed. That is
     the point -- the red is the reminder that the manual step did not fire.
     """
-    conn = db.connect()
-    if trials.count_configurations(conn).runs == 0:
-        pytest.skip("no gate ledger in this database -- nothing to back up")
+    conn = _real_ledger_or_skip()
 
     export = _export_ledger_module()
     expected = export.render(export.rows(conn))

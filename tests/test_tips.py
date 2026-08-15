@@ -101,6 +101,19 @@ def test_a_floor_outside_zero_to_one_is_refused(bad):
         tips.select(predictions([(1, 0.6, 0.25, 0.15, 1.7, 4.0, 7.0)]), floor=bad)
 
 
+def test_the_honesty_check_still_imports_and_covers_the_shipped_floor():
+    """`engine/eval/tips.py` is what the product's claims lean on, and nothing
+    imported it. It shipped importing a name `serve/tips.py` no longer defined
+    (`DEFAULT_THRESHOLD`, renamed at B8), so "re-run it after any head change"
+    was an instruction to run a module that could not load. Importing it here
+    keeps that from recurring, and the second assertion is `headline`'s own
+    precondition: it looks the shipped setting up on the threshold grid and
+    raises `StopIteration` if it is not there."""
+    from engine.eval import tips as honesty
+
+    assert tips.DEFAULT_FLOOR in honesty.THRESHOLDS
+
+
 def test_the_published_columns_are_stable():
     out = tips.select(predictions([(1, 0.40, 0.35, 0.25, 2.4, 3.2, 4.0)]),
                       floor=0.55)
