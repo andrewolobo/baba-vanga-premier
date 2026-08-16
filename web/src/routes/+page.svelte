@@ -338,6 +338,38 @@
         </p>
       {/if}
     </div>
+
+    <!-- The headline above is one rule's record. When the rule has changed, the
+         earlier versions are shown here rather than pooled into it or dropped:
+         two rules are two products, and averaging them would label a mixed
+         number with one rule's name. Hidden while only one version exists, so
+         nothing on the page changes until it has to. -->
+    {#if record.by_rule && record.by_rule.length > 1}
+      <div class="tablewrap">
+        <table class="record versions">
+          <thead>
+            <tr>
+              <th>Rule version</th>
+              <th class="num">Published</th>
+              <th class="num">Graded</th>
+              <th class="num">Right</th>
+              <th class="num">Strike rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each record.by_rule as v}
+              <tr class:current={v.rule_version === record.rule?.rule_version}>
+                <td class="mono">{v.rule_version}</td>
+                <td class="num">{v.published.toLocaleString()}</td>
+                <td class="num">{v.graded.toLocaleString()}</td>
+                <td class="num">{v.won.toLocaleString()}</td>
+                <td class="num strike">{v.strike_rate == null ? '—' : pct(v.strike_rate, 1)}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
   {/if}
 </section>
 
@@ -538,6 +570,7 @@
   .record { margin-top: 24px; min-width: 460px; }
   .record .strike { font-weight: 700; color: var(--accent); }
   .record .total td { border-top: 1px solid var(--line); font-weight: 700; color: #fff; }
+  .versions .current td { color: #fff; }
   .honesty { margin-top: 34px; max-width: 74ch; }
   .honesty h3 {
     font-family: var(--display); font-weight: 700; font-size: 24px;

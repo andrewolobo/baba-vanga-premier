@@ -187,21 +187,25 @@ def tips_client(tmp_path):
             " 0.48, 0.26, 0.26, 0.52, 0.48)",
             (fixture_id, fixture_id),
         )
-    for tip_id, side, prob, settled, outcome, rule in (
-        (1, "12", 0.78, None, None, "confidence-v2"),
-        (2, "H", 0.61, None, None, "confidence-v2"),
-        (3, "1X", 0.72, "2026-01-01 12:00:00", "win", "confidence-v2"),
-        (4, "A", 0.58, "2026-01-01 12:00:00", "lose", "confidence-v2"),
-        # A void on a fixture already tipped under another rule version, so the
-        # denominator can be checked against something that must not count.
-        (5, "X2", 0.66, "2026-01-01 12:00:00", "void", "confidence-v1"),
+    for tip_id, fixture_id, side, prob, settled, outcome, rule in (
+        (1, 1, "12", 0.78, None, None, "confidence-v2"),
+        (2, 2, "H", 0.61, None, None, "confidence-v2"),
+        # A void under an EARLIER rule version, on a fixture the current rule
+        # also tipped. Two jobs: the denominator can be checked against
+        # something that must not count, and `/tips/record` can be checked
+        # against pooling two versions (B16). It is the oldest settled row
+        # because that is the real shape -- a superseded rule's tips precede
+        # the current rule's, and "current" is read off the newest tip.
+        (3, 4, "X2", 0.66, "2026-01-01 12:00:00", "void", "confidence-v1"),
+        (4, 3, "1X", 0.72, "2026-01-01 12:00:00", "win", "confidence-v2"),
+        (5, 4, "A", 0.58, "2026-01-01 12:00:00", "lose", "confidence-v2"),
     ):
         conn.execute(
             "INSERT INTO tips (tip_id, prediction_id, fixture_id, side, model_prob,"
             " floor, ceiling, best_price, avg_price, rule_version, settled_at,"
             " outcome, pnl_best, pnl_avg) VALUES (?, ?, ?, ?, ?, 0.55, 0.85,"
             " 1.35, 1.28, ?, ?, ?, 0.35, 0.28)",
-            (tip_id, min(tip_id, 4), min(tip_id, 4), side, prob, rule, settled, outcome),
+            (tip_id, fixture_id, fixture_id, side, prob, rule, settled, outcome),
         )
     conn.commit()
     conn.close()
@@ -240,13 +244,35 @@ def test_tip_results_are_settled_only_and_most_recent_first(tips_client):
 
 def test_the_record_excludes_voids_from_the_strike_rate(tips_client):
     """A void is not a loss. Counting it as one would understate the rule, and
-    counting it as a win would overstate it; it leaves the denominator."""
+    counting it as a win would overstate it; it leaves the denominator.
+
+    The fixture's void is a `confidence-v1` tip, so it is checked where that
+    version's record now lives -- `by_rule` -- rather than in the headline."""
     body = tips_client.get("/tips/record").json()
-    assert body["published"] == 5
-    assert body["graded"] == 2          # win + lose; the void is not graded
+    v1 = next(r for r in body["by_rule"] if r["rule_version"] == "confidence-v1")
+    assert v1["published"] == 1
+    assert v1["graded"] == 0            # the void is not graded
+    assert v1["strike_rate"] is None    # and does not read as 0%
+
+
+def test_the_record_headline_is_the_current_rule_only(tips_client):
+    """`BACKLOG.md` B16. Two rule versions are two products, and the headline
+    must never average them: the v1 void is out of every headline figure and
+    out of `by_division`, and `rule` names the version the headline is for.
+    Every version is still reported, grouped, so the earlier record is beside
+    the current one rather than gone."""
+    body = tips_client.get("/tips/record").json()
+    assert body["rule"]["rule_version"] == "confidence-v2"
+    assert body["published"] == 4       # not 5: the v1 tip is another product
+    assert body["graded"] == 2          # win + lose
     assert body["won"] == 1
     assert body["strike_rate"] == pytest.approx(0.5)
     assert body["upcoming"] == 2
+    assert sum(d["published"] for d in body["by_division"]) == 4
+
+    versions = [r["rule_version"] for r in body["by_rule"]]
+    assert versions == ["confidence-v2", "confidence-v1"]   # newest first
+    assert sum(r["published"] for r in body["by_rule"]) == 5
 
 
 def test_the_record_publishes_no_profit_figure(tips_client):
@@ -262,6 +288,7 @@ def test_the_record_publishes_no_profit_figure(tips_client):
     banned = ("pnl", "profit", "roi", "return_pct", "units", "yield")
     fields = [str(k).lower() for k in body]
     fields += [str(k).lower() for row in body["by_division"] for k in row]
+    fields += [str(k).lower() for row in body["by_rule"] for k in row]
     assert not [f for f in fields if any(word in f for word in banned)]
     assert body["return_supported"] is False
 

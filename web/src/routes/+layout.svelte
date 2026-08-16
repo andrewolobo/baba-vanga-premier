@@ -55,9 +55,9 @@
         <a href="https://www.begambleaware.org" rel="noreferrer noopener" target="_blank"
           >begambleaware.org</a
         ></p>
-      <p class="links">
-        <a href="/book">Paper book</a> · <a href="/performance">Performance</a>
-      </p>
+      <!-- /book and /performance are internal views: uncalibrated pmf output
+           and a paper book that is switched off. They stay routable for the
+           operator but are not linked from the public page. -->
     </div>
   </div>
 </footer>

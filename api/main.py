@@ -225,6 +225,12 @@ def tip_results(
 #: Strike rate and volume. **No P&L column appears here by design** -- see the
 #: module docstring. `void` is excluded from the denominator rather than counted
 #: as a loss, which is why the graded count is not `settled_at IS NOT NULL`.
+#:
+#: `{where}` is the rule-version predicate. **The headline is one rule's record,
+#: never a pool across versions** (`BACKLOG.md` B16): `services/run_cycle.py`
+#: promises that changing the floor means bumping `tips.RULE_VERSION` so two
+#: products are never averaged into one strike rate, and this is where that
+#: promise is kept. Older versions are still reported, grouped, in `by_rule`.
 RECORD = """
     SELECT {group}
            COUNT(*) AS published,
@@ -239,6 +245,7 @@ RECORD = """
                           THEN strftime('%Y-%W', f.match_date) END) AS matchweeks
     FROM tips t
     JOIN fixtures f ON f.fixture_id = t.fixture_id
+    {where}
 """
 
 
@@ -255,17 +262,35 @@ def tip_record(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
     `strike_rate` is **null**, never zero, until something has been graded. A
     zero would read as "we get everything wrong" rather than "nothing has been
     played yet", and opening weekend is exactly when that gets screenshotted.
+
+    **The headline and `by_division` are the current rule's record only** --
+    the rule of the most recently published tip, which is what `rule` names.
+    Derived from the table rather than imported from `engine.serve.tips`, so
+    the API keeps reading what the cycle wrote and never loads the serving
+    stack; the two agree because the cycle writes `RULE_VERSION` on every tip.
+    On the day a rule is bumped the headline resets to null and rebuilds as
+    the new rule's tips grade. **`by_rule` carries every version ever
+    published**, so the earlier record is reported beside the current one
+    rather than pooled into it or dropped (owner decision, `BACKLOG.md` B16).
     """
-    overall = dict(conn.execute(RECORD.format(group="")).fetchone())
-    by_division = _rows(
-        conn, RECORD.format(group="f.division,") + " GROUP BY f.division"
-                                                   " ORDER BY f.division")
     rule = conn.execute(
         "SELECT rule_version, floor, ceiling FROM tips"
         " ORDER BY tip_id DESC LIMIT 1").fetchone()
+    current = rule["rule_version"] if rule else None
+    scoped = "WHERE t.rule_version = ?"
+    overall = dict(conn.execute(
+        RECORD.format(group="", where=scoped), (current,)).fetchone())
+    by_division = _rows(
+        conn, RECORD.format(group="f.division,", where=scoped)
+        + " GROUP BY f.division ORDER BY f.division",
+        (current,))
+    by_rule = _rows(
+        conn, RECORD.format(group="t.rule_version,", where="")
+        + " GROUP BY t.rule_version ORDER BY MAX(t.tip_id) DESC")
     return {
         **overall,
         "by_division": by_division,
+        "by_rule": by_rule,
         "rule": dict(rule) if rule else None,
         # Stated on the wire so a surface cannot present the strike rate as a
         # return without ignoring a field it was handed.

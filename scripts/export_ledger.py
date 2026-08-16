@@ -2,6 +2,7 @@
 
     python scripts/export_ledger.py            # write docs/gate_ledger.jsonl
     python scripts/export_ledger.py --check    # verify the file matches the DB
+    python scripts/export_ledger.py --restore  # EMPTY ledger only: load the file
 
 **Why this exists.** `db/premier.db` is 44 MB and all of it is reproducible from
 the tracked CSVs by `engine.ingest.build` -- *except* `gate_ledger`, which is a
@@ -20,12 +21,15 @@ off-machine durability and history. `docs/DEPLOY.md` §6.1 covers the server's
 database, which holds a different irreplaceable thing (what was predicted, and
 when).
 
-**This is an export, not a mirror.** Nothing here writes to `gate_ledger`, and
-there is deliberately no import path -- `OUTSTANDING.md` §7.5 makes the ledger
-append-only and says a helper to update or delete it "would defeat the purpose".
-Whether *restoring* from this file counts as reconstitution rather than mutation
-is an owner decision that has not been taken, so the file is provenance you can
-read and diff, and re-populating a store from it is not offered.
+**This is an export, and `--restore` is its one narrow inverse.** `OUTSTANDING.md`
+§7.5 makes the ledger append-only and says a helper to update or delete it
+"would defeat the purpose". `--restore` is neither: it **refuses unless
+`gate_ledger` has zero rows**, then loads the file with its original ids and
+timestamps and verifies the result matches. That is reconstitution of a store
+that was rebuilt from the CSVs (`engine.ingest.build` does not load this table)
+rather than mutation of one that has history -- owner decision 2026-08-15,
+taken when a fresh machine's first gate would otherwise have written row 1
+instead of row 105. There is still no path that touches an existing row.
 
 Output is ordered by `id` with sorted keys, so an appended row is a one-line
 diff and a *changed* row is visible as a change -- which is the property that
@@ -71,12 +75,45 @@ def digest(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
+def restore(conn: sqlite3.Connection, path: Path) -> int:
+    """Load the file into an EMPTY ledger. Returns rows written.
+
+    Refuses on a non-empty ledger rather than merging: a ledger with rows has a
+    history, and reconciling two histories is exactly the update path the
+    append-only convention forbids. Ids and timestamps are written as exported,
+    so `--check` passes afterwards and the next gate lands on the next id.
+    """
+    existing = conn.execute("SELECT COUNT(*) FROM gate_ledger").fetchone()[0]
+    if existing:
+        raise SystemExit(f"refusing: gate_ledger already holds {existing} row(s); "
+                         "--restore is for an empty ledger only")
+    records = [json.loads(line) for line in
+               path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    conn.executemany(
+        f"INSERT INTO gate_ledger ({','.join(COLUMNS)}) "
+        f"VALUES ({','.join('?' for _ in COLUMNS)})",
+        [tuple(r[c] for c in COLUMNS) for r in records])
+    conn.commit()
+    if render(rows(conn)) != render(records):
+        raise SystemExit("restore wrote rows that do not read back identically")
+    return len(records)
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true",
                         help="compare the DB against the file; write nothing")
+    parser.add_argument("--restore", action="store_true",
+                        help="load the file into an EMPTY gate_ledger")
     parser.add_argument("--out", type=Path, default=OUT)
     args = parser.parse_args(argv)
+
+    if args.restore:
+        conn = db.connect()
+        db.migrate(conn)
+        n = restore(conn, args.out)
+        print(f"restored {n} row(s) from {config.relpath(args.out)}")
+        return 0
 
     records = rows(db.connect())
     text = render(records)

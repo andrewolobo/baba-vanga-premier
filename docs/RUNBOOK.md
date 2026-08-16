@@ -55,7 +55,13 @@ scheduled job — one typo from placing bets — does not apply.
 
 Changing `TIP_FLOOR` or `TIP_CEILING` means bumping
 `engine.serve.tips.RULE_VERSION`, or the published history mixes two products
-under one strike rate. It is at `confidence-v2`.
+under one strike rate. It is at `confidence-v2`. `/tips/record` keeps the two
+apart: the headline is the newest version's record only and `by_rule` carries
+every version (`BACKLOG.md` B16). **Do not bump the version and re-run the
+cycle on the same matchday.** `tips.UNTIPPED` excludes a fixture per version,
+so a second run that day publishes a second live call on every fixture already
+tipped under the old one — both settle, and `/tips` shows both. Deploy a bump
+after the day's cycle has run, or on a day with no fixtures.
 
 ### 0.1 Starting it by hand
 
@@ -428,6 +434,7 @@ tolerable:
 | `model_runs` | `INSERT OR IGNORE` on version |
 | `clv_grades` | `INSERT OR IGNORE`, unique per bet |
 | `serving_state` | one row per run, deliberately — the audit trail |
+| `tips` | `INSERT OR IGNORE`, unique per (fixture, rule_version) — **per version**, see §0 on bumping it |
 
 Asserted in `tests/test_run_cycle.py::test_rerunning_is_idempotent`.
 

@@ -441,7 +441,7 @@ def walk_forward(frame: pd.DataFrame, cfg: WalkForwardConfig | None = None,
     n = len(work)
     lam_h = np.full(n, np.nan)
     lam_a = np.full(n, np.nan)
-    cutoff_of = np.full(n, np.datetime64("NaT"), dtype="datetime64[ns]")
+    cutoff_of = np.full(n, np.datetime64("NaT", "ns"), dtype="datetime64[ns]")
     n_train = np.zeros(n, dtype=int)
     stale = np.full(n, np.nan)
 

@@ -180,6 +180,9 @@ Carried forward so the next thread does not re-derive it:
   ~7.9 tips/week, out of sample over eleven seasons. At prices customers get, no
   threshold resolves and the sellable ones are negative. `engine/eval/tips.py`
   prints which claims are supported and must be re-run after any head change.
+  **Those numbers are the v1 outright rule's** (2026-08-15 note): the shipped
+  v2 rule's strike rate is in `engine/eval/selection.py`, and its *return* has
+  not been measured — `BACKLOG.md` B7.
 - **The model is not the source of the strike rate.** At every sellable
   threshold it names the market favourite, and the paired difference against
   simply backing that favourite is ~0.00%. What it adds is the ability to rank a

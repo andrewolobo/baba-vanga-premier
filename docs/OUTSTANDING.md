@@ -1,9 +1,11 @@
 # Outstanding
 
 **Cross-thread tracker.** This file is the handover point between working
-sessions on this project. A thread picking up work should read this first, and
-should update it before finishing. Anything not written down here does not
-survive the end of a session.
+sessions on this project. A thread picking up work should read `STATE.md`
+first — one screen, added 2026-08-15 — and then this file, and should update
+both before finishing. Anything not written down here does not survive the end
+of a session; anything not reflected in `STATE.md` will be missed by the next
+thread.
 
 Last updated **2026-08-15**, after **running criterion 1 — and it PASSES**
 (`DEFLATION.md` §10). First PBO ever computed on the pooled selection matrix:

@@ -9,11 +9,23 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-15**, opening **B16** — the published strike rate pools
-every `rule_version`, so the protection `run_cycle.py` promises against mixing
-two products under one number is not actually implemented. Found while tracing
-why the 2026-08-14 tip was ungraded (it is not related: football-data has not
-published the 2026-27 files yet). No status changed.
+Last updated **2026-08-15**, closing **B13 (declined — raw pmf stays)** and
+**B16** — `/tips/record` now scopes its
+headline and `by_division` to the newest published `rule_version` and reports
+every version in `by_rule`; the page renders the per-version table only once a
+second version exists. Two owner decisions taken the same day: the headline is
+**per version, with history**, and re-tipping a fixture under a new version
+stays **allowed, per the schema** — so `RUNBOOK.md` §0 now says not to bump and
+re-run on one matchday. Also the same day: `engine/eval/tips.py` was found
+un-importable since B8 (it named `DEFAULT_THRESHOLD`; fixed, and a test now
+imports it) and its docstring corrected — **it measures the v1 outright rule;
+the shipped v2 rule's return has never been measured**, which is B7's open gap.
+
+Before that, earlier on **2026-08-15**, opening **B16** — the published strike
+rate pools every `rule_version`, so the protection `run_cycle.py` promises
+against mixing two products under one number is not actually implemented. Found
+while tracing why the 2026-08-14 tip was ungraded (it is not related:
+football-data has not published the 2026-27 files yet). No status changed.
 
 Before that, **2026-08-12**, after **B14 was measured in strike rate and
 closed** — the corners channel is worth **−0.095 [−0.352, +0.175]** points to
@@ -50,7 +62,7 @@ and gated B4.
 | **B10** | `12`-versus-`1X` ordering | open, **downgraded** — §9.6 | ~3 | — |
 | **B11** | Per-line calibration for the six goal lines | open | ~1 | — |
 | **B12** | Shots + corners channel gate (§1.7, licensed and unwritten) | **done — measured 2026-08-10, not adopted** | 13 spent | — |
-| **B13** | Owner call: run the tip rule on B2's calibrated probabilities? | **open — decision, not measurement** | 0 | — |
+| **B13** | Owner call: run the tip rule on B2's calibrated probabilities? | **declined** 2026-08-15 — keep raw pmf | 0 | — |
 | **B14** | Owner call: adopt the corners channel into the head? | **closed 2026-08-12 — do not adopt.** Null in strike rate | 3 spent | B12 |
 | **B15** | Half-life `H` — stale, and the one axis where the objectives disagree | open, **gated on paired ll_1x2 intervals** | ~0–1 then ~9 | — |
 
@@ -61,7 +73,7 @@ and gated B4.
 | B5 | Acquire prices for goal lines other than 2.5 | open | 0 (acquisition) | — |
 | **B6** | Customer-facing surface for the tip list | **done** 2026-08-07 | 0 | B0 |
 | **B7** | Honesty check on how the strike rate is reported downstream | **part done** — see below | 0 | B6 |
-| **B16** | `/tips/record` pools every `rule_version` under one strike rate | **open** — latent until the floor is retuned | 0 | B7 |
+| **B16** | `/tips/record` pools every `rule_version` under one strike rate | **done** 2026-08-15 — per-version headline, `by_rule` history | 0 | B7 |
 | **B9** | **Best-price execution — is it reachable?** | **scheduled: after B8 ships and a full season of tips is graded** | 0 (not modelling) | B8 |
 
 ## Scheduled, not now
@@ -336,7 +348,14 @@ to falsify the result you actually got, not only the one you feared. Any arm
 that improves strike rate here needs a planted counterpart showing the gain does
 not also arrive from an unrelated perturbation of the same size.
 
-## B13 — Run the tip rule on calibrated probabilities? **(owner decision)**
+## B13 — Run the tip rule on calibrated probabilities? — **DECLINED 2026-08-15**
+
+**Owner decision 2026-08-15: keep the raw pmf.** No strike-rate gain
+(+0.088, unresolved), an E0 cost, and a `RULE_VERSION` bump the customer would
+not notice. The mix argument (less `12`, more `1X`) is real and is B10's to
+carry, not a calibration change's. Nothing measured; no ledger row. The
+original note follows.
+
 
 **Measured in `OUTSTANDING.md` §9.6 step 3, ledger `b2_calibration_in_product`.
 No further measurement is needed and none should be spent.** B2's walk-forward
@@ -743,7 +762,17 @@ therefore conservative (§1.10), and **that is true of the outrights and false o
 rule version, so the mixing this section exists to prevent is unguarded on the
 one axis that was supposed to be guarded.
 
-## B16 — The published strike rate pools every rule version
+## B16 — The published strike rate pools every rule version — **DONE 2026-08-15**
+
+**Decided and shipped.** Headline and `by_division` in `/tips/record` are the
+newest published version's record only; `by_rule` carries every version, newest
+first, held to the same no-P&L test as the rest of the payload. The page shows
+the per-version table only when more than one version exists. "Current" is read
+off the newest tip rather than imported from `engine.serve.tips`, so the API
+still loads none of the serving stack. Re-tipping under a new version stays
+allowed per the schema (owner call); the operational rule that follows — do not
+bump and re-run on one matchday — is `RUNBOOK.md` §0. Tests:
+`test_the_record_headline_is_the_current_rule_only`. The original note follows.
 
 `services/run_cycle.py:66-67` states that changing `TIP_FLOOR` or `TIP_CEILING`
 means bumping `tips.RULE_VERSION`, *"or the published history mixes two products
@@ -787,5 +816,6 @@ shown beside the new one, is the owner's call and not a code one.
 | id | item | where |
 | --- | --- | --- |
 | — | Tip rule, published and settled by the serving cycle | `OUTSTANDING.md` §1.10 |
-| — | Strike rate / volume / return measured over 11 seasons | `engine/eval/tips.py` |
+| — | Strike rate / volume / return measured over 11 seasons — **v1 rule** | `engine/eval/tips.py` |
+| B16 | Per-version strike rate on `/tips/record` | `api/main.py`, above |
 | — | Meta-label on the football model — measured, do not adopt | `META.md` |

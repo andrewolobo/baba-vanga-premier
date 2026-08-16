@@ -125,6 +125,7 @@ as tracked text:
 ```bash
 python scripts/export_ledger.py             # write docs/gate_ledger.jsonl
 python scripts/export_ledger.py --check     # verify it matches the DB
+python scripts/export_ledger.py --restore   # fresh machine: load it into an EMPTY ledger
 ```
 
 Day-to-day operations, failure playbooks and the pre-launch checklist are
@@ -139,7 +140,8 @@ Day-to-day operations, failure playbooks and the pre-launch checklist are
 | `docs/RUNBOOK.md` | operating the cycle: exit codes, failure playbooks, weekly review |
 | `docs/DEPLOY.md` | the server: provisioning, nginx, systemd, backup, alerting |
 | `docs/SPEC.md` | what the system is and what it measures |
-| `docs/OUTSTANDING.md` | **read first in a new thread** — what is still open |
+| `docs/STATE.md` | **read first** — one screen: what ships, what is open, what must never happen |
+| `docs/OUTSTANDING.md` | the journal behind it — why every decision was taken |
 | `docs/CALIBRATION.md` | why the betting book is off |
 | `docs/BACKLOG.md`, `docs/PRODUCT.md` | product surface and what is deferred |
 
