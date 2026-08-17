@@ -3,7 +3,7 @@
 **Read this first.** It says what ships, what is open with the owner, and what
 must never happen. `OUTSTANDING.md` is the journal behind it and stays the
 authority on *why*; when the two disagree, `OUTSTANDING.md` is right and this
-file is stale — fix this file. Updated **2026-08-15**.
+file is stale — fix this file. Updated **2026-08-16**.
 
 ---
 
@@ -21,16 +21,21 @@ on matchday, never revised, graded from football-data results.
 | site | one page: calls, last results, record | `web/` |
 | server | one Azure Ubuntu VM, `git pull`, systemd timer + service + nginx | `DEPLOY.md`, `RUNBOOK.md` |
 
-**Measured, out of sample, 11 dev seasons:** strike rate **72.5%** at floor 0.55
-on 100% of matches (`engine/eval/selection.py`). Published mix **65% `12`,
-17.6% `1X`, 11.8% `H`, 3.0% `X2`, 2.5% `A`** — the product names a team in
-14.3% of matches. The model names the market favourite essentially always;
-its measured contribution to the strike rate is ~0.00%. What it adds is a
-ranking before a price exists.
+**Measured, out of sample, 15,824 matches over 9 scored seasons:** strike rate
+**72.5%** at floor 0.55 on 100% of matches (`engine/eval/selection.py`).
+Published mix **65% `12`, 17.6% `1X`, 11.8% `H`, 3.0% `X2`, 2.5% `A`** — the
+product names a team in 14.3% of matches. The model names the market favourite
+as the *side* essentially always; under the v2 rule its recommendation matches
+the market's only 63.5% of the time (it hedges where the market would name),
+and it does not out-return the market rule. What it adds is a ranking before a
+price exists — and the goal-line menu that was meant to cash that in was
+probed 2026-08-16 and does not deliver (`TIPSTER.md` C).
 
-**Return is not a supportable claim** and the site does not make one. *That was
-measured on the v1 outright rule* (`engine/eval/tips.py`); the shipped v2
-rule's return is unmeasured — gate approved, plan pending (below).
+**Return is not a supportable claim** and the site does not make one.
+Measured on the shipped v2 rule 2026-08-16 (`TIPSTER.md` A): **−4.56%
+[−5.56, −3.60]** at average derived prices, **+0.11% [−0.94, +1.10]** at best.
+The rule agrees with the same rule on the market's own probabilities in only
+63.5% of matches and returns ~0.5 pts less, unresolved.
 
 **The betting book is off.** Measured negative four ways (`CALIBRATION.md`).
 `book.py` exists and is not wired into the cycle.
@@ -39,8 +44,7 @@ rule's return is unmeasured — gate approved, plan pending (below).
 
 | item | state | next |
 | --- | --- | --- |
-| **v2 return gate** | approved 2026-08-15 | plan doc + `--dry-run`, then owner says run |
-| **B11 → B4** goal lines 0.5–5.5 | approved for pre-registration | plan doc first; the one differentiated thing the model can do |
+| **B19** sum/difference penalty | B17 (2026-08-16): totals over-spread in E1–E3, margins under-spread (§9.12) — one ridge cannot get both right | owner decision whether to scope a head-level gate (~4–8 configs); B18 (totals shrink) parked until B4 reopens |
 | **ops** | backup timer not enabled; no alerting; HTTP only | enable `bvp-backup.timer` + restore drill; dead-man's-switch ping from `run_cycle.sh` (owner supplies URL); TLS when a domain exists |
 | **P6 criterion 2** | holdout still sealed; criterion 1 PASSED (PBO 0.000) | owner decides when to spend the one read; `DEFLATION.md` §8 |
 | B10 `12` vs `1X` | open, downgraded | — |
@@ -48,17 +52,19 @@ rule's return is unmeasured — gate approved, plan pending (below).
 | B1 agreement filter | open, deprioritised | — |
 | B9 best-price execution | parked until a graded season | — |
 
-**Declined / closed 2026-08-15:** B13 (calibrated probabilities in the rule —
-no), B14 (corners channel — do not adopt), B16 (per-version record — shipped).
+**Declined / closed:** B13 (calibrated probabilities in the rule — no), B14
+(corners channel — do not adopt), B16 (per-version record — shipped), **B7
+(v2 return measured — done 2026-08-16)**, **B11 (measured 2026-08-16)**, **B17 (measured 2026-08-16)**,
+**B4 (goal-line menu — measured, do not extend on this head, 2026-08-16)**.
 
 ## Numbers that must be re-derived, not quoted
 
-- Gate ledger: `trials.count_configurations(conn)` — **104 / 61 / 197** at last
-  read. `docs/gate_ledger.jsonl` is the off-machine copy; the test
+- Gate ledger: `trials.count_configurations(conn)` — **109 / 66 / 201** at last
+  read (2026-08-16, after P7 and B17). `docs/gate_ledger.jsonl` is the off-machine copy; the test
   `test_the_ledger_export_is_current` goes red until it is re-exported after a
   gate. A fresh machine restores it with `scripts/export_ledger.py --restore`
   (empty ledger only).
-- Tests: `pytest -q` — **525 pass** at last run; the prose has been stale
+- Tests: `pytest -q` — **535 pass** at last run; the prose has been stale
   before.
 
 ## What must never happen

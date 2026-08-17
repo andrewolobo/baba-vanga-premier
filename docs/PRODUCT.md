@@ -176,18 +176,24 @@ What **can** be measured now, and should be as part of the same gate:
 
 Carried forward so the next thread does not re-derive it:
 
-- **The strike rate is honest; a return is not.** 65.5% at threshold 0.55,
-  ~7.9 tips/week, out of sample over eleven seasons. At prices customers get, no
-  threshold resolves and the sellable ones are negative. `engine/eval/tips.py`
-  prints which claims are supported and must be re-run after any head change.
-  **Those numbers are the v1 outright rule's** (2026-08-15 note): the shipped
-  v2 rule's strike rate is in `engine/eval/selection.py`, and its *return* has
-  not been measured — `BACKLOG.md` B7.
-- **The model is not the source of the strike rate.** At every sellable
-  threshold it names the market favourite, and the paired difference against
-  simply backing that favourite is ~0.00%. What it adds is the ability to rank a
-  fixture *before a price exists* — which is exactly what the five unpriced goal
-  lines need, and is the strongest argument for the extended menu.
+- **The strike rate is honest; a return is not.** The shipped v2 rule:
+  **72.5%** strike at floor 0.55 on 100% of matches, 15,824 out of sample over
+  nine seasons (`engine/eval/selection.py`). Its return, measured 2026-08-16
+  (`TIPSTER.md` Part A): **−4.56% [−5.56, −3.60] at average derived prices —
+  resolved negative** — and +0.11% [−0.94, +1.10] at best-available, zero and
+  unresolved. Derived double-chance prices are an upper bound, so the truth is
+  worse. (`engine/eval/tips.py` holds the v1 outright rule's figures: 65.5%
+  strike, −0.75% at avg — v1 backed favourites, v2 backs unions that pay the
+  full margin.)
+- **The model is not the source of the strike rate.** It names the market
+  favourite as the side essentially always. Under the v2 rule the *recommendation*
+  agrees with the same rule on the market's own probabilities in only **63.5%**
+  of matches — the under-confident head hedges to `12` where the market would
+  name the team — and returns **−0.57 pts [−1.49, +0.32]** relative to it,
+  unresolved. What the model adds is the ability to rank a fixture *before a
+  price exists*. **The extended goal-line menu was measured 2026-08-16 and does
+  not deliver on that** (`TIPSTER.md` Part C): every shape is inert, collapses
+  into two wide lines, or lands on the line the head gets most wrong outside E0.
 - **The head is under-confident on its own favourites**, by up to 5.9 points.
   Correcting it raises **volume**, not strike rate (`BACKLOG.md` B2).
 - **Nothing here changes the book.** It stays off (`CALIBRATION.md` §5).

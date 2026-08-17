@@ -1,0 +1,219 @@
+{
+  "by_division": {
+    "E0": {
+      "n": 2948,
+      "dispersion_ratio": {
+        "value": 0.9462,
+        "ci_low": 0.8968,
+        "ci_high": 0.9965
+      },
+      "relative_level": {
+        "value": 0.0,
+        "ci_low": -0.0212,
+        "ci_high": 0.0218
+      },
+      "raw_var_over_mean": {
+        "value": 0.9968,
+        "ci_low": 0.9484,
+        "ci_high": 1.0465
+      },
+      "residual_all": {
+        "value": 0.0,
+        "ci_low": -0.0582,
+        "ci_high": 0.0598
+      },
+      "residual_by_under_bucket": {
+        "[0.50,0.60)": {
+          "n": 985,
+          "value": 0.1308,
+          "ci_low": 0.0313,
+          "ci_high": 0.2356
+        },
+        "[0.60,0.70)": {
+          "n": 310,
+          "value": -0.0189,
+          "ci_low": -0.1867,
+          "ci_high": 0.1311
+        },
+        "[0.70,1.01)": {
+          "n": 8
+        }
+      },
+      "residual_by_over_bucket": {
+        "[0.60,0.70)": {
+          "n": 435,
+          "value": -0.1052,
+          "ci_low": -0.2773,
+          "ci_high": 0.0508
+        },
+        "[0.70,1.01)": {
+          "n": 44
+        }
+      }
+    },
+    "E1": {
+      "n": 4308,
+      "dispersion_ratio": {
+        "value": 0.9507,
+        "ci_low": 0.9127,
+        "ci_high": 0.9913
+      },
+      "relative_level": {
+        "value": 0.0137,
+        "ci_low": -0.0046,
+        "ci_high": 0.0316
+      },
+      "raw_var_over_mean": {
+        "value": 0.9815,
+        "ci_low": 0.9437,
+        "ci_high": 1.0217
+      },
+      "residual_all": {
+        "value": 0.0346,
+        "ci_low": -0.0116,
+        "ci_high": 0.0798
+      },
+      "residual_by_under_bucket": {
+        "[0.50,0.60)": {
+          "n": 2212,
+          "value": 0.0198,
+          "ci_low": -0.0449,
+          "ci_high": 0.0831
+        },
+        "[0.60,0.70)": {
+          "n": 843,
+          "value": 0.2419,
+          "ci_low": 0.1472,
+          "ci_high": 0.3307
+        },
+        "[0.70,1.01)": {
+          "n": 6
+        }
+      },
+      "residual_by_over_bucket": {
+        "[0.60,0.70)": {
+          "n": 124,
+          "value": -0.1632,
+          "ci_low": -0.4167,
+          "ci_high": 0.1118
+        },
+        "[0.70,1.01)": {
+          "n": 1
+        }
+      }
+    },
+    "E2": {
+      "n": 4264,
+      "dispersion_ratio": {
+        "value": 0.9672,
+        "ci_low": 0.9265,
+        "ci_high": 1.008
+      },
+      "relative_level": {
+        "value": 0.0085,
+        "ci_low": -0.01,
+        "ci_high": 0.0283
+      },
+      "raw_var_over_mean": {
+        "value": 0.9918,
+        "ci_low": 0.9508,
+        "ci_high": 1.0323
+      },
+      "residual_all": {
+        "value": 0.022,
+        "ci_low": -0.026,
+        "ci_high": 0.0732
+      },
+      "residual_by_under_bucket": {
+        "[0.50,0.60)": {
+          "n": 2259,
+          "value": 0.0795,
+          "ci_low": 0.0159,
+          "ci_high": 0.1433
+        },
+        "[0.60,0.70)": {
+          "n": 467,
+          "value": 0.2634,
+          "ci_low": 0.1033,
+          "ci_high": 0.4146
+        },
+        "[0.70,1.01)": {
+          "n": 6
+        }
+      },
+      "residual_by_over_bucket": {
+        "[0.60,0.70)": {
+          "n": 113,
+          "value": -0.5539,
+          "ci_low": -0.8056,
+          "ci_high": -0.2957
+        },
+        "[0.70,1.01)": {
+          "n": 0
+        }
+      }
+    },
+    "E3": {
+      "n": 4304,
+      "dispersion_ratio": {
+        "value": 0.9605,
+        "ci_low": 0.9233,
+        "ci_high": 1.0001
+      },
+      "relative_level": {
+        "value": 0.0049,
+        "ci_low": -0.014,
+        "ci_high": 0.0241
+      },
+      "raw_var_over_mean": {
+        "value": 0.9817,
+        "ci_low": 0.9449,
+        "ci_high": 1.0212
+      },
+      "residual_all": {
+        "value": 0.0123,
+        "ci_low": -0.0353,
+        "ci_high": 0.0607
+      },
+      "residual_by_under_bucket": {
+        "[0.50,0.60)": {
+          "n": 2552,
+          "value": 0.0102,
+          "ci_low": -0.049,
+          "ci_high": 0.0705
+        },
+        "[0.60,0.70)": {
+          "n": 701,
+          "value": 0.2089,
+          "ci_low": 0.0968,
+          "ci_high": 0.3237
+        },
+        "[0.70,1.01)": {
+          "n": 4
+        }
+      },
+      "residual_by_over_bucket": {
+        "[0.60,0.70)": {
+          "n": 31
+        },
+        "[0.70,1.01)": {
+          "n": 0
+        }
+      }
+    }
+  },
+  "verdict": {
+    "P1_control_clean": true,
+    "P2_lower_low_lambda_residual_positive_10_to_25": true,
+    "P3_ratio_gap_under_0_05": true,
+    "P4_alternative_dispersion": false,
+    "level_signal_divisions": 3,
+    "dispersion_signal_divisions": 0,
+    "ratio_gap_vs_control": {
+      "E1": 0.0045,
+      "E2": 0.021,
+      "E3": 0.0143
+    },
+    "mechanism": "LEVEL (per-division intercept is the fix to gate)"
+  }
+}

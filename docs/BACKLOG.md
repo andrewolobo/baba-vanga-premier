@@ -9,7 +9,21 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-15**, closing **B13 (declined — raw pmf stays)** and
+Last updated **2026-08-16**, after **P7 ran** (`P7_TIPSTER_PLAN.md` →
+`TIPSTER.md`; ledger rows 105–108, **197 → 201 configurations**). **B7 closes**:
+the shipped v2 rule loses **−4.56% [−5.56, −3.60]** at average derived prices
+and returns **+0.11% [−0.94, +1.10]** at best — the site's no-return claim now
+rests on the rule that ships. **B11 measured**: E0 is calibrated at every goal
+line; **E1–E3 over-claim their confident unders by 4–9 pts**, worst on the 2.5
+line — a third lower-division-only defect on this head. **B4 probed**: the
+third-tier shape never fires, the specificity shape is the refuted
+ceiling-as-selector, and a separate goals call is "over 1.5 / under 3.5" in
+78–90% of matches; **recommendation is not to extend the menu on this head** —
+**owner closed B4 the same day**. Free finding: the v2 rule agrees with the same rule on
+the market's probabilities in only **63.5%** of matches and returns ~0.5 pts
+less, unresolved. B1's arms need re-stating on v2.
+
+Before that, **2026-08-15**, closing **B13 (declined — raw pmf stays)** and
 **B16** — `/tips/record` now scopes its
 headline and `by_division` to the newest published `rule_version` and reports
 every version in `by_rule`; the page renders the per-version table only once a
@@ -57,14 +71,17 @@ and gated B4.
 | **B2** | Fix the under-confidence (recalibration) | **done — mostly null** | 2 spent | — |
 | **B3** | Double chance below a threshold | **done** — floor **0.55**, `12` on | 4 spent | B0 |
 | **B8** | Ship the B3 rule into `serve/tips.py` | **done** 2026-08-06 | 0 | — |
-| **B1** | Agreement filter: tip only when model and market name the same side | open, **deprioritised** | ~2 | — |
-| **B4** | Extend over/under to lines 0.5–5.5 | open, **gated on B11** | ~4 | B0, B11 |
+| **B1** | Agreement filter: tip only when model and market name the same side | open, **deprioritised** — re-scope on v2: agreement is 63.5%, not 86.6% (`TIPSTER.md` A) | ~2 | — |
+| **B4** | Extend over/under to lines 0.5–5.5 | **closed 2026-08-16 — measured, do not extend on this head** (`TIPSTER.md` C); owner decision | 0 spent | B11 |
 | **B10** | `12`-versus-`1X` ordering | open, **downgraded** — §9.6 | ~3 | — |
-| **B11** | Per-line calibration for the six goal lines | open | ~1 | — |
+| **B11** | Per-line calibration for the six goal lines | **measured 2026-08-16** — E0 calibrated; E1–E3 over-claim confident unders 4–9 pts (`TIPSTER.md` B) | 0 spent | — |
 | **B12** | Shots + corners channel gate (§1.7, licensed and unwritten) | **done — measured 2026-08-10, not adopted** | 13 spent | — |
 | **B13** | Owner call: run the tip rule on B2's calibrated probabilities? | **declined** 2026-08-15 — keep raw pmf | 0 | — |
 | **B14** | Owner call: adopt the corners channel into the head? | **closed 2026-08-12 — do not adopt.** Null in strike rate | 3 spent | B12 |
 | **B15** | Half-life `H` — stale, and the one axis where the objectives disagree | open, **gated on paired ll_1x2 intervals** | ~0–1 then ~9 | — |
+| **B17** | Lower-division totals — dispersion or level? diagnostic on stored λ | **measured 2026-08-16** — conditional level: totals over-spread in E1–E3, overall level ≈ 0 (`TIPSTER.md` B17) | 0 spent | — |
+| **B18** | Totals-axis shrink, per division (the fix B17 implies) | **open, gated on B4 reopening** — worth nothing to the shipped product | ~1–2 | B17 |
+| **B19** | Separate ridge on the sum and difference of `att`/`dfn` — margins under-spread, totals over-spread on one penalty | **open — owner decision to scope**; P1-scale | ~4–8 | B17, §9.12 |
 
 ## Later
 
@@ -72,7 +89,7 @@ and gated B4.
 | --- | --- | --- | --- | --- |
 | B5 | Acquire prices for goal lines other than 2.5 | open | 0 (acquisition) | — |
 | **B6** | Customer-facing surface for the tip list | **done** 2026-08-07 | 0 | B0 |
-| **B7** | Honesty check on how the strike rate is reported downstream | **part done** — see below | 0 | B6 |
+| **B7** | Honesty check on how the strike rate is reported downstream | **done 2026-08-16** — v2 return measured, −4.56% ✱ at avg / ~0 at best (`TIPSTER.md` A) | 4 spent | B6 |
 | **B16** | `/tips/record` pools every `rule_version` under one strike rate | **done** 2026-08-15 — per-version headline, `by_rule` history | 0 | B7 |
 | **B9** | **Best-price execution — is it reachable?** | **scheduled: after B8 ships and a full season of tips is graded** | 0 (not modelling) | B8 |
 
@@ -280,7 +297,21 @@ outright.
 usually worse than that combination, so a derived price is an **upper bound** on
 what a customer could get — the safe direction, and it must be labelled.
 
-## B4 — Extend over/under to 0.5–5.5 **(blocked by B0)**
+## B4 — Extend over/under to 0.5–5.5 — **CLOSED 2026-08-16: do not extend on this head**
+
+**Owner decision 2026-08-16**, on the probe below. The product stays 1X2 +
+double chance. C′ never runs. Revisit only if the head changes in a way that
+moves `TIPSTER.md` Part B or Part C — B17 is the item that could.
+
+`TIPSTER.md` Part C, `probe:p7_menu_shapes`, 0 configurations. Three shapes on
+a ceiling grid at the shipped floor: the third-tier fallback **fires in 0.00%**
+of matches; specificity-wins is the ceiling-as-selector (line in 71%, team in
+14.4%); a separate goals call is **over 1.5 / under 3.5 in 78–90%** and picks
+the priced 2.5 line in ≤ 8%. A fourth shape — a fixed 2.5-line call — lands on
+the line B11 found worst-calibrated outside E0 at ~55% strike. **Owner decision
+pending; C′ (strike gate on a chosen shape) is not scheduled.** The modelling
+item that has to come first is B11's lower-division finding. Original note:
+
 
 Every probability is already computable: `over_under_probs(joint, line=…)` takes
 any line and `score_matrix` gives the joint. No new model, no new fit, no new
@@ -447,7 +478,18 @@ grounds: §9.8 measured all four and the objectives agree on every one.
 separation slope.** All four parameters move λ; the mapping is fixed at
 `rho=0`. Three arms have already moved that mapping and none bought strike rate.
 
-## B11 — Per-line calibration for the six goal lines **(gates B4)**
+## B11 — Per-line calibration for the six goal lines — **MEASURED 2026-08-16**
+
+`TIPSTER.md` Part B, `probe:p7_line_calibration` after a passing jittered-λ
+control, 0 configurations (the pre-committed drop rule did not fire — one
+bucket short on the 2.5 line). **E0 is calibrated at every line. E1–E3
+over-claim their confident unders**: 2.5-line top bucket claims 63%, delivers
+56.6 / 54.0 / 58.3 in E1 / E2 / E3; 3.5-line top bucket −4.1 / −5.7 / −4.7.
+The 1X2 under-confidence signature does **not** carry to totals. Hypothesis
+(0-configuration check available): lower-division totals are more dispersed
+than the pooled P0-1 ratio of 1.013 and the joint fit's low-λ tail is too
+thin there. Original note:
+
 
 `OUTSTANDING.md` §9.2. B4 publishes over/under 0.5–5.5, and the pmf's fitness
 for those lines rests on two P0 results that were scoped elsewhere: P0-1 closed
@@ -662,6 +704,72 @@ shape for the third time**: real, measured, and not adoptable.
 of recommendations against A1's 6.914% and is a strictly larger head change for
 a deviance difference of −0.00021 that nothing resolves.
 
+## B17 — Lower-division totals: dispersion or level? — **MEASURED 2026-08-16**
+
+Row 109, 0 configurations, `TIPSTER.md` "B17 follow-up". P1–P3 held; the
+mechanical reading is LEVEL, and the tables refine it: **overall level is
+zero in every division; the defect is conditional** — the pmf's totals are
+too extreme in E1–E3 (+0.2–0.3 goals where it expects few, −0.55 where it
+expects many). Regression to the mean on the totals axis; the margin axis is
+under-spread (§9.12). A per-division intercept would fix nothing. Follow-ups
+**B18** (totals shrink, gated on B4) and **B19** (separate sum/difference
+penalty — the head-level question). Original pre-registration:
+
+
+Opened 2026-08-16 from `TIPSTER.md` Part B. E0 is calibrated at every goal
+line; E1–E3 over-claim their confident *unders* by 4–9 pts, worst on 2.5.
+Before any fix is pre-registered, the mechanism has to be known, and it is
+knowable for nothing.
+
+**Two mechanisms, different fixes.**
+- **Dispersion.** Lower-division totals are more variable than the pmf's
+  independent Poisson (P0-1's ratio of 1.013 was pooled). Fix would be a
+  per-division dispersion term or a negative-binomial head — a model change.
+- **Level.** The joint fit's single intercept under-states lower-division
+  scoring in low-λ fixtures; the pmf is centred low, not thin. Fix would be a
+  per-division intercept — cheap, and OPEN-3-shaped.
+
+**Diagnostic, per division, on the stored walk-forward λ (no refit):**
+1. variance ratio `var(total) / mean(total)` and `var(total) / E[var under
+   Poisson(λ_h+λ_a)]`, with block-bootstrap CI;
+2. mean residual `total − (λ_h+λ_a)` in the same λ-buckets as Part B —
+   a level defect shows as a positive residual in the low-λ buckets, a
+   dispersion defect as a zero mean residual with excess variance;
+3. the same two on **E0**, which is calibrated, as the negative control — both
+   must read clean there or the instrument is not reading the defect.
+
+**Predictions, written before it runs.**
+- **P1.** E0's variance ratio is within **[0.98, 1.04]** and its low-λ mean
+  residual within **±0.05** goals. *Basis:* Part B, E0 calibrated everywhere.
+- **P2.** E1–E3's low-λ ([0.6,0.7) under-2.5 bucket) mean residual is
+  **positive, +0.10 to +0.25 goals, resolved** in at least two of three.
+  *Basis:* over-claiming "under" by 5–9 pts at λ ≈ 2.2 needs the truth to be
+  ~0.15 goals higher, or a fatter tail; a level shift is the simpler reading of
+  a bias that is one-signed.
+- **P3.** E1–E3's variance ratio exceeds E0's by **< 0.05**. *Basis:* if P2
+  holds the defect is mostly level, and dispersion has little left to explain.
+- **P4 (the alternative).** If P2 fails — residual ≈ 0 — then P3 fails too and
+  the ratio gap is **≥ 0.05**; the defect is dispersion and the fix is a model
+  change, not an intercept.
+
+**Cost 0.** Reads outcomes for a diagnostic, chooses among no arms, carries no
+arm list. Ledger `probe:b17_totals_mechanism`. Whatever it says, the *fix* is
+a gate with its own pre-registration and is not run from this item.
+
+> **Amendment before the run, 2026-08-16 — the statistic, not the predictions.**
+> Item 1 above said `var(total) / E[var under Poisson(λ)]`. Written as
+> `(var(total) − var(λ)) / mean(λ)` and pointed at planted data
+> (`tests/test_b17.py`), an **8% level shift with no excess dispersion read as
+> a ratio of ~1.1** — because the true λ's variance is k² times the reported
+> one. The two mechanisms could not have been told apart. The statistic is
+> now **level-corrected**: λ is rescaled to the observed mean first,
+> `(var(total) − var(cλ)) / mean(cλ)`, `c = mean(total)/mean(λ)`; a pure level
+> shift reads 1, pure over-dispersion reads > 1, both planted and asserted.
+> `c − 1` is reported as the relative level. The mechanism is read off
+> intervals (≥ 2 of E1–E3 resolved) rather than point estimates; P1–P4 are
+> scored as written. Same shape as `TRAVEL.md` §8: the detection statistic
+> changed after the control and before the result.
+
 ## B12 (original scoping note)
 
 Licensed by `CHANNELS.md` and `OUTSTANDING.md` §1.7 and never written. Split-half
@@ -729,7 +837,15 @@ be presented as them; the full club name renders beside every badge, which is
 what keeps an imperfect code cosmetic. Real colours, if ever acquired, belong in
 `reference/` keyed by canonical_name.
 
-## B7 — The honesty check — **PART DONE 2026-08-07**
+## B7 — The honesty check — **DONE 2026-08-16**
+
+The remaining gap — the return claim was measured on the v1 rule — is closed
+by `gate:p7_v2_return` (`TIPSTER.md` Part A, 4 configurations): at floor 0.55
+the shipped rule returns **−4.56% [−5.56, −3.60]** at average derived prices
+and **+0.11% [−0.94, +1.10]** at best; against the same rule on the market's
+probabilities, **−0.57 pts [−1.49, +0.32]**. Site paragraph, `PRODUCT.md` §5
+and `STATE.md` now cite these. Original note:
+
 
 **What is enforced.** `/tips/record` returns strike rate, counts and coverage
 and **no P&L at all**, even though `tips.pnl_best` and `tips.pnl_avg` exist and

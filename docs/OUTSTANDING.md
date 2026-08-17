@@ -7,7 +7,28 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-15**, after **running criterion 1 — and it PASSES**
+Last updated **2026-08-16**, after **P7 ran** — `P7_TIPSTER_PLAN.md` →
+`TIPSTER.md`, rows **105–108**, **197 → 201 configurations** as declared. Three
+things. **The shipped v2 rule's return is now measured** (B7 closes): −4.56%
+[−5.56, −3.60] ✱ at average derived prices, +0.11% [−0.94, +1.10] at best; the
+model rule agrees with the market rule in only **63.5%** of matches and returns
+~0.5 pts less, unresolved — the under-confident head hedges to `12` where the
+market names the team. **B11: E0 is calibrated at every goal line and E1–E3
+over-claim their confident unders by 4–9 pts**, worst on the priced 2.5 line —
+a third lower-division-only defect on this head, after the draw deficit (§4.3
+of `FINDINGS.md`) and the separation slope's home leg (§9.6/§9.10). All four
+Part-B predictions failed the same way: the 1X2 under-confidence signature does
+not carry to totals. **B4: the goal-line menu does not deliver** — the third
+tier fires in 0.00%, specificity-wins is §3a's refutation again, a separate
+goals call is "over 1.5 / under 3.5" in 78–90% and picks the priced line in
+≤ 8%; **B4 closed by the owner: do not extend on this head**. §1.13. **B17 ran**
+(row 109): the totals defect is a conditional level — over-spread λ on the
+totals axis in E1–E3, overall level zero — opposite in sign to the margin axis;
+B18/B19 opened. Also 2026-08-15/16: B13 declined, B16 shipped (per-version record),
+`engine/eval/tips.py` un-importable since B8 and fixed, `STATE.md` added as the
+one-screen entry point, `export_ledger.py --restore` for an empty ledger.
+
+Before that, **2026-08-15**, after **running criterion 1 — and it PASSES**
 (`DEFLATION.md` §10). First PBO ever computed on the pooled selection matrix:
 **447 weeks × 38 columns** on 21,896 matches, **PBO 0.000**, degradation
 +0.005, spread 0.0277 — the in-sample winner lands below the out-of-sample
@@ -835,6 +856,20 @@ Four things worth carrying forward:
   outcome only. Anything wanting scorelines needs a migration and a grader
   change first; this is a **documentation defect in the migration**, not just a
   missing feature.
+
+### 1.13 P7 — the tipster's own numbers — **MEASURED 2026-08-16**
+
+Results `TIPSTER.md`, pre-registration `P7_TIPSTER_PLAN.md` (unedited), code
+`engine/eval/p7.py`, tests `tests/test_p7.py`, ledger rows 105–108. Scorecard
+A 4/7, B 0/4, C 2/4 — the misses are the findings, summarised in the header
+above and in `BACKLOG.md` B7/B11/B4. Nothing changes `confidence-v2` or the
+book. Nothing customer-visible changed (owner kept the site's honesty
+sentence). **B4 closed by the owner the same day: do not extend on this head.**
+**B17 then ran the same day (row 109, 0 configurations):** overall level is
+zero in every division; the defect is *conditional* — the pmf's totals are
+too extreme in E1–E3 while its margins are under-spread (§9.12), so one ridge
+on `att`/`dfn` cannot get both axes right. Opened B18 (totals shrink, parked
+with B4) and B19 (separate sum/difference penalty — owner's call to scope).
 
 ### 1.9 The meta-label is a market follower — **MEASURED 2026-08-06**
 
