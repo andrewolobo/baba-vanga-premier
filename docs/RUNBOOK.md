@@ -390,9 +390,44 @@ enabling it on any machine.
   price the product's P&L columns cannot be filled. The strike rate — the only
   thing published — is unaffected.
 
+### 5.8a Results from the same pages (`results` step)
+
+Off unless `BVP_BBC_RESULTS=1`. **Same source, same terms, same exit condition
+as §5.8** — it reads the scores-fixtures page for each date that has a played,
+unsettled tip (last 7 days), and settles at **full time only** through the same
+`settle_tips` the strike rate was measured with. It exists because
+football-data's results file is published on their schedule and not at all
+until the season's file is created, so without it every opening-weekend tip
+sits ungraded and the site shows nothing. With it, a Saturday result settles at
+the Sunday 06:00 cycle. On the server it is a systemd drop-in
+(`Environment=BVP_BBC_RESULTS=1`), like every other setting.
+
+- **`disabled (BVP_BBC_RESULTS unset)`** → the default.
+- **`nothing unsettled`** → no played tip is waiting. Normal midweek.
+- **`N page(s), M full-time; K matched, T tip(s) settled`** → the normal
+  matchday-plus-one line. `matched < full-time` is fine: the page carries every
+  English match and this store only has fixtures it was given.
+- **`no English full-time result on <date>`** (ATTENTION) → a *past* date's
+  page showed English fixtures but none at full time. Either the source did not
+  deliver or the whole day was postponed; the tips stay unsettled and
+  football-data settles them when its file arrives. Today's page is exempt —
+  at 06:00 nothing on it has kicked off.
+- **`unbridged club(s)`** → as §5.8; the same `reference/bbc_teams.csv` fix.
+- **`grade` says `football-data contradicts the settled outcome of tip(s)
+  [...]`** (ATTENTION) → the two sources disagree on a score. The tip is **not**
+  rewritten — the site already showed the call — so look at both and decide;
+  it will keep flagging on every cycle for a fortnight after the match
+  (`RECONCILE_DAYS`) until someone does. Has not happened yet.
+
+Once football-data's file exists, `grade` still fetches it for a fortnight
+after each match so the two sources are compared; §5.9's ATTENTION fires only
+for a tip that is *still* unsettled, so a clean results step and an unpublished
+file is a clean cycle.
+
 ### 5.9 `grade` says no results file published yet
 
-**Expected for the first week or so of a season, and only then.**
+**Expected for the first week or so of a season, and only then** — and only
+for tips the `results` step (§5.8a) has not already settled.
 football-data creates the season directory when its earliest league kicks off
 and adds each division's file once *that division* has played. So between the
 first English matchday and the file appearing, a division can have a played

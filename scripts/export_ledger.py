@@ -2,7 +2,7 @@
 
     python scripts/export_ledger.py            # write docs/gate_ledger.jsonl
     python scripts/export_ledger.py --check    # verify the file matches the DB
-    python scripts/export_ledger.py --restore  # EMPTY ledger only: load the file
+    python scripts/export_ledger.py --restore  # load the file: empty ledger, or append what a prefix lacks
 
 **Why this exists.** `db/premier.db` is 44 MB and all of it is reproducible from
 the tracked CSVs by `engine.ingest.build` -- *except* `gate_ledger`, which is a
@@ -24,12 +24,16 @@ when).
 **This is an export, and `--restore` is its one narrow inverse.** `OUTSTANDING.md`
 §7.5 makes the ledger append-only and says a helper to update or delete it
 "would defeat the purpose". `--restore` is neither: it **refuses unless
-`gate_ledger` has zero rows**, then loads the file with its original ids and
-timestamps and verifies the result matches. That is reconstitution of a store
-that was rebuilt from the CSVs (`engine.ingest.build` does not load this table)
-rather than mutation of one that has history -- owner decision 2026-08-15,
-taken when a fresh machine's first gate would otherwise have written row 1
-instead of row 105. There is still no path that touches an existing row.
+`gate_ledger` is empty or an exact prefix of the file**, then loads the rows
+the ledger lacks with their original ids and timestamps and verifies the result
+matches. The empty case is reconstitution of a store that was rebuilt from the
+CSVs (`engine.ingest.build` does not load this table) -- owner decision
+2026-08-15, taken when a fresh machine's first gate would otherwise have
+written row 1 instead of row 105. The prefix case is a second development
+machine catching up on rows that arrived by `git pull` -- owner decision
+2026-08-17, when this machine held 104 rows against the file's 109. Neither is
+mutation of one that has history: there is still no path that touches an
+existing row.
 
 Output is ordered by `id` with sorted keys, so an appended row is a one-line
 diff and a *changed* row is visible as a change -- which is the property that
@@ -75,28 +79,49 @@ def digest(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
-def restore(conn: sqlite3.Connection, path: Path) -> int:
-    """Load the file into an EMPTY ledger. Returns rows written.
+def classify(on_disk: str, text: str) -> str:
+    """How the file relates to the database: MATCHES, BEHIND (the DB has
+    appended rows the file lacks), AHEAD (the file has rows the DB lacks),
+    or DISAGREES (a row both hold differs)."""
+    if on_disk == text:
+        return "MATCHES"
+    had, has = on_disk.splitlines(), text.splitlines()
+    if has[:len(had)] == had:
+        return "BEHIND"
+    if had[:len(has)] == has:
+        return "AHEAD"
+    return "DISAGREES"
 
-    Refuses on a non-empty ledger rather than merging: a ledger with rows has a
-    history, and reconciling two histories is exactly the update path the
-    append-only convention forbids. Ids and timestamps are written as exported,
-    so `--check` passes afterwards and the next gate lands on the next id.
+
+def restore(conn: sqlite3.Connection, path: Path) -> int:
+    """Load the file's rows into the ledger. Returns rows written.
+
+    Two cases are allowed and one is refused. An EMPTY ledger takes the whole
+    file (a fresh machine). A ledger whose rows are an exact PREFIX of the file
+    takes only the tail -- the case where a gate ran on another machine and its
+    rows arrived by `git pull` (2026-08-17: rows 105-109 were written on a
+    second development machine and this one held 104). Anything else -- rows
+    here the file lacks, or rows that disagree -- is refused rather than merged:
+    reconciling two histories is exactly the update path the append-only
+    convention forbids. Ids and timestamps are written as exported, so
+    `--check` passes afterwards and the next gate lands on the next id.
     """
-    existing = conn.execute("SELECT COUNT(*) FROM gate_ledger").fetchone()[0]
-    if existing:
-        raise SystemExit(f"refusing: gate_ledger already holds {existing} row(s); "
-                         "--restore is for an empty ledger only")
     records = [json.loads(line) for line in
                path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    existing = rows(conn)
+    if existing and render(records[:len(existing)]) != render(existing):
+        raise SystemExit(f"refusing: gate_ledger holds {len(existing)} row(s) that are "
+                         "not a prefix of the file; the ledger is append-only, so "
+                         "investigate rather than merge")
+    missing = records[len(existing):]
     conn.executemany(
         f"INSERT INTO gate_ledger ({','.join(COLUMNS)}) "
         f"VALUES ({','.join('?' for _ in COLUMNS)})",
-        [tuple(r[c] for c in COLUMNS) for r in records])
+        [tuple(r[c] for c in COLUMNS) for r in missing])
     conn.commit()
     if render(rows(conn)) != render(records):
         raise SystemExit("restore wrote rows that do not read back identically")
-    return len(records)
+    return len(missing)
 
 
 def main(argv=None) -> int:
@@ -104,7 +129,8 @@ def main(argv=None) -> int:
     parser.add_argument("--check", action="store_true",
                         help="compare the DB against the file; write nothing")
     parser.add_argument("--restore", action="store_true",
-                        help="load the file into an EMPTY gate_ledger")
+                        help="load the file into an EMPTY gate_ledger, or append "
+                             "the rows an exact-prefix ledger is missing")
     parser.add_argument("--out", type=Path, default=OUT)
     args = parser.parse_args(argv)
 
@@ -125,17 +151,23 @@ def main(argv=None) -> int:
             print(f"MISSING {config.relpath(args.out)}", file=sys.stderr)
             return 1
         on_disk = args.out.read_text(encoding="utf-8")
-        if on_disk == text:
+        shape = classify(on_disk, text)
+        if shape == "MATCHES":
             print(f"{config.relpath(args.out)} matches the database")
             return 0
         # Report the shape of the difference rather than just "differs": a
-        # ledger that has GAINED rows is the normal case and wants an export,
-        # while one that has LOST or CHANGED rows is the thing the append-only
-        # convention exists to prevent, and the two need different reactions.
-        had, has = on_disk.splitlines(), text.splitlines()
-        if has[:len(had)] == had:
-            print(f"file is BEHIND by {len(has) - len(had)} appended row(s) "
+        # ledger that has GAINED rows is the normal case and wants an export;
+        # a file that is AHEAD means a gate ran on another machine and its rows
+        # arrived by `git pull`, and wants --restore; one that has LOST or
+        # CHANGED rows is the thing the append-only convention exists to
+        # prevent, and the three need different reactions.
+        had, has = len(on_disk.splitlines()), len(text.splitlines())
+        if shape == "BEHIND":
+            print(f"file is BEHIND by {has - had} appended row(s) "
                   f"-- re-run without --check")
+        elif shape == "AHEAD":
+            print(f"file is AHEAD by {had - has} row(s) -- the ledger was "
+                  f"appended to elsewhere; re-run with --restore to load them")
         else:
             print("file DISAGREES on rows it already had -- the ledger is "
                   "append-only, so investigate before overwriting",

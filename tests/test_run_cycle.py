@@ -434,6 +434,146 @@ def test_grading_still_runs_when_only_tips_are_unsettled(conn, monkeypatch):
     assert step.status is not Status.FAILED, step.detail
 
 
+# --- the results step ------------------------------------------------------
+
+
+def test_the_results_step_is_off_unless_the_flag_is_set(conn, monkeypatch):
+    """Same recorded decision and exit condition as the calendar
+    (`OUTSTANDING.md` §4.5). Off must mean no request at all."""
+    _unsettled_tip(conn)
+
+    def explode(*a, **k):
+        raise AssertionError("must not reach the network when disabled")
+
+    monkeypatch.setattr(run_cycle.bbc_results, "fetch", explode)
+    monkeypatch.setattr(run_cycle.config, "BBC_RESULTS_ENABLED", False)
+
+    step = run_cycle.step_results(conn, dry_run=True)
+
+    assert step.status is Status.OK
+    assert "disabled" in step.detail
+
+
+def test_the_results_step_settles_a_played_tip_from_the_page(conn, monkeypatch):
+    """A Friday tip settles at the Saturday cycle, without football-data."""
+    from tests.test_bbc_results import played
+    from tests.test_bbc_calendar import page
+
+    monkeypatch.setattr(run_cycle.config, "BBC_RESULTS_ENABLED", True)
+    _unsettled_tip(conn, "E0", date="2026-08-14")            # Arsenal (1) v Chelsea (2), tip H
+    html = page(played("arsenal", "chelsea", 2, 1, date="2026-08-14",
+                       tournament="urn:bbc:sportsdata:football:tournament:premier-league"))
+    fetched = []
+
+    def fake_collect(dates, **kwargs):
+        fetched.extend(dates)
+        return [(d, html) for d in dates]
+
+    monkeypatch.setattr(run_cycle.bbc_results, "collect", fake_collect)
+
+    step = run_cycle.step_results(conn, dry_run=False, today=pd.Timestamp("2026-08-15"))
+
+    assert step.status is Status.OK, step.detail
+    assert fetched == ["2026-08-14"]
+    assert "1 tip(s) settled" in step.detail
+    assert conn.execute("SELECT outcome FROM tips").fetchone()[0] == "win"
+
+
+def test_the_results_step_fetches_nothing_when_nothing_is_pending(conn, monkeypatch):
+    monkeypatch.setattr(run_cycle.config, "BBC_RESULTS_ENABLED", True)
+
+    def explode(*a, **k):
+        raise AssertionError("no pending tip, no request")
+
+    monkeypatch.setattr(run_cycle.bbc_results, "collect", explode)
+    step = run_cycle.step_results(conn, dry_run=True)
+    assert step.status is Status.OK and step.detail == "nothing unsettled"
+
+
+def test_a_past_page_with_no_full_time_result_is_attention_but_today_is_not(
+        conn, monkeypatch):
+    """At 06:00 UTC today's page is all PreEvent, which is not a failure.
+    Yesterday's page being all PreEvent means the source did not deliver."""
+    from tests.test_bbc_calendar import event, page
+
+    monkeypatch.setattr(run_cycle.config, "BBC_RESULTS_ENABLED", True)
+    _unsettled_tip(conn, "E0", date="2026-08-14")
+    pre = page(event("arsenal", "chelsea", date="2026-08-14",
+                     tournament="urn:bbc:sportsdata:football:tournament:premier-league"))
+    monkeypatch.setattr(run_cycle.bbc_results, "collect",
+                        lambda dates, **k: [(d, pre) for d in dates])
+
+    same_day = run_cycle.step_results(conn, dry_run=True, today=pd.Timestamp("2026-08-14"))
+    next_day = run_cycle.step_results(conn, dry_run=True, today=pd.Timestamp("2026-08-15"))
+
+    assert same_day.status is Status.OK, same_day.detail
+    assert next_day.status is Status.ATTENTION
+    assert "no English full-time result on 2026-08-14" in next_day.detail
+
+
+def test_a_failing_results_source_does_not_stop_the_cycle(conn, monkeypatch):
+    monkeypatch.setattr(run_cycle.config, "BBC_RESULTS_ENABLED", True)
+    _unsettled_tip(conn)
+
+    def boom(*a, **k):
+        raise TimeoutError("bbc.com unreachable")
+
+    monkeypatch.setattr(run_cycle.bbc_results, "collect", boom)
+    step = run_cycle.step_results(conn, dry_run=True)
+    assert step.status is Status.FAILED and "TimeoutError" in step.detail
+
+
+def test_grade_bounds_on_the_cycle_clock_not_the_wall_clock(conn, monkeypatch):
+    """`today` is threaded into `step_grade` like every other step, so a cycle
+    run with an explicit date is deterministic end to end (`OUTSTANDING.md` §6)."""
+    _unsettled_tip(conn, date="2026-08-14")
+
+    def explode(*a, **k):
+        raise AssertionError("must not fetch for a fixture the cycle's clock has not reached")
+
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", explode)
+    step = run_cycle.step_grade(conn, dry_run=True, today=pd.Timestamp("2026-08-13"))
+    assert step.detail == "nothing unsettled"
+
+
+def test_a_tip_already_settled_from_the_page_does_not_wait_on_the_file(conn, monkeypatch):
+    """The point of the results step: the opening weekend's tips are settled
+    and shown while football-data's file does not exist yet, and that is a
+    clean cycle -- the file is still asked for, so the two sources can be
+    reconciled when it appears, but its absence is not ATTENTION."""
+    _unsettled_tip(conn, "E0", date="2026-08-14")
+    conn.execute("UPDATE tips SET settled_at='2026-08-15', outcome='win'")
+    conn.commit()
+    asked = []
+
+    def unpublished(division, season, **kwargs):
+        asked.append((division, season))
+        raise run_cycle.csv_grader.ResultsNotPublished("not yet")
+
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", unpublished)
+
+    step = run_cycle.step_grade(conn, dry_run=True, today=pd.Timestamp("2026-08-15"))
+
+    assert asked == [("E0", "2627")]
+    assert step.status is Status.OK, step.detail
+
+
+def test_grade_flags_a_tip_football_data_disagrees_with(conn, monkeypatch):
+    _unsettled_tip(conn, "E0", date="2026-08-14")
+    conn.execute("UPDATE tips SET settled_at='2026-08-15', outcome='lose'")   # settled from BBC
+    conn.commit()
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "text")
+    monkeypatch.setattr(run_cycle.csv_grader, "parse_results", lambda text: [{
+        "division": "E0", "match_date": "2026-08-14", "home": "Arsenal", "away": "Chelsea",
+        "fthg": 2, "ftag": 1, "ftr": "H", "raw": {}}])
+
+    step = run_cycle.step_grade(conn, dry_run=True, today=pd.Timestamp("2026-08-15"))
+
+    assert step.status is Status.ATTENTION, step.detail
+    assert "contradicts the settled outcome" in step.detail
+    assert conn.execute("SELECT outcome FROM tips").fetchone()[0] == "lose"
+
+
 def _unsettled_tip(conn, division="E1", date="2026-08-14"):
     add_fixture(conn, division, 1, 2, date=date)
     fixture_id = conn.execute("SELECT fixture_id FROM fixtures").fetchone()[0]

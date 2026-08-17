@@ -230,6 +230,51 @@ def test_the_ledger_export_is_current():
         f"difference, then re-export and commit the diff.")
 
 
+def _ledger_with(tmp_path, name, arms):
+    conn = db.connect(tmp_path / f"{name}.db")
+    db.migrate(conn)
+    _ledger(conn, [(f"g{i}", a) for i, a in enumerate(arms)])
+    return conn
+
+
+def test_check_names_the_shape_of_the_difference(tmp_path):
+    """`--check` has three non-matching shapes and each wants a different
+    reaction: BEHIND is the normal post-gate state and wants an export; AHEAD
+    is a gate that ran on another machine and arrived by `git pull`
+    (2026-08-17, rows 105-109) and wants `--restore`; DISAGREES is the
+    append-only violation. AHEAD used to fall through to DISAGREES."""
+    export = _export_ledger_module()
+    text = lambda conn: export.render(export.rows(conn))  # noqa: E731
+    two = text(_ledger_with(tmp_path, "two", [["a"], ["b"]]))
+    three = text(_ledger_with(tmp_path, "three", [["a"], ["b"], ["c"]]))
+    other = text(_ledger_with(tmp_path, "other", [["a"], ["z"]]))
+
+    assert export.classify(on_disk=three, text=three) == "MATCHES"
+    assert export.classify(on_disk=two, text=three) == "BEHIND"
+    assert export.classify(on_disk=three, text=two) == "AHEAD"
+    assert export.classify(on_disk=three, text=other) == "DISAGREES"
+
+
+def test_restore_appends_only_what_a_prefix_ledger_lacks(tmp_path):
+    export = _export_ledger_module()
+    three = _ledger_with(tmp_path, "three", [["a"], ["b"], ["c"]])
+    out = tmp_path / "ledger.jsonl"
+    out.write_text(export.render(export.rows(three)), encoding="utf-8")
+
+    empty = db.connect(tmp_path / "empty.db"); db.migrate(empty)
+    assert export.restore(empty, out) == 3
+    assert export.render(export.rows(empty)) == out.read_text(encoding="utf-8")
+
+    two = _ledger_with(tmp_path, "two", [["a"], ["b"]])
+    assert export.restore(two, out) == 1                     # the tail only
+    assert export.render(export.rows(two)) == out.read_text(encoding="utf-8")
+    assert export.restore(two, out) == 0                     # idempotent
+
+    other = _ledger_with(tmp_path, "other", [["a"], ["z"]])
+    with pytest.raises(SystemExit, match="not a prefix"):
+        export.restore(other, out)
+
+
 def _export_ledger_module():
     """`scripts/` is not a package and the script is invoked by path, so it is
     loaded by location. Importing it rather than re-implementing the comparison

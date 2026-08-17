@@ -47,7 +47,7 @@ import pandas as pd
 
 from engine import config, db
 from engine.serve import cycle, tips
-from services import bbc_calendar, csv_grader, fixture_sync
+from services import bbc_calendar, bbc_results, csv_grader, fixture_sync
 
 #: Refit once the frozen artifact is older than this. P1's H1 measured
 #: day-frozen refits worth 0.00007 nats over weekly, so weekly is what the base
@@ -73,6 +73,12 @@ TIP_CEILING = tips.DEFAULT_CEILING
 #: more than one refit old -- the same horizon football-data's feed gives when
 #: it is working, which is what keeps this a fallback rather than a new product.
 CALENDAR_DAYS = 7
+
+#: How long after a match `step_grade` keeps pulling football-data's file for
+#: tips already settled from the BBC page, so `csv_grader.reconcile_tips` gets
+#: to compare the two sources. Two weeks comfortably outlasts the file's
+#: publication lag; the cost is one small CSV per served division per cycle.
+RECONCILE_DAYS = 14
 
 
 class Status(IntEnum):
@@ -235,8 +241,15 @@ def step_serve(conn: sqlite3.Connection, report: CycleReport, *,
     return _guard(Step("serve"), work)
 
 
-def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
+def step_grade(conn: sqlite3.Connection, *, dry_run: bool,
+               today: pd.Timestamp | None = None) -> Step:
     """Settle played fixtures, write CLV, and settle published tips.
+
+    `today` is the cycle's clock, the same one `step_serve` and `step_results`
+    are given. It used to bound on SQL `date('now')` instead, so a cycle run
+    with an explicit `today` was only partly deterministic (`OUTSTANDING.md`
+    §6); the second results step made two adjacent steps on two clocks
+    untenable. Identical in production, where the machine is UTC.
 
     The pending query spans `paper_bets` **and** `tips`. It used to read
     `paper_bets` alone, which was right while that was the only thing needing
@@ -254,6 +267,8 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
     condition, including the redirect shape that returns a 200.
     """
 
+    day = str(pd.Timestamp(today or pd.Timestamp.now().normalize()).date())
+
     def work(step: Step) -> None:
         # **Played fixtures only.** The v1 tip rule covered 14.4% of matches so
         # unsettled rows were rare; v2 covers 100%, which means every future
@@ -264,24 +279,39 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
         pending = conn.execute(
             "SELECT DISTINCT f.division, f.match_date FROM paper_bets b"
             " JOIN fixtures f ON f.fixture_id = b.fixture_id"
-            " WHERE b.settled_at IS NULL AND f.match_date <= date('now')"
+            " WHERE b.settled_at IS NULL AND f.match_date <= ?"
             " UNION"
             " SELECT DISTINCT f.division, f.match_date FROM tips t"
             " JOIN fixtures f ON f.fixture_id = t.fixture_id"
-            " WHERE t.settled_at IS NULL AND f.match_date <= date('now')"
+            " WHERE t.settled_at IS NULL AND f.match_date <= ?", (day, day),
         ).fetchall()
-        if not pending:
+        # **Recently settled tips pull the file too, to be reconciled.** With
+        # `step_results` on, every played tip is settled from the BBC page
+        # before this step runs, so "unsettled" alone would never fetch
+        # football-data again and `reconcile_tips` would never see a match.
+        # A file that is not published yet is only ATTENTION when something
+        # genuinely unsettled is waiting on it.
+        recent = conn.execute(
+            "SELECT DISTINCT f.division, f.match_date FROM tips t"
+            " JOIN fixtures f ON f.fixture_id = t.fixture_id"
+            " WHERE t.settled_at IS NOT NULL AND f.match_date <= ?"
+            " AND f.match_date >= date(?, ?)", (day, day, f"-{RECONCILE_DAYS} days"),
+        ).fetchall()
+        if not pending and not recent:
             step.detail = "nothing unsettled"
             return
-        seasons = {(r["division"], csv_grader.season_for(r["match_date"]))
+        waiting = {(r["division"], csv_grader.season_for(r["match_date"]))
                    for r in pending}
+        seasons = waiting | {(r["division"], csv_grader.season_for(r["match_date"]))
+                             for r in recent}
         total = csv_grader.GradeReport()
         unpublished, mismatched = [], []
         for division, season in sorted(seasons):
             try:
                 text = csv_grader.fetch(division, season)
             except csv_grader.ResultsNotPublished:
-                unpublished.append(f"{division}/{season}")
+                if (division, season) in waiting:
+                    unpublished.append(f"{division}/{season}")
                 continue
             parsed = csv_grader.parse_results(text)
             rows = [r for r in parsed if r["division"] == division]
@@ -295,6 +325,7 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
             total.settled += got.settled
             total.graded += got.graded
             total.tips_settled += got.tips_settled
+            total.disagreed += got.disagreed
         # Set before flagging: `flag` appends to `detail`, so an assignment
         # after it would wipe the notes.
         step.detail = (f"{total.results_seen} result(s), {total.settled} settled, "
@@ -308,8 +339,53 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
             step.flag(Status.ATTENTION,
                       f"{', '.join(mismatched)} parsed but carried no row of that "
                       "division -- check the feed's Div column")
+        if total.disagreed:
+            step.flag(Status.ATTENTION,
+                      f"football-data contradicts the settled outcome of tip(s) "
+                      f"{total.disagreed} -- settled from the BBC page; check both")
 
     return _guard(Step("grade"), work)
+
+
+def step_results(conn: sqlite3.Connection, *, dry_run: bool,
+                 today: pd.Timestamp | None = None) -> Step:
+    """Settle tips from BBC full-time scores, ahead of football-data's file.
+
+    Runs **before** `grade`, so a Saturday result settles at the Sunday cycle
+    rather than whenever football-data publishes the season's CSV -- which for
+    the opening weeks is not at all. It reads only tips, only through
+    `csv_grader.settle_tips`, and only at full time; `grade` then runs as before
+    and, once the file exists, `csv_grader.reconcile_tips` reports any tip the
+    two sources disagree on.
+
+    Enabled only by `BVP_BBC_RESULTS=1` -- the same recorded decision and exit
+    condition as the calendar (`OUTSTANDING.md` §4.5). A page for a *past* date
+    that shows English fixtures but no full-time result is ATTENTION: the
+    source did not deliver what it exists to deliver. Today's page is exempt --
+    at 06:00 UTC nothing on it has kicked off.
+    """
+    day = str(pd.Timestamp(today or pd.Timestamp.now().normalize()).date())
+
+    def work(step: Step) -> None:
+        dates = bbc_results.pending_dates(conn, day)
+        if not dates:
+            step.detail = "nothing unsettled"
+            return
+        report = bbc_results.settle(conn, bbc_results.collect(dates), dry_run=dry_run)
+        step.detail = (f"{report.pages} page(s), {report.full_time} full-time; "
+                       f"{report.matched} matched, {report.tips_settled} tip(s) settled")
+        stale = [d for d in report.empty_pages if d < day]
+        if stale:
+            step.flag(Status.ATTENTION,
+                      f"no English full-time result on {', '.join(stale)}; "
+                      "those tips stay unsettled")
+        if not report.report.clean:
+            step.flag(Status.ATTENTION,
+                      "unbridged club(s); add to reference/bbc_teams.csv")
+
+    if not config.BBC_RESULTS_ENABLED:
+        return Step("results", detail="disabled (BVP_BBC_RESULTS unset)")
+    return _guard(Step("results"), work)
 
 
 def step_tips(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
@@ -375,7 +451,8 @@ def run(conn: sqlite3.Connection, *, dry_run: bool = False, refreeze: bool = Fal
     report.steps.append(step_serve(conn, report, dry_run=dry_run,
                                    refreeze=refreeze, today=today))
     report.steps.append(step_tips(conn, dry_run=dry_run))
-    report.steps.append(step_grade(conn, dry_run=dry_run))
+    report.steps.append(step_results(conn, dry_run=dry_run, today=today))
+    report.steps.append(step_grade(conn, dry_run=dry_run, today=today))
 
     if not dry_run:
         # Written even when a step failed: an unattended run that left no trace

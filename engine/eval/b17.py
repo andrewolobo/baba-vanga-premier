@@ -130,9 +130,10 @@ def diagnose(frame: pd.DataFrame, joint: np.ndarray) -> dict:
         out[d] = row
         p2 = row["residual_by_under_bucket"][f"[{P2_BUCKET[0]:.2f},{P2_BUCKET[1]:.2f})"]
         f = lambda c: f"{c['value']:+.3f} [{c['ci_low']:+.3f},{c['ci_high']:+.3f}]"  # noqa: E731
+        p2_cell = (f(p2) + f" n={p2['n']:,}") if "value" in p2 else "n<50"
         print(f"    {d:>4} {row['n']:>6,} {f(row['dispersion_ratio']):>24} "
               f"{f(row['relative_level']):>22} {f(row['residual_all']):>22} "
-              f"{(f(p2) + f' n={p2['n']:,}') if 'value' in p2 else 'n<50':>26}")
+              f"{p2_cell:>26}")
 
     key = f"[{P2_BUCKET[0]:.2f},{P2_BUCKET[1]:.2f})"
     ctl = out[CONTROL]

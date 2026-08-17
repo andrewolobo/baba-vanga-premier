@@ -7,7 +7,42 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-16**, after **P7 ran** — `P7_TIPSTER_PLAN.md` →
+Last updated **2026-08-17** (later the same day), after **results from the BBC
+pages shipped** — §4.8. Owner request: the site showed nothing for three days
+after the EFL opening weekend because the only results source was
+football-data's per-season CSV, which did not exist yet. `services/bbc_results.py`
+reads the *same* pages as the calendar (§4.5 — same terms, same exit condition,
+own switch `BVP_BBC_RESULTS=1`), settles tips at **full time only** through the
+same `settle_tips` the strike rate was measured with, and touches nothing else.
+`grade` now also pulls football-data's file for a fortnight after each match
+and `csv_grader.reconcile_tips` names any tip the two sources disagree on
+(ATTENTION, not rewritten). Free finding: **11 Premier League clubs were
+missing from `reference/bbc_teams.csv`** — the map was built from sampled pages
+on which they never played — added from the 2026-05-24 page. Also: `today` is
+now threaded into `step_grade` (§6's asymmetry, closed). Validated on live
+pages: 32/32 EFL results on 2026-08-15 parse and bridge; a dry run on this
+machine's DB would settle 32 of its 33 tips. **588 pass.** No ledger row —
+grading reads outcomes to *record* them, not to choose anything.
+
+Before that, earlier on **2026-08-17**, after a **two-machine ledger catch-up** — no
+measurement, no new row. `893ae1e` (P7 + B17, ledger rows 105–109) was authored
+on a second development machine and arrived on the primary one by `git pull`,
+whose `db/premier.db` still held 104 rows: the tracked file was **ahead** of
+the database, a shape `export_ledger.py --check` mislabelled as DISAGREES and
+`--restore` (empty ledger only) could not repair. **Owner decision: the primary
+machine's database is the authority.** It was brought to 109 by extending
+`--restore` to append the tail when the ledger is an exact prefix of the file
+(refusing anything else — no existing row is ever touched), `--check` now names
+AHEAD as its own shape, and both have tests. Re-derived afterwards:
+**109 / 66 / 201**, file matches. Also fixed: `engine/eval/b17.py` used a
+Python 3.12-only nested f-string, so `python -m pytest` on the 3.11 primary
+machine failed at collection of `tests/test_b17.py` and ran nothing — the
+"535 pass" quoted for 2026-08-16 was produced on the second machine. **563 pass**
+on 3.11. `pyproject.toml`'s `>=3.11` stands. **Convention for two machines:**
+a gate is finished when its rows are exported *and* the other machine has run
+`--restore`; the next gate must run on the authority machine or the ids fork.
+
+Before that, **2026-08-16**, after **P7 ran** — `P7_TIPSTER_PLAN.md` →
 `TIPSTER.md`, rows **105–108**, **197 → 201 configurations** as declared. Three
 things. **The shipped v2 rule's return is now measured** (B7 closes): −4.56%
 [−5.56, −3.60] ✱ at average derived prices, +0.11% [−0.94, +1.10] at best; the
@@ -1555,6 +1590,57 @@ Four things worth carrying forward.
 
 ---
 
+### 4.8 Results from the BBC pages — **SHIPPED 2026-08-17**
+
+`services/bbc_results.py`, `run_cycle.step_results` (before `grade`), off unless
+`BVP_BBC_RESULTS=1`. Tests `tests/test_bbc_results.py` against a real page cut
+to six events (`tests/data/bbc_results_2026-08-15.html`), plus cycle and grader
+tests. RUNBOOK §5.8a.
+
+**Why.** Three days after the EFL opening weekend the site showed no result
+for any tip. Nothing was wrong: `csv_grader` grades from football-data's
+per-season CSV, which is created on their schedule and did not exist. The BBC
+page the calendar already reads carries every played match as `PostEvent` /
+`FT` / `runningScores.fulltime`, so a second results source cost one module.
+
+**Scope, deliberately narrow.** It settles `tips` and only `tips`, only at
+full time (in-play, postponed and abandoned never settle), only through
+`csv_grader.settle_tips`, and never touches `fixtures` — a result for a match
+this store has no fixture for is dropped, because there can be no tip on it and
+inserting a played fixture would be a backfill. CLV needs closing odds the page
+does not carry, so it stays with football-data (moot while the book is off).
+
+**Same terms as §4.5.** This is the same access to bbc.com under the same
+robots.txt, so it inherits the 2026-08-12 decision whole: validation aid,
+retire at a commercial feed or public launch, whichever comes first. A launch
+needs a licensed results source as much as a fixture source.
+
+**Reconciliation, without a schema change.** football-data is still the
+authority. `step_grade` now pulls the file for a fortnight after each match
+(`RECONCILE_DAYS`) even when nothing is unsettled, and `reconcile_tips` names
+any settled tip whose stored outcome the file contradicts — ATTENTION every
+cycle until someone looks; the tip is not rewritten because the site already
+showed the call. The "file not published yet" ATTENTION now fires only when a
+genuinely unsettled tip is waiting on it, so BBC-settled tips plus an absent
+file is a clean cycle. This was found by a test, not by design: the first
+draft's `grade` saw "nothing unsettled" and would never have fetched the file
+again.
+
+**Free finding: the BBC club map was 11 clubs short**, all Premier League —
+Villa, Bournemouth, Chelsea, Palace, Everton, Leeds, Liverpool, both
+Manchesters, Forest, Spurs. §4.5's "168/168 sampled" was about URN presence on
+the sampled pages, not coverage of the served clubs, and E0 had not played on
+any sampled date (a World Cup year; E0 starts a week later). Read off the
+2026-05-24 page, added to `reference/bbc_teams.csv`, aliases rebuilt. Without
+this the first E0 matchday would have been 20 unbridged results.
+
+**Not built:** `void` for postponed/abandoned matches (nothing writes it under
+either source; the tip stays unsettled), and a second daily run for same-day
+results (safe — tips are `UNIQUE (fixture_id, rule_version)` — but not asked
+for).
+
+---
+
 ## 5. Deferred by decision (not forgotten)
 
 | item                              | where it went                     | why                                                                                                                                                  |
@@ -1606,6 +1692,9 @@ Four things worth carrying forward.
     explicit `today` is only partly deterministic. Harmless today. The structural
     fix is to thread `today` through, which is a production change and wants its
     own decision rather than arriving inside a test repair.
+    **Closed 2026-08-17** with §4.8: a second step on the same clock made two
+    adjacent steps on two clocks untenable, so `today` now reaches `step_grade`
+    and `step_results`; `test_grade_bounds_on_the_cycle_clock_not_the_wall_clock`.
 - `engine/eval/p1.py` trips a cognitive-complexity lint in `h9_baseline` and
   carries two duplicated string literals. Cosmetic.
 - `db/artifacts/` is gitignored as reproducible output. If artifacts that

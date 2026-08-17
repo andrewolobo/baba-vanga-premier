@@ -55,6 +55,10 @@ BBC_TEAMS_CSV = REFERENCE_DIR / "bbc_teams.csv"
 #: set, because running it is a recorded decision with an exit condition rather
 #: than a default -- `OUTSTANDING.md` §4.5.
 BBC_CALENDAR_ENABLED = setting("BVP_BBC_CALENDAR") == "1"
+#: Opt-in for full-time results from the same pages (`services.bbc_results`),
+#: which settle tips before football-data publishes the season's file. Same
+#: decision, same exit condition; a separate switch so either can run alone.
+BBC_RESULTS_ENABLED = setting("BVP_BBC_RESULTS") == "1"
 
 DB_DIR = REPO_ROOT / "db"
 MIGRATIONS_DIR = DB_DIR / "migrations"

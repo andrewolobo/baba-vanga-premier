@@ -195,6 +195,36 @@ def test_a_result_with_no_matching_fixture_is_ignored(conn):
     assert report.settled == 0
 
 
+def _tip(conn, side="H", outcome=None):
+    conn.execute(
+        "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
+        " rule_version, settled_at, outcome) VALUES (1, 1, ?, 0.62, 0.55, 'test', ?, ?)",
+        (side, "2026-08-16" if outcome else None, outcome))
+    conn.commit()
+
+
+def test_a_tip_settled_elsewhere_that_this_feed_agrees_with_is_left_alone(conn):
+    """`services/bbc_results.py` settles at full time, days before this file
+    exists. Arsenal won; the tip says win; nothing to report, nothing rewritten."""
+    _tip(conn, "H", outcome="win")
+    report = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    assert report.disagreed == [] and report.tips_settled == 0
+    assert conn.execute("SELECT settled_at FROM tips").fetchone()[0] == "2026-08-16"
+
+
+def test_a_tip_settled_elsewhere_that_this_feed_contradicts_is_named_not_rewritten(conn):
+    """The timely source said lose; the authority says Arsenal won. The record
+    is not silently corrected -- the site already showed the call -- but the
+    disagreement is surfaced, because a wrong score in the timely source is
+    the failure that would otherwise be invisible."""
+    _tip(conn, "H", outcome="lose")
+    report = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
+    tip_id = conn.execute("SELECT tip_id FROM tips").fetchone()[0]
+    assert report.disagreed == [tip_id]
+    assert conn.execute("SELECT outcome FROM tips").fetchone()[0] == "lose"
+    assert "different outcome" in report.describe()
+
+
 def test_season_path_follows_the_football_season_not_the_calendar_year():
     assert csv_grader.season_for("2026-08-15") == "2627"
     assert csv_grader.season_for("2027-05-20") == "2627"

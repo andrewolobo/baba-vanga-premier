@@ -16,6 +16,7 @@ Altrincham,football-data,Altrincham
 Arsenal,bbc,urn:bbc:sportsdata:football:team:arsenal
 Arsenal,fbref,Arsenal
 Arsenal,football-data,Arsenal
+Aston Villa,bbc,urn:bbc:sportsdata:football:team:aston-villa
 Aston Villa,fbref,Aston Villa
 Aston Villa,football-data,Aston Villa
 Barnet,bbc,urn:bbc:sportsdata:football:team:barnet
@@ -47,6 +48,7 @@ Boreham Wood,football-data,Boreham Wood
 Boston Utd,bbc,urn:bbc:sportsdata:football:team:boston-united
 Boston Utd,fbref,Boston United
 Boston Utd,football-data,Boston Utd
+Bournemouth,bbc,urn:bbc:sportsdata:football:team:afc-bournemouth
 Bournemouth,fbref,Bournemouth
 Bournemouth,football-data,Bournemouth
 Brackley Town,fbref,Brackley Town
@@ -91,6 +93,7 @@ Carlisle,football-data,Carlisle
 Charlton,bbc,urn:bbc:sportsdata:football:team:charlton-athletic
 Charlton,fbref,Charlton Athletic
 Charlton,football-data,Charlton
+Chelsea,bbc,urn:bbc:sportsdata:football:team:chelsea
 Chelsea,fbref,Chelsea
 Chelsea,football-data,Chelsea
 Cheltenham,bbc,urn:bbc:sportsdata:football:team:cheltenham-town
@@ -115,6 +118,7 @@ Crawley Town,football-data,Crawley Town
 Crewe,bbc,urn:bbc:sportsdata:football:team:crewe-alexandra
 Crewe,fbref,Crewe Alexandra
 Crewe,football-data,Crewe
+Crystal Palace,bbc,urn:bbc:sportsdata:football:team:crystal-palace
 Crystal Palace,fbref,Crystal Palace
 Crystal Palace,football-data,Crystal Palace
 Dag and Red,fbref,Dag & Red
@@ -140,6 +144,7 @@ Eastleigh,fbref,Eastleigh
 Eastleigh,football-data,Eastleigh
 Ebbsfleet,fbref,Ebbsfleet United
 Ebbsfleet,football-data,Ebbsfleet
+Everton,bbc,urn:bbc:sportsdata:football:team:everton
 Everton,fbref,Everton
 Everton,football-data,Everton
 Exeter,bbc,urn:bbc:sportsdata:football:team:exeter-city
@@ -204,6 +209,7 @@ Kidderminster,fbref,Kidderminster
 Kidderminster,football-data,Kidderminster
 King’s Lynn,fbref,King's Lynn
 King’s Lynn,football-data,King’s Lynn
+Leeds,bbc,urn:bbc:sportsdata:football:team:leeds-united
 Leeds,fbref,Leeds United
 Leeds,football-data,Leeds
 Leicester,bbc,urn:bbc:sportsdata:football:team:leicester-city
@@ -215,6 +221,7 @@ Leyton Orient,football-data,Leyton Orient
 Lincoln,bbc,urn:bbc:sportsdata:football:team:lincoln-city
 Lincoln,fbref,Lincoln City
 Lincoln,football-data,Lincoln
+Liverpool,bbc,urn:bbc:sportsdata:football:team:liverpool
 Liverpool,fbref,Liverpool
 Liverpool,football-data,Liverpool
 Luton,bbc,urn:bbc:sportsdata:football:team:luton-town
@@ -226,8 +233,10 @@ Maidenhead,fbref,Maidenhead
 Maidenhead,football-data,Maidenhead
 Maidstone,fbref,Maidstone Utd
 Maidstone,football-data,Maidstone
+Man City,bbc,urn:bbc:sportsdata:football:team:manchester-city
 Man City,fbref,Manchester City
 Man City,football-data,Man City
+Man United,bbc,urn:bbc:sportsdata:football:team:manchester-united
 Man United,fbref,Manchester Utd
 Man United,football-data,Man United
 Mansfield,bbc,urn:bbc:sportsdata:football:team:mansfield-town
@@ -258,6 +267,7 @@ Northampton,football-data,Northampton
 Norwich,bbc,urn:bbc:sportsdata:football:team:norwich-city
 Norwich,fbref,Norwich City
 Norwich,football-data,Norwich
+Nott'm Forest,bbc,urn:bbc:sportsdata:football:team:nottingham-forest
 Nott'm Forest,fbref,Nottingham
 Nott'm Forest,football-data,Nott'm Forest
 Notts County,bbc,urn:bbc:sportsdata:football:team:notts-county
@@ -360,6 +370,7 @@ Telford United,football-data,Telford United
 Torquay,fbref,Torquay
 Torquay,fbref,Torquay United
 Torquay,football-data,Torquay
+Tottenham,bbc,urn:bbc:sportsdata:football:team:tottenham-hotspur
 Tottenham,fbref,Tottenham
 Tottenham,football-data,Tottenham
 Tranmere,bbc,urn:bbc:sportsdata:football:team:tranmere-rovers

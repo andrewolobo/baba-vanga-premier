@@ -63,6 +63,7 @@ class GradeReport:
     graded: int = 0
     tips_settled: int = 0
     unmatched: list = field(default_factory=list)
+    disagreed: list = field(default_factory=list)   # tip ids settled elsewhere that this feed contradicts
 
     def describe(self) -> str:
         lines = [f"{self.results_seen} result(s) seen; "
@@ -70,6 +71,9 @@ class GradeReport:
                  f"{self.tips_settled} tip(s) settled"]
         if self.unmatched:
             lines.append(f"  {len(self.unmatched)} fixture(s) had bets but no result yet")
+        if self.disagreed:
+            lines.append(f"  {len(self.disagreed)} tip(s) already settled with a different "
+                         f"outcome: {self.disagreed}")
         return "\n".join(lines)
 
 
@@ -232,6 +236,29 @@ def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
     return len(tips)
 
 
+def reconcile_tips(conn: sqlite3.Connection, fixture_id: int, result: dict) -> list[int]:
+    """Tip ids on this fixture already settled with an outcome this result contradicts.
+
+    A second results source (`services/bbc_results.py`) may settle a tip days
+    before football-data publishes the file. This is football-data's chance to
+    disagree: the tip is *not* re-settled -- the site has already shown the
+    call -- but a disagreement is surfaced as ATTENTION by the cycle, because a
+    wrong score in the timely source is exactly the failure that would
+    otherwise be invisible.
+    """
+    rows = conn.execute(
+        "SELECT tip_id, side, outcome FROM tips WHERE fixture_id=?"
+        " AND outcome IN ('win', 'lose')", (fixture_id,),
+    ).fetchall()
+    out = []
+    for tip in rows:
+        won = bool(selection._won(np.array([tip["side"]]),
+                                  np.array([result["ftr"]]))[0])
+        if ("win" if won else "lose") != tip["outcome"]:
+            out.append(tip["tip_id"])
+    return out
+
+
 def _devigged_at_bet(market: str, side: str, odds) -> float | None:
     """The market's opinion at bet time, de-vigged.
 
@@ -291,6 +318,7 @@ def grade(conn: sqlite3.Connection, results: list[dict], *,
         if fixture is None:
             continue
 
+        out.disagreed += reconcile_tips(conn, fixture["fixture_id"], result)
         out.tips_settled += settle_tips(conn, fixture["fixture_id"], result,
                                         dry_run=dry_run)
 

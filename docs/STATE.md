@@ -3,7 +3,7 @@
 **Read this first.** It says what ships, what is open with the owner, and what
 must never happen. `OUTSTANDING.md` is the journal behind it and stays the
 authority on *why*; when the two disagree, `OUTSTANDING.md` is right and this
-file is stale — fix this file. Updated **2026-08-16**.
+file is stale — fix this file. Updated **2026-08-17**.
 
 ---
 
@@ -16,7 +16,7 @@ on matchday, never revised, graded from football-data results.
 | --- | --- | --- |
 | head | ridge Poisson, `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3`, refrozen ≤ 7 days | `engine/serve/cycle.py` |
 | rule | `confidence-v2`: outright if p ≥ **0.55**, else likeliest double chance ≤ **0.85**, else outright | `engine/serve/tips.py` |
-| cycle | sync → calendar → serve → tips → grade; exit **0** clean / **2** look / **1** failed | `services/run_cycle.py` |
+| cycle | sync → calendar → serve → tips → results → grade; exit **0** clean / **2** look / **1** failed. `results` (BBC full-time scores, `BVP_BBC_RESULTS=1`) settles tips before football-data's file exists; `grade` reconciles once it does | `services/run_cycle.py` |
 | API | read-only; `/tips`, `/tips/results`, `/tips/record` (no P&L on the wire, per-rule-version headline) | `api/main.py` |
 | site | one page: calls, last results, record | `web/` |
 | server | one Azure Ubuntu VM, `git pull`, systemd timer + service + nginx | `DEPLOY.md`, `RUNBOOK.md` |
@@ -60,12 +60,14 @@ The rule agrees with the same rule on the market's own probabilities in only
 ## Numbers that must be re-derived, not quoted
 
 - Gate ledger: `trials.count_configurations(conn)` — **109 / 66 / 201** at last
-  read (2026-08-16, after P7 and B17). `docs/gate_ledger.jsonl` is the off-machine copy; the test
+  read (2026-08-17, on the authority machine after `--restore` appended P7 and
+  B17's five rows, which had been written on a second machine). `docs/gate_ledger.jsonl` is the off-machine copy; the test
   `test_the_ledger_export_is_current` goes red until it is re-exported after a
-  gate. A fresh machine restores it with `scripts/export_ledger.py --restore`
-  (empty ledger only).
-- Tests: `pytest -q` — **535 pass** at last run; the prose has been stale
-  before.
+  gate. `scripts/export_ledger.py --restore` loads it into an empty ledger, or
+  appends what an exact-prefix ledger lacks; `--check` names which of the two
+  is behind.
+- Tests: `pytest -q` — **563 pass** at last run (2026-08-17, Python 3.11); the
+  prose has been stale before.
 
 ## What must never happen
 

@@ -4,6 +4,7 @@ urn:bbc:sportsdata:football:team:accrington-stanley,Accrington Stanley,Accringto
 urn:bbc:sportsdata:football:team:aldershot-town,Aldershot Town,Aldershot
 urn:bbc:sportsdata:football:team:altrincham,Altrincham,Altrincham
 urn:bbc:sportsdata:football:team:arsenal,Arsenal,Arsenal
+urn:bbc:sportsdata:football:team:aston-villa,Aston Villa,Aston Villa
 urn:bbc:sportsdata:football:team:barnet,Barnet,Barnet
 urn:bbc:sportsdata:football:team:barnsley,Barnsley,Barnsley
 urn:bbc:sportsdata:football:team:barrow,Barrow,Barrow
@@ -13,6 +14,7 @@ urn:bbc:sportsdata:football:team:blackpool,Blackpool,Blackpool
 urn:bbc:sportsdata:football:team:bolton-wanderers,Bolton Wanderers,Bolton
 urn:bbc:sportsdata:football:team:boreham-wood,Boreham Wood,Boreham Wood
 urn:bbc:sportsdata:football:team:boston-united,Boston United,Boston Utd
+urn:bbc:sportsdata:football:team:afc-bournemouth,Bournemouth,Bournemouth
 urn:bbc:sportsdata:football:team:bradford-city,Bradford City,Bradford
 urn:bbc:sportsdata:football:team:brentford,Brentford,Brentford
 urn:bbc:sportsdata:football:team:brighton-and-hove-albion,Brighton & Hove Albion,Brighton
@@ -25,15 +27,18 @@ urn:bbc:sportsdata:football:team:cambridge-united,Cambridge United,Cambridge
 urn:bbc:sportsdata:football:team:cardiff-city,Cardiff City,Cardiff
 urn:bbc:sportsdata:football:team:carlisle-united,Carlisle United,Carlisle
 urn:bbc:sportsdata:football:team:charlton-athletic,Charlton Athletic,Charlton
+urn:bbc:sportsdata:football:team:chelsea,Chelsea,Chelsea
 urn:bbc:sportsdata:football:team:cheltenham-town,Cheltenham Town,Cheltenham
 urn:bbc:sportsdata:football:team:chesterfield,Chesterfield,Chesterfield
 urn:bbc:sportsdata:football:team:colchester-united,Colchester United,Colchester
 urn:bbc:sportsdata:football:team:coventry-city,Coventry City,Coventry
 urn:bbc:sportsdata:football:team:crawley-town,Crawley Town,Crawley Town
 urn:bbc:sportsdata:football:team:crewe-alexandra,Crewe Alexandra,Crewe
+urn:bbc:sportsdata:football:team:crystal-palace,Crystal Palace,Crystal Palace
 urn:bbc:sportsdata:football:team:derby-county,Derby County,Derby
 urn:bbc:sportsdata:football:team:doncaster-rovers,Doncaster Rovers,Doncaster
 urn:bbc:sportsdata:football:team:eastleigh,Eastleigh,Eastleigh
+urn:bbc:sportsdata:football:team:everton,Everton,Everton
 urn:bbc:sportsdata:football:team:exeter-city,Exeter City,Exeter
 urn:bbc:sportsdata:football:team:fleetwood-town,Fleetwood Town,Fleetwood Town
 urn:bbc:sportsdata:football:team:forest-green-rovers,Forest Green Rovers,Forest Green
@@ -49,10 +54,14 @@ urn:bbc:sportsdata:football:team:huddersfield-town,Huddersfield Town,Huddersfiel
 urn:bbc:sportsdata:football:team:hull-city,Hull City,Hull
 urn:bbc:sportsdata:football:team:ipswich-town,Ipswich Town,Ipswich
 urn:bbc:sportsdata:football:team:kidderminster-harriers,Kidderminster Harriers,Kidderminster
+urn:bbc:sportsdata:football:team:leeds-united,Leeds United,Leeds
 urn:bbc:sportsdata:football:team:leicester-city,Leicester City,Leicester
 urn:bbc:sportsdata:football:team:leyton-orient,Leyton Orient,Leyton Orient
 urn:bbc:sportsdata:football:team:lincoln-city,Lincoln City,Lincoln
+urn:bbc:sportsdata:football:team:liverpool,Liverpool,Liverpool
 urn:bbc:sportsdata:football:team:luton-town,Luton Town,Luton
+urn:bbc:sportsdata:football:team:manchester-city,Manchester City,Man City
+urn:bbc:sportsdata:football:team:manchester-united,Manchester United,Man United
 urn:bbc:sportsdata:football:team:mansfield-town,Mansfield Town,Mansfield
 urn:bbc:sportsdata:football:team:middlesbrough,Middlesbrough,Middlesbrough
 urn:bbc:sportsdata:football:team:millwall,Millwall,Millwall
@@ -61,6 +70,7 @@ urn:bbc:sportsdata:football:team:newcastle-united,Newcastle United,Newcastle
 urn:bbc:sportsdata:football:team:newport-county,Newport County,Newport County
 urn:bbc:sportsdata:football:team:northampton-town,Northampton Town,Northampton
 urn:bbc:sportsdata:football:team:norwich-city,Norwich City,Norwich
+urn:bbc:sportsdata:football:team:nottingham-forest,Nottingham Forest,Nott'm Forest
 urn:bbc:sportsdata:football:team:notts-county,Notts County,Notts County
 urn:bbc:sportsdata:football:team:oldham-athletic,Oldham Athletic,Oldham
 urn:bbc:sportsdata:football:team:oxford-united,Oxford United,Oxford
@@ -89,6 +99,7 @@ urn:bbc:sportsdata:football:team:sutton-united,Sutton United,Sutton
 urn:bbc:sportsdata:football:team:swansea-city,Swansea City,Swansea
 urn:bbc:sportsdata:football:team:swindon-town,Swindon Town,Swindon
 urn:bbc:sportsdata:football:team:tamworth,Tamworth,Tamworth
+urn:bbc:sportsdata:football:team:tottenham-hotspur,Tottenham Hotspur,Tottenham
 urn:bbc:sportsdata:football:team:tranmere-rovers,Tranmere Rovers,Tranmere
 urn:bbc:sportsdata:football:team:walsall,Walsall,Walsall
 urn:bbc:sportsdata:football:team:watford,Watford,Watford
