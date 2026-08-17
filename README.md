@@ -38,6 +38,9 @@ pip install -e ".[serve,dev]"
 cd web && npm ci && cd ..
 ```
 
+Tests: `pytest -q` for the engine, API and services; `cd web && npm test` for
+the front end's few pure helpers (Node's own runner, no framework).
+
 **Windows** — one command for the whole stack:
 
 ```powershell

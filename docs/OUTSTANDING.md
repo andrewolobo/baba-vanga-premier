@@ -7,7 +7,14 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-17** (later the same day), after **results from the BBC
+Last updated **2026-08-17** (evening), after **kick-off times went local**
+(§4.9, owner request): the site now shows each fixture's kick-off in the
+viewer's own zone, converted in the browser from the UK wall-clock the API has
+always served. Frontend only; the wire format, the feeds and the grader are
+untouched. `web/src/lib/kickoff.js`, five `node:test` cases (`cd web && npm
+test`, a new script — the web side had no runner before), build clean.
+
+Before that, the same day, after **results from the BBC
 pages shipped** — §4.8. Owner request: the site showed nothing for three days
 after the EFL opening weekend because the only results source was
 football-data's per-season CSV, which did not exist yet. `services/bbc_results.py`
@@ -1638,6 +1645,34 @@ this the first E0 matchday would have been 20 unbridged results.
 either source; the tip stays unsettled), and a second daily run for same-day
 results (safe — tips are `UNIQUE (fixture_id, rule_version)` — but not asked
 for).
+
+### 4.9 Kick-off times in the viewer's zone — **SHIPPED 2026-08-17**
+
+`web/src/lib/kickoff.js`, wired into `web/src/routes/+page.svelte`; tests
+`web/src/lib/kickoff.test.js` (`cd web && npm test`).
+
+**What the wire carries, and why it stays that way.** `fixtures.kickoff_time`
+is UK wall-clock: football-data's `Time` column and BBC's `displayTimeUK`,
+stored as-is, and `match_date` is the UK date both feeds and the grader key on
+(§4.5). Converting server-side would need the server to know the viewer's
+zone, which it does not, or to invent a UTC column that nothing else reads.
+So the API is unchanged and the SPA converts at render, which is the one place
+the viewer's zone is known.
+
+**How.** Europe/London's offset (GMT/BST, and the switch dates) is read from
+`Intl` for the instant in question rather than assumed; the UK wall-clock is
+turned into an instant and formatted in
+`Intl.DateTimeFormat().resolvedOptions().timeZone`, 24-hour like the rest of
+the page. The list stays grouped by the UK match date; a row whose local date
+differs carries a small **+1 / −1**, because a 20:00 UK kick-off is 05:00
+tomorrow in Sydney and 16:30 the day before in Los Angeles. The cell's `title`
+keeps the UK time; the list header names the zone in use. A fixture with no
+time still prints a dash.
+
+**Verified:** BST (15:00 → 14:00Z), GMT (15:00 → 15:00Z), the 2026-10-25
+switch weekend read correctly on both sides, and Nairobi / London / Sydney /
+Los Angeles including both day-shift directions. `npm run build` clean.
+Not verified in a browser from this session — check the list once deployed.
 
 ---
 

@@ -10,6 +10,7 @@
     pct
   } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
+  import { localKickoff, viewerZone } from '$lib/kickoff.js';
 
   let division = $state('');
   let tips = $state([]);
@@ -50,6 +51,12 @@
 
   const divisionName = (code) =>
     DIVISIONS.find(([c]) => c === code)?.[1] ?? code;
+
+  // Kick-offs arrive as UK wall-clock and are shown in the viewer's zone
+  // (`$lib/kickoff.js`). The list stays grouped by the UK match date, so a row
+  // whose local date differs says so with a +1 / −1.
+  const zone = viewerZone();
+  const kick = (t) => localKickoff(t.match_date, t.kickoff_time, zone);
 
   // Built from the parts rather than parsed, so a date never shifts a day
   // across a timezone boundary — `new Date('2026-08-15')` is UTC midnight.
@@ -156,6 +163,7 @@
     <div class="mono summary">
       {#if tips.length}
         {tips.length} call{tips.length === 1 ? '' : 's'} · {byDay.length} day{byDay.length === 1 ? '' : 's'}
+        <span class="zone">· kick-offs in your local time ({zone})</span>
       {/if}
     </div>
   </div>
@@ -185,13 +193,18 @@
         <div class="daylabel">{day(date)}</div>
         {#each matches as t}
           {@const badge = fixtureBadges(t.home_team, t.away_team)}
+          {@const k = kick(t)}
           <div class="row">
             <div class="fixture">
               <div class="side home">
                 <span class="club">{t.home_team}</span>
                 <span class="crest" style="background:{badge.home.colour}">{badge.home.code}</span>
               </div>
-              <div class="kick">{t.kickoff_time ?? '—'}</div>
+              <div class="kick" title={k ? `${t.kickoff_time} UK time` : undefined}>
+                {#if k}
+                  {k.time}{#if k.dayShift}<sup class="shift">{k.dayShift > 0 ? '+1' : '−1'}</sup>{/if}
+                {:else}—{/if}
+              </div>
               <div class="side away">
                 <span class="crest" style="background:{badge.away.colour}">{badge.away.code}</span>
                 <span class="club">{t.away_team}</span>
@@ -471,6 +484,7 @@
   }
   .mono { font-family: var(--mono); }
   .summary { font-size: 12px; color: var(--muted); }
+  .zone { display: block; }
 
   /* --- division tabs ------------------------------------------------------ */
   .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
@@ -513,6 +527,7 @@
     font-family: var(--display); font-weight: 700; font-size: 20px; color: #fff;
     background: var(--bg); border: 1px solid #2c2c34; border-radius: 3px; padding: 5px 12px;
   }
+  .kick .shift { font-size: 11px; margin-left: 3px; color: var(--muted); }
   .verdict { display: flex; align-items: center; gap: 16px; justify-content: flex-end; }
   .call { text-align: right; min-width: 0; }
   .label {
