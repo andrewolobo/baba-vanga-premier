@@ -231,9 +231,16 @@ def test_the_ledger_export_is_current():
 
 
 def _ledger_with(tmp_path, name, arms):
+    """A ledger whose rows depend on `arms` alone. `ledger.record` stamps
+    `created_at` with `datetime('now')`, so two ledgers built a second apart
+    would differ on every row -- which is what made these tests pass on a fast
+    machine and fail on the server. Pinned per id so the comparison is about
+    content."""
     conn = db.connect(tmp_path / f"{name}.db")
     db.migrate(conn)
     _ledger(conn, [(f"g{i}", a) for i, a in enumerate(arms)])
+    conn.execute("UPDATE gate_ledger SET created_at = '2026-01-01 00:00:' || printf('%02d', id)")
+    conn.commit()
     return conn
 
 
