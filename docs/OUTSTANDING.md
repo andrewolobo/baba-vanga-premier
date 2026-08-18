@@ -7,7 +7,30 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-17** (evening), after **kick-off times went local**
+Last updated **2026-08-18**, after **B20 was scoped and probed, dry-run
+only** — owner request to review a `12`-specific ceiling "for posterity".
+`BACKLOG.md` B20 carries the pre-registration and the probe; code
+`engine/eval/window12.py`, tests `tests/test_window12.py`; **no ledger row, no
+outcome read, no configuration spent** (109 / 66 / 201 unchanged). The
+context number: the shipped `12` calls deliver 73.6% (§9.5) against an
+unconditional non-draw base rate of **73.85%** on E0–E3 2014-15 → 2022-23
+(18,060 results, not paired on the `12` subset) — two thirds of the product
+performs at the prior, and **54% of the `12` calls claim below it**. The
+probe (λ only, six arms): a `12` ceiling of **0.80 is inert** (no shipped
+`12` exceeds 0.80); **0.75 removes the informative end** and leaves 69% of the
+survivors below base; **a `12` floor of 0.75** keeps `12` in 14.1% of matches,
+every one above base, `1X` becomes modal (52%), implied cost 2.5 pts of
+claimed probability — realised likely ~half that, since B3's `12`-off arm was
+implied −3.2 and measured −1.7. Three of six λ-predictions held. **Owner
+decision open:** read floor 0.75 (1 configuration) or close as scoped-not-spent.
+Free finding: `selection.recommend(allow_12=False)` can publish a union less
+likely than the outright it replaces (`X2` 0.46 over `H` 0.54 when `1X`
+breaches the ceiling) — unreachable with `12` on, so `confidence-v2` is
+unaffected, but B3's "without `12`" 70.8% carried it; B20's arm guards
+against it. **573 pass, 1 skipped** on this machine (Python 3.12) — the
+"588" quoted below has not been reconciled with it.
+
+Before that, **2026-08-17** (evening), after **kick-off times went local**
 (§4.9, owner request): the site now shows each fixture's kick-off in the
 viewer's own zone, converted in the browser from the UK wall-clock the API has
 always served. Frontend only; the wire format, the feeds and the grader are
