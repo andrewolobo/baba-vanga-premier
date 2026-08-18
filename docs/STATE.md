@@ -3,7 +3,7 @@
 **Read this first.** It says what ships, what is open with the owner, and what
 must never happen. `OUTSTANDING.md` is the journal behind it and stays the
 authority on *why*; when the two disagree, `OUTSTANDING.md` is right and this
-file is stale — fix this file. Updated **2026-08-17**.
+file is stale — fix this file. Updated **2026-08-18**.
 
 ---
 
@@ -47,6 +47,7 @@ The rule agrees with the same rule on the market's own probabilities in only
 | **B19** sum/difference penalty | B17 (2026-08-16): totals over-spread in E1–E3, margins under-spread (§9.12) — one ridge cannot get both right | owner decision whether to scope a head-level gate (~4–8 configs); B18 (totals shrink) parked until B4 reopens |
 | **ops** | backup timer not enabled; no alerting; HTTP only | enable `bvp-backup.timer` + restore drill; dead-man's-switch ping from `run_cycle.sh` (owner supplies URL); TLS when a domain exists |
 | **P6 criterion 2** | holdout still sealed; criterion 1 PASSED (PBO 0.000) | owner decides when to spend the one read; `DEFLATION.md` §8 |
+| **B20** `12`-only window (ceiling or floor) | pre-registered + λ-probe dry-run 2026-08-18 (`BACKLOG.md` B20). Shipped `12` calls deliver 73.6% vs a 73.9% non-draw base rate; 54% of them claim below it. A 0.80 ceiling is inert; 0.75 removes the informative end; **floor 0.75** keeps `12` in 14% of matches, all above base | owner: read floor 0.75 (1 config) or close as scoped-not-spent |
 | B10 `12` vs `1X` | open, downgraded | — |
 | B15 half-life `H` | open, gated | — |
 | B1 agreement filter | open, deprioritised | — |

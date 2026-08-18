@@ -9,7 +9,18 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-16**, after **P7 ran** (`P7_TIPSTER_PLAN.md` →
+Last updated **2026-08-18**, opening **B20** — a `12`-only eligibility
+window on the shipped rule, pre-registered below with a λ-only probe run in
+dry-run and no strike arm spent. Opened by the owner's review of the 65% `12`
+mix; the new number in it is that the shipped `12` calls deliver **73.6%**
+against an unconditional non-draw base rate of **73.9%** on the same divisions
+and seasons (18,060 results, 2014-15 → 2022-23), so two thirds of the product
+performs at the prior. Also found: `recommend(allow_12=False)` can publish a
+union less likely than the outright it replaces (`X2` 0.46 over `H` 0.54 when
+`1X` breaches the ceiling) — unreachable with `12` on, so it does not affect
+the shipped product, but B3's "without `12`" figures carried it.
+
+Before that, **2026-08-16**, after **P7 ran** (`P7_TIPSTER_PLAN.md` →
 `TIPSTER.md`; ledger rows 105–108, **197 → 201 configurations**). **B7 closes**:
 the shipped v2 rule loses **−4.56% [−5.56, −3.60]** at average derived prices
 and returns **+0.11% [−0.94, +1.10]** at best — the site's no-return claim now
@@ -82,6 +93,7 @@ and gated B4.
 | **B17** | Lower-division totals — dispersion or level? diagnostic on stored λ | **measured 2026-08-16** — conditional level: totals over-spread in E1–E3, overall level ≈ 0 (`TIPSTER.md` B17) | 0 spent | — |
 | **B18** | Totals-axis shrink, per division (the fix B17 implies) | **open, gated on B4 reopening** — worth nothing to the shipped product | ~1–2 | B17 |
 | **B19** | Separate ridge on the sum and difference of `att`/`dfn` — margins under-spread, totals over-spread on one penalty | **open — owner decision to scope**; P1-scale | ~4–8 | B17, §9.12 |
+| **B20** | A `12`-only eligibility window (ceiling, or floor) on the shipped rule — the 65% `12` mix | **pre-registered + λ-probe dry-run 2026-08-18** — a 0.80 ceiling is inert, 0.75 removes the informative end; **floor 0.75** keeps `12` in 14% of matches, all above base rate; owner decides whether to read it | 0 spent; 1 if floor 0.75 is read | B3 |
 
 ## Later
 
@@ -769,6 +781,136 @@ a gate with its own pre-registration and is not run from this item.
 > intervals (≥ 2 of E1–E3 resolved) rather than point estimates; P1–P4 are
 > scored as written. Same shape as `TRAVEL.md` §8: the detection statistic
 > changed after the control and before the result.
+
+## B20 — A `12`-only eligibility window — **PRE-REGISTERED 2026-08-18, probe dry-run only**
+
+Owner review of 2026-08-18: `12` is 65.0% of what `confidence-v2` publishes
+(B3, decided). Its calls **claim 74.4% and deliver 73.6%** (`OUTSTANDING.md`
+§9.5); the unconditional non-draw rate on the same divisions and seasons is
+**73.85%** (E0 76.5, E1 72.9, E2 73.8, E3 73.0 — 18,060 results,
+`db/premier.db`, not paired on the `12` subset). So the `12` call performs at
+the base rate of "pick any fixture and say it won't be a draw". The owner asked
+for a `12`-specific ceiling to be reviewed for the record. Code
+`engine/eval/window12.py`, tests `tests/test_window12.py` (planted data).
+
+**The arm.** The shipped rule with `12` eligible only when its own probability
+sits inside `[floor_12, ceiling_12]`; where it is vetoed the fallback is
+`recommend(allow_12=False)` — likeliest of `1X`/`X2` under 0.85, else the
+outright — guarded so that a union less likely than the outright is never
+published. Everything else (floor 0.55, ceiling 0.85, `1X`/`X2`/`H`/`A`) is
+untouched, and a test pins that only a `12` may move. Composed over the
+shipped `recommend()`; no product code changes.
+
+**Two shapes, one mechanism, and they answer different concerns:**
+
+- **`ceiling_12` < 0.85** (the owner's ask) vetoes `12` where the model is
+  *surest* it is not a draw (`p_d < 1 − C`). Those are the *only* `12` calls
+  that clear the base rate by a margin. It caps the least specific call, at
+  the price of removing the informative end of it.
+- **`floor_12` > 0** (my alternative) vetoes `12` where the model is *least*
+  sure — the calls at or below 73.9%, which say nothing a customer does not
+  already know — and keeps the surest ones. Per displaced match it costs less
+  claimed probability (`p_a − p_d` is smallest where `p_d` is large).
+
+Arms: ceiling **0.80 / 0.75 / 0.70**; floor **0.75 / 0.80**; shipped
+(0, 0.85) as the paired reference. Grid declared before any run.
+
+**Cost.** Probe (mix, mean claimed p, model-implied strike delta): **0** — λ
+only. Gate (realised strike, paired by ISO week against shipped): **1 per arm
+read**, up to 5 if every arm is read. Owner chooses which arms, if any.
+
+### Predictions, written before the probe ran
+
+Model-implied strike delta = mean over all matches of (claimed p under the
+arm − claimed p shipped); it is what a calibrated head would lose.
+
+- **P1** (λ). `12` share falls to **50–58%** at ceiling 0.80, **20–35%** at
+  0.75, **< 8%** at 0.70. *Basis:* served `p_d` is centred near 0.26 with most
+  of its mass in 0.18–0.32, so `12` sits in 0.68–0.82.
+- **P2** (λ). At ceiling 0.75, **> 80%** of displaced `12` calls become
+  `1X`; the outright guard fires in < 1%.
+- **P3** (λ). Model-implied delta at ceiling 0.75 is in **[−3.5, −1.0] pts**.
+  *Basis:* each displaced match loses `p_a − p_d` ≈ 5–8 pts, on 30–45% of
+  matches.
+- **P4** (λ). **> 40%** of the shipped `12` calls claim less than the 73.85%
+  base rate.
+- **P5** (λ). At floor 0.75, `12` share is **25–40%**.
+- **P6** (λ). Floor 0.75 costs **less implied strike per displaced match** than
+  ceiling 0.75.
+- **P7** (outcomes, the gate — not run). Realised paired change vs shipped:
+  ceiling 0.75 in **[−3.0, −0.5] pts, resolved negative**; ceiling 0.80 in
+  **[−1.0, 0], unresolved**; strike **monotone** in the ceiling. *Basis:* P3,
+  plus §9.5's pooled gaps (`12` over-claims −0.75, `1X` under-claims +1.07)
+  which favour the shift by up to ~1.8 pts on the displaced subset — a partial
+  offset, not a reversal. Floor 0.75 in **[−2.0, 0]**. **No arm improves
+  strike rate**: three prior mix shifts (§9.5 τ, §9.6 B2, §9.13 C1) did not.
+- **P8** (outcomes, reported not chosen). Delivered-minus-claimed on the
+  published pick moves off the shipped −0.06 pts as the `12` cancellation
+  (`SEPARATION_SLOPE.md` §7) is disturbed; predicted **positive** (under-claim)
+  on every arm, **< +1.0 pt**.
+
+**What a win is.** There is no strike-rate win available here and none is
+predicted. The decision is the B3 trade re-offered with a dial: how much of
+the product may be a call at the base rate. **If the answer is "none", the
+floor shape is the one to measure**, and 0.75 is the arm — it removes the
+content-free `12`s and keeps the ones that carry information. If the answer
+is "it doesn't matter", nothing should be spent, and this section is the
+record.
+
+**Adoption path, if any arm is chosen:** `RULE_VERSION` bump to v3,
+`tips.select` gains the window, `/tips/record` already separates versions
+(B16), and `RUNBOOK.md` §0 applies — never re-run the cycle on a matchday.
+
+### Probe — **DRY-RUN 2026-08-18, λ only, no ledger row, no outcome read**
+
+`python -m engine.eval.window12 --part probe --dry-run`, 15,824 matches,
+`docs/window12_probe_dryrun.json`. Predictions above left as written;
+**P1 (0.70), P4, P6 held; P1 (0.80, 0.75), P2, P3, P5 did not** — the served
+draw probability in the fallback is far more concentrated than the 0.18–0.32 I
+assumed.
+
+| arm | `12` | `1X` | `H` | shifted | → `1X` / `X2` | mean p, all | mean p, `12` | `12` below 73.85% | implied Δ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| shipped [0, 0.85] | 65.0% | 17.6% | 11.8% | — | — | 0.726 | 0.737 | **54.0%** | — |
+| ceiling 0.80 | 65.0% | 17.6% | 11.8% | **0.0%** | — | 0.726 | 0.737 | 54.0% | 0.00 |
+| ceiling 0.75 | 50.9% | 28.0% | 11.8% | 14.1% | 74 / 26 | 0.718 | 0.730 | 68.9% | **−0.75** |
+| ceiling 0.70 | 1.2% | 61.9% | 11.8% | 63.8% | 69 / 31 | 0.693 | 0.695 | 100% | −3.23 |
+| floor 0.75 | **14.1%** | 52.2% | 11.8% | 50.9% | 68 / 32 | 0.700 | **0.759** | **0.0%** | −2.51 |
+| floor 0.80 | 0.0% | 62.6% | 11.8% | 65.0% | 69 / 31 | 0.693 | — | — | −3.26 |
+
+The outright guard never fired; every displaced `12` became `1X` or `X2`.
+
+**What the probe says, in order of consequence:**
+
+1. **No shipped `12` call exceeds 0.80.** A `12` ceiling of 0.80 is identical
+   to the shipped rule; the shipped `12` calls live in roughly [0.68, 0.80],
+   mean 0.737. The dial has three positions, not a continuum: **0.85 (65%),
+   0.75 (51%), 0.70 (≈ off)**.
+2. **54% of the shipped `12` calls claim less than the non-draw base rate**,
+   and a 0.75 ceiling makes that *worse* (69%) — it removes the surest fifth
+   and keeps the content-free rest. **The ceiling shape does the opposite of
+   what the concern asks for.**
+3. **The floor at 0.75 is the arm that answers the concern**: `12` survives in
+   14.1% of matches, every one above the base rate (mean 0.759); `1X` becomes
+   the modal call (52%); the product still names a team in 14.3% (unchanged —
+   the outright tier is untouched by construction). Implied cost 2.5 pts of
+   claimed probability.
+4. **Implied is not realised.** Ceiling 0.70 is `12` off, implied −3.23; B3
+   *measured* `12` off at −1.7 pts (70.8% vs 72.5%). The head over-claims `12`
+   and under-claims `1X` (§9.5), so a `12` → `1X` shift realises roughly half
+   its implied cost. Read P7 with that in mind: floor 0.75 is more likely
+   ~−1.3 pts than −2.5, and ceiling 0.75 ~−0.4, probably unresolved. Not a
+   revised prediction — P7 stands as written — but the offset is what the gate
+   would be measuring.
+
+**Owner decision.** Nothing here reads an outcome. If the question is "may
+two thirds of the product be a call at the base rate", the probe already
+answers what each setting publishes; the only thing a gate adds is the
+realised strike cost, and it is bounded by B3's `12`-off arm at ~−1.7 pts.
+**If an arm is to be read, read floor 0.75 (1 configuration)**; ceiling 0.80
+is inert, ceiling 0.70 and floor 0.80 are B3's `12`-off arm re-measured, and
+ceiling 0.75 removes the wrong end. If nothing is read, this section is the
+record and B20 closes as *scoped, not spent*.
 
 ## B12 (original scoping note)
 

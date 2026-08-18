@@ -1,0 +1,151 @@
+{
+  "probe": {
+    "floor": 0.55,
+    "ceiling": 0.85,
+    "non_draw_base_rate": 0.7385,
+    "arms": {
+      "shipped (12 in [0.00, 0.85])": {
+        "floor_12": 0.0,
+        "ceiling_12": 0.85,
+        "mix": {
+          "H": 0.1184,
+          "A": 0.0252,
+          "1X": 0.176,
+          "X2": 0.0305,
+          "12": 0.6499
+        },
+        "team_named_share": 0.1436,
+        "shifted_share": 0.0,
+        "shifted_became": {},
+        "mean_claimed": 0.7255,
+        "mean_claimed_12": 0.7366,
+        "share_of_12_below_base_rate": 0.5397,
+        "model_implied_strike_delta": 0.0
+      },
+      "ceiling 0.80": {
+        "floor_12": 0.0,
+        "ceiling_12": 0.8,
+        "mix": {
+          "H": 0.1184,
+          "A": 0.0252,
+          "1X": 0.176,
+          "X2": 0.0305,
+          "12": 0.6499
+        },
+        "team_named_share": 0.1436,
+        "shifted_share": 0.0,
+        "shifted_became": {},
+        "mean_claimed": 0.7255,
+        "mean_claimed_12": 0.7366,
+        "share_of_12_below_base_rate": 0.5397,
+        "model_implied_strike_delta": 0.0
+      },
+      "ceiling 0.75": {
+        "floor_12": 0.0,
+        "ceiling_12": 0.75,
+        "mix": {
+          "H": 0.1184,
+          "A": 0.0252,
+          "1X": 0.2804,
+          "X2": 0.0669,
+          "12": 0.5091
+        },
+        "team_named_share": 0.1436,
+        "shifted_share": 0.1408,
+        "shifted_became": {
+          "H": 0.0,
+          "A": 0.0,
+          "1X": 0.7415,
+          "X2": 0.2585,
+          "12": 0.0
+        },
+        "mean_claimed": 0.7181,
+        "mean_claimed_12": 0.7303,
+        "share_of_12_below_base_rate": 0.6889,
+        "model_implied_strike_delta": -0.00746
+      },
+      "ceiling 0.70": {
+        "floor_12": 0.0,
+        "ceiling_12": 0.7,
+        "mix": {
+          "H": 0.1184,
+          "A": 0.0252,
+          "1X": 0.6192,
+          "X2": 0.2256,
+          "12": 0.0116
+        },
+        "team_named_share": 0.1436,
+        "shifted_share": 0.6383,
+        "shifted_became": {
+          "H": 0.0,
+          "A": 0.0,
+          "1X": 0.6944,
+          "X2": 0.3056,
+          "12": 0.0
+        },
+        "mean_claimed": 0.6932,
+        "mean_claimed_12": 0.6945,
+        "share_of_12_below_base_rate": 1.0,
+        "model_implied_strike_delta": -0.03232
+      },
+      "floor 0.75": {
+        "floor_12": 0.75,
+        "ceiling_12": 0.85,
+        "mix": {
+          "H": 0.1184,
+          "A": 0.0252,
+          "1X": 0.5219,
+          "X2": 0.1938,
+          "12": 0.1408
+        },
+        "team_named_share": 0.1436,
+        "shifted_share": 0.5091,
+        "shifted_became": {
+          "H": 0.0,
+          "A": 0.0,
+          "1X": 0.6794,
+          "X2": 0.3206,
+          "12": 0.0
+        },
+        "mean_claimed": 0.7004,
+        "mean_claimed_12": 0.7594,
+        "share_of_12_below_base_rate": 0.0,
+        "model_implied_strike_delta": -0.02509
+      },
+      "floor 0.80": {
+        "floor_12": 0.8,
+        "ceiling_12": 0.85,
+        "mix": {
+          "H": 0.1184,
+          "A": 0.0252,
+          "1X": 0.6263,
+          "X2": 0.2302,
+          "12": 0.0
+        },
+        "team_named_share": 0.1436,
+        "shifted_share": 0.6499,
+        "shifted_became": {
+          "H": 0.0,
+          "A": 0.0,
+          "1X": 0.6928,
+          "X2": 0.3072,
+          "12": 0.0
+        },
+        "mean_claimed": 0.693,
+        "mean_claimed_12": null,
+        "share_of_12_below_base_rate": null,
+        "model_implied_strike_delta": -0.03256
+      }
+    },
+    "verdict": {
+      "P1_ceiling_080_12_share_50_to_58": false,
+      "P1_ceiling_075_12_share_20_to_35": false,
+      "P1_ceiling_070_12_share_under_8": true,
+      "P2_displaced_go_to_1X_over_80pct_at_075": false,
+      "P3_implied_delta_at_075_in_minus_3_5_to_minus_1": false,
+      "P4_shipped_12_below_base_rate_over_40pct": true,
+      "P5_floor_075_12_share_25_to_40": false,
+      "P6_floor_075_costs_less_per_shifted_match_than_ceiling_075": true
+    }
+  }
+}
