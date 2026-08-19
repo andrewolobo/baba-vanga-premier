@@ -7,7 +7,27 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-19** (night, after the build): **confidence-v3 is
+Last updated **2026-08-19** (later still), after **B22 shipped** — owner
+request: keep the one graded call and let a reader open a fixture to see the
+model's second and third picks beneath it. Scoped before building: ranking
+the menu by probability puts a hedge above every outright call (`PRODUCT.md`
+§3 in miniature), so two readings ship — **the three results ranked, marked
+by how the call covers them** (default) and **the next-likeliest markets on
+the rule's own menu** behind a toggle, flagged when they outrank the call.
+API: `TIP_SELECT` joins the tip's **own** prediction row (`t.prediction_id`,
+never the fixture's newest — pinned) and serves the 1X2 triple, the three
+double-chance sums and the two +1.5 marginals from the stored lambdas
+(`_with_handicap`, pinned against `b21.dog15_probs`; restated, not imported,
+so the API still never loads the measurement stack). Site: `web/src/lib/view.js`
++ drawer in `+page.svelte`, upcoming list only, "Only the call above is
+graded" on every drawer. **Display only — no rule, schema, cycle, grading or
+ledger change** (111 / 68 / 202 unchanged). Goal lines deliberately excluded
+(B4/B11). **619 pass + 14 web.** Full record `BACKLOG.md` B22. Note for the
+next thread: this machine's `db/premier.db` had not had migration 005 applied
+when B22 was built — the API does not migrate; the cycle (or
+`db.migrate`) does, and v3's deploy (plan §6) is still the open item.
+
+Before that, the same night: **confidence-v3 is
 BUILT** — owner approved D1–D5 and the plan's phases 1–5 + 7 are done; **only
 the deploy (plan §6) remains, and the VM serves v2 until it runs.** What
 shipped into the tree: `selection.won_from_score` (margin-aware settlement

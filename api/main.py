@@ -30,8 +30,10 @@ from __future__ import annotations
 import sqlite3
 from typing import Any
 
+import numpy as np
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from scipy import stats
 
 from engine import db
 from engine.seasons import SERVED_DIVISIONS
@@ -146,17 +148,69 @@ def predictions(
 #: Every tip endpoint reads the same joined shape. Kept as one string so the
 #: upcoming list, the settled list and the record cannot drift apart in which
 #: fixture a tip is attached to.
+#:
+#: The `p_*` columns are **the model's view behind the call** (`BACKLOG.md`
+#: B22): the three outright probabilities and the three double-chance sums,
+#: read from the prediction row the tip was made from -- `t.prediction_id`,
+#: **not** the fixture's latest prediction. A tip is never revised, so the
+#: numbers shown beside it must be the ones it was published from; joining on
+#: the fixture would show a fresher artifact than the call and the two could
+#: disagree. The sums are formed here rather than in the browser because the
+#: frontend displays stored decisions and never computes a probability
+#: (`web/src/lib/api.js`). They are context, not calls: only `side` is graded.
+#: `lam_h`/`lam_a` ride along for `_with_handicap`, which adds the two +1.5
+#: probabilities the same way.
 TIP_SELECT = """
     SELECT t.tip_id, t.published_at, t.side, t.model_prob, t.floor, t.ceiling,
            t.best_price, t.avg_price, t.rule_version,
            t.settled_at, t.outcome,
            f.fixture_id, f.division, f.match_date, f.kickoff_time,
-           h.canonical_name AS home_team, a.canonical_name AS away_team
+           h.canonical_name AS home_team, a.canonical_name AS away_team,
+           p.lam_h, p.lam_a, p.p_home, p.p_draw, p.p_away,
+           p.p_home + p.p_draw AS p_1x,
+           p.p_away + p.p_draw AS p_x2,
+           p.p_home + p.p_away AS p_12
     FROM tips t
     JOIN fixtures f ON f.fixture_id = t.fixture_id
     JOIN teams h ON h.team_id = f.home_team_id
     JOIN teams a ON a.team_id = f.away_team_id
+    JOIN predictions p ON p.prediction_id = t.prediction_id
 """
+
+#: Goals per side in the score matrix -- `engine.eval.dispersion.MAX_GOALS`,
+#: restated rather than imported so this module keeps reading what the cycle
+#: wrote without loading the measurement stack (`engine.eval` pulls in the
+#: ledger and store). `tests/test_api.py` pins the two against each other.
+MAX_GOALS = 15
+
+
+def _with_handicap(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Add `p_h15` / `p_a15` -- P(home loses by at most 1) and P(away loses by
+    at most 1) -- to each tip, from the stored lambdas.
+
+    `confidence-v3` chooses among `1X`, `X2`, `12` and the underdog +1.5, and
+    the handicap probability lives nowhere but in the stored lambdas:
+    `predictions` keeps them raw for exactly this reason (migration 002), and
+    `engine.serve.tips.select` reads the same marginal off the same pmf --
+    independent Poisson on 0..MAX_GOALS, no Dixon-Coles tau -- so the figure
+    shown behind a call is the one the rule compared. Not a fit and not a
+    price: a marginal of what was served. Both sides are returned and the
+    browser picks the underdog's, as the rule does; the favourite's +1.5 is a
+    near-certainty that is on no menu (`PRODUCT.md` §3).
+    """
+    if not rows:
+        return rows
+    lam_h = np.array([r["lam_h"] for r in rows], dtype=float)
+    lam_a = np.array([r["lam_a"] for r in rows], dtype=float)
+    k = np.arange(MAX_GOALS + 1)
+    joint = (stats.poisson.pmf(k[None, :], lam_h[:, None])[:, :, None]
+             * stats.poisson.pmf(k[None, :], lam_a[:, None])[:, None, :])
+    margin = k[:, None] - k[None, :]            # home goals minus away goals
+    home_by_2 = joint[:, margin >= 2].sum(axis=1)
+    away_by_2 = joint[:, margin <= -2].sum(axis=1)
+    for row, h, a in zip(rows, 1.0 - away_by_2, 1.0 - home_by_2):
+        row["p_h15"], row["p_a15"] = float(h), float(a)
+    return rows
 
 
 def _check_division(division: str | None) -> None:
@@ -188,17 +242,23 @@ def tips(
     selection. On a double chance they are *derived* from the 1X2 legs and are
     an **upper bound** on what a customer could get, because real double-chance
     markets carry their own margin.
+
+    `p_home`, `p_draw`, `p_away`, the sums `p_1x`, `p_x2`, `p_12` and the
+    handicap marginals `p_h15`, `p_a15` are the probabilities the call was
+    chosen from, for display behind it (`BACKLOG.md` B22). They are
+    uncalibrated (`/health` says so for the whole surface) and **none of them
+    is a second call** -- one tip per fixture is what the record is graded on.
     """
     _check_division(division)
     clause = " WHERE t.settled_at IS NULL AND f.match_date >= date('now')"
     if division:
         clause += " AND f.division = ?"
-    return _rows(
+    return _with_handicap(_rows(
         conn,
         TIP_SELECT + clause
         + " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
         (division,) if division else (),
-    )
+    ))
 
 
 @app.get("/tips/results")
@@ -219,11 +279,11 @@ def tip_results(
     if division:
         clause += " AND f.division = ?"
         params = (division,)
-    return _rows(
+    return _with_handicap(_rows(
         conn,
         TIP_SELECT + clause + " ORDER BY f.match_date DESC, t.tip_id DESC LIMIT ?",
         params + (limit,),
-    )
+    ))
 
 
 #: Strike rate and volume. **No P&L column appears here by design** -- see the

@@ -11,6 +11,7 @@ from __future__ import annotations
 import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
@@ -226,6 +227,79 @@ def test_tips_publishes_double_chance_sides_intact(tips_client):
     that dropped or rewrote them would hide most of the product."""
     sides = {t["side"] for t in tips_client.get("/tips").json()}
     assert "12" in sides
+
+
+def test_tips_carry_the_model_view_behind_each_call(tips_client):
+    """B22: the three outright probabilities and the three double-chance sums
+    the call was chosen from ride beside it, summed server-side so the browser
+    never forms a probability. `model_prob` on a `12` call equals `p_12`."""
+    tip = next(t for t in tips_client.get("/tips").json() if t["tip_id"] == 1)
+    assert (tip["p_home"], tip["p_draw"], tip["p_away"]) == (0.48, 0.26, 0.26)
+    assert tip["p_1x"] == pytest.approx(0.74)
+    assert tip["p_x2"] == pytest.approx(0.52)
+    assert tip["p_12"] == pytest.approx(0.74)
+    assert 0.0 < tip["p_a15"] < tip["p_h15"] < 1.0   # home is the favourite
+    # Settled tips read the same shape.
+    settled = tips_client.get("/tips/results").json()
+    assert all("p_home" in t and "p_12" in t and "p_h15" in t for t in settled)
+
+
+def test_the_api_handicap_is_the_rules_handicap():
+    """`_with_handicap` restates the pmf rather than importing the eval stack,
+    so it is pinned here against the function `engine.serve.tips.select`
+    actually compares: `b21.dog15_probs` on `dispersion.score_matrix`."""
+    from api.main import MAX_GOALS, _with_handicap
+    from engine.eval import b21
+    from engine.eval.dispersion import MAX_GOALS as EVAL_MAX_GOALS, score_matrix
+
+    assert MAX_GOALS == EVAL_MAX_GOALS
+    lam_h = np.array([1.9, 0.8, 1.3, 2.6])
+    lam_a = np.array([0.7, 1.7, 1.3, 0.4])
+    rows = _with_handicap([{"lam_h": h, "lam_a": a} for h, a in zip(lam_h, lam_a)])
+    # `dog15_probs` reads the favourite off the 1X2 vector; mark it by hand.
+    fav_home = np.array([True, False, True, True])
+    probs = np.where(fav_home[:, None], [[0.5, 0.25, 0.25]], [[0.25, 0.25, 0.5]])
+    expected = b21.dog15_probs(score_matrix(lam_h, lam_a), probs)
+    served = np.array([r["p_a15"] if fav else r["p_h15"]
+                       for r, fav in zip(rows, fav_home)])
+    assert served == pytest.approx(expected, abs=1e-12)
+
+
+def test_the_model_view_is_the_prediction_the_tip_was_made_from(tmp_path):
+    """A fixture re-served after its tip was published has a newer prediction
+    row. The tip is never revised, so the view shown behind it must be the row
+    it was published from -- otherwise the page shows numbers the call was not
+    chosen from, and the two can disagree."""
+    path = tmp_path / "stale.db"
+    conn = db.connect(path)
+    db.migrate(conn)
+    conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (1, 'Luton')")
+    conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (2, 'Barnsley')")
+    conn.execute(
+        "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
+        " home_team_id, away_team_id, source_file)"
+        " VALUES (1, 'E2', date('now', '+2 days'), '15:00', 1, 2, 't')")
+    for prediction_id, served_at, p_home in ((1, "2026-01-01 06:00:00", 0.40),
+                                             (2, "2026-01-02 06:00:00", 0.70)):
+        conn.execute(
+            "INSERT INTO predictions (prediction_id, fixture_id, served_at,"
+            " model_version, information_set, lam_h, lam_a, p_home, p_draw,"
+            " p_away, p_over25, p_under25)"
+            " VALUES (?, 1, ?, 'v2', 'pre_close', 1.5, 1.1, ?, 0.25, ?, 0.5, 0.5)",
+            (prediction_id, served_at, p_home, round(0.75 - p_home, 2)))
+    conn.execute(
+        "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
+        " ceiling, rule_version) VALUES (1, 1, '12', 0.75, 0.55, 0.85, 'confidence-v2')")
+    conn.commit()
+    conn.close()
+
+    app.dependency_overrides[get_conn] = _override(path)
+    try:
+        [tip] = TestClient(app).get("/tips").json()
+    finally:
+        app.dependency_overrides.clear()
+    assert tip["p_home"] == 0.40, "the view must come from prediction 1, not the newer 2"
+    assert tip["p_away"] == 0.35
 
 
 def test_tips_filter_by_division_and_reject_unknown_ones(tips_client):

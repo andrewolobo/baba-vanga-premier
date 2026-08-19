@@ -18,7 +18,7 @@ on matchday, never revised, graded from football-data results.
 | rule | `confidence-v3` (built 2026-08-19, **deploy pending** — the VM serves v2 until `V3_ADOPTION_PLAN.md` §6 runs): outright if p ≥ **0.55**, else likeliest of `1X`/`X2`/`12`/**underdog +1.5** ≤ **0.85**, else outright. Handicap tips carry NULL prices; honesty via the market-implied referee gap in the cycle | `engine/serve/tips.py` |
 | cycle | sync → calendar → serve → tips → results → grade; exit **0** clean / **2** look / **1** failed. `results` (BBC full-time scores, `BVP_BBC_RESULTS=1`) settles tips before football-data's file exists; `grade` reconciles once it does | `services/run_cycle.py` |
 | API | read-only; `/tips`, `/tips/results`, `/tips/record` (no P&L on the wire, per-rule-version headline) | `api/main.py` |
-| site | one page: calls, last results, record | `web/` |
+| site | one page: calls, last results, record; each call opens a drawer showing the model's view behind it — results ranked, or the next-likeliest markets (B22, display only) | `web/` |
 | server | one Azure Ubuntu VM, `git pull`, systemd timer + service + nginx | `DEPLOY.md`, `RUNBOOK.md` |
 
 **Measured, out of sample, 15,824 matches over 9 scored seasons:** v3 strike
@@ -72,8 +72,8 @@ The rule agrees with the same rule on the market's own probabilities in only
   gate. `scripts/export_ledger.py --restore` loads it into an empty ledger, or
   appends what an exact-prefix ledger lacks; `--check` names which of the two
   is behind.
-- Tests: `pytest -q` — **616 pass** at last run (2026-08-19 post-v3-build,
-  Python 3.11), plus **9** in `cd web && npm test`; the prose has been stale
+- Tests: `pytest -q` — **619 pass** at last run (2026-08-19 post-B22,
+  Python 3.11), plus **14** in `cd web && npm test`; the prose has been stale
   before.
 
 ## What must never happen

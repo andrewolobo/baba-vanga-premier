@@ -11,8 +11,22 @@
   } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
+  import { outcomes, nextLikeliest } from '$lib/view.js';
+  import { slide } from 'svelte/transition';
 
   let division = $state('');
+  // The drawer behind a call (B22): which fixture is open, and which of the
+  // two readings it shows. One `view` for the whole list rather than one per
+  // row, so the toggle a reader chose survives opening the next fixture.
+  let open = $state(null);
+  let view = $state('results');
+  const toggle = (id) => (open = open === id ? null : id);
+  const onRowKey = (event, id) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggle(id);
+    }
+  };
   let tips = $state([]);
   let results = $state([]);
   let record = $state(null);
@@ -194,7 +208,20 @@
         {#each matches as t}
           {@const badge = fixtureBadges(t.home_team, t.away_team)}
           {@const k = kick(t)}
-          <div class="row">
+          <!-- The row is the control for the drawer beneath it (B22): a
+               button role rather than a <button>, because the grid layout
+               inside does not survive button's default styling, and the
+               keyboard handler restores what the role promises. -->
+          <div
+            class="row"
+            class:open={open === t.tip_id}
+            role="button"
+            tabindex="0"
+            aria-expanded={open === t.tip_id}
+            aria-controls="view-{t.tip_id}"
+            onclick={() => toggle(t.tip_id)}
+            onkeydown={(e) => onRowKey(e, t.tip_id)}
+          >
             <div class="fixture">
               <div class="side home">
                 <span class="club">{t.home_team}</span>
@@ -231,19 +258,94 @@
                 <div class="confhead"><span>CONF</span><span class="v">{pct(t.model_prob, 0)}</span></div>
                 <div class="track"><div class="fill" style="width:{100 * t.model_prob}%"></div></div>
               </div>
+              <span class="caret" aria-hidden="true"></span>
             </div>
           </div>
+
+          <!-- What the model thought when the call was published, from the
+               prediction row the call was made from. Two readings of the
+               same numbers (`$lib/view.js`); neither is a second call, and
+               the copy says so because the strike rate has exactly one
+               denominator. -->
+          {#if open === t.tip_id}
+            <div class="drawer" id="view-{t.tip_id}" transition:slide={{ duration: 180 }}>
+              <div class="drawerhead">
+                <span class="label">
+                  {view === 'results' ? 'What the model thinks' : 'Next-likeliest markets'}
+                </span>
+                <div class="switch" role="group" aria-label="Reading">
+                  <button class:on={view === 'results'} onclick={() => (view = 'results')}>
+                    Results
+                  </button>
+                  <button class:on={view === 'markets'} onclick={() => (view = 'markets')}>
+                    Next likeliest
+                  </button>
+                </div>
+              </div>
+
+              {#if view === 'results'}
+                <ol class="bars">
+                  {#each outcomes(t) as o}
+                    <li class:in={o.cover !== 'none'}>
+                      <span class="name">
+                        {o.label}
+                        {#if o.cover === 'full'}<span class="tag">in our call</span>
+                        {:else if o.cover === 'part'}<span class="tag">in our call if by one goal</span>{/if}
+                      </span>
+                      <span class="track"><span class="fill" style="width:{100 * o.p}%"></span></span>
+                      <span class="v">{pct(o.p, 0)}</span>
+                    </li>
+                  {/each}
+                </ol>
+                <p class="fine">
+                  The three results, ranked by the model's own probability. Our
+                  call is built from these — the results it covers are marked.
+                </p>
+              {:else}
+                <ol class="bars">
+                  {#each nextLikeliest(t) as m}
+                    <li>
+                      <span class="name">
+                        {m.label}
+                        {#if callMeans(m.side, t.home_team, t.away_team)}
+                          <span class="code" title={callMeans(m.side, t.home_team, t.away_team)}>{m.side}</span>
+                        {/if}
+                        {#if m.above}<span class="tag">likelier than our call</span>{/if}
+                      </span>
+                      <span class="track"><span class="fill" style="width:{100 * m.p}%"></span></span>
+                      <span class="v">{pct(m.p, 0)}</span>
+                    </li>
+                  {/each}
+                </ol>
+                <p class="fine">
+                  The two likeliest markets after our call, on probability
+                  alone. A hedge is almost always likelier than a named team,
+                  which is why the rule does not pick this way: it names a team
+                  whenever one clears its floor.
+                </p>
+              {/if}
+
+              <p class="fine dim">
+                Probabilities as stored when the call was published — uncalibrated,
+                and the model historically understates its favourites. Only the
+                call above is graded.
+              </p>
+            </div>
+          {/if}
         {/each}
       {/each}
     </div>
 
     <p class="note">
-      A call of <span class="code">12</span>, <span class="code">1X</span> or
-      <span class="code">X2</span> is a hedge: it covers two of the three
-      results. The rule steps down to one whenever no single result clears its
-      confidence floor, which is most weeks and most matches. Confidence is the
-      model's own probability for the call as published — it is uncalibrated and
-      historically understates itself.
+      A call of <span class="code">+1.5</span> backs that team with a
+      1.5-goal start: it wins unless they lose by two or more. A call of
+      <span class="code">12</span>, <span class="code">1X</span> or
+      <span class="code">X2</span> is a hedge covering two of the three
+      results. The rule steps down to one of these whenever no single result
+      clears its confidence floor, which is most weeks and most matches.
+      Confidence is the model's own probability for the call as published — it
+      is uncalibrated and historically understates itself. Click a fixture to
+      see what the model thought of each result; only the call is graded.
     </p>
   {/if}
 </section>
@@ -553,6 +655,52 @@
   .track { height: 5px; border-radius: 3px; background: #2c2c34; overflow: hidden; }
   .fill { height: 100%; border-radius: 3px; background: var(--accent); }
 
+  /* --- the drawer behind a call (B22) ------------------------------------- */
+  .row { cursor: pointer; transition: background 120ms; }
+  .row:hover, .row.open { background: var(--panel-2); }
+  .row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .caret {
+    flex: none; width: 8px; height: 8px; margin-left: 2px;
+    border-right: 2px solid var(--dim); border-bottom: 2px solid var(--dim);
+    transform: rotate(45deg); transition: transform 160ms;
+  }
+  .row.open .caret { transform: rotate(-135deg); border-color: var(--accent); }
+  .drawer {
+    padding: 14px 22px 18px; background: var(--panel-2);
+    border-bottom: 1px solid var(--line-2); border-top: 1px dashed var(--line);
+  }
+  .drawerhead {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
+  }
+  .switch { display: flex; gap: 4px; }
+  .switch button {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; padding: 5px 10px; border-radius: 3px;
+    border: 1px solid var(--line); background: transparent; color: var(--muted);
+    cursor: pointer;
+  }
+  .switch button:hover { border-color: var(--muted); color: var(--body); }
+  .switch button.on { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+  .bars { list-style: none; margin: 0; padding: 0; max-width: 640px; }
+  .bars li {
+    display: grid; grid-template-columns: minmax(0, 1fr) 160px 44px;
+    align-items: center; gap: 14px; padding: 5px 0;
+  }
+  .bars .name { font-size: 14px; font-weight: 600; color: var(--body); min-width: 0; }
+  .bars li.in .name { color: #f2f2f5; }
+  .bars .track, .bars .fill { display: block; }
+  .bars li.in .fill { background: var(--accent); }
+  .bars li:not(.in) .fill { background: var(--dim); }
+  .bars .v { font-family: var(--mono); font-size: 12px; color: #fff; text-align: right; }
+  .tag {
+    display: inline-block; margin-left: 8px; font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    white-space: nowrap;
+  }
+  .fine { margin: 10px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); max-width: 72ch; }
+  .fine.dim { color: var(--dim); }
+
   .note {
     margin-top: 18px; font-size: 13px; line-height: 1.7; color: var(--muted);
     max-width: 90ch;
@@ -616,6 +764,8 @@
   }
   @media (max-width: 820px) {
     .page { padding: 48px 18px 0; }
+    .drawer { padding-left: 18px; padding-right: 18px; }
+    .bars li { grid-template-columns: minmax(0, 1fr) 90px 40px; gap: 10px; }
     .stats .inner, .disclaimer { padding-left: 18px; padding-right: 18px; }
     .fixture { grid-template-columns: 1fr auto 1fr; gap: 10px; }
     .club { font-size: 14px; }

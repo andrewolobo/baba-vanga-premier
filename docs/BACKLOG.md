@@ -9,7 +9,7 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-19** (late), after **the B21 referee probe ran** —
+Last updated **2026-08-19** (later still): **B22 done** — the drawer behind a call, two readings, display only; see its section. Before that, (late), after **the B21 referee probe ran** —
 owner request, following the gate: can the unpriced `D+1.5` call get a
 checkable reference? Ledger row **111** `probe:b21_market_referee`, **0
 configurations (111 / 68 / 202)**, re-exported; **603 pass**. A market-implied
@@ -150,6 +150,7 @@ and gated B4.
 | **B6** | Customer-facing surface for the tip list | **done** 2026-08-07 | 0 | B0 |
 | **B7** | Honesty check on how the strike rate is reported downstream | **done 2026-08-16** — v2 return measured, −4.56% ✱ at avg / ~0 at best (`TIPSTER.md` A) | 4 spent | B6 |
 | **B16** | `/tips/record` pools every `rule_version` under one strike rate | **done** 2026-08-15 — per-version headline, `by_rule` history | 0 | B7 |
+| **B22** | The drawer behind a call: what the model thought, two readings | **done 2026-08-19** — API serves the call's own prediction row; site opens a drawer per fixture (results ranked, marked by cover; toggle to next-likeliest markets). Display only; nothing new is graded | 0 | B6 |
 | **B9** | **Best-price execution — is it reachable?** | **scheduled: after B8 ships and a full season of tips is graded** | 0 (not modelling) | B8 |
 
 ## Scheduled, not now
@@ -1314,6 +1315,49 @@ decorative colour from a fixed palette. They are not crest colours and must not
 be presented as them; the full club name renders beside every badge, which is
 what keeps an imperfect code cosmetic. Real colours, if ever acquired, belong in
 `reference/` keyed by canonical_name.
+
+## B22 — The drawer behind a call — **DONE 2026-08-19**
+
+Owner request: keep the one graded call, and let a reader open a fixture to
+see the model's second and third picks beneath it. Scoped first, because on
+this product "the next two highest predictions" is `PRODUCT.md` §3's
+degeneracy in miniature: on the 34 tips then in the DB, ranking the six 1X2
+markets by probability put the published call **first in 29 and third in 5**,
+and the five it lost to were `1X` and `12` on every outright call — so the
+literal reading would show "Wolves win 59%" above "Wolves or draw 83%" and
+read as a mistake. Two readings shipped, the honest one by default:
+
+| reading | what the drawer shows | where |
+| --- | --- | --- |
+| **(b) Results** — default | the three results ranked by the model's probability, each marked by how the call covers it: `in our call`, `in our call if by one goal` (a handicap's one-goal defeat), or unmarked | `view.outcomes` |
+| **(a) Next likeliest** — toggle | the two likeliest markets *other than the call* on the rule's own menu — `H D A 1X X2 12` and the underdog's +1.5 — ranked by probability alone, each flagged `likelier than our call` when it is | `view.nextLikeliest` |
+
+**What the API does.** `TIP_SELECT` joins `predictions` on **`t.prediction_id`**
+— the row the tip was made from, never the fixture's newest — and serves
+`p_home/p_draw/p_away`, the sums `p_1x/p_x2/p_12` (formed in SQL, because the
+browser never computes a probability) and, from the stored lambdas, the two
+handicap marginals `p_h15/p_a15` (`_with_handicap`: independent Poisson on
+0..15, no tau — the same pmf `tips.select` compares, pinned by
+`test_the_api_handicap_is_the_rules_handicap` against `b21.dog15_probs` on
+`dispersion.score_matrix`; restated rather than imported so the API still
+never loads the measurement stack). `test_the_model_view_is_the_prediction_the_tip_was_made_from`
+pins the join against a re-served fixture.
+
+**What it is not.** No rule change, no schema change, no cycle change, no
+grading change, no ledger row: `tips.side` is the only thing settled and the
+copy says so on every drawer ("Only the call above is graded"). Goal lines are
+**not** in the drawer — B4 closed "do not extend on this head" and B11
+measured E1–E3 confident unders over-claiming 4–9 pts; an unmeasured-negative
+number does not belong on the customer surface. The favourite's +1.5 is not
+listed either (a near-certainty on no menu). The drawer is on the upcoming
+list only: the grader stores `win/lose/void` and no score, so a drawer on a
+settled card could show probabilities but never "how the others did".
+
+Code: `api/main.py` (`TIP_SELECT`, `_with_handicap`), `web/src/lib/view.js`
+(+ `view.test.js`, 5 cases), `web/src/routes/+page.svelte` (row is the
+`role="button"` control, Enter/Space toggles, one `view` state shared across
+rows). Verified rendered against a scratch copy of the DB with Playwright at
+1280 and 390 wide. **619 pass + 14 web.**
 
 ## B7 — The honesty check — **DONE 2026-08-16**
 
