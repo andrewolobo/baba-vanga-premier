@@ -1,0 +1,45 @@
+{
+  "gate": {
+    "n": 15824,
+    "shipped": {
+      "strike": 0.72491,
+      "claimed": 0.72553,
+      "honesty_gap": -0.00062,
+      "mix": {
+        "H": 0.1184,
+        "A": 0.0252,
+        "1X": 0.1761,
+        "X2": 0.0305,
+        "12": 0.6499,
+        "D+1.5": 0.0
+      }
+    },
+    "arm": {
+      "strike": 0.77856,
+      "claimed": 0.76907,
+      "honesty_gap": 0.0095,
+      "mix": {
+        "H": 0.1184,
+        "A": 0.0252,
+        "1X": 0.1006,
+        "X2": 0.0154,
+        "12": 0.102,
+        "D+1.5": 0.6384
+      },
+      "dog15_claimed": 0.80297,
+      "dog15_delivered": 0.80618
+    },
+    "shifted_share": 0.6384,
+    "vs_shipped": 0.05365,
+    "vs_shipped_ci": [
+      0.04474,
+      0.0626
+    ],
+    "vs_shipped_excludes_zero": true,
+    "verdict": {
+      "G1_delta_2_5_to_4_5_resolved_positive": false,
+      "G2_overclaim_0_2_to_1_5": false,
+      "G3_arm_strike_75_to_77": false
+    }
+  }
+}

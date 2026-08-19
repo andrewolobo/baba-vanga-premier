@@ -7,7 +7,78 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-18**, after **B20 was scoped and probed, dry-run
+Last updated **2026-08-19** (late), after **the B21 referee probe** — owner
+request after the gate: the `D+1.5` call has no corpus price (B5), so this
+measured whether a **derived referee** restores the lost honesty check.
+Pre-registration `BACKLOG.md` B21 ("Referee probe", predictions R1–R5 written
+first); code `engine/eval/b21_referee.py`, tests `tests/test_b21_referee.py`
+(3 new, **603 pass**), results `docs/b21_referee_results.json`; ledger row
+**111** `probe:b21_market_referee`, **0 configurations — 111 / 68 / 202**,
+re-exported, `--check` clean. Method: fit (λ_h, λ_a) per match to the
+devigged avg 1X2 prices (exactly identified; 100.00% converge, max residual
+3.8e-11), push through the model's own Poisson pmf, read off market-implied
+`D+1.5`. **R1/R2/R5 held, control fired, R3/R4 missed informatively.** Model
+vs referee on the 10,097 published calls: **80.30 vs 80.53, gap −0.23
+[−0.34, −0.13] ✱**, stable across seasons (−0.6 … +0.2, no trend). The
+referee is **calibrated in the publication window [0.70, 0.90) pooled and in
+every division**, but over-claims below 0.70 (strong favourites: 66.1 claims,
+62.3 delivers ✱; E3 −6.5) — an independent-Poisson pmf at market λs
+understates big favourite wins, so the referee's use is **conditioned on the
+window**, recorded not offset. Pick agreement between the model-side and
+market-side v3 rules is **64.3%** — v2's 63.5% again; the disagreement lives
+in the outright tier and floor, untouched by v3. Corroboration for the gate:
+market-implied claims (80.53) match delivery (80.62) — the ~80% level is the
+market's number too. **Verdict: viable as a standing, labelled ("reference,
+never a price") reconciliation in the cycle if v3 ships**, alerting beyond
+±1 pt of the historical −0.23, publication-window claims only. The adoption
+decision itself stays open with the owner.
+
+Before that, the same evening, after **the B21 gate ran** at the
+owner's direction ("do the one arm read for dog +1.5"). Pre-registration
+`BACKLOG.md` B21 ("Gate — dog +1.5"), written before the run; code
+`engine/eval/b21.py`, tests `tests/test_b21.py` (planted data, 5 new, **600
+pass**), results `docs/b21_results.json`; ledger row **110** `gate:b21_dog15`,
+**110 / 67 / 202**, re-exported and `--check` clean. The arm — the underdog
++1.5 handicap added to the shipped fallback candidate set, outrights untouched
+— delivers **77.86% against 72.49%, +5.365 [+4.474, +6.260] ✱ paired by ISO
+week**, publishing `D+1.5` in 63.8% of matches, and the published claims
+*under*-state delivery (+0.95; the `D+1.5` calls claim 80.30 and deliver
+80.62). **0 of 3 pre-registered predictions held and every miss favoured the
+arm**: the mechanism I registered (§9.12's margin under-spread ⇒ `dog +1.5`
+over-claims) is refuted — the pmf's adjacent-margin unions under-claim on
+this head (`1X` +1.07 ✱, `D+1.5` +0.32) and the arm swaps out the one
+over-claiming union (`12`, −0.75 ✱), which is the ~+1 pt between implied
+(+4.36) and realised (+5.37). It remains the pre-acknowledged short-odds
+dial — no informational edge claimed (~+0.66 over the conditional prior). **A
+directional inference from a λ-axis dispersion fact to a derived market's
+calibration has now failed once; measure, don't reason, next time.** **Owner
+decision open: adopt as `confidence-v3`** (RULE_VERSION bump, `tips.side`
+CHECK migration, `settle_tips` handling, no corpus price at the line — B5)
+**or record and stay on v2.** The other machine must run
+`scripts/export_ledger.py --restore` before any gate runs there.
+
+Before that, earlier the same day, **B21's scan** at the
+owner's request: can any other derivable line improve the strike rate the way
+adopting `12` did? **λ + prices only, no outcome scored against a model pick,
+no ledger row, 0 configurations** (109 / 66 / 201 unchanged); full record in
+`BACKLOG.md` B21, code session-scratchpad and not committed (re-derive before
+quoting). The answer is **no**: 56 markets derivable from the score matrix
+were scanned; against unconditional base rates the underdog +1.5 handicap
+looks informative (claims 0.788 on the fallback vs base 75.6%), but against
+the *price-conditional* prior — outcome frequency in the match's
+market-favourite devigged-odds band — **every candidate's mean claimed edge
+is under one point**, the margin `12` itself carries (+0.69). The nominal
+leaders are already indicted: totals claims over-claim 4–9 pts in E1–E3
+(B11/B17), and dog +1.5's claim is biased up by the under-spread margin axis
+(§9.12). Markets that raise the published percentage (dog +2.5 at 0.92,
+`goals 1–4` at 0.80 flat across all bands) are `PRODUCT.md` §3's short-odds
+degeneracy. **Recommendation: do not gate**; if the owner reads one arm
+anyway, dog +1.5 (1 configuration, predicted null-to-negative, unpriced at
+that line in the corpus). Side-finding: against the conditional prior the
+shipped `12` delivers +0.7 pt, slightly kinder than B20's unconditional
+framing; both round to "at the prior".
+
+Before that, **2026-08-18**, after **B20 was scoped and probed, dry-run
 only** — owner request to review a `12`-specific ceiling "for posterity".
 `BACKLOG.md` B20 carries the pre-registration and the probe; code
 `engine/eval/window12.py`, tests `tests/test_window12.py`; **no ledger row, no

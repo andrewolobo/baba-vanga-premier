@@ -9,7 +9,53 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-18**, opening **B20** — a `12`-only eligibility
+Last updated **2026-08-19** (late), after **the B21 referee probe ran** —
+owner request, following the gate: can the unpriced `D+1.5` call get a
+checkable reference? Ledger row **111** `probe:b21_market_referee`, **0
+configurations (111 / 68 / 202)**, re-exported; **603 pass**. A market-implied
+`D+1.5` fitted from devigged avg 1X2 prices through the model's own pmf:
+exact fit (max residual 4e-11), model−referee gap **−0.23 ✱** on the 10,097
+published calls, season-stable, **calibrated in the publication window
+([0.70, 0.90)) in every division** — but over-claims below 0.70 (strong
+favourites, up to −6.5 in E3), so its use is conditioned on the window; and
+pick agreement with the market-side rule is **64.3%**, v2's number again —
+v3 does not change the disagreement structure. The referee corroborates the
+gate: market-implied 80.53 vs delivered 80.62 on the published calls.
+**Viable as a standing labelled reconciliation if v3 ships.** Full result in
+the B21 section.
+
+Before that, the same evening, after **the B21 gate ran** — owner
+decision to read the one arm. Ledger row **110** `gate:b21_dog15`, **201 →
+202 configurations**, ledger re-exported, **600 pass**. The underdog +1.5
+handicap as a fallback candidate delivers **77.86%** against the shipped
+72.49% — **+5.365 [+4.474, +6.260] ✱ paired**, the largest paired delta ever
+measured on this rule — and its calls under-claim (+0.95; `D+1.5` claims
+80.30, delivers 80.62). **0 of 3 pre-registered predictions held, every miss
+in the arm's favour**: the §9.12-based mechanism (margin under-spread ⇒
+`dog +1.5` over-claims) is refuted — the pmf's adjacent-margin unions
+under-claim on this head, and the arm swaps the one over-claiming union
+(`12`) for an under-claiming one. Still the pre-acknowledged short-odds dial:
+no informational edge is claimed (~+0.66 over the conditional prior,
+unchanged). **Owner decision now open: adopt as `confidence-v3`** (needs
+`RULE_VERSION` bump, `tips.side` migration, settlement handling; no corpus
+price at the line, B5) **or record and stay on v2.** Section below carries
+the full result.
+
+Before that, earlier the same day, adding **B21** — an owner-requested scan of
+every other market derivable from the score matrix ("is there another `12`?"),
+λ + prices only, **no outcome scored against a model pick, no ledger row, 0
+configurations**. The scan is recorded in full below; the sentence-length
+version: several markets claim more than `12` on the fallback population
+(underdog +1.5 AH at 0.788, favourite team-total under 2.5 at 0.827), but
+conditioned on the market favourite's devigged probability band — the prior a
+reader with an odds app already has — **every candidate's mean claimed edge is
+under one point**, the same margin `12` itself carries (+0.69). The markets
+that would raise the published percentage (dog +2.5 at 0.92, `goals 1–4` at
+0.80 with **no gradient across bands at all**) are `PRODUCT.md` §3's
+short-odds degeneracy, not information. **Recommendation: do not gate.** Code
+was session-scratchpad, not committed — re-derive before quoting.
+
+Before that, **2026-08-18**, opening **B20** — a `12`-only eligibility
 window on the shipped rule, pre-registered below with a λ-only probe run in
 dry-run and no strike arm spent. Opened by the owner's review of the 65% `12`
 mix; the new number in it is that the shipped `12` calls deliver **73.6%**
@@ -94,6 +140,7 @@ and gated B4.
 | **B18** | Totals-axis shrink, per division (the fix B17 implies) | **open, gated on B4 reopening** — worth nothing to the shipped product | ~1–2 | B17 |
 | **B19** | Separate ridge on the sum and difference of `att`/`dfn` — margins under-spread, totals over-spread on one penalty | **open — owner decision to scope**; P1-scale | ~4–8 | B17, §9.12 |
 | **B20** | A `12`-only eligibility window (ceiling, or floor) on the shipped rule — the 65% `12` mix | **pre-registered + λ-probe dry-run 2026-08-18** — a 0.80 ceiling is inert, 0.75 removes the informative end; **floor 0.75** keeps `12` in 14% of matches, all above base rate; owner decides whether to read it | 0 spent; 1 if floor 0.75 is read | B3 |
+| **B21** | Any other adoptable line? — scan, then the dog +1.5 gate | **measured 2026-08-19** — scan: every candidate within ±1 pt of its price-conditional prior; gate (owner call): dog +1.5 fallback candidate **+5.37 ✱ paired**, strike 77.9%, under-claims +0.95; **owner decision open: adopt as v3 or stay on v2** | 1 spent | B3 |
 
 ## Later
 
@@ -911,6 +958,295 @@ realised strike cost, and it is bounded by B3's `12`-off arm at ~−1.7 pts.
 is inert, ceiling 0.70 and floor 0.80 are B3's `12`-off arm re-measured, and
 ceiling 0.75 removes the wrong end. If nothing is read, this section is the
 record and B20 closes as *scoped, not spent*.
+
+## B21 — Is there another `12`? A scan of every derivable line — **SCANNED 2026-08-19, λ + prices only, do not gate**
+
+Owner question 2026-08-19: can any *other* betting line be adopted to improve
+the strike rate, the way adopting `12` did? Answered with a scan, **not a
+pre-registered probe**: the code ran in session scratchpad and is not
+committed; the definitions below are complete enough to re-derive, and nothing
+here read an outcome against a model pick (**no ledger row, 0 configurations**
+— outcomes enter only through market-defined base-rate tables, the same
+footing as B20's 18,060-result base rate).
+
+**Population and menu.** The B3 frame: 15,824 out-of-sample matches, served
+walk-forward λ, shipped rule floor 0.55 / ceiling 0.85, `12` on; fallback =
+85.6% of matches. 56 markets derivable from `score_matrix`: Asian handicaps
+(fav −1 … −2.5, dog +1 … +2.5, integer pushes handled), O/U 0.5–5.5, goal
+ranges (1–2 … 3–6), team totals for favourite/underdog/home/away, BTTS,
+draw-no-bet, win-to-nil, odd/even, and two combos. Sides are stated relative
+to the model favourite (which is the market favourite essentially always).
+
+**Step 1 — claims on the fallback.** Candidates whose claimed probability
+beats `12`'s under the 0.85 ceiling often enough to matter, with the share of
+the fallback they would displace `12` in if added to the candidate set:
+
+| candidate | mean claim (fallback) | displaces `12` in | unconditional base |
+| --- | --- | --- | --- |
+| dog +1.5 (AH) | 0.788 | 63.8% | 75.6% |
+| fav team-total under 2.5 | 0.827 | 49.5% | 79.9% |
+| goals 1–4 | 0.802 | 82.3% | 79.9% |
+| under 3.5 | 0.749 | 46.0% | 74.0% |
+| fav to score (over 0.5) | 0.755 | 57.8% | 78.6% |
+| *(shipped `12`)* | *0.737* | — | *73.9%* |
+
+Against *unconditional* base rates, dog +1.5 looks like the find: +3.2 pts
+over base, claims above base in 95.9% of calls, and it names a team.
+
+**Step 2 — the conditional prior, and it removes everything.** The fallback
+is a selected population (weak favourites), so the unconditional base is the
+wrong bar — the same trap B20 documented for `12` itself. Conditioning each
+fallback match on its market favourite's devigged-probability band (eight
+bands over avg 1X2 odds, priors fitted on all 18,054 priced results,
+2014-15 → 2022-23), mean claim − mean band prior on the 13,546 priced
+fallback matches:
+
+| candidate | claim − conditional prior |
+| --- | --- |
+| `12` (shipped) | **+0.69 pt** |
+| fav under 2.5 | +0.87 pt |
+| dog +1.5 | +0.66 pt |
+| dog +2.5 | +0.54 pt |
+| goals 1–4 | +0.10 pt |
+| under 3.5 | +0.00 pt |
+| over 1.5 | −0.85 pt |
+| dog under 1.5 | −1.09 pt |
+| fav to score | −1.70 pt |
+
+Nothing clears one point, and the two nominal leaders are the ones existing
+measurements already indict: **fav under 2.5 and under 3.5 are confident
+low-total claims, which B11 measured as over-claiming by 4–9 pts in E1–E3**
+(B17: the totals axis is over-spread), and **dog +1.5's claim is biased up by
+the margin axis being under-spread** (§9.12: P(fav by 2+) is understated, and
+dog +1.5 = 1 − P(fav by 2+)). The conditional-prior gradient also exposes
+`goals 1–4` as pure prior: its base is 79–80% in *every* band — a call that
+does not depend on the fixture cannot carry information.
+
+**Why there is no second `12`.** Adopting `12` worked because it moved the
+rule onto a higher-probability event at no information loss. Every remaining
+higher-probability event either (a) sits at its conditional prior (dog +1.5,
++2.5, ranges), (b) is a totals claim the head is measured to over-state
+outside E0 (unders, team-total unders), or (c) raises the published
+percentage only by shortening odds — §3's degeneracy, already refuted as a
+product. The head names the market favourite essentially always and has no
+within-band ranking information to spend; the only levers measured to move
+strike rate remain mix shifts inside the existing menu (B20 floor 0.75,
+B10's `12`↔`1X` margin), and none of those has resolved positive either.
+
+**If the owner wants one arm read anyway**, dog +1.5 as an added fallback
+candidate is the only shape not already disqualified: 1 configuration, paired
+by ISO week against shipped, prediction would be **null-to-negative** (its
++0.66 claimed edge is smaller than the biases pushing it up). Two costs to
+state first: the corpus carries AH prices **only at the main line** (−0.25 …
++0.5 on the fallback), so a dog +1.5 call is unfalsifiable against a price —
+the B5 problem again — and the published product would become "underdog +1.5"
+in ~64% of matches, which is `12`'s specificity problem wearing a handicap.
+
+**A side-finding for B20:** against the *conditional* prior the shipped `12`
+calls deliver 73.6% vs ~72.9% (+0.7 pt), slightly kinder than B20's
+unconditional framing ("performs at the prior"). It does not change the B20
+decision; both readings round to "at the prior".
+
+### Gate — dog +1.5, pre-registered 2026-08-19 (owner decision: read the one arm)
+
+**Written before the gate ran.** Code `engine/eval/b21.py`, tests
+`tests/test_b21.py` (planted data only). **Cost: 1 configuration** — one new
+arm's outcomes read, paired by ISO week against the shipped arm (whose strike
+is already published, B3; the paired reference spends nothing, per B20's
+costing).
+
+**The arm.** The shipped rule (floor 0.55, ceiling 0.85, `12` on) with **the
+underdog +1.5 Asian handicap added to the fallback candidate set** — the
+fallback picks the likeliest of `1X`/`X2`/`12`/`dog +1.5` at or under the
+ceiling. The underdog is the model's underdog (`p_h < p_a` ⇒ home is the
+dog), which is the market's essentially always; the call wins unless the
+favourite wins by 2 or more (half line, no push). The outright tier is
+untouched by construction. No dominated-union guard is needed: with `12`
+still on the menu the fallback maximum is ≥ `12` ≥ the outright probability.
+From the λ probe (scan step 1): the arm publishes `dog +1.5` in **63.8%** of
+matches, `H` 11.8%, `12` 10.2%, `1X` 10.1%; it names a team (as survivor or
+handicapped side) in 89.8%; mean claim 0.769; **implied Δ +4.4 pts** — the
+calibrated-head ceiling for G1.
+
+**Predictions:**
+
+- **G1.** Paired realised strike delta vs shipped in **[+2.5, +4.5] pts,
+  resolved positive**. *Basis:* implied +4.4 if the head were calibrated;
+  conditional-prior arithmetic gives ≈ +3.3 (the displaced matches move from
+  an event with band prior ~72.9% to one at ~78.1%, on 63.8% of matches); the
+  under-spread margin axis (§9.12) means the head under-states P(fav by 2+),
+  i.e. over-claims `dog +1.5`, trimming the implied number.
+- **G2.** Delivered − claimed on the arm's published picks in **[−1.5, −0.2]
+  (over-claim)**, against the shipped rule's measured −0.06: the modal call
+  inherits the margin-axis bias plus `12`'s own −0.75.
+- **G3.** The arm's realised strike in **[75.0, 77.0]%** (shipped 72.5 + G1).
+
+**What this gate is and is not.** A resolved-positive G1 is *expected* and is
+the §3 short-odds dial, pre-acknowledged — the event is likelier, the claim
+carries the same ~+0.7 edge over its conditional prior that `12` does. **No
+informational claim is being made or tested**, so no planted control is spent
+(owner authorized 1 configuration); instrument sensitivity on this exact
+population and method is already demonstrated (B3's `12`-off −1.7 ✱, §9.5's
+planted ρ +0.63 ✱ at a 27.6% change rate, B14's blind control −1.64 ✱ — this
+arm's change rate is 63.8%). If G1 lands *below* +2.5 the claims are biased
+worse than modelled, which would be the finding. **Adoption is a separate
+owner decision**, not automatic on a green G1: it trades away specificity
+("underdog +1.5" in ~64% of matches), the corpus prices AH only at the main
+line so the call is unfalsifiable against a price (B5), and it needs a
+`RULE_VERSION` bump plus a `tips.side` CHECK migration.
+
+### Result — **MEASURED 2026-08-19. 0 of 3 predictions held — every miss in the arm's favour.**
+
+Ledger row **110** `gate:b21_dog15`, **201 → 202 configurations**. Results
+`docs/b21_results.json`; **600 pass** after `tests/test_b21.py` (5 new).
+
+| arm | strike | claimed | honesty | vs shipped, paired |
+| --- | --- | --- | --- | --- |
+| shipped | 72.49% | 72.55% | −0.06 | — |
+| **dog +1.5** | **77.86%** | 76.91% | **+0.95** | **+5.365 [+4.474, +6.260] ✱** |
+
+Mix as the probe said (`D+1.5` 63.8%, `12` 10.2%, `1X` 10.1%, outrights
+untouched). The `D+1.5` calls **claim 80.30% and deliver 80.62%** — the new
+market is calibrated-to-under-claiming, not over-claiming.
+
+**The scorecard is the finding.** G1 predicted [+2.5, +4.5] and the delta is
++5.37 — *above the "calibrated-head ceiling" of +4.4*. G2 predicted an
+over-claim of [−1.5, −0.2] and the arm under-claims at +0.95. G3 followed G1
+out the top. All three missed because the pre-registered mechanism was
+backwards: the §9.12 argument (margin axis under-spread ⇒ P(fav by 2+)
+understated ⇒ `dog +1.5` over-claimed) is **refuted by the measurement** — the
+pmf's unions of adjacent margin cells under-claim on this head (`1X` +1.07 ✱,
+now `D+1.5` +0.32), and the arm swaps the one over-claiming union (`12`,
+−0.75 ✱) for an under-claiming one. That calibration swing (~+1.1 on 63.8% of
+matches) is the gap between implied (+4.36) and realised (+5.37). Recorded,
+not reworded: the directional reasoning from a λ-axis dispersion fact to a
+derived market's calibration has now failed once and should not be reused
+without a measurement.
+
+**What it is not.** This is still the short-odds dial, exactly as
+pre-acknowledged: the informational edge over the conditional prior was
+~+0.66 pts before the gate and nothing here re-measures it. The 80.6%
+delivery against the ~78.1% whole-fallback band prior is on a *selected*
+subset (the matches where `dog +1.5` won the fallback argmax) and must not be
+read as skill. The strike-rate number rises because the event is likelier —
+77.9% at a mean claim of 0.77 versus 72.5% at 0.73 — the same trade, at the
+same honesty, as the `12` decision itself.
+
+**Owner decision — adopt into `confidence-v3`?** For: +5.4 pts of headline
+strike, resolved; the biggest paired delta any arm has ever measured on this
+rule (B3's `12`-on was +1.7); the published claims *under*-state delivery
+(+0.95), the safe direction; the call names a team (as the handicapped side)
+in ~90% of output against 14.3% today. Against: "underdog +1.5" is `12`'s
+specificity problem wearing a handicap — it is a *survival* call, not a
+winner call; no corpus price exists at that line (B5), so return is
+unfalsifiable and the site could publish no price context; and it needs a
+`RULE_VERSION` bump, a `tips.side` CHECK migration, `settle_tips` handling
+for the new market, and `RUNBOOK.md` §0 discipline on the switchover. If
+adopted, B16's per-version record keeps v2 and v3 strike rates separate by
+construction.
+
+### Referee probe — market-implied `D+1.5`, pre-registered 2026-08-19 (owner request)
+
+**Written before the probe ran.** The gate left `D+1.5` without the external
+referee every v2 honesty check leaned on (no corpus price at the +1.5 line —
+B5). This probe measures whether a **derived** referee works: fit a
+market-implied (λ_h, λ_a) to each match's devigged avg 1X2 prices (two
+parameters, two free targets — exactly identified), push them through the
+same Poisson score matrix, and read off a market-implied `D+1.5`
+probability. Poisson-mediated on *both* sides, so the pmf-shape bias largely
+cancels and the comparison isolates the λs — which is the thing the model
+owns. Code `engine/eval/b21_referee.py`, tests `tests/test_b21_referee.py`
+(planted data). Results `docs/b21_referee_results.json`.
+
+**Cost: 0 configurations, one probe row** (`probe:b21_market_referee`). The
+model-side comparison reads prices and λ only. The referee's own calibration
+check reads outcomes for a **market-defined** quantity (market underdog,
+market-implied probability — no model arm anywhere in it), the same footing
+as B20's base rate and B17's 0-configuration residual probe, and it carries
+a planted control per convention 8: market λs jittered by exp(N(0, 0.25))
+must read overconfident, or the instrument is dead and the table is not a
+result.
+
+**Predictions:**
+
+- **R1 (fit).** The Newton fit converges with max |fitted − devigged| on
+  (p_h, p_a) below 1e-4 for **> 99%** of priced matches.
+- **R2 (gap).** On the matches where the B21 arm publishes `D+1.5`, model
+  claim − market-implied claim has mean in **[−1.0, +0.5] pts** (the model
+  tracks the market's λs closely; §9.12's timid margins put it slightly
+  under). Week-block CI reported.
+- **R3 (referee calibration).** Market-implied `D+1.5` delivers within
+  **[0, +1.0] pts** of its claim pooled (slight under-claim, the direction
+  the model's own gate showed), and no division's top bucket over-claims
+  resolved. If this fails, the referee needs an offset before it can be
+  wired in, and that is the finding.
+- **R4 (agreement).** The v3 rule run on market-implied probabilities
+  publishes `D+1.5` in **[55, 75]%** of matches and agrees with the model
+  v3 rule's pick in **[70, 85]%** — above v2's 63.5%, because `D+1.5` wins
+  the fallback argmax by a wide margin (~5 pts over `12`) while v2's
+  `12`-vs-`1X` choice sat on a knife edge.
+- **R5 (stability, the drift instrument).** Every season's mean gap (R2)
+  sits within **±1 pt** of the pooled mean — the property that makes the
+  referee usable as a standing reconciliation rather than a one-off table.
+
+**What a win is.** R1 + R3 + R5 green means the derived referee is fit to
+wire into the cycle as a labelled reconciliation ("model vs market-implied",
+never a price) if v3 ships — restoring the honesty check the +1.5 line
+cannot get from a real price until B9-style capture exists. R3 failing by a
+constant is an offset to record, not a dead end. R2/R4 are the numbers the
+adoption decision wants in front of it either way.
+
+### Referee result — **MEASURED 2026-08-19. R1/R2/R5 held, control fired; R3 and R4 missed, both informatively.**
+
+Ledger row **111** `probe:b21_market_referee`, **0 configurations —
+111 / 68 / 202**. Results `docs/b21_referee_results.json`; **603 pass** after
+`tests/test_b21_referee.py` (3 new).
+
+**R1 held completely:** 100.00% of 15,818 priced matches converge, max
+residual 3.8e-11 — the devigged 1X2 vector pins the market λs exactly.
+
+**R2 held:** on the 10,097 matches where the arm publishes `D+1.5`, the model
+claims **80.30%** against the referee's **80.53%** — gap **−0.23 [−0.34,
+−0.13] ✱**, resolved but a quarter of a point. The model's λs are the
+market's λs on this call, to within noise that matters to nobody.
+
+**R3 MISSED, and the miss has a shape worth keeping.** Predicted the referee
+under-claims by [0, +1] pooled; measured **over-claims by −1.11**. But the
+over-claim lives entirely in the strong-favourite region the product never
+publishes in: the [0.60, 0.70) bucket claims 66.1 and delivers 62.3 ✱ (worst
+E3 −6.5, E2 −4.7), while **both publication-window buckets — [0.70, 0.80) and
+[0.80, 0.90) — read calibrated pooled and in every division separately.**
+Mechanically: strong favourites win by 2+ more often than an
+independent-Poisson pmf at market λs implies; where no strong favourite
+exists (the fallback, by construction) the pmf is right. So the referee is
+fit for purpose **in the window it would referee**, and the caveat is a
+condition on use — do not read it below claims of 0.70 — not an offset.
+
+**R4 MISSED on the half that matters:** the referee-side v3 rule publishes
+`D+1.5` in 57.9% (inside [55, 75]) but pick agreement is **64.3%** — almost
+exactly v2's 63.5%, refuting the pre-registered reasoning that `D+1.5`'s wide
+argmax margin would lift agreement. Disagreement is driven by the outright
+tier and the floor, which v3 does not touch: the under-confident head hedges
+where the market's level would name the team, same as B13/P7 found. Adopting
+v3 does not change the model-vs-market disagreement structure at all.
+
+**R5 held:** every season's gap sits within 0.4 pts of the pooled −0.23
+(range −0.6 to +0.2, no trend) — stable enough to run as a standing drift
+monitor. **The planted control fired** (jittered λs read overconfident,
+−3.5 ✱ top bucket), so the calibrated verdicts are a result, not a dead
+instrument.
+
+**The free finding the gate wanted:** the referee independently corroborates
+the B21 gate's level. Market-implied claims on the published calls (80.53)
+match what those calls delivered (80.62) — the ~80% strike of the `D+1.5`
+product is what the market's own numbers imply, not a model artifact.
+
+**Verdict on wiring it in:** viable, with the stated condition. If v3 ships,
+the cycle can log model-vs-referee gap per matchday (labelled "derived from
+1X2 prices via the model's own pmf — a reference, never a price"), alerting
+on a drift beyond ±1 pt of the historical −0.23, publication-window claims
+only. That restores the P7-style honesty check for the one market that
+cannot have a real price until B9-style capture exists.
 
 ## B12 (original scoping note)
 

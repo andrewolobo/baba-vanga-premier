@@ -3,7 +3,7 @@
 **Read this first.** It says what ships, what is open with the owner, and what
 must never happen. `OUTSTANDING.md` is the journal behind it and stays the
 authority on *why*; when the two disagree, `OUTSTANDING.md` is right and this
-file is stale — fix this file. Updated **2026-08-18**.
+file is stale — fix this file. Updated **2026-08-19**.
 
 ---
 
@@ -47,6 +47,7 @@ The rule agrees with the same rule on the market's own probabilities in only
 | **B19** sum/difference penalty | B17 (2026-08-16): totals over-spread in E1–E3, margins under-spread (§9.12) — one ridge cannot get both right | owner decision whether to scope a head-level gate (~4–8 configs); B18 (totals shrink) parked until B4 reopens |
 | **ops** | backup timer not enabled; no alerting; HTTP only | enable `bvp-backup.timer` + restore drill; dead-man's-switch ping from `run_cycle.sh` (owner supplies URL); TLS when a domain exists |
 | **P6 criterion 2** | holdout still sealed; criterion 1 PASSED (PBO 0.000) | owner decides when to spend the one read; `DEFLATION.md` §8 |
+| **B21** dog +1.5 — adopt as `confidence-v3`? | gate 2026-08-19 (row 110): **77.9% vs 72.5%, +5.37 ✱ paired**, under-claims +0.95. Referee probe (row 111, 0 config): market-implied `D+1.5` from 1X2 prices is calibrated in the publication window, gap to model **−0.23 ✱**, season-stable, corroborates the ~80% level — a checkable reference exists for the unpriced line, usable in the cycle if v3 ships. Scan + both results: `BACKLOG.md` B21 | owner: adopt (v3 — RULE_VERSION bump, `tips.side` migration, settlement, wire the referee) or record and stay on v2 |
 | **B20** `12`-only window (ceiling or floor) | pre-registered + λ-probe dry-run 2026-08-18 (`BACKLOG.md` B20). Shipped `12` calls deliver 73.6% vs a 73.9% non-draw base rate; 54% of them claim below it. A 0.80 ceiling is inert; 0.75 removes the informative end; **floor 0.75** keeps `12` in 14% of matches, all above base | owner: read floor 0.75 (1 config) or close as scoped-not-spent |
 | B10 `12` vs `1X` | open, downgraded | — |
 | B15 half-life `H` | open, gated | — |
@@ -60,14 +61,16 @@ The rule agrees with the same rule on the market's own probabilities in only
 
 ## Numbers that must be re-derived, not quoted
 
-- Gate ledger: `trials.count_configurations(conn)` — **109 / 66 / 201** at last
-  read (2026-08-17, on the authority machine after `--restore` appended P7 and
-  B17's five rows, which had been written on a second machine). `docs/gate_ledger.jsonl` is the off-machine copy; the test
+- Gate ledger: `trials.count_configurations(conn)` — **111 / 68 / 202** at last
+  read (2026-08-19, on the authority machine, after `gate:b21_dog15` wrote row
+  110 and `probe:b21_market_referee` row 111; re-exported the same session,
+  `--check` clean. The other machine must
+  `--restore` before any gate runs there). `docs/gate_ledger.jsonl` is the off-machine copy; the test
   `test_the_ledger_export_is_current` goes red until it is re-exported after a
   gate. `scripts/export_ledger.py --restore` loads it into an empty ledger, or
   appends what an exact-prefix ledger lacks; `--check` names which of the two
   is behind.
-- Tests: `pytest -q` — **563 pass** at last run (2026-08-17, Python 3.11); the
+- Tests: `pytest -q` — **603 pass** at last run (2026-08-19, Python 3.11); the
   prose has been stale before.
 
 ## What must never happen

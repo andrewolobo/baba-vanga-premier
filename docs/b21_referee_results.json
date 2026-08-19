@@ -1,0 +1,295 @@
+{
+  "fit": {
+    "n_priced": 15818,
+    "share_converged_1e4": 1.0,
+    "max_residual": 3.774847101567502e-11,
+    "median_lam_total": 2.2796
+  },
+  "compare": {
+    "n_d15_published": 10097,
+    "model_claim": 0.80298,
+    "referee_claim": 0.80531,
+    "gap": -0.00233,
+    "gap_ci": [
+      -0.00337,
+      -0.00134
+    ],
+    "gap_excludes_zero": true,
+    "share_model_above": 0.4147,
+    "gap_by_season": {
+      "201415": -0.00623,
+      "201516": -0.00376,
+      "201617": -0.00141,
+      "201718": -0.00473,
+      "201819": -0.00396,
+      "201920": 0.00038,
+      "202122": 0.00156,
+      "202223": 0.00025
+    },
+    "gap_by_division": {
+      "E0": -0.00287,
+      "E1": 0.00058,
+      "E2": -0.0029,
+      "E3": -0.00431
+    },
+    "referee_rule_d15_share": 0.5792,
+    "pick_agreement": 0.6434
+  },
+  "calibrate": {
+    "pooled": [
+      {
+        "bin": [
+          0.5,
+          0.6
+        ],
+        "n": 569,
+        "claimed": 0.5583,
+        "actual": 0.5483,
+        "half_width": 0.0409,
+        "verdict": "calibrated"
+      },
+      {
+        "bin": [
+          0.6,
+          0.7
+        ],
+        "n": 1791,
+        "claimed": 0.6613,
+        "actual": 0.6226,
+        "half_width": 0.0225,
+        "verdict": "overconfident"
+      },
+      {
+        "bin": [
+          0.7,
+          0.8
+        ],
+        "n": 5840,
+        "claimed": 0.7589,
+        "actual": 0.751,
+        "half_width": 0.0111,
+        "verdict": "calibrated"
+      },
+      {
+        "bin": [
+          0.8,
+          0.9
+        ],
+        "n": 7255,
+        "claimed": 0.8313,
+        "actual": 0.8233,
+        "half_width": 0.0088,
+        "verdict": "calibrated"
+      }
+    ],
+    "per_division": {
+      "E0": [
+        {
+          "bin": [
+            0.5,
+            0.6
+          ],
+          "n": 318,
+          "claimed": 0.552,
+          "actual": 0.5283,
+          "half_width": 0.0549,
+          "verdict": "calibrated"
+        },
+        {
+          "bin": [
+            0.6,
+            0.7
+          ],
+          "n": 519,
+          "claimed": 0.6578,
+          "actual": 0.6378,
+          "half_width": 0.0414,
+          "verdict": "calibrated"
+        },
+        {
+          "bin": [
+            0.7,
+            0.8
+          ],
+          "n": 889,
+          "claimed": 0.7545,
+          "actual": 0.7323,
+          "half_width": 0.0291,
+          "verdict": "calibrated"
+        },
+        {
+          "bin": [
+            0.8,
+            0.9
+          ],
+          "n": 892,
+          "claimed": 0.8316,
+          "actual": 0.8173,
+          "half_width": 0.0254,
+          "verdict": "calibrated"
+        }
+      ],
+      "E1": [
+        {
+          "bin": [
+            0.6,
+            0.7
+          ],
+          "n": 488,
+          "claimed": 0.6613,
+          "actual": 0.627,
+          "half_width": 0.0429,
+          "verdict": "calibrated"
+        },
+        {
+          "bin": [
+            0.7,
+            0.8
+          ],
+          "n": 1657,
+          "claimed": 0.7602,
+          "actual": 0.7544,
+          "half_width": 0.0207,
+          "verdict": "calibrated"
+        },
+        {
+          "bin": [
+            0.8,
+            0.9
+          ],
+          "n": 2038,
+          "claimed": 0.8316,
+          "actual": 0.8263,
+          "half_width": 0.0164,
+          "verdict": "calibrated"
+        }
+      ],
+      "E2": [
+        {
+          "bin": [
+            0.6,
+            0.7
+          ],
+          "n": 474,
+          "claimed": 0.6629,
+          "actual": 0.616,
+          "half_width": 0.0438,
+          "verdict": "overconfident"
+        },
+        {
+          "bin": [
+            0.7,
+            0.8
+          ],
+          "n": 1643,
+          "claimed": 0.7585,
+          "actual": 0.7474,
+          "half_width": 0.021,
+          "verdict": "calibrated"
+        },
+        {
+          "bin": [
+            0.8,
+            0.9
+          ],
+          "n": 2027,
+          "claimed": 0.8306,
+          "actual": 0.8185,
+          "half_width": 0.0168,
+          "verdict": "calibrated"
+        }
+      ],
+      "E3": [
+        {
+          "bin": [
+            0.6,
+            0.7
+          ],
+          "n": 310,
+          "claimed": 0.6648,
+          "actual": 0.6,
+          "half_width": 0.0545,
+          "verdict": "overconfident"
+        },
+        {
+          "bin": [
+            0.7,
+            0.8
+          ],
+          "n": 1651,
+          "claimed": 0.7601,
+          "actual": 0.7614,
+          "half_width": 0.0206,
+          "verdict": "calibrated"
+        },
+        {
+          "bin": [
+            0.8,
+            0.9
+          ],
+          "n": 2298,
+          "claimed": 0.8317,
+          "actual": 0.8272,
+          "half_width": 0.0155,
+          "verdict": "calibrated"
+        }
+      ]
+    },
+    "pooled_delivered_minus_claimed": -0.01109,
+    "control": [
+      {
+        "bin": [
+          0.5,
+          0.6
+        ],
+        "n": 990,
+        "claimed": 0.557,
+        "actual": 0.6525,
+        "half_width": 0.0297,
+        "verdict": "under-confident"
+      },
+      {
+        "bin": [
+          0.6,
+          0.7
+        ],
+        "n": 2418,
+        "claimed": 0.6569,
+        "actual": 0.7266,
+        "half_width": 0.0178,
+        "verdict": "under-confident"
+      },
+      {
+        "bin": [
+          0.7,
+          0.8
+        ],
+        "n": 5617,
+        "claimed": 0.7563,
+        "actual": 0.7643,
+        "half_width": 0.0111,
+        "verdict": "calibrated"
+      },
+      {
+        "bin": [
+          0.8,
+          0.9
+        ],
+        "n": 5993,
+        "claimed": 0.8361,
+        "actual": 0.8011,
+        "half_width": 0.0101,
+        "verdict": "overconfident"
+      }
+    ],
+    "control_fires": true
+  },
+  "verdict": {
+    "R1_fit_converges": true,
+    "R2_gap_minus1_to_plus05": true,
+    "R3_referee_underclaims_0_to_1": false,
+    "R4_share_55_75_agreement_70_85": false,
+    "R5_every_season_within_1pt_of_pooled": true,
+    "control_fires": true
+  }
+}
