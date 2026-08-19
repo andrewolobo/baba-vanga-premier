@@ -7,7 +7,22 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-19** (late), after **the B21 referee probe** — owner
+Last updated **2026-08-19** (night): **owner decided to ADOPT the B21 arm as
+`confidence-v3`**, and the build plan is written — `docs/V3_ADOPTION_PLAN.md`.
+No code shipped yet, no gate, ledger unchanged (111 / 68 / 202). The plan's
+spine: one settlement truth (`selection.won_from_score`, margin-aware, pinned
+to `b21.won` by test), concrete side encoding **`H+1.5`/`A+1.5`** in
+`tips.side` (migration 005 widens the CHECK), the serve rule composes over
+the measured `b21.recommend`, both grading feeds route through the shared
+settle, the referee reconciliation wired into `step_tips` with the ±1 pt
+band, per-version record (B16) keeps v2/v3 separate, and B20 closes as
+overtaken on ship day. **Five design sign-offs (D1–D5) at the plan's §0 are
+open with the owner** — side encoding, NULL-price ATTENTION exemption, site
+wording, referee alert band, switchover discipline. Next thread: get D1–D5,
+then build phases 1–5 (one session, planted-data tests at every boundary),
+deploy per §6.
+
+Before that, the same night, **the B21 referee probe** — owner
 request after the gate: the `D+1.5` call has no corpus price (B5), so this
 measured whether a **derived referee** restores the lost honesty check.
 Pre-registration `BACKLOG.md` B21 ("Referee probe", predictions R1–R5 written

@@ -140,7 +140,7 @@ and gated B4.
 | **B18** | Totals-axis shrink, per division (the fix B17 implies) | **open, gated on B4 reopening** — worth nothing to the shipped product | ~1–2 | B17 |
 | **B19** | Separate ridge on the sum and difference of `att`/`dfn` — margins under-spread, totals over-spread on one penalty | **open — owner decision to scope**; P1-scale | ~4–8 | B17, §9.12 |
 | **B20** | A `12`-only eligibility window (ceiling, or floor) on the shipped rule — the 65% `12` mix | **pre-registered + λ-probe dry-run 2026-08-18** — a 0.80 ceiling is inert, 0.75 removes the informative end; **floor 0.75** keeps `12` in 14% of matches, all above base rate; owner decides whether to read it | 0 spent; 1 if floor 0.75 is read | B3 |
-| **B21** | Any other adoptable line? — scan, then the dog +1.5 gate | **measured 2026-08-19** — scan: every candidate within ±1 pt of its price-conditional prior; gate (owner call): dog +1.5 fallback candidate **+5.37 ✱ paired**, strike 77.9%, under-claims +0.95; **owner decision open: adopt as v3 or stay on v2** | 1 spent | B3 |
+| **B21** | Any other adoptable line? — scan, gate, referee, adoption | **decided 2026-08-19: ADOPT as `confidence-v3`.** Gate: **+5.37 ✱ paired**, strike 77.9%, under-claims +0.95; referee probe: checkable reference calibrated in the publication window. **Build plan: `V3_ADOPTION_PLAN.md`** (7 phases, D1–D5 sign-offs open) | 1 spent | B3 |
 
 ## Later
 
