@@ -15,11 +15,19 @@ import pytest
 from engine.serve import tips
 
 
-def predictions(rows) -> pd.DataFrame:
-    """rows: (fixture_id, p_home, p_draw, p_away, max_h, max_d, max_a)."""
+def predictions(rows, lams=None) -> pd.DataFrame:
+    """rows: (fixture_id, p_home, p_draw, p_away, max_h, max_d, max_a).
+
+    `lams` plants the stored lambdas the v3 handicap candidate is read from
+    (one (lam_h, lam_a) pair per row). The default (1.5, 1.1) prices the
+    underdog +1.5 at ~0.77 -- eligible under the 0.85 ceiling; a near-even
+    pair like (0.95, 0.90) prices it ~0.87 and the ceiling vetoes it."""
     frame = pd.DataFrame(rows, columns=["fixture_id", "p_home", "p_draw", "p_away",
                                         "max_h", "max_d", "max_a"])
     frame["prediction_id"] = range(100, 100 + len(frame))
+    lams = lams or [(1.5, 1.1)] * len(frame)
+    frame["lam_h"] = [pair[0] for pair in lams]
+    frame["lam_a"] = [pair[1] for pair in lams]
     for side in ("h", "d", "a"):
         frame[f"avg_{side}"] = frame[f"max_{side}"] * 0.95
     return frame
@@ -35,16 +43,16 @@ def test_a_confident_outright_is_recommended_outright():
     assert list(out.model_prob) == [0.60, 0.60]
 
 
-def test_a_weak_outright_falls_back_to_double_chance():
-    """v1 published nothing here. v2 covers every fixture, which is the whole
-    point of B8: 14.4% coverage became 100%."""
+def test_a_weak_outright_falls_back_rather_than_going_untipped():
+    """v1 published nothing here. v2 covered every fixture (B8), and v3 keeps
+    that while adding the underdog +1.5 to the fallback candidates (B21)."""
     out = tips.select(predictions([
         (1, 0.54, 0.26, 0.20, 1.85, 3.6, 5.0),
         (2, 0.56, 0.24, 0.20, 1.80, 3.6, 5.0),
     ]), floor=0.55)
 
     assert list(out.fixture_id) == [1, 2]
-    assert out.side.iloc[0] in {"1X", "12"}, "0.54 is below the floor"
+    assert out.side.iloc[0] in {"1X", "12", "A+1.5"}, "0.54 is below the floor"
     assert out.side.iloc[1] == "H", "0.56 clears it"
 
 
@@ -87,7 +95,8 @@ def test_a_double_chance_price_is_derived_from_its_legs():
     """No feed carries double-chance odds. `1/(1/o_h + 1/o_d)` is the fair
     combination and an UPPER BOUND on what a customer could get, because real
     double-chance markets carry their own margin on top."""
-    out = tips.select(predictions([(1, 0.40, 0.30, 0.30, 2.50, 4.00, 4.00)]),
+    out = tips.select(predictions([(1, 0.40, 0.30, 0.30, 2.50, 4.00, 4.00)],
+                                   lams=[(0.95, 0.90)]),   # handicap vetoed
                       floor=0.55).set_index("fixture_id")
 
     assert out.loc[1, "side"] in {"1X", "12"}
@@ -232,7 +241,10 @@ def test_dry_run_publishes_nothing(conn):
 
 
 def result(ftr: str) -> dict:
-    return {"ftr": ftr, "fthg": 2, "ftag": 0}
+    # The score must agree with the result: settlement is margin-aware under
+    # v3 (`selection.won_from_score`) and the score is what settles.
+    fthg, ftag = {"H": (2, 0), "A": (0, 2), "D": (1, 1)}[ftr]
+    return {"ftr": ftr, "fthg": fthg, "ftag": ftag}
 
 
 def test_settling_records_the_outcome_and_both_price_levels(conn):

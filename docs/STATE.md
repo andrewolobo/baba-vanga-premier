@@ -15,16 +15,18 @@ on matchday, never revised, graded from football-data results.
 | piece | what | where |
 | --- | --- | --- |
 | head | ridge Poisson, `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3`, refrozen ≤ 7 days | `engine/serve/cycle.py` |
-| rule | `confidence-v2`: outright if p ≥ **0.55**, else likeliest double chance ≤ **0.85**, else outright | `engine/serve/tips.py` |
+| rule | `confidence-v3` (built 2026-08-19, **deploy pending** — the VM serves v2 until `V3_ADOPTION_PLAN.md` §6 runs): outright if p ≥ **0.55**, else likeliest of `1X`/`X2`/`12`/**underdog +1.5** ≤ **0.85**, else outright. Handicap tips carry NULL prices; honesty via the market-implied referee gap in the cycle | `engine/serve/tips.py` |
 | cycle | sync → calendar → serve → tips → results → grade; exit **0** clean / **2** look / **1** failed. `results` (BBC full-time scores, `BVP_BBC_RESULTS=1`) settles tips before football-data's file exists; `grade` reconciles once it does | `services/run_cycle.py` |
 | API | read-only; `/tips`, `/tips/results`, `/tips/record` (no P&L on the wire, per-rule-version headline) | `api/main.py` |
 | site | one page: calls, last results, record | `web/` |
 | server | one Azure Ubuntu VM, `git pull`, systemd timer + service + nginx | `DEPLOY.md`, `RUNBOOK.md` |
 
-**Measured, out of sample, 15,824 matches over 9 scored seasons:** strike rate
-**72.5%** at floor 0.55 on 100% of matches (`engine/eval/selection.py`).
-Published mix **65% `12`, 17.6% `1X`, 11.8% `H`, 3.0% `X2`, 2.5% `A`** — the
-product names a team in 14.3% of matches. The model names the market favourite
+**Measured, out of sample, 15,824 matches over 9 scored seasons:** v3 strike
+rate **77.9%** at floor 0.55 on 100% of matches, **+5.37 ✱ paired over v2's
+72.5%**, claims under-stating delivery by ~1 pt (`engine/eval/b21.py`, gate
+row 110; v2: `engine/eval/selection.py`). v3 mix **63.8% underdog +1.5,
+11.8% `H`, 10.2% `12`, 10.1% `1X`, 2.5% `A`, 1.5% `X2`** — the product
+references a team in ~90% of matches (named winner in 14.3%, unchanged). The model names the market favourite
 as the *side* essentially always; under the v2 rule its recommendation matches
 the market's only 63.5% of the time (it hedges where the market would name),
 and it does not out-return the market rule. What it adds is a ranking before a
@@ -47,8 +49,8 @@ The rule agrees with the same rule on the market's own probabilities in only
 | **B19** sum/difference penalty | B17 (2026-08-16): totals over-spread in E1–E3, margins under-spread (§9.12) — one ridge cannot get both right | owner decision whether to scope a head-level gate (~4–8 configs); B18 (totals shrink) parked until B4 reopens |
 | **ops** | backup timer not enabled; no alerting; HTTP only | enable `bvp-backup.timer` + restore drill; dead-man's-switch ping from `run_cycle.sh` (owner supplies URL); TLS when a domain exists |
 | **P6 criterion 2** | holdout still sealed; criterion 1 PASSED (PBO 0.000) | owner decides when to spend the one read; `DEFLATION.md` §8 |
-| **B21** dog +1.5 → `confidence-v3` | **owner decided 2026-08-19: adopt.** Gate (row 110): **77.9% vs 72.5%, +5.37 ✱ paired**, under-claims +0.95. Referee probe (row 111): market-implied check calibrated in the publication window, gap −0.23 ✱, season-stable. **Build plan written: `V3_ADOPTION_PLAN.md`** — 7 phases, 5 design sign-offs (D1–D5) at its §0 | owner: sign off D1–D5, then build phases 1–5, then deploy per §6 |
-| **B20** `12`-only window (ceiling or floor) | pre-registered + λ-probe dry-run 2026-08-18 (`BACKLOG.md` B20). Shipped `12` calls deliver 73.6% vs a 73.9% non-draw base rate; 54% of them claim below it. A 0.80 ceiling is inert; 0.75 removes the informative end; **floor 0.75** keeps `12` in 14% of matches, all above base | owner: read floor 0.75 (1 config) or close as scoped-not-spent |
+| **B21** dog +1.5 → `confidence-v3` | **BUILT 2026-08-19** (D1–D5 approved): rule, migration 005, margin-aware settlement on both feeds, referee gap in the cycle, API + site labels — all tested (`tests/test_v3_tips.py`). Measurement: gate row 110 (+5.37 ✱), referee probe row 111 | **deploy per `V3_ADOPTION_PLAN.md` §6** — between matchdays, checklist in the plan |
+| **B20** `12`-only window (ceiling or floor) | **overtaken by B21's adoption**: v3 displaces the content-free `12`s with the handicap (`12` falls to ~10% of output), which is what the floor was for | closes as scoped-not-spent (0 config) on v3 ship day (`V3_ADOPTION_PLAN.md` §7) |
 | B10 `12` vs `1X` | open, downgraded | — |
 | B15 half-life `H` | open, gated | — |
 | B1 agreement filter | open, deprioritised | — |
@@ -70,8 +72,9 @@ The rule agrees with the same rule on the market's own probabilities in only
   gate. `scripts/export_ledger.py --restore` loads it into an empty ledger, or
   appends what an exact-prefix ledger lacks; `--check` names which of the two
   is behind.
-- Tests: `pytest -q` — **603 pass** at last run (2026-08-19, Python 3.11); the
-  prose has been stale before.
+- Tests: `pytest -q` — **616 pass** at last run (2026-08-19 post-v3-build,
+  Python 3.11), plus **9** in `cd web && npm test`; the prose has been stale
+  before.
 
 ## What must never happen
 

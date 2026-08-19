@@ -420,7 +420,11 @@ def step_tips(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
         step.detail = (f"{len(pending)} untipped, {written} published "
                        f"(floor {TIP_FLOOR}); "
                        + ", ".join(f"{k} {v}" for k, v in sorted(mix.items())))
-        missing = int(selected["best_price"].isna().sum()) if not selected.empty else 0
+        # Handicap sides are excluded: they have no price and no derivable one
+        # (`tips.UNPRICEABLE_SIDES`), so counting them would flag two thirds
+        # of every matchday and bury a real gap on the priced legs.
+        priceable = selected[~selected.side.isin(tips.UNPRICEABLE_SIDES)]
+        missing = int(priceable["best_price"].isna().sum()) if not priceable.empty else 0
         if missing:
             # The tips still stand -- selection never reads a price -- but the
             # product cannot compute its own return without one, and a silent
@@ -429,6 +433,21 @@ def step_tips(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
             step.flag(Status.ATTENTION,
                       f"{missing} tip(s) published with no price; return "
                       f"cannot be graded for them")
+        # The honesty reference for the unpriced handicap sides: the model's
+        # claim against the market-implied probability derived from the
+        # fixture's own 1X2 prices (a reference, never a price). Out-of-band
+        # means the model has drifted from the market on its modal call, which
+        # a price would otherwise have been the first to say.
+        n_ref, gap = tips.referee_gap(selected, pending)
+        if gap is not None:
+            step.detail += (f"; referee gap {100*gap:+.2f} pts on {n_ref} "
+                            f"handicap tip(s) (derived from 1X2 prices)")
+            lo, hi = tips.REFEREE_BAND
+            if not lo <= gap <= hi:
+                step.flag(Status.ATTENTION,
+                          f"model vs market-implied gap {100*gap:+.2f} pts is "
+                          f"outside [{100*lo:+.2f}, {100*hi:+.2f}] "
+                          f"(V3_ADOPTION_PLAN.md D4)")
 
     return _guard(Step("tips"), work)
 

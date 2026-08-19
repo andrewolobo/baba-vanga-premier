@@ -176,6 +176,15 @@ What **can** be measured now, and should be as part of the same gate:
 
 Carried forward so the next thread does not re-derive it:
 
+- **The fallback menu gained the underdog +1.5 handicap (2026-08-19,
+  `confidence-v3`).** Measured under B21 (`BACKLOG.md`): **77.9% strike vs
+  v2's 72.5%, +5.37 [+4.47, +6.26] ✱ paired**, claims under-stating delivery
+  by ~1 pt. The gain is the event being likelier, not the model being
+  sharper — the edge over the market-implied prior is unchanged (~+0.7 pt),
+  which is the same trade `12` was adopted on, stated plainly here as it was
+  there. The handicap has no feed price and none is derivable; its honesty
+  check is the market-implied referee (`V3_ADOPTION_PLAN.md`), a reference,
+  never a price. Every strike/return caveat below applies to v3 unchanged.
 - **The strike rate is honest; a return is not.** The shipped v2 rule:
   **72.5%** strike at floor 0.55 on 100% of matches, 15,824 out of sample over
   nine seasons (`engine/eval/selection.py`). Its return, measured 2026-08-16

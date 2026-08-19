@@ -175,10 +175,14 @@ def tips(
     (`UNIQUE (fixture_id, rule_version)`, migration 003): a tipster showing two
     contradictory calls for one match has no defensible strike rate.
 
-    `side` is one of `H`, `A`, `1X`, `X2`, `12` -- the confidence rule steps
-    down to a double chance when no outright clears its floor, so **most calls
-    are unions rather than a named team**. A surface that renders only `H`/`A`
-    will silently drop the majority of the product.
+    `side` is one of `H`, `A`, `1X`, `X2`, `12`, `H+1.5`, `A+1.5` -- the
+    confidence rule steps down to a double chance or the +1.5 handicap when no
+    outright clears its floor (`confidence-v3`, `BACKLOG.md` B21), so **most
+    calls are unions or handicaps rather than an outright**. A surface that
+    renders only `H`/`A` will silently drop the majority of the product.
+    `H+1.5` means the home side with a 1.5-goal start (wins unless home loses
+    by 2 or more); `A+1.5` the mirror. Handicap tips carry NULL prices -- the
+    feed has no +1.5 line and none is derivable from the 1X2 legs.
 
     `best_price` and `avg_price` are carried for reporting and took no part in
     selection. On a double chance they are *derived* from the 1X2 legs and are

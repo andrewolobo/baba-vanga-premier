@@ -139,8 +139,8 @@ and gated B4.
 | **B17** | Lower-division totals — dispersion or level? diagnostic on stored λ | **measured 2026-08-16** — conditional level: totals over-spread in E1–E3, overall level ≈ 0 (`TIPSTER.md` B17) | 0 spent | — |
 | **B18** | Totals-axis shrink, per division (the fix B17 implies) | **open, gated on B4 reopening** — worth nothing to the shipped product | ~1–2 | B17 |
 | **B19** | Separate ridge on the sum and difference of `att`/`dfn` — margins under-spread, totals over-spread on one penalty | **open — owner decision to scope**; P1-scale | ~4–8 | B17, §9.12 |
-| **B20** | A `12`-only eligibility window (ceiling, or floor) on the shipped rule — the 65% `12` mix | **pre-registered + λ-probe dry-run 2026-08-18** — a 0.80 ceiling is inert, 0.75 removes the informative end; **floor 0.75** keeps `12` in 14% of matches, all above base rate; owner decides whether to read it | 0 spent; 1 if floor 0.75 is read | B3 |
-| **B21** | Any other adoptable line? — scan, gate, referee, adoption | **decided 2026-08-19: ADOPT as `confidence-v3`.** Gate: **+5.37 ✱ paired**, strike 77.9%, under-claims +0.95; referee probe: checkable reference calibrated in the publication window. **Build plan: `V3_ADOPTION_PLAN.md`** (7 phases, D1–D5 sign-offs open) | 1 spent | B3 |
+| **B20** | A `12`-only eligibility window (ceiling, or floor) on the shipped rule — the 65% `12` mix | **overtaken by B21's adoption 2026-08-19**: v3 displaces the content-free `12`s (`12` → ~10% of output), which is what the floor was for; closes as **scoped, not spent** on v3 ship day | 0 spent | B3 |
+| **B21** | Any other adoptable line? — scan, gate, referee, adoption | **BUILT 2026-08-19** (D1–D5 approved; `V3_ADOPTION_PLAN.md`): v3 rule composed over the measured `b21.recommend`, migration 005, margin-aware settlement on both feeds, referee gap wired into the cycle, API + site labels; `tests/test_v3_tips.py`. **Deploy pending** (plan §6) | 1 spent | B3 |
 
 ## Later
 

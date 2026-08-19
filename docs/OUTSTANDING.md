@@ -7,7 +7,28 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-19** (night): **owner decided to ADOPT the B21 arm as
+Last updated **2026-08-19** (night, after the build): **confidence-v3 is
+BUILT** — owner approved D1–D5 and the plan's phases 1–5 + 7 are done; **only
+the deploy (plan §6) remains, and the VM serves v2 until it runs.** What
+shipped into the tree: `selection.won_from_score` (margin-aware settlement
+wrapping the untouched `_won`; the score is now authoritative over a feed's
+`ftr`), `tips.select` composed over the measured `b21.recommend` with the D1
+mapping (`D+1.5` → concrete `H+1.5`/`A+1.5`; lazy import breaks the
+`b21 → p7 → serve.tips` cycle), migration `005_tips_handicap.sql` (CHECK
+widened; v2 rows untouched; rollback-safe), both grading feeds routed through
+the shared settle (BBC's margin sensitivity noted at the reconcile site),
+`step_tips` with the D2 price-ATTENTION exemption and the referee gap
+(ATTENTION outside `tips.REFEREE_BAND`), API side enumerations, site labels
+("{team} +1.5" / "must not lose by 2 or more goals"). Tests:
+`tests/test_v3_tips.py` (16: settlement pinned to `b21.won`, select pinned to
+the gate rule, composition pin — zero handicap prob ⇒ exactly v2 — migration,
+referee in/out-of-band/degraded), `test_tips.py` updated to v3 (its `result()`
+helper's score now must agree with its `ftr` — settlement reads the score),
+`web/src/lib/api.test.js`. **616 pass + 9 web.** No gate, no ledger row
+(111 / 68 / 202 unchanged). Next thread: deploy per plan §6 checklist,
+between matchdays; then close B20 as scoped-not-spent and stamp §7's doc list.
+
+Before that, the same night: **owner decided to ADOPT the B21 arm as
 `confidence-v3`**, and the build plan is written — `docs/V3_ADOPTION_PLAN.md`.
 No code shipped yet, no gate, ledger unchanged (111 / 68 / 202). The plan's
 spine: one settlement truth (`selection.won_from_score`, margin-aware, pinned

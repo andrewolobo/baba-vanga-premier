@@ -46,22 +46,37 @@ scheduled job — one typo from placing bets — does not apply.
 > the market favourite and the paired difference against backing that favourite
 > is ~0.00%.
 >
-> **The published mix at floor 0.55 is 65% `12`, 17.6% `1X`, 11.8% `H`, 3.0%
-> `X2`, 2.5% `A`** — the product names a team in 14.3% of matches. Owner
-> decision of 2026-08-06.
+> **The measured v3 mix at floor 0.55 is 63.8% underdog +1.5, 11.8% `H`,
+> 10.2% `12`, 10.1% `1X`, 2.5% `A`, 1.5% `X2`** — the product references a
+> team (as winner or handicapped side) in ~90% of matches. Owner decision of
+> 2026-08-19 (`BACKLOG.md` B21, `V3_ADOPTION_PLAN.md`); the v2 mix (65% `12`)
+> was the decision of 2026-08-06.
 >
 > Re-run `python -m engine.eval.tips` and `python -m engine.eval.selection`
 > after any head change; both end with a block stating which claims hold.
 
 Changing `TIP_FLOOR` or `TIP_CEILING` means bumping
 `engine.serve.tips.RULE_VERSION`, or the published history mixes two products
-under one strike rate. It is at `confidence-v2`. `/tips/record` keeps the two
-apart: the headline is the newest version's record only and `by_rule` carries
-every version (`BACKLOG.md` B16). **Do not bump the version and re-run the
-cycle on the same matchday.** `tips.UNTIPPED` excludes a fixture per version,
-so a second run that day publishes a second live call on every fixture already
-tipped under the old one — both settle, and `/tips` shows both. Deploy a bump
-after the day's cycle has run, or on a day with no fixtures.
+under one strike rate. It is at `confidence-v3` (B21; `confidence-v2` before
+2026-08-19 — migration `005_tips_handicap.sql` widened the `tips.side` CHECK
+and applies automatically on the first cycle after deploy). `/tips/record`
+keeps the versions apart: the headline is the newest version's record only and
+`by_rule` carries every version (`BACKLOG.md` B16). **Do not bump the version
+and re-run the cycle on the same matchday.** `tips.UNTIPPED` excludes a
+fixture per version, so a second run that day publishes a second live call on
+every fixture already tipped under the old one — both settle, and `/tips`
+shows both. Deploy a bump after the day's cycle has run, or on a day with no
+fixtures.
+
+The v3 handicap tips (`H+1.5` / `A+1.5`) publish with **NULL prices** — the
+feed has no +1.5 line and none is derivable — and that is expected, not an
+incident. Their honesty check is the **referee gap** in the `tips` step's
+detail line: the model's claim against a market-implied probability derived
+from the fixture's own 1X2 prices (a reference, never a price). ATTENTION
+fires when the matchday mean leaves `tips.REFEREE_BAND` (−0.23 ± 1 pt, the
+band measured in `BACKLOG.md` B21's referee probe); a persistent breach means
+the model has drifted from the market on its modal call — investigate the
+head before trusting the published claims, and do not silence the flag.
 
 ### 0.1 Starting it by hand
 

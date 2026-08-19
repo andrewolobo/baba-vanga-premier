@@ -208,6 +208,34 @@ def _won(market: np.ndarray, ftr: np.ndarray) -> np.ndarray:
         default=False)
 
 
+def won_from_score(market: np.ndarray, fthg, ftag) -> np.ndarray:
+    """Settlement for every publishable side, from the final score alone.
+
+    `_won` reads the 1X2 result and cannot express a handicap, which needs the
+    margin. This wraps it rather than replacing it -- the five measured markets
+    still settle through the exact function the gates used, so the published
+    number and the settled number cannot drift (`BACKLOG.md` B8, B21) -- and
+    adds the two v3 sides plus `D` for completeness:
+
+        H+1.5   the home side with a 1.5-goal start: wins unless home loses
+                by 2 or more.
+        A+1.5   the away side with a 1.5-goal start: wins unless away loses
+                by 2 or more.
+
+    Half line, so there is no push and no void. `engine/eval/b21.py` measured
+    these fav-relative (`D+1.5`); `tests/test_v3_tips.py` pins the mapping
+    (model favourite home => `A+1.5`, favourite away => `H+1.5`).
+    """
+    market = np.asarray(market)
+    fthg = np.asarray(fthg, dtype=float)
+    ftag = np.asarray(ftag, dtype=float)
+    ftr = np.where(fthg > ftag, "H", np.where(fthg < ftag, "A", "D"))
+    return np.select(
+        [market == "H+1.5", market == "A+1.5", market == "D"],
+        [ftag - fthg < 1.5, fthg - ftag < 1.5, ftr == "D"],
+        default=_won(market, ftr))
+
+
 def b3_floor(frame, probs, scored) -> dict:
     """What each floor publishes, and how often it is right."""
     ftr = frame.ftr.to_numpy()

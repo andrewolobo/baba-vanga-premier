@@ -217,12 +217,14 @@ def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
         " WHERE fixture_id=? AND settled_at IS NULL", (fixture_id,),
     ).fetchall()
     for tip in tips:
-        # Not `_won("1x2", ...)`: a tip may be a union of outright legs, and
-        # that function only knows single outcomes. `selection._won` is the
-        # same logic the gate measured the strike rate with, so the published
-        # number and the settled number cannot drift apart.
-        won = bool(selection._won(np.array([tip["side"]]),
-                                  np.array([result["ftr"]]))[0])
+        # Not `_won("1x2", ...)`: a tip may be a union of outright legs or a
+        # handicap, and that function only knows single outcomes.
+        # `selection.won_from_score` wraps the same `selection._won` the gates
+        # measured the strike rate with and adds the margin-aware v3 sides, so
+        # the published number and the settled number cannot drift apart.
+        won = bool(selection.won_from_score(np.array([tip["side"]]),
+                                            np.array([result["fthg"]]),
+                                            np.array([result["ftag"]]))[0])
         pnl = {name: (None if tip[name] is None
                       else (tip[name] - 1.0 if won else -1.0))
                for name in ("best_price", "avg_price")}
@@ -252,8 +254,13 @@ def reconcile_tips(conn: sqlite3.Connection, fixture_id: int, result: dict) -> l
     ).fetchall()
     out = []
     for tip in rows:
-        won = bool(selection._won(np.array([tip["side"]]),
-                                  np.array([result["ftr"]]))[0])
+        # Margin-aware, like `settle_tips`: a handicap outcome can flip on a
+        # one-goal score correction that leaves the 1X2 result intact
+        # (2-0 vs 2-1 flips `A+1.5`), which makes this reconciliation *more*
+        # load-bearing under v3 than it was for unions.
+        won = bool(selection.won_from_score(np.array([tip["side"]]),
+                                            np.array([result["fthg"]]),
+                                            np.array([result["ftag"]]))[0])
         if ("win" if won else "lose") != tip["outcome"]:
             out.append(tip["tip_id"])
     return out
