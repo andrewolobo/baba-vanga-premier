@@ -13,6 +13,7 @@
   import { fixtureBadges } from '$lib/badge.js';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { nextLikeliest } from '$lib/view.js';
+  import { resolveOwner } from '$lib/owner.js';
   import { slide } from 'svelte/transition';
 
   let tipsDivision = $state('');
@@ -27,6 +28,9 @@
   // Scores and claimed probabilities on the settled cards are opt-in: the
   // default card is the graded call and its outcome, nothing else.
   let showDetail = $state(false);
+  // The rule's name and parameters are for the owner, not testers
+  // (`$lib/owner.js`: `/?owner=1` to show, `/?owner=0` to hide).
+  let owner = $state(false);
   // The drawer behind a call (B22): which fixture is open.
   let open = $state(null);
   const toggle = (id) => (open = open === id ? null : id);
@@ -84,7 +88,10 @@
     }
   }
 
-  onMount(load);
+  onMount(() => {
+    owner = resolveOwner(window.location.search, window.localStorage);
+    load();
+  });
   $effect(() => {
     tipsDivision;
     if (loaded) loadTips();
@@ -484,7 +491,7 @@
         this rule does not make money to any degree we can demonstrate. We do not
         publish a profit figure because we cannot support one.
       </p>
-      {#if record.rule}
+      {#if owner && record.rule}
         <p class="mono prov">
           rule {record.rule.rule_version} · floor {record.rule.floor}{record.rule
             .ceiling
@@ -498,8 +505,9 @@
          earlier versions are shown here rather than pooled into it or dropped:
          two rules are two products, and averaging them would label a mixed
          number with one rule's name. Hidden while only one version exists, so
-         nothing on the page changes until it has to. -->
-    {#if record.by_rule && record.by_rule.length > 1}
+         nothing on the page changes until it has to -- and owner-only, like
+         the provenance line above. -->
+    {#if owner && record.by_rule && record.by_rule.length > 1}
       <div class="tablewrap">
         <table class="record versions">
           <thead>

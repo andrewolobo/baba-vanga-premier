@@ -7,7 +7,20 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-20** (night), after **the `12` phrase changed** —
+Last updated **2026-08-20** (night, later), after **the rule version went
+owner-only on the site** — owner request: testers should not see the rule's
+name; the owner should. Chosen mechanism (option A of three offered):
+`web/src/lib/owner.js` — `/?owner=1` shows and remembers in `localStorage`
+(`bvp_owner`), `/?owner=0` hides and forgets; pure function, five
+`node:test` cases. Gates the record's provenance line (`rule … · floor …
+· ceiling …`) and the per-version table (which would otherwise appear for
+everyone the day v3's tips grade beside v2's). **Obscurity, not security** —
+`rule_version` still rides on `/tips`, `/tips/results` and `/tips/record`;
+stripping it from the public wire behind the nginx basic-auth pattern is the
+layer to add if that ever matters. **20 web tests pass, build clean.**
+Uncommitted.
+
+Before that, the same night, **the `12` phrase changed** —
 owner request: "Not a draw" → "**Either team to win**" (`callLabel` in
 `web/src/lib/api.js`; the `12` badge and `callMeans` tooltip — "either
 {home} or {away} must win" — unchanged). Two test expectations updated.
