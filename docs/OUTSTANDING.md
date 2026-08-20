@@ -7,7 +7,102 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-19** (later still), after **B22 shipped** — owner
+Last updated **2026-08-20** (night), after **the `12` phrase changed** —
+owner request: "Not a draw" → "**Either team to win**" (`callLabel` in
+`web/src/lib/api.js`; the `12` badge and `callMeans` tooltip — "either
+{home} or {away} must win" — unchanged). Two test expectations updated.
+**15 web tests pass, build clean.** Uncommitted.
+
+Before that, the same day, **the handicap phrase was
+reworked** — owner request, settled over two passes: the bold phrase is
+"**[Team] Away +1.5**" (or Home) and the small badge beside it reads
+"**Handicap | Fulltime**" — the full wording in the phrase was too heavy.
+`callLabel` / `callCode` in `web/src/lib/api.js`; unions keep their
+`1X`/`X2`/`12` badge (the two-results disclosure); the drawer's
+next-likeliest rows use the same badge helper, so list, settled cards and
+drawer agree. Tests updated (`api.test.js`, `view.test.js`). Wire format
+untouched. **15 web tests pass, build clean**; visual check the owner's.
+Uncommitted.
+
+Before that, the same day, **the drawer lost its Results
+reading** — owner request: keep only "Next likeliest" behind a call and
+colour its bars the accent orange the Results reading used. Frontend only,
+`+page.svelte`: the `view` switch and the three-results list are gone, the
+drawer head reads "Next-likeliest markets", every `.bars .fill` is
+`var(--accent)` (the dim fill only marked results outside the call, which no
+longer renders). `view.js`'s `outcomes()` and its tests stay — still correct,
+now unused by the page; delete when convenient. **15 web tests pass, build
+clean**; visual check the owner's. Uncommitted.
+
+Before that, the same day, **the handicap badge was
+reworded** — owner request: the call read "[Team] +1.5" followed by the raw
+side code `A+1.5`/`H+1.5`, which repeats the line and hides the market; it
+now reads "[Team] +1.5 **Away Handicap | Fulltime**" (or Home). Frontend only:
+`callCode` in `web/src/lib/api.js` (unions still show `1X`/`X2`/`12` — that
+badge is the two-results disclosure), used by the call badge in
+`+page.svelte`; phrase, tooltip, settled cards and drawer unchanged; one
+`node:test` case pins it. Wire format untouched (`tips.side` still
+`H+1.5`/`A+1.5`). **15 web tests pass, build clean**; visual check the
+owner's. Uncommitted.
+
+Before that, the same day, **the score and claim
+display became opt-in** — owner request: one toggle in the settled section
+that turns the scores and claimed probabilities on and off, **off by
+default**, beside the Last 12 / Show all switch. Frontend only, one file:
+`web/src/routes/+page.svelte` — `showDetail` state, a one-button `.switch`
+("Scores & claims") in a `.controls` wrapper beside the depth switch, and the
+score span and "claimed {pct}" tail render only when it is on. Client-side
+only — no fetch, API or schema change; the data still arrives either way
+(006 unchanged). **14 web tests pass, build clean**; the visual check is the
+owner's, by request. Uncommitted.
+
+Before that, the same day, **settled cards gained the score
+and the claimed probability** — owner request: show the actual score on each
+"Last time out" card and the prediction percentage next to it. The score was
+being read at settlement and discarded (`/tips/results` refused to return one
+it did not store); it is now **kept beside the outcome**: migration
+`006_tip_scores.sql` adds `tips.fthg`/`ftag`, `csv_grader.settle_tips` writes
+them in the same UPDATE that writes `outcome` — both grading feeds route
+through it — `TIP_SELECT` serves them, and the card shows the score inline in
+the fixture line with "claimed {pct}" beside the call. **"Prediction accuracy
+percentage" is read as the tip's own claimed probability (`model_prob`)** —
+for a single settled game there is no other number, and "claimed" is this
+project's word for it. `fixtures` still carries no result (002's invariant
+untouched); a row settled before 006 serves NULL and the card falls back to
+"v" rather than inventing a line. The 34 already-settled tips were backfilled
+by `scripts/backfill_tip_scores.py` — idempotent, re-reads the same BBC pages
+that settled them, fills the score only where missing, and reports rather
+than writes any tip whose stored outcome the re-read score contradicts
+(`reconcile_tips`'s principle): **34/34 filled, 0 disagreements**. No rule,
+grading-decision, cycle-order or ledger change (111 / 68 / 202 unchanged).
+Deploy note: the VM picks 006 up automatically — the cycle migrates before it
+grades — and the pending v3 deploy (§6) carries it either way. **620 pass +
+14 web**, build clean; the visual check is the owner's, by request.
+Uncommitted.
+
+Before that, earlier the same day, **the settled section grew its own
+controls** — owner request: league filtering and a show-all toggle on "Last
+time out". Display only, one file: `web/src/routes/+page.svelte`. The settled
+list's fetch is decoupled from the tips tabs — the old shared `division` state
+filtered both lists as a side effect; it is now `tipsDivision` /
+`resultsDivision` with separate refetch effects, so a tab click fetches only
+its own list. A second `.tabs` bar under the section head filters the settled
+cards; a `.switch` in the head toggles **last 12 ⇄ all** (limit 500, the API's
+own `le=500` ceiling — never send more, it 400s); cards name their league only
+when "All" is selected. Section-scoped `resultsError`/`resultsLoading` so a
+settled refetch failure no longer poisons the tips and record sections, and a
+filter landing on zero rows shows "Loading…" then "Nothing graded yet." rather
+than stale cards. **No API, schema, rule, cycle, grading or ledger change**
+(111 / 68 / 202 unchanged; `tests/test_api.py`'s endpoint contract untouched).
+**14 web tests pass, `npm run build` clean**, and the behaviour was verified
+in the running app (Playwright click-through: fetch isolation both ways,
+division+limit params on the wire, empty-E0 state, 33-row show-all, toggle
+persisting across filter changes). No new unit test — the only new logic is
+`showAll ? 500 : 12`, inline in a component the `node --test` runner cannot
+load. Uncommitted, left for the owner's review. v3's deploy
+(`V3_ADOPTION_PLAN.md` §6) is still the open item.
+
+Before that, **2026-08-19** (later still), **B22 shipped** — owner
 request: keep the one graded call and let a reader open a fixture to see the
 model's second and third picks beneath it. Scoped before building: ranking
 the menu by probability puts a hedge above every outright call (`PRODUCT.md`

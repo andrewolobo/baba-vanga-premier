@@ -211,6 +211,10 @@ def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
     A tip with no stored price still settles -- outcome is the product's
     headline number and must never depend on the feed having carried odds --
     and leaves its P&L NULL rather than guessing one.
+
+    The score is recorded beside the outcome (migration 006): it is what
+    settles the tip under v3, so keeping it is keeping the evidence, and it is
+    the only way the site can show one without inventing it.
     """
     tips = conn.execute(
         "SELECT tip_id, side, best_price, avg_price FROM tips"
@@ -231,9 +235,9 @@ def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
         if not dry_run:
             conn.execute(
                 "UPDATE tips SET settled_at=datetime('now'), outcome=?,"
-                " pnl_best=?, pnl_avg=? WHERE tip_id=?",
+                " pnl_best=?, pnl_avg=?, fthg=?, ftag=? WHERE tip_id=?",
                 ("win" if won else "lose", pnl["best_price"], pnl["avg_price"],
-                 tip["tip_id"]),
+                 result["fthg"], result["ftag"], tip["tip_id"]),
             )
     return len(tips)
 

@@ -117,10 +117,11 @@ def test_settles_the_tip_through_the_measured_rule(conn):
     fid = tip(conn, "E1", "2026-08-15", 1, 2, "12")
     report = bbc_results.settle(conn, [("2026-08-15", REAL_PAGE.read_text(encoding="utf-8"))])
 
-    row = conn.execute("SELECT outcome, pnl_best, settled_at FROM tips WHERE fixture_id=?",
-                       (fid,)).fetchone()
+    row = conn.execute("SELECT outcome, pnl_best, settled_at, fthg, ftag FROM tips"
+                       " WHERE fixture_id=?", (fid,)).fetchone()
     assert (report.full_time, report.matched, report.tips_settled) == (4, 1, 1)
     assert row["outcome"] == "win" and row["settled_at"] is not None
+    assert (row["fthg"], row["ftag"]) == (2, 1)   # the page's score, kept (006)
     assert row["pnl_best"] == pytest.approx(1.0)
 
 

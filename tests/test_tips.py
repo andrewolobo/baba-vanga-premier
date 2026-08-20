@@ -257,6 +257,8 @@ def test_settling_records_the_outcome_and_both_price_levels(conn):
     row = conn.execute("SELECT * FROM tips WHERE fixture_id = 1").fetchone()
     assert settled == 1
     assert row["outcome"] == "win"
+    # Migration 006: the score that settled the tip is recorded beside it.
+    assert (row["fthg"], row["ftag"]) == (2, 0)
     assert row["pnl_best"] == pytest.approx(0.60)          # 1.60 - 1
     assert row["pnl_avg"] == pytest.approx(1.60 * 0.95 - 1)
 

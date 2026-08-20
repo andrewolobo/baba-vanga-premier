@@ -163,7 +163,7 @@ def predictions(
 TIP_SELECT = """
     SELECT t.tip_id, t.published_at, t.side, t.model_prob, t.floor, t.ceiling,
            t.best_price, t.avg_price, t.rule_version,
-           t.settled_at, t.outcome,
+           t.settled_at, t.outcome, t.fthg, t.ftag,
            f.fixture_id, f.division, f.match_date, f.kickoff_time,
            h.canonical_name AS home_team, a.canonical_name AS away_team,
            p.lam_h, p.lam_a, p.p_home, p.p_draw, p.p_away,
@@ -269,9 +269,11 @@ def tip_results(
 ) -> list[dict]:
     """Settled tips, most recently played first.
 
-    Outcome only. The scoreline is not here because it is not stored: the
-    grader settles a tip from the result it reads and does not keep the goals,
-    so an endpoint claiming to return one would be inventing it.
+    Carries the scoreline each tip was settled from (`fthg`/`ftag`, written
+    by the grader beside the outcome -- migration 006). A row settled before
+    the score was recorded serves NULLs rather than a reconstruction;
+    `scripts/backfill_tip_scores.py` fills them from the same pages that
+    settled them.
     """
     _check_division(division)
     clause = " WHERE t.settled_at IS NOT NULL"

@@ -5,21 +5,30 @@
     getTipResults,
     getTipRecord,
     callLabel,
+    callCode,
     callMeans,
     DIVISIONS,
     pct
   } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
-  import { outcomes, nextLikeliest } from '$lib/view.js';
+  import { nextLikeliest } from '$lib/view.js';
   import { slide } from 'svelte/transition';
 
-  let division = $state('');
-  // The drawer behind a call (B22): which fixture is open, and which of the
-  // two readings it shows. One `view` for the whole list rather than one per
-  // row, so the toggle a reader chose survives opening the next fixture.
+  let tipsDivision = $state('');
+  // The settled section filters and sizes itself independently of the tips
+  // tabs. 500 is the server's own ceiling (api/main.py, limit le=500) — the
+  // API 400s above it, so "all" means "up to the server max".
+  let resultsDivision = $state('');
+  let showAll = $state(false);
+  let resultsLoading = $state(false);
+  let resultsError = $state(null);
+  const resultsLimit = () => (showAll ? 500 : 12);
+  // Scores and claimed probabilities on the settled cards are opt-in: the
+  // default card is the graded call and its outcome, nothing else.
+  let showDetail = $state(false);
+  // The drawer behind a call (B22): which fixture is open.
   let open = $state(null);
-  let view = $state('results');
   const toggle = (id) => (open = open === id ? null : id);
   const onRowKey = (event, id) => {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -39,8 +48,8 @@
     error = null;
     try {
       [tips, results, record] = await Promise.all([
-        getTips(division || null),
-        getTipResults(division || null, 12),
+        getTips(tipsDivision || null),
+        getTipResults(resultsDivision || null, resultsLimit()),
         getTipRecord()
       ]);
     } catch (e) {
@@ -51,10 +60,39 @@
     }
   }
 
+  async function loadTips() {
+    loading = true;
+    error = null;
+    try {
+      tips = await getTips(tipsDivision || null);
+    } catch (e) {
+      error = e.message;
+    } finally {
+      loading = false;
+    }
+  }
+
+  async function loadResults() {
+    resultsLoading = true;
+    resultsError = null;
+    try {
+      results = await getTipResults(resultsDivision || null, resultsLimit());
+    } catch (e) {
+      resultsError = e.message;
+    } finally {
+      resultsLoading = false;
+    }
+  }
+
   onMount(load);
   $effect(() => {
-    division;
-    if (loaded) load();
+    tipsDivision;
+    if (loaded) loadTips();
+  });
+  $effect(() => {
+    resultsDivision;
+    showAll;
+    if (loaded) loadResults();
   });
 
   const byDay = $derived(
@@ -184,7 +222,7 @@
 
   <div class="tabs">
     {#each DIVISIONS as [code, label]}
-      <button class:on={division === code} onclick={() => (division = code)}>{label}</button>
+      <button class:on={tipsDivision === code} onclick={() => (tipsDivision = code)}>{label}</button>
     {/each}
   </div>
 
@@ -246,9 +284,9 @@
                   <!-- Only on a hedge. On an outright the phrase already names
                        the team, so the code is noise; on `12`/`1X`/`X2` it is
                        the disclosure that two results are covered. -->
-                  {#if callMeans(t.side, t.home_team, t.away_team)}
+                  {#if callCode(t.side) && callMeans(t.side, t.home_team, t.away_team)}
                     <span class="code" title={callMeans(t.side, t.home_team, t.away_team)}
-                      >{t.side}</span
+                      >{callCode(t.side)}</span
                     >
                   {/if}
                 </div>
@@ -263,52 +301,23 @@
           </div>
 
           <!-- What the model thought when the call was published, from the
-               prediction row the call was made from. Two readings of the
-               same numbers (`$lib/view.js`); neither is a second call, and
-               the copy says so because the strike rate has exactly one
-               denominator. -->
+               prediction row the call was made from: the next-likeliest
+               markets on the rule's own menu (`$lib/view.js`). Not a second
+               call, and the copy says so because the strike rate has exactly
+               one denominator. -->
           {#if open === t.tip_id}
             <div class="drawer" id="view-{t.tip_id}" transition:slide={{ duration: 180 }}>
               <div class="drawerhead">
-                <span class="label">
-                  {view === 'results' ? 'What the model thinks' : 'Next-likeliest markets'}
-                </span>
-                <div class="switch" role="group" aria-label="Reading">
-                  <button class:on={view === 'results'} onclick={() => (view = 'results')}>
-                    Results
-                  </button>
-                  <button class:on={view === 'markets'} onclick={() => (view = 'markets')}>
-                    Next likeliest
-                  </button>
-                </div>
+                <span class="label">Next-likeliest markets</span>
               </div>
 
-              {#if view === 'results'}
-                <ol class="bars">
-                  {#each outcomes(t) as o}
-                    <li class:in={o.cover !== 'none'}>
-                      <span class="name">
-                        {o.label}
-                        {#if o.cover === 'full'}<span class="tag">in our call</span>
-                        {:else if o.cover === 'part'}<span class="tag">in our call if by one goal</span>{/if}
-                      </span>
-                      <span class="track"><span class="fill" style="width:{100 * o.p}%"></span></span>
-                      <span class="v">{pct(o.p, 0)}</span>
-                    </li>
-                  {/each}
-                </ol>
-                <p class="fine">
-                  The three results, ranked by the model's own probability. Our
-                  call is built from these — the results it covers are marked.
-                </p>
-              {:else}
                 <ol class="bars">
                   {#each nextLikeliest(t) as m}
                     <li>
                       <span class="name">
                         {m.label}
-                        {#if callMeans(m.side, t.home_team, t.away_team)}
-                          <span class="code" title={callMeans(m.side, t.home_team, t.away_team)}>{m.side}</span>
+                        {#if callCode(m.side) && callMeans(m.side, t.home_team, t.away_team)}
+                          <span class="code" title={callMeans(m.side, t.home_team, t.away_team)}>{callCode(m.side)}</span>
                         {/if}
                         {#if m.above}<span class="tag">likelier than our call</span>{/if}
                       </span>
@@ -323,7 +332,6 @@
                   which is why the rule does not pick this way: it names a team
                   whenever one clears its floor.
                 </p>
-              {/if}
 
               <p class="fine dim">
                 Probabilities as stored when the call was published — uncalibrated,
@@ -356,13 +364,32 @@
       <div class="kicker">Settled</div>
       <h2>Last time out</h2>
     </div>
+    <div class="controls">
+      <div class="switch" role="group" aria-label="How many settled calls">
+        <button class:on={!showAll} onclick={() => (showAll = false)}>Last 12</button>
+        <button class:on={showAll} onclick={() => (showAll = true)}>Show all</button>
+      </div>
+      <div class="switch">
+        <button class:on={showDetail} aria-pressed={showDetail}
+          onclick={() => (showDetail = !showDetail)}>Scores &amp; claims</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    {#each DIVISIONS as [code, label]}
+      <button class:on={resultsDivision === code} onclick={() => (resultsDivision = code)}>{label}</button>
+    {/each}
   </div>
 
   <!-- `error` is checked as well as emptiness: a failed fetch also leaves the
        list empty, and reporting that as "nothing graded yet" would present an
-       outage as a record. -->
-  {#if error}
-    <p class="state bad">{error}</p>
+       outage as a record. `resultsError` is the same rule for this section's
+       own refetches (filter and show-all changes). -->
+  {#if resultsError || error}
+    <p class="state bad">{resultsError || error}</p>
+  {:else if resultsLoading}
+    <p class="state">Loading…</p>
   {:else if !loading && results.length === 0}
     <p class="state">Nothing graded yet.</p>
   {:else}
@@ -370,11 +397,24 @@
       {#each results as r}
         <div class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}>
           <div class="cardtop">
-            <span class="cardfix">{r.home_team} v {r.away_team}</span>
+            <!-- The score is the one the grader settled from; a row graded
+                 before it was recorded (migration 006) falls back to "v"
+                 rather than showing an invented line. -->
+            <span class="cardfix">
+              {#if showDetail && r.fthg !== null && r.fthg !== undefined}
+                {r.home_team} <span class="score">{r.fthg}&ndash;{r.ftag}</span> {r.away_team}
+              {:else}
+                {r.home_team} v {r.away_team}
+              {/if}
+            </span>
             <span class="mark">{r.outcome === 'win' ? 'WON' : r.outcome === 'lose' ? 'LOST' : 'VOID'}</span>
           </div>
+          {#if !resultsDivision}
+            <div class="league">{divisionName(r.division)}</div>
+          {/if}
           <div class="cardfoot">
-            <span>{callLabel(r.side, r.home_team, r.away_team)}</span>
+            <span>{callLabel(r.side, r.home_team, r.away_team)}{#if showDetail}
+                &middot; claimed {pct(r.model_prob, 0)}{/if}</span>
             <span class="when">{shortDay(r.match_date)}</span>
           </div>
         </div>
@@ -673,6 +713,7 @@
     display: flex; justify-content: space-between; align-items: center;
     gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
   }
+  .controls { display: flex; gap: 12px; flex-wrap: wrap; }
   .switch { display: flex; gap: 4px; }
   .switch button {
     font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
@@ -688,10 +729,8 @@
     align-items: center; gap: 14px; padding: 5px 0;
   }
   .bars .name { font-size: 14px; font-weight: 600; color: var(--body); min-width: 0; }
-  .bars li.in .name { color: #f2f2f5; }
   .bars .track, .bars .fill { display: block; }
-  .bars li.in .fill { background: var(--accent); }
-  .bars li:not(.in) .fill { background: var(--dim); }
+  .bars .fill { background: var(--accent); }
   .bars .v { font-family: var(--mono); font-size: 12px; color: #fff; text-align: right; }
   .tag {
     display: inline-block; margin-left: 8px; font-family: var(--mono); font-size: 10px;
@@ -719,6 +758,7 @@
   .card.lost { border-left-color: var(--bad); }
   .cardtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .cardfix { font-size: 14px; font-weight: 600; color: #e6e6ec; }
+  .score { font-family: var(--mono); font-weight: 700; color: #fff; padding: 0 1px; }
   .mark { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--muted); }
   .card.won .mark { color: var(--good); }
   .card.lost .mark { color: var(--bad); }

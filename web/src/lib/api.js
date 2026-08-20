@@ -43,8 +43,9 @@ export const DIVISIONS = [
 //
 // Rendering only H/A would silently drop most of the product, and rendering
 // a code as a plain team name would misstate what was published and graded.
-// So every code has a phrase; "+1.5" is shown as exactly that, with the
-// mechanics in `callMeans` (V3_ADOPTION_PLAN.md D3).
+// So every code has a phrase; the handicap names its team, side and line, its
+// market and settlement ride in the badge (`callCode`), and the mechanics are
+// in `callMeans` (V3_ADOPTION_PLAN.md D3).
 export const callLabel = (side, home, away) =>
   ({
     H: `${home} win`,
@@ -52,10 +53,15 @@ export const callLabel = (side, home, away) =>
     D: 'Draw',
     '1X': `${home} or draw`,
     X2: `${away} or draw`,
-    12: 'Not a draw',
-    'H+1.5': `${home} +1.5`,
-    'A+1.5': `${away} +1.5`
+    12: 'Either team to win',
+    'H+1.5': `${home} Home +1.5`,
+    'A+1.5': `${away} Away +1.5`
   })[side] ?? side;
+
+// The badge beside a hedged call: the union codes `1X`, `X2`, `12` are the
+// disclosure that two results are covered; the handicap's names its market
+// and settlement, since the phrase carries only team, side and line.
+export const callCode = (side) => (side.endsWith('+1.5') ? 'Handicap | Fulltime' : side);
 
 // What the call actually needs to happen, for the codes where the phrase alone
 // is not self-explanatory.

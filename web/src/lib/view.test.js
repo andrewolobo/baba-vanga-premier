@@ -38,16 +38,16 @@ test('a handicap covers its side in full and the other side only by one goal', (
 test('the next-likeliest markets exclude the call and say when they outrank it', () => {
   // Under v3 the underdog's +1.5 is on the menu; the favourite's is not.
   assert.deepEqual(nextLikeliest(hedge), [
-    { side: 'A+1.5', label: 'Preston +1.5', p: 0.8, above: true },
+    { side: 'A+1.5', label: 'Preston Away +1.5', p: 0.8, above: true },
     { side: '1X', label: 'Bolton or draw', p: 0.68, above: false }
   ]);
   assert.deepEqual(nextLikeliest(handicap), [
-    { side: '12', label: 'Not a draw', p: 0.74, above: false },
+    { side: '12', label: 'Either team to win', p: 0.74, above: false },
     { side: '1X', label: 'Bolton or draw', p: 0.68, above: false }
   ]);
   assert.deepEqual(nextLikeliest(outright), [
     { side: '1X', label: 'Wolves or draw', p: 0.83, above: true },
-    { side: '12', label: 'Not a draw', p: 0.76, above: true }
+    { side: '12', label: 'Either team to win', p: 0.76, above: true }
   ]);
   assert.equal(nextLikeliest(hedge, 9).length, 6);
   assert.ok(!nextLikeliest(hedge, 9).some((m) => m.side === 'H+1.5'));

@@ -188,25 +188,29 @@ def tips_client(tmp_path):
             " 0.48, 0.26, 0.26, 0.52, 0.48)",
             (fixture_id, fixture_id),
         )
-    for tip_id, fixture_id, side, prob, settled, outcome, rule in (
-        (1, 1, "12", 0.78, None, None, "confidence-v2"),
-        (2, 2, "H", 0.61, None, None, "confidence-v2"),
+    for tip_id, fixture_id, side, prob, settled, outcome, rule, fthg, ftag in (
+        (1, 1, "12", 0.78, None, None, "confidence-v2", None, None),
+        (2, 2, "H", 0.61, None, None, "confidence-v2", None, None),
         # A void under an EARLIER rule version, on a fixture the current rule
         # also tipped. Two jobs: the denominator can be checked against
         # something that must not count, and `/tips/record` can be checked
         # against pooling two versions (B16). It is the oldest settled row
         # because that is the real shape -- a superseded rule's tips precede
         # the current rule's, and "current" is read off the newest tip.
-        (3, 4, "X2", 0.66, "2026-01-01 12:00:00", "void", "confidence-v1"),
-        (4, 3, "1X", 0.72, "2026-01-01 12:00:00", "win", "confidence-v2"),
-        (5, 4, "A", 0.58, "2026-01-01 12:00:00", "lose", "confidence-v2"),
+        # Settled before migration 006 recorded scores: fthg/ftag NULL, which
+        # the API must serve as-is rather than invent (tip 3). Tips 4 and 5
+        # carry the score they settled from.
+        (3, 4, "X2", 0.66, "2026-01-01 12:00:00", "void", "confidence-v1", None, None),
+        (4, 3, "1X", 0.72, "2026-01-01 12:00:00", "win", "confidence-v2", 2, 0),
+        (5, 4, "A", 0.58, "2026-01-01 12:00:00", "lose", "confidence-v2", 2, 0),
     ):
         conn.execute(
             "INSERT INTO tips (tip_id, prediction_id, fixture_id, side, model_prob,"
             " floor, ceiling, best_price, avg_price, rule_version, settled_at,"
-            " outcome, pnl_best, pnl_avg) VALUES (?, ?, ?, ?, ?, 0.55, 0.85,"
-            " 1.35, 1.28, ?, ?, ?, 0.35, 0.28)",
-            (tip_id, fixture_id, fixture_id, side, prob, rule, settled, outcome),
+            " outcome, pnl_best, pnl_avg, fthg, ftag) VALUES (?, ?, ?, ?, ?, 0.55,"
+            " 0.85, 1.35, 1.28, ?, ?, ?, 0.35, 0.28, ?, ?)",
+            (tip_id, fixture_id, fixture_id, side, prob, rule, settled, outcome,
+             fthg, ftag),
         )
     conn.commit()
     conn.close()
@@ -314,6 +318,15 @@ def test_tip_results_are_settled_only_and_most_recent_first(tips_client):
     assert all(t["outcome"] is not None for t in body)
     dates = [t["match_date"] for t in body]
     assert dates == sorted(dates, reverse=True)
+
+
+def test_tip_results_carry_the_score_they_settled_from(tips_client):
+    """Migration 006: the grader keeps the score beside the outcome and the
+    endpoint serves it. A row settled before the column existed serves NULLs
+    rather than a reconstruction."""
+    body = {t["tip_id"]: t for t in tips_client.get("/tips/results").json()}
+    assert (body[4]["fthg"], body[4]["ftag"]) == (2, 0)
+    assert body[3]["fthg"] is None and body[3]["ftag"] is None
 
 
 def test_the_record_excludes_voids_from_the_strike_rate(tips_client):

@@ -1,7 +1,7 @@
 // node --test  (no framework; Node's own runner)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { callLabel, callMeans } from './api.js';
+import { callLabel, callCode, callMeans } from './api.js';
 
 test('every publishable side has a phrase, none falls through to its raw code', () => {
   const sides = ['H', 'A', 'D', '1X', 'X2', '12', 'H+1.5', 'A+1.5'];
@@ -11,8 +11,8 @@ test('every publishable side has a phrase, none falls through to its raw code', 
 });
 
 test('the handicap names the handicapped team with its start', () => {
-  assert.equal(callLabel('H+1.5', 'Brentford', 'Arsenal'), 'Brentford +1.5');
-  assert.equal(callLabel('A+1.5', 'Brentford', 'Arsenal'), 'Arsenal +1.5');
+  assert.equal(callLabel('H+1.5', 'Brentford', 'Arsenal'), 'Brentford Home +1.5');
+  assert.equal(callLabel('A+1.5', 'Brentford', 'Arsenal'), 'Arsenal Away +1.5');
 });
 
 test('the handicap mechanics say what must not happen', () => {
@@ -25,4 +25,10 @@ test('the handicap mechanics say what must not happen', () => {
 test('an unknown code still renders rather than crashing the page', () => {
   assert.equal(callLabel('X9', 'A', 'B'), 'X9');
   assert.equal(callMeans('X9', 'A', 'B'), null);
+});
+
+test('the handicap badge names its market and settlement; unions keep their code', () => {
+  assert.equal(callCode('A+1.5'), 'Handicap | Fulltime');
+  assert.equal(callCode('H+1.5'), 'Handicap | Fulltime');
+  for (const side of ['1X', 'X2', '12']) assert.equal(callCode(side), side);
 });
