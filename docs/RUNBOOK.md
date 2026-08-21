@@ -172,6 +172,10 @@ The **weekly refit happens by itself**: the runner refreezes whenever the
 artifact is more than `REFIT_AFTER_DAYS` (7) old, so a missed run cannot leave a
 stale head pricing this weekend.
 
+On the server, `deploy/systemd/bvp-results.timer` additionally runs the
+`results` step alone every two hours (odd UTC hours), so a match settles the
+day it is played rather than at the next 06:00 cycle (`DEPLOY.md` §5.5).
+
 Register the task (adjust the path; run the shell as the user who owns the repo):
 
 ```powershell

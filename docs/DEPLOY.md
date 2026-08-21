@@ -740,7 +740,9 @@ genuinely empty is the only cheap opportunity to confirm it.
 ### 5.5 systemd — _verify:_ API answers after a reboot; timer shows a next run
 
 **Committed at `deploy/systemd/`** — `bvp-api.service`, `bvp-cycle.service`,
-`bvp-cycle.timer`. Each carries its reasoning inline; only the decisions are
+`bvp-cycle.timer`, and `bvp-results.{service,timer}` (2026-08-21: the
+cycle's `results` step on its own, every two hours at odd UTC hours, sharing
+the cycle's lock file). Each carries its reasoning inline; only the decisions are
 repeated here, because a unit duplicated into prose is a unit that will
 disagree with itself, which is this project's recorded failure mode
 (`OUTSTANDING.md` §8).
@@ -748,7 +750,7 @@ disagree with itself, which is this project's recorded failure mode
 ```bash
 sudo cp deploy/systemd/bvp-*.{service,timer} /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now bvp-api bvp-cycle.timer   # the TIMER, not the service
+sudo systemctl enable --now bvp-api bvp-cycle.timer bvp-results.timer   # the TIMERs, not the services
 ```
 
 **Copied, not symlinked into the repo.** A `git pull` that changed a unit under

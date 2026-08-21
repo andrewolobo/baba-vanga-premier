@@ -1,0 +1,30 @@
+# Two-hourly trigger for bvp-results.service. docs/DEPLOY.md 5.5.
+#
+#   sudo systemctl enable --now bvp-results.timer
+#   systemctl list-timers 'bvp-*' --no-pager
+#
+# Owner decision 2026-08-21: results every two hours so a match settles the
+# same day it is played, rather than at the next 06:00 cycle. This supersedes
+# the "one pass per day" of OUTSTANDING.md 4.5 for the results pages only; the
+# retirement condition there (commercial feed or public launch, whichever
+# first) is unchanged.
+
+[Unit]
+Description=Two-hourly baba.vanga.premier results pull
+
+[Timer]
+# Odd hours, so it never lands in the 06:00 cycle's hour. UTC stated, not
+# assumed, for the same reason as bvp-cycle.timer.
+OnCalendar=*-*-* 01/2:00:00 UTC
+
+# A missed run is not a hole: the next one two hours later reads the same
+# pages. Not Persistent, so a reboot does not fire it on top of the cycle.
+Persistent=false
+
+# Politeness to bbc.com; nothing here is time-critical to the minute.
+RandomizedDelaySec=5min
+
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

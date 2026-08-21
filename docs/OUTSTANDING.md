@@ -7,7 +7,20 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-21**, after **the record was pooled across rule
+Last updated **2026-08-21** (later), after **results went two-hourly** —
+owner request: grade from the BBC pages every two hours rather than once at
+06:00. Shape chosen: a second, smaller systemd pair,
+`deploy/systemd/bvp-results.{service,timer}`, running `python -m
+services.bbc_results` (the cycle's `results` step on its own) at odd UTC
+hours, `flock`ed on the cycle's `db/.cycle.lock`, not `Persistent`; the
+cycle itself is unchanged. `pending_dates` already fetches only dates with an
+unsettled played tip, so a quiet day costs no requests. §4.5's "one pass per
+day" decision is amended in place for the results pages; the retirement
+condition stands. No code change beyond a docstring; nothing to test locally
+— the units are verified on the VM (`systemctl list-timers 'bvp-*'`, then
+`systemctl start bvp-results` and `journalctl -u bvp-results`). Uncommitted.
+
+Before that, the same day, after **the record was pooled across rule
 versions** — owner request, reversing B16 (2026-08-15). After the v3 bump the
 public headline had reset to v3's two calls while ~33 graded v2 calls sat in
 the owner-only per-version table, so the record read as empty. `/tips/record`'s
@@ -1736,7 +1749,12 @@ systematic extraction and business use without permission; the owner's decision
 of 2026-08-12 is to run it at **one pass per day over a 7-day window** for
 validation only, and to **retire it on whichever comes first**: a commercial
 fixture feed being sourced, or public launch. It must not be running when the
-product is commercial. *(The fixture facts themselves are a separate question —
+product is commercial. *Amended 2026-08-21, owner decision: the **results**
+pages (§4.8) are now also read **every two hours** by `bvp-results.timer`, so
+a match settles the day it is played; each run fetches only the dates that
+still carry an unsettled played tip, so it is zero requests outside a
+matchday. The calendar stays at one pass a day and the retirement condition
+is unchanged.* *(The fixture facts themselves are a separate question —
 CJEU C-604/10 held football fixture lists are not protected by database right —
 but that is about the data, not about terms of access to bbc.com.)*
 

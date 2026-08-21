@@ -1,0 +1,57 @@
+# Settle tips from the BBC full-time pages, run once. Triggered by
+# bvp-results.timer, never enabled itself. docs/DEPLOY.md 5.5.
+#
+#   sudo cp deploy/systemd/bvp-results.{service,timer} /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now bvp-results.timer   # the TIMER, not the service
+#
+# Run it by hand with `sudo systemctl start bvp-results`.
+#
+# This is the cycle's `results` step on its own, so a Saturday 3pm result is
+# on the site that evening rather than after the 06:00 cycle. It reads only
+# the pages for dates that still carry an unsettled played tip, so outside a
+# matchday it exits without a request. The cycle's own `results` step stays
+# as it was; settlement is idempotent, so the two never settle a tip twice.
+
+[Unit]
+Description=baba.vanga.premier results pull (BBC full-time scores -> tips)
+Documentation=file:/srv/bvp/docs/RUNBOOK.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=bvp
+Group=bvp
+WorkingDirectory=/srv/bvp
+
+# Same lock file as scripts/run_cycle.sh, so this never writes while a cycle
+# is mid-run (the timer avoids the 06:00 hour, but a hand-run cycle can be
+# going at any time). Waits up to ten minutes, then gives up rather than
+# piling up behind a wedged cycle. services/ is not an installed package, so
+# the working directory must be the repo root (docs/DEPLOY.md 3.4).
+ExecStart=/usr/bin/flock -w 600 /srv/bvp/db/.cycle.lock /srv/bvp/.venv/bin/python -m services.bbc_results
+
+# Exit 1 here means a club the alias table does not know, which is the same
+# thing it means in the cycle and wants the same look. There is no exit 2.
+TimeoutStartSec=15min
+
+#   OnFailure=bvp-alert@%n.service   (DEPLOY.md 6.2; see bvp-cycle.service)
+
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+
+# --- hardening (as bvp-cycle.service) ------------------------------------ #
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+ReadWritePaths=/srv/bvp/db
+
+# No [Install] section, deliberately -- the timer starts it.

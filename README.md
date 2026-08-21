@@ -16,6 +16,7 @@ Getting this distinction right is most of operating it.
 | piece | what it is | how it runs |
 | --- | --- | --- |
 | `services.run_cycle` | a **batch job that exits** — sync → calendar → serve → tips → results → grade | systemd **timer**, daily 06:00 UTC |
+| `services.bbc_results` | the `results` step on its own — settles played tips from BBC full-time scores | systemd **timer**, every 2 h (odd UTC hours) |
 | `api.main:app` | a read-only FastAPI over what the cycle wrote | systemd **service**, always up |
 | `web/build` | a **static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx |
 
@@ -111,8 +112,9 @@ Three constraints that bite if forgotten:
 
 ```bash
 systemctl status bvp-api                    # the API
-systemctl list-timers bvp-cycle.timer       # next scheduled run
+systemctl list-timers 'bvp-*'               # next cycle / results / backup runs
 journalctl -u bvp-cycle -n 50               # what the last cycle did
+journalctl -u bvp-results -n 20             # what the last results pull did
 ./scripts/run_cycle.sh --dry-run            # write nothing
 ./scripts/backup.sh --dir /var/backups/bvp --keep 7
 ```

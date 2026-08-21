@@ -7,8 +7,11 @@
 
 **Same source, same terms, same exit condition as the calendar.** The decision
 to read bbc.com at all is `OUTSTANDING.md` §4.5: a pre-release validation aid,
-one pass a day, retired at a commercial feed or public launch, whichever comes
-first. This module reads the *same* pages the calendar reads -- a played match
+retired at a commercial feed or public launch, whichever comes first. The
+calendar runs once a day in the cycle; this module also runs on its own every
+two hours (`deploy/systemd/bvp-results.timer`, owner decision 2026-08-21) and
+only fetches a page when a played tip is still unsettled. It reads the *same*
+pages the calendar reads -- a played match
 sits on the page for its date with `status: PostEvent`, `statusComment: FT` and
 each side's `runningScores.fulltime` -- so it inherits that decision whole. It
 is off unless `BVP_BBC_RESULTS=1`.
