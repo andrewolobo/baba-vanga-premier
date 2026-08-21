@@ -9,7 +9,16 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-19** (later still): **B22 done** — the drawer behind a call, two readings, display only; see its section. Before that, (late), after **the B21 referee probe ran** —
+Last updated **2026-08-21**: **B16 reversed** — owner request: the public
+record pools every `rule_version`. After the v3 bump the headline had reset to
+v3's two calls while ~33 graded v2 calls sat in `by_rule`, owner-only since
+2026-08-20. `/tips/record`'s headline and `by_division` now drop the version
+predicate; `by_rule` and `rule` are unchanged; the per-version table stays
+behind `/?owner=1`. Read-side only, no schema, rule, cycle or ledger change.
+Test renamed `test_the_record_headline_pools_every_rule_version`. See the B16
+section for the two caveats it carries.
+
+Before that, **2026-08-19** (later still): **B22 done** — the drawer behind a call, two readings, display only; see its section. Before that, (late), after **the B21 referee probe ran** —
 owner request, following the gate: can the unpriced `D+1.5` call get a
 checkable reference? Ledger row **111** `probe:b21_market_referee`, **0
 configurations (111 / 68 / 202)**, re-exported; **603 pass**. A market-implied
@@ -149,7 +158,7 @@ and gated B4.
 | B5 | Acquire prices for goal lines other than 2.5 | open | 0 (acquisition) | — |
 | **B6** | Customer-facing surface for the tip list | **done** 2026-08-07 | 0 | B0 |
 | **B7** | Honesty check on how the strike rate is reported downstream | **done 2026-08-16** — v2 return measured, −4.56% ✱ at avg / ~0 at best (`TIPSTER.md` A) | 4 spent | B6 |
-| **B16** | `/tips/record` pools every `rule_version` under one strike rate | **done** 2026-08-15 — per-version headline, `by_rule` history | 0 | B7 |
+| **B16** | `/tips/record` pools every `rule_version` under one strike rate | **done** 2026-08-15 — per-version headline, `by_rule` history; **reversed 2026-08-21** — headline pools, `by_rule` splits, owner-only on the site | 0 | B7 |
 | **B22** | The drawer behind a call: what the model thought, two readings | **done 2026-08-19** — API serves the call's own prediction row; site opens a drawer per fixture (results ranked, marked by cover; toggle to next-likeliest markets). Display only; nothing new is graded | 0 | B6 |
 | **B9** | **Best-price execution — is it reachable?** | **scheduled: after B8 ships and a full season of tips is graded** | 0 (not modelling) | B8 |
 
@@ -1400,7 +1409,23 @@ therefore conservative (§1.10), and **that is true of the outrights and false o
 rule version, so the mixing this section exists to prevent is unguarded on the
 one axis that was supposed to be guarded.
 
-## B16 — The published strike rate pools every rule version — **DONE 2026-08-15**
+## B16 — The published strike rate pools every rule version — **DONE 2026-08-15, REVERSED 2026-08-21**
+
+**Reversed 2026-08-21, owner decision.** The headline and `by_division` now
+pool every `rule_version`; `by_rule` still carries the split, newest first, and
+the site shows that split only behind `/?owner=1`. Why: the v3 bump on
+2026-08-19 reset the public headline to v3's two calls while the ~33 graded v2
+calls sat in a table testers could not see, so the record read as empty. The
+pooled number therefore mixes a rule measured at 72.5% with one measured at
+77.9% — the objection the 2026-08-15 decision rested on — accepted with the
+split one query-string away. Two caveats carried forward: (1) the schema still
+allows a fixture to be tipped under two versions, and the pooled count would
+count it twice — `RUNBOOK.md` §0's "do not bump and re-run on one matchday" is
+the only guard; (2) `P7_TIPSTER_PLAN.md`'s pre-commitment that a goals call is
+never pooled with the result call now needs a product key the record groups
+on, not just a distinct `rule_version`, before any second product publishes.
+Test: `test_the_record_headline_pools_every_rule_version`. The 2026-08-15
+record follows.
 
 **Decided and shipped.** Headline and `by_division` in `/tips/record` are the
 newest published version's record only; `by_rule` carries every version, newest
@@ -1455,5 +1480,5 @@ shown beside the new one, is the owner's call and not a code one.
 | --- | --- | --- |
 | — | Tip rule, published and settled by the serving cycle | `OUTSTANDING.md` §1.10 |
 | — | Strike rate / volume / return measured over 11 seasons — **v1 rule** | `engine/eval/tips.py` |
-| B16 | Per-version strike rate on `/tips/record` | `api/main.py`, above |
+| B16 | Pooled headline, per-version `by_rule` on `/tips/record` | `api/main.py`, above |
 | — | Meta-label on the football model — measured, do not adopt | `META.md` |

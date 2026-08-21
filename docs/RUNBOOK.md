@@ -56,17 +56,18 @@ scheduled job — one typo from placing bets — does not apply.
 > after any head change; both end with a block stating which claims hold.
 
 Changing `TIP_FLOOR` or `TIP_CEILING` means bumping
-`engine.serve.tips.RULE_VERSION`, or the published history mixes two products
-under one strike rate. It is at `confidence-v3` (B21; `confidence-v2` before
+`engine.serve.tips.RULE_VERSION`, so the published history can be split by
+rule. It is at `confidence-v3` (B21; `confidence-v2` before
 2026-08-19 — migration `005_tips_handicap.sql` widened the `tips.side` CHECK
 and applies automatically on the first cycle after deploy). `/tips/record`
-keeps the versions apart: the headline is the newest version's record only and
-`by_rule` carries every version (`BACKLOG.md` B16). **Do not bump the version
+**pools every version into its headline** (owner decision 2026-08-21,
+reversing `BACKLOG.md` B16) and `by_rule` carries the per-version split,
+which the site shows only behind `/?owner=1`. **Do not bump the version
 and re-run the cycle on the same matchday.** `tips.UNTIPPED` excludes a
 fixture per version, so a second run that day publishes a second live call on
-every fixture already tipped under the old one — both settle, and `/tips`
-shows both. Deploy a bump after the day's cycle has run, or on a day with no
-fixtures.
+every fixture already tipped under the old one — both settle, `/tips`
+shows both, and the pooled record now counts that fixture twice. Deploy a
+bump after the day's cycle has run, or on a day with no fixtures.
 
 The v3 handicap tips (`H+1.5` / `A+1.5`) publish with **NULL prices** — the
 feed has no +1.5 line and none is derivable — and that is expected, not an

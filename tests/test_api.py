@@ -194,7 +194,8 @@ def tips_client(tmp_path):
         # A void under an EARLIER rule version, on a fixture the current rule
         # also tipped. Two jobs: the denominator can be checked against
         # something that must not count, and `/tips/record` can be checked
-        # against pooling two versions (B16). It is the oldest settled row
+        # for pooling every version into the headline while still splitting
+        # them in `by_rule` (B16, reversed 2026-08-21). It is the oldest settled row
         # because that is the real shape -- a superseded rule's tips precede
         # the current rule's, and "current" is read off the newest tip.
         # Settled before migration 006 recorded scores: fthg/ftag NULL, which
@@ -342,20 +343,20 @@ def test_the_record_excludes_voids_from_the_strike_rate(tips_client):
     assert v1["strike_rate"] is None    # and does not read as 0%
 
 
-def test_the_record_headline_is_the_current_rule_only(tips_client):
-    """`BACKLOG.md` B16. Two rule versions are two products, and the headline
-    must never average them: the v1 void is out of every headline figure and
-    out of `by_division`, and `rule` names the version the headline is for.
-    Every version is still reported, grouped, so the earlier record is beside
-    the current one rather than gone."""
+def test_the_record_headline_pools_every_rule_version(tips_client):
+    """`BACKLOG.md` B16, reversed 2026-08-21. The headline and `by_division`
+    are the whole published history across rule versions: the v1 void counts
+    in `published` (and stays out of `graded`), and `rule` names the version
+    currently publishing rather than the version the headline is for. Every
+    version is still reported, grouped, so the pooled number decomposes."""
     body = tips_client.get("/tips/record").json()
     assert body["rule"]["rule_version"] == "confidence-v2"
-    assert body["published"] == 4       # not 5: the v1 tip is another product
-    assert body["graded"] == 2          # win + lose
+    assert body["published"] == 5       # the v1 tip is in the pool
+    assert body["graded"] == 2          # win + lose; the void is not graded
     assert body["won"] == 1
     assert body["strike_rate"] == pytest.approx(0.5)
     assert body["upcoming"] == 2
-    assert sum(d["published"] for d in body["by_division"]) == 4
+    assert sum(d["published"] for d in body["by_division"]) == 5
 
     versions = [r["rule_version"] for r in body["by_rule"]]
     assert versions == ["confidence-v2", "confidence-v1"]   # newest first

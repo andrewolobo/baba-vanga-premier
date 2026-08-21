@@ -210,7 +210,9 @@ this file dated and signed — the one edit this file will take.
 **Pre-committed for C′ regardless of shape:** the goals-call strike rate is
 published on its own record (`rule_version` distinct from `confidence-v2`,
 `/tips/record` `by_rule` keeps them apart — B16), never pooled with the result
-call.
+call. *Note 2026-08-21: B16's headline now pools every `rule_version`, so a
+goals call needs a product key the record groups on, not just a version, before
+it is published — see the B16 amendment in `BACKLOG.md`.*
 
 ---
 

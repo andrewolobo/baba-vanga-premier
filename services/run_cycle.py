@@ -63,8 +63,9 @@ RULE_VERSION = "book-off"
 #: The tip rule's two settings. Measured in `engine/eval/selection.py`: floor
 #: 0.55 publishes a 72.5% strike rate on **100% of matches**, against the v1
 #: outright-only rule's 65.5% on 14.4%. Changing either means bumping
-#: `tips.RULE_VERSION`, or the published history mixes two products under one
-#: strike rate.
+#: `tips.RULE_VERSION`, so the published history can be split by rule in
+#: `/tips/record`'s `by_rule` (the headline pools them -- B16, reversed
+#: 2026-08-21).
 TIP_FLOOR = tips.DEFAULT_FLOOR
 TIP_CEILING = tips.DEFAULT_CEILING
 

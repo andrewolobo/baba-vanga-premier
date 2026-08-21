@@ -68,8 +68,8 @@ from engine.odds import devig_probs
 
 #: Bump when the rule changes, so a tip history can be split by regime. `v2`
 #: was B8 (the double-chance fallback); `v3` is B21 (the underdog +1.5 joins
-#: the fallback candidates). The versions must never be averaged into one
-#: strike rate -- `/tips/record` reports them separately (B16).
+#: the fallback candidates). `/tips/record` pools the versions into its
+#: headline and splits them in `by_rule` (B16, reversed 2026-08-21).
 RULE_VERSION = "confidence-v3"
 
 #: Sides with no feed price and no derivable one (`V3_ADOPTION_PLAN.md` D2).

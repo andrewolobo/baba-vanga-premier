@@ -3,7 +3,7 @@
 **Read this first.** It says what ships, what is open with the owner, and what
 must never happen. `OUTSTANDING.md` is the journal behind it and stays the
 authority on *why*; when the two disagree, `OUTSTANDING.md` is right and this
-file is stale — fix this file. Updated **2026-08-20**.
+file is stale — fix this file. Updated **2026-08-21**.
 
 ---
 
@@ -17,7 +17,7 @@ on matchday, never revised, graded from football-data results.
 | head | ridge Poisson, `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3`, refrozen ≤ 7 days | `engine/serve/cycle.py` |
 | rule | `confidence-v3` (built 2026-08-19, **deploy pending** — the VM serves v2 until `V3_ADOPTION_PLAN.md` §6 runs): outright if p ≥ **0.55**, else likeliest of `1X`/`X2`/`12`/**underdog +1.5** ≤ **0.85**, else outright. Handicap tips carry NULL prices; honesty via the market-implied referee gap in the cycle | `engine/serve/tips.py` |
 | cycle | sync → calendar → serve → tips → results → grade; exit **0** clean / **2** look / **1** failed. `results` (BBC full-time scores, `BVP_BBC_RESULTS=1`) settles tips before football-data's file exists; `grade` reconciles once it does | `services/run_cycle.py` |
-| API | read-only; `/tips`, `/tips/results`, `/tips/record` (no P&L on the wire, per-rule-version headline; results carry the scoreline the grader settled from — migration 006) | `api/main.py` |
+| API | read-only; `/tips`, `/tips/results`, `/tips/record` (no P&L on the wire; headline pools every rule version since 2026-08-21, `by_rule` splits it; results carry the scoreline the grader settled from — migration 006) | `api/main.py` |
 | site | one page: calls, last results, record; each call opens a drawer showing the next-likeliest markets behind it (B22, display only; the ranked-results reading was removed 2026-08-20); the settled list has its own league filter and last-12 ⇄ show-all toggle, and each settled card can show the score it was graded from plus the claimed probability — behind a "Scores & claims" toggle, off by default; the rule version and per-version table are owner-only via `/?owner=1` (`$lib/owner.js`, 2026-08-20) | `web/` |
 | server | one Azure Ubuntu VM, `git pull`, systemd timer + service + nginx | `DEPLOY.md`, `RUNBOOK.md` |
 
@@ -57,7 +57,7 @@ The rule agrees with the same rule on the market's own probabilities in only
 | B9 best-price execution | parked until a graded season | — |
 
 **Declined / closed:** B13 (calibrated probabilities in the rule — no), B14
-(corners channel — do not adopt), B16 (per-version record — shipped), **B7
+(corners channel — do not adopt), B16 (per-version record — shipped 2026-08-15, **reversed 2026-08-21: headline pools, `by_rule` splits**), **B7
 (v2 return measured — done 2026-08-16)**, **B11 (measured 2026-08-16)**, **B17 (measured 2026-08-16)**,
 **B4 (goal-line menu — measured, do not extend on this head, 2026-08-16)**.
 

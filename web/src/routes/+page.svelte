@@ -501,12 +501,11 @@
       {/if}
     </div>
 
-    <!-- The headline above is one rule's record. When the rule has changed, the
-         earlier versions are shown here rather than pooled into it or dropped:
-         two rules are two products, and averaging them would label a mixed
-         number with one rule's name. Hidden while only one version exists, so
-         nothing on the page changes until it has to -- and owner-only, like
-         the provenance line above. -->
+    <!-- The headline above pools every rule version (B16 reversed 2026-08-21).
+         This table is the split behind it, so the owner can see what each
+         rule contributed to the one public number. Hidden while only one
+         version exists, so nothing on the page changes until it has to -- and
+         owner-only, like the provenance line above. -->
     {#if owner && record.by_rule && record.by_rule.length > 1}
       <div class="tablewrap">
         <table class="record versions">

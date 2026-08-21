@@ -7,7 +7,23 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-20** (night, later), after **the rule version went
+Last updated **2026-08-21**, after **the record was pooled across rule
+versions** — owner request, reversing B16 (2026-08-15). After the v3 bump the
+public headline had reset to v3's two calls while ~33 graded v2 calls sat in
+the owner-only per-version table, so the record read as empty. `/tips/record`'s
+headline and `by_division` now drop the `rule_version` predicate; `by_rule` and
+`rule` are unchanged on the wire; the site needed no field change and the
+per-version table and provenance line stay behind `/?owner=1`. Read-side only
+— no schema, rule, cycle, grading or ledger change (111 / 68 / 202 unchanged).
+Consequences written into `BACKLOG.md` B16: the pooled number mixes a 72.5%
+rule with a 77.9% one; a fixture re-tipped across versions would now count
+twice (`RUNBOOK.md` §0 is the guard); `P7_TIPSTER_PLAN.md`'s "goals call never
+pooled with the result call" now needs a product key, not just a version.
+Comments in `api/main.py`, `engine/serve/tips.py`, `services/run_cycle.py`,
+`RUNBOOK.md`, `STATE.md` updated; test renamed
+`test_the_record_headline_pools_every_rule_version`. Uncommitted.
+
+Before that, **2026-08-20** (night, later), after **the rule version went
 owner-only on the site** — owner request: testers should not see the rule's
 name; the owner should. Chosen mechanism (option A of three offered):
 `web/src/lib/owner.js` — `/?owner=1` shows and remembers in `localStorage`
