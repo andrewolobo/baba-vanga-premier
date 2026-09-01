@@ -9,7 +9,9 @@ questions are in `PRODUCT.md`; measurement history and conventions are in
 (`DEFLATION.md`). Anything reading match outcomes spends; anything reading only
 prices or λ coverage does not.
 
-Last updated **2026-08-21**: **B16 reversed** — owner request: the public
+Last updated **2026-08-25**: **B23 — Both Teams To Score — pre-registered, scanned and measured**, one probe row (112), 0 configurations (112 / 69 / 202). The head cannot predict the line: P(yes) is null against a walk-forward per-division base rate, both sides over-claim, the likelier side strikes 51.7%, and the line cannot enter the rule. **Do not build.** Side-finding: the B21 market-implied referee does not transfer to totals-axis lines (a margin instrument; condition written into `engine/eval/b21_referee.py`). See the B23 section.
+
+Before that, **2026-08-21**: **B16 reversed** — owner request: the public
 record pools every `rule_version`. After the v3 bump the headline had reset to
 v3's two calls while ~33 graded v2 calls sat in `by_rule`, owner-only since
 2026-08-20. `/tips/record`'s headline and `by_division` now drop the version
@@ -150,6 +152,7 @@ and gated B4.
 | **B19** | Separate ridge on the sum and difference of `att`/`dfn` — margins under-spread, totals over-spread on one penalty | **open — owner decision to scope**; P1-scale | ~4–8 | B17, §9.12 |
 | **B20** | A `12`-only eligibility window (ceiling, or floor) on the shipped rule — the 65% `12` mix | **overtaken by B21's adoption 2026-08-19**: v3 displaces the content-free `12`s (`12` → ~10% of output), which is what the floor was for; closes as **scoped, not spent** on v3 ship day | 0 spent | B3 |
 | **B21** | Any other adoptable line? — scan, gate, referee, adoption | **BUILT 2026-08-19** (D1–D5 approved; `V3_ADOPTION_PLAN.md`): v3 rule composed over the measured `b21.recommend`, migration 005, margin-aware settlement on both feeds, referee gap wired into the cycle, API + site labels; `tests/test_v3_tips.py`. **Deploy pending** (plan §6) | 1 spent | B3 |
+| **B23** | Both Teams To Score — can the head predict it, and how well? | **measured 2026-08-25 — no; do not build.** P(yes) null against a per-division base rate (+0.3 [−1.4, +1.8] millinats); both sides over-claim (yes −1.35 ✱, no −3.70 ✱, every division); the likelier side strikes 51.7%; cannot enter the rule (wins 0.00% of the v3 fallback). Side-finding: the B21 referee is a margin instrument, ~7.6 pts wrong on totals | 0 spent | — |
 
 ## Later
 
@@ -1367,6 +1370,184 @@ Code: `api/main.py` (`TIP_SELECT`, `_with_handicap`), `web/src/lib/view.js`
 `role="button"` control, Enter/Space toggles, one `view` state shared across
 rows). Verified rendered against a scratch copy of the DB with Playwright at
 1280 and 390 wide. **619 pass + 14 web.**
+
+## B23 — Both Teams To Score: can the head predict it, and how well? — **MEASURED 2026-08-25 — the head cannot predict it; do not build**
+
+Owner question 2026-08-25: assess the BTTS yes/no line the way `12` (B3) and
+the underdog +1.5 (B21) were assessed — can the model predict it, and how
+well do the predictions perform.
+
+**What the line is on this head.** A marginal of the same score matrix every
+other market comes from: P(yes) = 1 − P(home 0) − P(away 0) + P(0-0), which
+on the served independent-Poisson pmf (ρ = 0) is (1 − e^−λh)(1 − e^−λa). The
+corpus carries **no BTTS price** — football-data's files have none, checked
+against the 2025-26 header (B5 again) — so the referee is B21's derived one:
+market λs fitted to the devigged avg 1X2 prices, pushed through the same pmf.
+
+**Scan — λ only, 2026-08-25, no outcome read, no row** (`python -m
+engine.eval.b23 --scan`), on the B3 frame (15,824 matches, walk-forward λ,
+served divisions, 2014-15 → 2022-23):
+
+- P(yes) mean **0.503**, p10 0.436, p50 0.504, p90 0.571. The claim barely
+  moves: the likelier side claims **54.2%** on average; 35.0% of matches
+  reach a 0.55 claim, **5.3%** reach 0.60, 0.2% reach 0.65.
+- Yes is the likelier side in 52.6% (E0 53%, E1 48%, E2 60%, E3 50%);
+  per-division mean P(yes) 49.8–51.1%.
+- Against the v3 rule: the likelier BTTS side out-claims the v3 pick (mean
+  76.9%) in **1.40%** of matches and would win the v3 fallback argmax in
+  **0.00%**. As a candidate on the rule's menu the line is dead by
+  construction — `PRODUCT.md` §3's degeneracy in reverse: the rule selects on
+  probability and BTTS is a near coin-flip. **No gate on that shape will be
+  proposed.**
+
+So the assessable questions are the ones B11 asked of the goal lines: is the
+claim honest, does it carry information beyond a base rate, and what would a
+BTTS-only tipster publish.
+
+**Construction** (`engine/eval/b23.py`, tests `tests/test_b23.py` — planted
+data only, 9 cases; results `docs/b23_results.json`):
+
+1. *Control first.* λ jittered by exp(N(0, 0.25)); the bucket table on each
+   side's calls must read **overconfident in the top verdictable bucket on
+   both sides**, or the calibration is not reported.
+2. *Calibration.* Each side's calls (yes where P(yes) ≥ 0.5, no otherwise):
+   pooled delivered − claimed with a week-block paired CI (`OUTSTANDING.md`
+   §9.5's form), bucket table [0.50,0.60) … [0.90,1.01) with n ≥ 200
+   verdicted, pooled and per division.
+3. *Skill.* Log loss and Brier of P(yes), paired by ISO week, against (a) a
+   **walk-forward per-division base rate** — the BTTS-yes rate over strictly
+   earlier dev seasons, which knows no λ — on all 15,824, and (b) the
+   market-implied referee on the priced matches; plus the mean claim gap
+   model − referee.
+4. *The referee's own calibration*, same tables — a market-defined quantity,
+   which separates a pmf-shape defect (both show it) from a λ defect (only
+   the model shows it).
+5. *Tipster.* The likelier side as a call at claim ≥ 0.50 / 0.55 / 0.60 /
+   0.65: coverage, strike with block CI, mean claim, yes share. Descriptive;
+   nothing is chosen from it.
+
+**Cost: 0 configurations, one probe row** (`probe:b23_btts`) — the B11
+footing: outcomes are read to score one quantity of the shipped head and for
+tables; no grid is chosen from, no arm list is recorded, and **no menu
+decision is read off this row** — the scan already settled that the line
+cannot enter the rule. A BTTS product of any other shape would be its own
+pre-registered gate.
+
+**Predictions** (bands live in `b23.verdict` and are evaluated mechanically):
+
+- **C0.** The control fires on both sides.
+- **C1.** **Yes calls under-claim**: pooled delivered − claimed in **[+0.5,
+  +3.0] pts, resolved positive**. *Basis:* the pmf under-claims every
+  "goals arrive" event it has been measured on — over 0.5 [0.8,0.9) +2.0,
+  over 1.5 [0.6,0.7) +4.0 (`TIPSTER.md` B), `1X` +1.07 ✱ (§9.5) — and the
+  B21 scan put "favourite to score" 1.7 pts *below* its conditional prior;
+  the measured ρ = −0.025 adds ~+0.3 pt to yes by τ arithmetic
+  (`test_a_negative_rho_raises_btts_yes` pins the direction).
+- **C2.** **No calls**: pooled gap in **[−2.5, +0.5]** — a low-total claim,
+  which B17 measured over-claiming in E1–E3, diluted here because no claims
+  are weak (0.50–0.60). Expected but not scored: the no side's top verdictable
+  bucket reads overconfident in ≥ 2 of E1–E3 and not in E0 (reported as
+  `no_side_top_bucket_lower_divisions`).
+- **C3.** The model **beats the base rate** on log loss by **[3, 15]
+  millinats per match, resolved**. *Basis:* a calibrated forecaster whose
+  P(yes) has sd ≈ 0.053 gains ≈ Var / (2 · ¼) ≈ 5.6 millinats; C1's
+  under-claim means the true spread is wider than the claimed one, so a
+  little more.
+- **C4.** Model vs referee on log loss: **|Δ| < 2 millinats, unresolved**
+  (B21 R2: the model's λs are the market's to within a quarter of a point).
+- **C5.** Mean claim gap model − referee within **±1 pt** (B17: the totals
+  level is ≈ 0 overall).
+- **C6.** The **referee's yes calls also under-claim** (pooled gap > 0): the
+  under-claim is the independent-Poisson zero cells, not the model's λs. If
+  C1 holds and C6 fails, it is a λ finding — and the more interesting one.
+- **C7.** The likelier side as a call, pooled: strike in **[54, 58]%** at a
+  mean claim of 54.2%.
+
+**What a result is.** C1 + C6 green means the line is honest-to-conservative
+and the head's information on it is the market's; a BTTS tipster would
+publish a ~55% strike at claims that never reach 0.65 — a product nobody
+would buy, said with numbers rather than assumed. C3 failing (no skill over a
+base rate) would be the finding that the head has nothing to say about zeros.
+C1 failing in the over-claim direction would put BTTS-yes on B11's list of
+confident claims the pmf cannot back.
+
+### Result — **MEASURED 2026-08-25. 2 of 8 predictions held, and the six misses all say one thing: the head cannot predict this line.**
+
+Ledger row **112** `probe:b23_btts`, **0 configurations — 112 / 69 / 202**.
+Results `docs/b23_results.json`; **628 pass** after `tests/test_b23.py` (9
+new). The one failure in the suite,
+`test_run_cycle.py::test_a_failing_results_source_does_not_stop_the_cycle`,
+is pre-existing and date-dependent (the planted tip no longer counts as
+"played", so `step_results` reports `nothing unsettled` before the patched
+collector can raise) — nothing in this probe touches that path.
+
+**C0 held.** Jittered λ reads overconfident on both sides ([0.70,0.80): yes
+−18.1, no −19.4). The instrument sees what it exists to see; the tables are
+a result.
+
+**C3 MISSED — and it is the finding.** Model P(yes) against the walk-forward
+per-division base rate: log loss **0.69323 vs 0.69293, model − base +0.30
+[−1.35, +1.83] millinats**; Brier 0.25003 vs 0.24989, +0.14 [−0.68, +0.90]
+×10⁻³. **Null.** A number that knows only the division and the previous
+seasons' BTTS rate forecasts this line as well as the head does. The claimed
+spread (sd ≈ 0.053) buys nothing.
+
+**C1 and C2 MISSED, both in the over-claim direction.** Yes calls (52.6% of
+matches) claim 54.32 and deliver **52.97 — −1.35 [−2.38, −0.24] ✱**; no
+calls (47.4%) claim 54.06 and deliver **50.36 — −3.70 [−4.90, −2.56] ✱**,
+resolved in every division (E0 −3.40, E1 −4.07, E2 −3.47, E3 −3.69, all ✱).
+The no side's top verdictable bucket reads overconfident in E1, E2 *and* E3
+as expected — and in E0 too, which was not. Predicted was yes
+*under*-claiming, carried over from B11's "goals arrive" pattern; **the
+mechanism did not transfer, and the direction is recorded: on BTTS the head
+is over-confident on both sides.** Two sides both over-claiming is the
+signature of a forecaster with less information than its spread: the
+delivered separation between yes-calls and no-calls is **3.3 pts** (a
+52.97% yes-rate on yes calls against 49.64% on no calls) against a claimed
+separation of **8.4 pts** (54.32 vs 45.94). The ranking carries roughly 40%
+of the information it claims, and at the spread it claims that nets to zero
+skill over the base rate (C3). The realised pooled BTTS-yes rate is 51.4%
+against the head's mean claim of 50.3%: the *level* is about a point low,
+the *spread* about 2.5× too wide. (Whether a shrunk P(yes) would beat the
+base rate is a new configuration, not measured, and there is no product to
+spend it on.)
+
+**C7 MISSED.** The likelier side as a call strikes **51.7% [51.0, 52.5]** on
+100% of matches at a 54.2% claim; at claim ≥ 0.55 (35.0% coverage) 53.9%
+[52.7, 55.2] against 57.7% claimed; at ≥ 0.60 (5.3%) 56.0% [52.7, 59.1]
+against 61.8%. A BTTS tipster on this head is a coin with a confidence label.
+
+**C4, C5, C6 — the referee does not transfer to this line, and the reason is
+now measured.** The 1X2-fitted market λs put P(yes) **5.98 pts [5.87, 6.10]
+below** the model (C5 missed by six times its band), and the model beats
+the referee by **8.2 millinats ✱** (C4 missed) — not because the head is
+good but because the referee is off-level: it calls no in 96.9% of matches
+and over-claims no by **−7.06 ✱** in every division. C6 is technically green
+(the referee's 3.1% of yes calls under-claim, +5.81 ✱) but for the same
+off-level reason, **not** the pmf-shape mechanism it was registered to test,
+and it is not read as support. A λ-only check (no outcome, no row) gives the
+mechanism: the referee's mean λ-sum is **2.321 against the model's 2.582**
+(−0.26 goals) while the λ-difference matches to 0.007; the market's devigged
+draw is **26.92% against the model's 25.61%**; and on over 2.5 the O/U market
+says **48.45%**, the model **47.47%**, the 1X2-fitted referee **40.85%**. An
+independent-Poisson inversion of 1X2 prices can only produce the market's
+draw premium — the τ effect the pmf lacks — by lowering the scoring level.
+**The B21 referee is a margin instrument, and it is a wrong totals
+instrument by ~7.6 pts on over 2.5.** It stays valid where it is wired (the
+handicap gap, a margin quantity, R2 −0.23) and must not be reused for any
+totals-axis line (O/U, BTTS, team totals) without refitting on the O/U 2.5
+price; the condition is written into `engine/eval/b21_referee.py`'s
+docstring. A side-finding for free: the model's own totals level is within
+1 pt of the O/U market's.
+
+**Verdict — do not build.** The scan had already shown the line cannot enter
+the rule (it wins the v3 fallback argmax in 0.00% of matches); the probe
+shows a standalone BTTS product would be a coin (51.7%) whose claims are
+over-spread on both sides, and that the head has no information on the line
+that a base rate lacks. **B23 closes at 0 configurations.** Two things
+opened, neither spent: (i) the referee condition above; (ii) a totals-axis
+referee fitted on the O/U 2.5 price — a 0-configuration probe, worth running
+only if a totals line is ever reconsidered (B4 is closed, B18 is gated).
 
 ## B7 — The honesty check — **DONE 2026-08-16**
 

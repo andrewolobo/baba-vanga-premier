@@ -23,6 +23,16 @@ Three parts, one probe row, 0 configurations:
              probability; no model arm), the same footing as B20's base rate
              and B17's residual probe. Carries a planted control: market
              lambdas jittered by exp(N(0, 0.25)) must read overconfident.
+
+**Scope: a margin instrument, not a totals one** (B23, 2026-08-25). An
+independent-Poisson inversion of 1X2 prices can only reproduce the market's
+draw premium (+1.3 pts over the pmf at the model's lambdas) by lowering the
+scoring level: the fitted lambda-sum sits 0.26 goals under the model's while
+the lambda-difference matches to 0.007. On over 2.5 the referee says 40.9%
+against the O/U market's 48.5% and the model's 47.5%; on BTTS it over-claims
+`no` by 7 pts in every division. It stays valid for `D+1.5` (R2: -0.23) and
+must not be reused for any totals-axis line (O/U, BTTS, team totals)
+without refitting on the O/U 2.5 price. `BACKLOG.md` B23.
 """
 
 from __future__ import annotations

@@ -3,7 +3,7 @@
 **Read this first.** It says what ships, what is open with the owner, and what
 must never happen. `OUTSTANDING.md` is the journal behind it and stays the
 authority on *why*; when the two disagree, `OUTSTANDING.md` is right and this
-file is stale — fix this file. Updated **2026-08-21**.
+file is stale — fix this file. Updated **2026-08-25**.
 
 ---
 
@@ -59,21 +59,21 @@ The rule agrees with the same rule on the market's own probabilities in only
 **Declined / closed:** B13 (calibrated probabilities in the rule — no), B14
 (corners channel — do not adopt), B16 (per-version record — shipped 2026-08-15, **reversed 2026-08-21: headline pools, `by_rule` splits**), **B7
 (v2 return measured — done 2026-08-16)**, **B11 (measured 2026-08-16)**, **B17 (measured 2026-08-16)**,
-**B4 (goal-line menu — measured, do not extend on this head, 2026-08-16)**.
+**B4 (goal-line menu — measured, do not extend on this head, 2026-08-16)**, **B23 (Both Teams To Score — measured 2026-08-25: P(yes) null against a base rate, both sides over-claim, 51.7% as a call, cannot enter the rule; do not build — `BACKLOG.md` B23)**.
 
 ## Numbers that must be re-derived, not quoted
 
-- Gate ledger: `trials.count_configurations(conn)` — **111 / 68 / 202** at last
-  read (2026-08-19, on the authority machine, after `gate:b21_dog15` wrote row
-  110 and `probe:b21_market_referee` row 111; re-exported the same session,
+- Gate ledger: `trials.count_configurations(conn)` — **112 / 69 / 202** at last
+  read (2026-08-25, on the authority machine, after `probe:b23_btts` wrote row
+  112 at 0 configurations; re-exported the same session,
   `--check` clean. The other machine must
   `--restore` before any gate runs there). `docs/gate_ledger.jsonl` is the off-machine copy; the test
   `test_the_ledger_export_is_current` goes red until it is re-exported after a
   gate. `scripts/export_ledger.py --restore` loads it into an empty ledger, or
   appends what an exact-prefix ledger lacks; `--check` names which of the two
   is behind.
-- Tests: `pytest -q` — **620 pass** at last run (2026-08-20, tip scores,
-  Python 3.11), plus **20** in `cd web && npm test`; the prose has been stale
+- Tests: `pytest -q` — **628 pass** at last run (2026-08-25, B23,
+  Python 3.11; one pre-existing date-dependent failure, `test_run_cycle.py::test_a_failing_results_source_does_not_stop_the_cycle` — its planted tip, hard-dated 2026-08-14, has aged out of `pending_dates`' lookback and needs a relative date), plus **20** in `cd web && npm test`; the prose has been stale
   before.
 
 ## What must never happen

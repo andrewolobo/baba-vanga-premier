@@ -7,7 +7,29 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-21** (later), after **results went two-hourly** —
+Last updated **2026-08-25**, after **B23 — Both Teams To Score — was
+pre-registered, scanned and measured** (owner question: assess the BTTS line
+the way `12` and the underdog +1.5 were). Scan first, λ only: the likelier
+side claims 54.2% on average and would win the v3 fallback argmax in 0.00% of
+matches, so no rule gate was proposed. Probe `probe:b23_btts`, row **112**,
+**0 configurations — 112 / 69 / 202**: model P(yes) is null against a
+walk-forward per-division base rate (+0.3 [−1.4, +1.8] millinats); both
+sides over-claim (yes −1.35 ✱, no −3.70 ✱, resolved in every division); the
+likelier side as a call strikes 51.7% [51.0, 52.5]. **Do not build.** The
+pre-registered direction (yes under-claiming, carried from B11's goal lines)
+was wrong — the second time a mechanism carried across markets has failed.
+Side-finding: the B21 market-implied referee does not transfer to totals-axis
+lines — 1X2-fitted λs reproduce the market's draw premium as a 0.26-goal
+lower scoring level (40.9% over 2.5 against the O/U market's 48.5% and the
+model's 47.5%); condition written into `engine/eval/b21_referee.py`. Code
+`engine/eval/b23.py`, tests `tests/test_b23.py` (9), results
+`docs/b23_results.json`, full account `BACKLOG.md` B23. Ledger re-exported,
+`--check` clean; **628 pass** plus one pre-existing date-dependent failure
+(`test_a_failing_results_source_does_not_stop_the_cycle`: its planted tip is
+hard-dated 2026-08-14 and has aged out of `pending_dates`' lookback — needs a
+relative date). Uncommitted.
+
+Before that, **2026-08-21** (later), after **results went two-hourly** —
 owner request: grade from the BBC pages every two hours rather than once at
 06:00. Shape chosen: a second, smaller systemd pair,
 `deploy/systemd/bvp-results.{service,timer}`, running `python -m
