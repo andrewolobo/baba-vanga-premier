@@ -2103,6 +2103,17 @@ Not verified in a browser from this session — check the list once deployed.
     **Closed 2026-08-17** with §4.8: a second step on the same clock made two
     adjacent steps on two clocks untenable, so `today` now reaches `step_grade`
     and `step_results`; `test_grade_bounds_on_the_cycle_clock_not_the_wall_clock`.
+  - **Third instance, 2026-09-01.** `test_a_failing_results_source_does_not_stop_the_cycle`
+    failed on deployment, passing everywhere else. It called `step_results` without
+    `today=` against `_unsettled_tip`'s frozen `2026-08-14`; `bbc_results.pending_dates`
+    has `LOOKBACK_DAYS = 7`, so from 2026-08-22 the tip fell out of the window and
+    the step said `nothing unsettled` before `collect` was ever reached. The last
+    commit touching the file was 2026-08-21 — the final day it could pass — which is
+    why local runs never caught it. Pinned `today=pd.Timestamp("2026-08-15")` like
+    its siblings. Every other unpinned call in the file was checked: the `step_grade`
+    ones are safe (that query has no lower bound) and the calendar one derives its
+    fixture date from the wall clock. The rule stands: **a test with a frozen fixture
+    date must pin `today`.**
 - `engine/eval/p1.py` trips a cognitive-complexity lint in `h9_baseline` and
   carries two duplicated string literals. Cosmetic.
 - `db/artifacts/` is gitignored as reproducible output. If artifacts that

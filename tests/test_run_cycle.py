@@ -519,7 +519,7 @@ def test_a_failing_results_source_does_not_stop_the_cycle(conn, monkeypatch):
         raise TimeoutError("bbc.com unreachable")
 
     monkeypatch.setattr(run_cycle.bbc_results, "collect", boom)
-    step = run_cycle.step_results(conn, dry_run=True)
+    step = run_cycle.step_results(conn, dry_run=True, today=pd.Timestamp("2026-08-15"))
     assert step.status is Status.FAILED and "TimeoutError" in step.detail
 
 
