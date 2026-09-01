@@ -2,15 +2,18 @@
   import { page } from '$app/stores';
   let { children } = $props();
 
-  // The public site is one page with three sections; /book and /performance are
-  // the internal views that existed before it and are reached from the footer.
+  // The public site is one page with three sections, plus /parlay (B24). /book
+  // and /performance are the internal views that existed before it and are
+  // reached from the footer; they are named here rather than inferred from
+  // "not the front page", so a new public route does not inherit the
+  // uncalibrated-pmf banner and the narrow shell by default.
   const sections = [
     ['tips', 'Tips'],
     ['results', 'Results'],
     ['record', 'Record']
   ];
 
-  const internal = $derived($page.url.pathname !== '/');
+  const internal = $derived(['/book', '/performance'].includes($page.url.pathname));
 </script>
 
 <header>
@@ -23,7 +26,14 @@
       {/each}
     </nav>
 
-    <a href="/#tips" class="cta">This week's calls</a>
+    <!-- Two actions: the calls (the product) and the parlay page beside it,
+         solid accent orange so it stands out in its own right (owner
+         request). Owner decision 2026-09-01, ahead of the B24 probe
+         (PARLAY_PLAN.md D7). -->
+    <div class="actions">
+      <a href="/parlay" class="cta parlay" aria-current={$page.url.pathname === '/parlay' ? 'page' : undefined}>Build a parlay</a>
+      <a href="/#tips" class="cta">This week's calls</a>
+    </div>
   </div>
 </header>
 
@@ -151,6 +161,13 @@
     white-space: nowrap;
   }
   .cta:hover { color: #fff; filter: brightness(1.1); }
+  .actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+  .cta.parlay { background: var(--accent); color: var(--bg); }
+  .cta.parlay:hover { color: var(--bg); }
+  /* On its own page the button is the one place the accent reads as "you
+     are here" rather than "go here", so it settles to the softer shade. */
+  .cta.parlay[aria-current="page"] { background: var(--accent-soft); }
+  .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   footer { border-top: 1px solid var(--line); background: #0b0b0e; margin-top: 90px; }
   footer .bar { padding: 40px 32px; align-items: flex-start; flex-wrap: wrap; }

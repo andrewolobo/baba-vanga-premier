@@ -7,7 +7,66 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-08-25**, after **B23 — Both Teams To Score — was
+Last updated **2026-09-01**, after **the parlay page was assessed and
+planned, not built** — owner request: assess a parlay/accumulator feature,
+determine the maximum number of games from the strike rate, then plan a
+separate page where a reader generates a parlay by league, risk threshold
+and number of games, opening on the recommended settings. Assessment: a
+λ-only scan of the v3 rule over the dev corpus, **no outcomes read, no
+ledger row** (112 / 69 / 202 unchanged). The 0.85 ceiling caps every
+fallback leg (best Saturday leg claims 0.845, fifth-best 0.827; 0.18% of
+calls exceed 0.85), matchdays are small (median 3 fixtures; 964 of 1,450
+dev matchdays have ≥ 2 tips), and the top-k legs by claim multiply to
+**0.71 / 0.59 / 0.49 on a Saturday at k = 2 / 3 / 4** — so **default 2
+legs, maximum 3, never 4**. ~64% of legs are unpriced, so the page can
+show no odds and no return, and the per-leg −4.6% compounds (~−13% on a
+treble). Plan `PARLAY_PLAN.md`: seven owner decisions (D1 server-side
+selector in `engine/serve/parlay.py` + `GET /parlay`, keeping `api.js`'s
+"the site never recomputes a probability"; D2 risk = minimum per-leg
+claim, presets 0.80 / 0.70 / any; D3 2–3 legs; D4 pool = unplayed
+published tips minus kicked-off fixtures; D5 never pad below the
+threshold; D6 nothing graded in phase 1; D7 nav link only after the
+probe), a pre-registered **0-configuration probe
+`probe:b24_parlay_independence`** (realised top-k parlay hit rate against
+the product of claims, planted dependent-pair control — the one thing the
+page adds that row 110 did not measure), and a build in three phases
+(~2½ days: selector + endpoint, page + `+layout.svelte`'s `internal`
+predicate, docs + deploy) with the recorded-and-graded parlay as an
+optional phase D. `BACKLOG.md` B24 row added. **Phase A built the same
+day** after the owner's calls (D1 server, D2 three presets, **D3 widened to
+2–4 legs with a warning at 4** — `MAX_LEGS = 4`, not the plan's 3 — D4
+exclude kicked-off): `engine/serve/parlay.py` (`select_legs`, pure, no
+`engine.eval` import — verified the API still loads none of the measurement
+stack), `GET /parlay` in `api/main.py` on `TIP_SELECT` + `_with_handicap`
+with `_london_now()` for the UK clock, `tests/test_parlay.py` (10) and five
+`/parlay` tests in `tests/test_api.py`. **643 pass** plus the pre-existing
+date-dependent failure. Smoke-tested on the local DB (empty pool today, the
+null shape serves). No schema, rule, cycle or ledger change (112 / 69 / 202).
+**Phase B built the same day**: `web/src/routes/parlay/+page.svelte` (three
+controls, the slip, the §5 honesty copy; launch = All / Safer / 2),
+`web/src/lib/parlay.js` (the sentences for the empty, threshold-empty and
+short-slip states; 4 `node:test` cases), `getParlay` + `RISK_PRESETS` +
+`LEGS` in `api.js` (pinned against `engine/serve/parlay.py` by
+`tests/test_parlay.py`), and `+layout.svelte`'s `internal` predicate now
+names `/book` and `/performance` instead of "not the front page", so
+`/parlay` is a public route without the uncalibrated-pmf banner. Phase A
+amendment for the page: `select_legs` also returns `pool` (live calls
+before the threshold) so "no calls live" and "none clears this bar" are
+different sentences. **Then the owner brought D7 forward**: a "Build a parlay"
+button beside the header's red "This week's calls" CTA — solid accent
+orange by owner request, so it stands out in its own right
+(`+layout.svelte`; `aria-current` on `/parlay` softens it to `--accent-soft`), so the page is linked
+**before** the probe has run — the probe is now the first thing to do after
+the link, and the page's own copy carries the "claimed, not measured"
+statement in the meantime. **24 web tests, build clean, 644 pass** plus the pre-existing
+failure; click-through done with Playwright against a seeded scratch DB
+(`BVP_DB_PATH`; 17 checks: launch request, ordering, product, warning at 4,
+short slip, threshold-empty state, kicked-off exclusion, banners on `/book`
+and `/`); nav button checked with Playwright (desktop and 390px, click
+navigates, current-page state, CTA still returns to `/#tips`). Next: the
+probe (§3, needs its predictions confirmed), then Phase C. Uncommitted.
+
+Before that, **2026-08-25**, after **B23 — Both Teams To Score — was
 pre-registered, scanned and measured** (owner question: assess the BTTS line
 the way `12` and the underdog +1.5 were). Scan first, λ only: the likelier
 side claims 54.2% on average and would win the v3 fallback argmax in 0.00% of

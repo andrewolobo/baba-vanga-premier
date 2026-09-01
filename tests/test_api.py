@@ -491,3 +491,62 @@ def test_endpoints_survive_an_empty_database(tmp_path):
         assert empty.get("/tips/record").json()["published"] == 0
     finally:
         app.dependency_overrides.clear()
+
+
+# --- the parlay, a view over the tip list ----------------------------------
+
+
+def test_parlay_ranks_the_published_calls_by_claim_and_multiplies_them(tips_client):
+    """B24: the legs are `/tips` rows, ordered by claim, and `claimed` is
+    their product -- formed server-side, as every probability on the wire is."""
+    body = tips_client.get("/parlay", params={"legs": 2, "min_claim": 0.5}).json()
+    assert [t["tip_id"] for t in body["legs"]] == [1, 2]          # 0.78 then 0.61
+    assert body["claimed"] == pytest.approx(0.78 * 0.61)
+    assert (body["requested"], body["available"], body["pool"]) == (2, 2, 2)
+    assert body["min_claim"] == 0.5 and body["division"] is None
+    assert body["size_warning"] is False
+    # Each leg carries the same shape as a `/tips` row, model view included.
+    leg = body["legs"][0]
+    assert leg["side"] == "12" and leg["home_team"] == "Arsenal"
+    assert "p_12" in leg and "p_h15" in leg and leg["settled_at"] is None
+
+
+def test_parlay_never_pads_below_the_threshold(tips_client):
+    """Fewer calls clear the bar than legs asked for: the parlay is what
+    cleared, and `available` says so. The default (0.80) clears nothing in
+    this fixture and claims None -- never 0, which would read as certain to lose."""
+    body = tips_client.get("/parlay", params={"legs": 2, "min_claim": 0.7}).json()
+    assert [t["tip_id"] for t in body["legs"]] == [1]
+    assert (body["requested"], body["available"]) == (2, 1)
+    assert body["claimed"] == pytest.approx(0.78)
+    default = tips_client.get("/parlay").json()
+    assert default["legs"] == [] and default["claimed"] is None
+    assert (default["requested"], default["min_claim"]) == (2, 0.80)
+
+
+def test_parlay_filters_by_division_and_warns_at_four_legs(tips_client):
+    body = tips_client.get("/parlay", params={"division": "E2", "min_claim": 0.5}).json()
+    assert [t["tip_id"] for t in body["legs"]] == [2] and body["division"] == "E2"
+    assert tips_client.get("/parlay", params={"legs": 4}).json()["size_warning"] is True
+    assert tips_client.get("/parlay", params={"legs": 3}).json()["size_warning"] is False
+
+
+def test_parlay_rejects_bad_sizes_thresholds_and_divisions(tips_client):
+    assert tips_client.get("/parlay", params={"legs": 1}).status_code == 400
+    assert tips_client.get("/parlay", params={"legs": 5}).status_code == 400
+    assert tips_client.get("/parlay", params={"min_claim": 1.5}).status_code == 400
+    assert tips_client.get("/parlay", params={"division": "EC"}).status_code == 400
+
+
+def test_parlay_drops_fixtures_whose_kickoff_has_passed(tips_client, monkeypatch):
+    """The pool is `/tips` minus anything already under way, on the UK clock.
+    The clock is pinned rather than the fixture dated, so the test does not
+    depend on the time of day it runs."""
+    from datetime import datetime
+    import api.main as main
+    monkeypatch.setattr(main, "_london_now", lambda: datetime(2000, 1, 1, 12, 0))
+    before = tips_client.get("/parlay", params={"min_claim": 0.5}).json()
+    assert before["available"] == 2
+    monkeypatch.setattr(main, "_london_now", lambda: datetime(2099, 1, 1, 12, 0))
+    after = tips_client.get("/parlay", params={"min_claim": 0.5}).json()
+    assert after["available"] == 0 and after["legs"] == [] and after["pool"] == 0

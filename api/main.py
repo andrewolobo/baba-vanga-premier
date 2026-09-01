@@ -28,7 +28,9 @@ database, where the record is kept; they are simply not what this API publishes.
 from __future__ import annotations
 
 import sqlite3
+from datetime import datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import numpy as np
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -37,6 +39,7 @@ from scipy import stats
 
 from engine import db
 from engine.seasons import SERVED_DIVISIONS
+from engine.serve import parlay as parlay_rule
 
 app = FastAPI(
     title="baba.vanga.premier",
@@ -286,6 +289,58 @@ def tip_results(
         TIP_SELECT + clause + " ORDER BY f.match_date DESC, t.tip_id DESC LIMIT ?",
         params + (limit,),
     ))
+
+
+def _london_now() -> datetime:
+    """UK wall-clock now, the zone the fixture feeds publish kick-offs in.
+    A function so a test can pin the clock."""
+    return datetime.now(ZoneInfo("Europe/London"))
+
+
+@app.get("/parlay")
+def parlay(
+    division: str | None = Query(None, description="E0 | E1 | E2 | E3"),
+    legs: int = Query(parlay_rule.DEFAULT_LEGS,
+                      description=f"{parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}"),
+    min_claim: float = Query(parlay_rule.DEFAULT_MIN_CLAIM,
+                             description="minimum claimed probability per leg"),
+    conn: sqlite3.Connection = Depends(get_conn),
+) -> dict:
+    """A parlay generated from the published tip list (`PARLAY_PLAN.md`, B24).
+
+    **A view over `/tips`, not a second call.** The legs are rows `/tips`
+    would serve -- unplayed, one per fixture -- at or above `min_claim`,
+    ranked by claim, cut to `legs`, minus any fixture whose UK kick-off has
+    passed. `claimed` is the product of the legs' claims: a claimed figure in
+    the same sense as `model_prob`, assuming the games are independent, and
+    it is not graded -- each leg is graded on its own on the record. Nothing
+    is padded: fewer calls clearing the threshold than `legs` asked for come
+    back as they are, with `available` saying how many cleared.
+
+    The selection is `engine.serve.parlay.select_legs`, computed here rather
+    than in the browser because the frontend never forms a probability
+    (`web/src/lib/api.js`). Sizes and presets live there too; the page
+    mirrors them. No price on the parlay and no return: most legs are
+    unpriceable handicaps, and a parlay compounds whatever the singles return.
+    """
+    _check_division(division)
+    if not parlay_rule.MIN_LEGS <= legs <= parlay_rule.MAX_LEGS:
+        raise HTTPException(
+            400, f"legs must be {parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}")
+    if not 0.0 <= min_claim <= 1.0:
+        raise HTTPException(400, "min_claim must be between 0 and 1")
+    clause = " WHERE t.settled_at IS NULL AND f.match_date >= date('now')"
+    if division:
+        clause += " AND f.division = ?"
+    rows = _with_handicap(_rows(
+        conn,
+        TIP_SELECT + clause
+        + " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
+        (division,) if division else (),
+    ))
+    selected = parlay_rule.select_legs(rows, legs=legs, min_claim=min_claim,
+                                       now=_london_now())
+    return {**selected, "division": division}
 
 
 #: Strike rate and volume. **No P&L column appears here by design** -- see the
