@@ -83,7 +83,7 @@ COUNTS="$(psql "$URL" -At -c "
         || '  serving_state=' || (SELECT COUNT(*) FROM serving_state)
         || '  gate_ledger=' || (SELECT COUNT(*) FROM gate_ledger)")" || exit 1
 SIZE="$(stat -c %s "$TARGET" 2>/dev/null || stat -f %z "$TARGET")"
-printf 'snapshot ok  %.1f MB  %s\n' "$(echo "$SIZE / 1000000" | bc -l)" "$COUNTS"
+printf 'snapshot ok  %d KB  %s\n' "$((SIZE / 1024))" "$COUNTS"
 echo "wrote $TARGET"
 
 # Retention. Newest KEEP survive. `ls -1t` orders by mtime, which is the same as
