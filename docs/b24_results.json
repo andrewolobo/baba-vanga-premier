@@ -1,0 +1,490 @@
+{
+  "n": 15824,
+  "pooled": {
+    "k2_r0.8": {
+      "days": 592,
+      "hits": 405,
+      "claimed": 0.699,
+      "realised": 0.68412,
+      "gap": -0.01488,
+      "ci": [
+        -0.04968,
+        0.02233
+      ],
+      "excludes_zero": false
+    },
+    "k2_r0.7": {
+      "days": 877,
+      "hits": 586,
+      "claimed": 0.6735,
+      "realised": 0.66819,
+      "gap": -0.00531,
+      "ci": [
+        -0.03375,
+        0.02355
+      ],
+      "excludes_zero": false
+    },
+    "k2_r0": {
+      "days": 964,
+      "hits": 636,
+      "claimed": 0.65585,
+      "realised": 0.65975,
+      "gap": 0.00391,
+      "ci": [
+        -0.02365,
+        0.03246
+      ],
+      "excludes_zero": false
+    },
+    "k3_r0.8": {
+      "days": 477,
+      "hits": 278,
+      "claimed": 0.58524,
+      "realised": 0.58281,
+      "gap": -0.00243,
+      "ci": [
+        -0.04662,
+        0.04175
+      ],
+      "excludes_zero": false
+    },
+    "k3_r0.7": {
+      "days": 687,
+      "hits": 388,
+      "claimed": 0.5597,
+      "realised": 0.56477,
+      "gap": 0.00508,
+      "ci": [
+        -0.03255,
+        0.04409
+      ],
+      "excludes_zero": false
+    },
+    "k3_r0": {
+      "days": 776,
+      "hits": 421,
+      "claimed": 0.53628,
+      "realised": 0.54253,
+      "gap": 0.00625,
+      "ci": [
+        -0.02807,
+        0.04049
+      ],
+      "excludes_zero": false
+    },
+    "k4_r0.8": {
+      "days": 428,
+      "hits": 207,
+      "claimed": 0.48685,
+      "realised": 0.48364,
+      "gap": -0.00321,
+      "ci": [
+        -0.05191,
+        0.04505
+      ],
+      "excludes_zero": false
+    },
+    "k4_r0.7": {
+      "days": 594,
+      "hits": 271,
+      "claimed": 0.46425,
+      "realised": 0.45623,
+      "gap": -0.00802,
+      "ci": [
+        -0.04748,
+        0.03524
+      ],
+      "excludes_zero": false
+    },
+    "k4_r0": {
+      "days": 660,
+      "hits": 287,
+      "claimed": 0.44513,
+      "realised": 0.43485,
+      "gap": -0.01028,
+      "ci": [
+        -0.04646,
+        0.02685
+      ],
+      "excludes_zero": false
+    },
+    "k5_r0": {
+      "days": 575,
+      "hits": 226,
+      "claimed": 0.37364,
+      "realised": 0.39304,
+      "gap": 0.01941,
+      "ci": [
+        -0.01817,
+        0.05778
+      ],
+      "excludes_zero": false
+    },
+    "k8_r0": {
+      "days": 474,
+      "hits": 103,
+      "claimed": 0.20824,
+      "realised": 0.2173,
+      "gap": 0.00906,
+      "ci": [
+        -0.02673,
+        0.04668
+      ],
+      "excludes_zero": false
+    },
+    "k10_r0": {
+      "days": 453,
+      "hits": 58,
+      "claimed": 0.13582,
+      "realised": 0.12804,
+      "gap": -0.00779,
+      "ci": [
+        -0.03613,
+        0.02176
+      ],
+      "excludes_zero": false
+    },
+    "k15_r0": {
+      "days": 386,
+      "hits": 18,
+      "claimed": 0.0465,
+      "realised": 0.04663,
+      "gap": 0.00013,
+      "ci": [
+        -0.02012,
+        0.02202
+      ],
+      "excludes_zero": false
+    },
+    "k20_r0": {
+      "days": 319,
+      "hits": 5,
+      "claimed": 0.01525,
+      "realised": 0.01567,
+      "gap": 0.00042,
+      "ci": [
+        -0.01207,
+        0.01599
+      ],
+      "excludes_zero": false
+    },
+    "full_day": {
+      "days": 964,
+      "hits": 206,
+      "claimed": 0.21628,
+      "realised": 0.21369,
+      "gap": -0.00258,
+      "ci": [
+        -0.02361,
+        0.01857
+      ],
+      "excludes_zero": false
+    }
+  },
+  "saturday": {
+    "k2_r0.8": {
+      "days": 319,
+      "hits": 228,
+      "claimed": 0.70893,
+      "realised": 0.71473,
+      "gap": 0.0058,
+      "ci": [
+        -0.04413,
+        0.0543
+      ],
+      "excludes_zero": false
+    },
+    "k2_r0.7": {
+      "days": 319,
+      "hits": 228,
+      "claimed": 0.70893,
+      "realised": 0.71473,
+      "gap": 0.0058,
+      "ci": [
+        -0.04413,
+        0.0543
+      ],
+      "excludes_zero": false
+    },
+    "k2_r0": {
+      "days": 319,
+      "hits": 228,
+      "claimed": 0.70893,
+      "realised": 0.71473,
+      "gap": 0.0058,
+      "ci": [
+        -0.04413,
+        0.0543
+      ],
+      "excludes_zero": false
+    },
+    "k3_r0.8": {
+      "days": 319,
+      "hits": 193,
+      "claimed": 0.59177,
+      "realised": 0.60502,
+      "gap": 0.01325,
+      "ci": [
+        -0.04031,
+        0.06761
+      ],
+      "excludes_zero": false
+    },
+    "k3_r0.7": {
+      "days": 319,
+      "hits": 193,
+      "claimed": 0.59177,
+      "realised": 0.60502,
+      "gap": 0.01325,
+      "ci": [
+        -0.04031,
+        0.06761
+      ],
+      "excludes_zero": false
+    },
+    "k3_r0": {
+      "days": 319,
+      "hits": 193,
+      "claimed": 0.59177,
+      "realised": 0.60502,
+      "gap": 0.01325,
+      "ci": [
+        -0.04031,
+        0.06761
+      ],
+      "excludes_zero": false
+    },
+    "k4_r0.8": {
+      "days": 317,
+      "hits": 158,
+      "claimed": 0.49208,
+      "realised": 0.49842,
+      "gap": 0.00634,
+      "ci": [
+        -0.04608,
+        0.06093
+      ],
+      "excludes_zero": false
+    },
+    "k4_r0.7": {
+      "days": 319,
+      "hits": 160,
+      "claimed": 0.49171,
+      "realised": 0.50157,
+      "gap": 0.00986,
+      "ci": [
+        -0.04097,
+        0.06555
+      ],
+      "excludes_zero": false
+    },
+    "k4_r0": {
+      "days": 319,
+      "hits": 160,
+      "claimed": 0.49171,
+      "realised": 0.50157,
+      "gap": 0.00986,
+      "ci": [
+        -0.04097,
+        0.06555
+      ],
+      "excludes_zero": false
+    },
+    "k5_r0": {
+      "days": 319,
+      "hits": 138,
+      "claimed": 0.40691,
+      "realised": 0.4326,
+      "gap": 0.02569,
+      "ci": [
+        -0.02717,
+        0.08002
+      ],
+      "excludes_zero": false
+    },
+    "k8_r0": {
+      "days": 319,
+      "hits": 68,
+      "claimed": 0.22554,
+      "realised": 0.21317,
+      "gap": -0.01238,
+      "ci": [
+        -0.05417,
+        0.02968
+      ],
+      "excludes_zero": false
+    },
+    "k10_r0": {
+      "days": 319,
+      "hits": 42,
+      "claimed": 0.14938,
+      "realised": 0.13166,
+      "gap": -0.01772,
+      "ci": [
+        -0.05135,
+        0.01854
+      ],
+      "excludes_zero": false
+    },
+    "k15_r0": {
+      "days": 319,
+      "hits": 15,
+      "claimed": 0.05006,
+      "realised": 0.04702,
+      "gap": -0.00304,
+      "ci": [
+        -0.02467,
+        0.01944
+      ],
+      "excludes_zero": false
+    },
+    "k20_r0": {
+      "days": 319,
+      "hits": 5,
+      "claimed": 0.01525,
+      "realised": 0.01567,
+      "gap": 0.00042,
+      "ci": [
+        -0.01207,
+        0.01599
+      ],
+      "excludes_zero": false
+    },
+    "full_day": {
+      "days": 319,
+      "hits": 0,
+      "claimed": 0.00051,
+      "realised": 0.0,
+      "gap": -0.00051,
+      "ci": [
+        -0.00068,
+        -0.00036
+      ],
+      "excludes_zero": true
+    }
+  },
+  "by_division": {
+    "E0": {
+      "k2_r0.8": {
+        "days": 188,
+        "hits": 129,
+        "claimed": 0.6829,
+        "realised": 0.68617,
+        "gap": 0.00327,
+        "ci": [
+          -0.06128,
+          0.06898
+        ],
+        "excludes_zero": false
+      },
+      "k2_r0": {
+        "days": 572,
+        "hits": 361,
+        "claimed": 0.61744,
+        "realised": 0.63112,
+        "gap": 0.01367,
+        "ci": [
+          -0.02306,
+          0.05396
+        ],
+        "excludes_zero": false
+      }
+    },
+    "E1": {
+      "k2_r0.8": {
+        "days": 380,
+        "hits": 261,
+        "claimed": 0.68969,
+        "realised": 0.68684,
+        "gap": -0.00285,
+        "ci": [
+          -0.04939,
+          0.04296
+        ],
+        "excludes_zero": false
+      },
+      "k2_r0": {
+        "days": 506,
+        "hits": 344,
+        "claimed": 0.67071,
+        "realised": 0.67984,
+        "gap": 0.00913,
+        "ci": [
+          -0.03324,
+          0.04935
+        ],
+        "excludes_zero": false
+      }
+    },
+    "E2": {
+      "k2_r0.8": {
+        "days": 348,
+        "hits": 236,
+        "claimed": 0.68799,
+        "realised": 0.67816,
+        "gap": -0.00983,
+        "ci": [
+          -0.05867,
+          0.03487
+        ],
+        "excludes_zero": false
+      },
+      "k2_r0": {
+        "days": 462,
+        "hits": 306,
+        "claimed": 0.67006,
+        "realised": 0.66234,
+        "gap": -0.00772,
+        "ci": [
+          -0.04989,
+          0.03388
+        ],
+        "excludes_zero": false
+      }
+    },
+    "E3": {
+      "k2_r0.8": {
+        "days": 375,
+        "hits": 258,
+        "claimed": 0.69235,
+        "realised": 0.688,
+        "gap": -0.00435,
+        "ci": [
+          -0.05002,
+          0.04296
+        ],
+        "excludes_zero": false
+      },
+      "k2_r0": {
+        "days": 439,
+        "hits": 303,
+        "claimed": 0.67989,
+        "realised": 0.69021,
+        "gap": 0.01032,
+        "ci": [
+          -0.03162,
+          0.04921
+        ],
+        "excludes_zero": false
+      }
+    }
+  },
+  "control": {
+    "n": 5786,
+    "expected": 0.1459,
+    "gap": 0.14329,
+    "ci": [
+      0.13427,
+      0.15164
+    ],
+    "fired": true
+  },
+  "verdict": {
+    "P1_pooled_k2_r80_gap_in_minus1_plus3": false,
+    "P2_no_division_k2_r80_resolved_negative": true,
+    "P3_saturday_k3_realised_56_to_63": true,
+    "P4_no_resolved_negative_k_le_10_r0": true,
+    "control_fired": true
+  }
+}

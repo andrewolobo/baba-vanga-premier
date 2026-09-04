@@ -7,7 +7,97 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-04** (latest), after **Phase B of the Postgres move
+Last updated **2026-09-04** (latest), after **the parlay's second feature
+request was assessed, not built** — owner: add call-type selection ("1X2,
+over/under, straight wins…") and a legs slider scaling to the whole
+matchday; assess feasibility. `PARLAY_PLAN.md` §8 carries the numbers
+(λ-only scan on the Postgres store, no outcomes, no ledger row —
+112 / 69 / 202). Verdict: both feasible in ~1–1.5 days as filters over
+published calls (`pool` is already on the wire, so the slider max is
+free), with four decisions D8–D11 posed; **straight wins** = 14.4% of
+calls at p50 0.605, so its Saturday double claims 46%; the full-day
+product claims ~1 in 23,000 (median) and needs odds formatting because
+`pct(x,0)` would print 0%; the warning must move from fixed legs to
+`claimed < 0.5`. **Over/under legs are blocked by measurement, not code**
+(B4 closed, B11's 4–9 pt over-claimed unders in E1–E3, B23) — offering
+them is publishing new O/U calls and needs B4 reopened with a gate. **Then, in the
+same session, the owner decided** (D8 without over/unders, D9–D11 as
+recommended) **and asked for the probe and the build.** Probe first, after
+a dated amendment to §3 extending the grid to the slider's range: row
+**113** `probe:b24_parlay_independence`, **0 configurations —
+113 / 70 / 202**, ledger re-exported, `--check` clean. **The product is
+calibrated**: realised tracks the product within ±2 pts at every size
+with data (P2–P4 held; P1 missed on the point only, −1.49 unresolved; the
+planted dependent-pair control fired at +14.33 ✱ against +14.59 expected;
+full account `PARLAY_PLAN.md` §3, results `docs/b24_results.json`). No
+consequence fires; the shown figure stays the raw product. **Then the
+feature**: `SIDE_GROUPS` + `sides` + `MAX_LEGS = 46` + `below_even` in
+`engine/serve/parlay.py` (WARN_LEGS retired — D11 keys the warning on the
+product), `sides` on `GET /parlay`, type chips ("All types / Straight
+wins / Double chance / Handicap +1.5") and the pool-bounded slider on
+`/parlay` (clamps down when a filter shrinks the pool; disables at the
+minimum), `claimLabel` in `$lib/parlay.js` so the combined figure can
+never read 0% ("about 1 in N" below 0.5%). **663 pass** (full suite —
+the old date-dependent failure is gone since the Postgres session), 25
+web tests, build clean, 17-check Playwright click-through on a seeded
+`bvp_scratch` (dropped after). **Then D8 was amended (owner): the type
+chips are multi-select** — any mix of the three groups, never none; the
+wire takes a comma-separated `sides` list normalised by
+`parlay.parse_sides` (canonical order; all three → `"any"`); the "All
+types" chip is gone (all-on is the default). Selector, endpoint, page and
+tests updated; click-through extended to 21 checks (**664 pass**, 25 web,
+build clean; `bvp_scratch` dropped). **Then the owner clarified the type
+control's intent — a market selector, not a filter** (Double chance on an
+outright-called game should show that game's double-chance option, not
+drop the game) **— assessed, not built**: `PARLAY_PLAN.md` §9. Feasible
+in ~1–1.5 days from the B22 fields already on the wire; derived
+double-chance legs claim ~0.74 (only 4.7% above 0.85 — no near-certainty
+flood), straight-win parlays are honest and brutal (double 44%); the one
+real cost is that **a derived leg is not a published call and is not
+graded**, so it must be labelled (D14) and a fresh 0-configuration probe
+goes before any ship (derived populations differ from the published ones
+row 113 measured). **The owner took D12–D14 as recommended; probe run,
+then built, same session.** Row **114** `probe:b24_market_legs`
+(0 configurations — **114 / 71 / 202**, ledger re-exported, `--check`
+clean): all three planted +5-pt controls fired; **no cell resolves
+negative** — win legs calibrated (+0.61 unresolved; the §1.10 mechanism
+did not carry, benignly), dc −0.23 / ah −0.09 pooled; the weakest region
+(derived +1.5 under 0.70) over-claims 2–4.5 pts unresolved, recorded. No
+consequence fires. Build: `derive_leg` in `engine/serve/parlay.py`
+(published-first per game, else likeliest of the chosen types, +1.5
+always the underdog's; no leg from missing numbers), pool = every live
+game so the slider spans the matchday for any selection, "Not our call ·
+ours: …" marks on derived legs, honesty copy reworded (only published
+calls are graded), scarcity sentences count games. All-types-on
+reproduces the published list exactly (pinned). **673 pass** (full
+suite), 25 web, build clean, 22-check click-through (`bvp_scratch`
+dropped). `PARLAY_PLAN.md` §9 result carries the full account.
+Uncommitted.
+
+Before that, the same day, after **Phase C — the production
+cutover to Postgres — was done**, 08:19–10:50 UTC, the owner running each
+step on the VM and this thread confirming before the next. PostgreSQL
+16.15 from Ubuntu 24.04, role `bvp` (`CREATEDB`, UTC), database `bvp`
+with `C` collation, peer auth. Timers off, store quiet (one open tip on
+tonight's Ipswich v Liverpool, kick-off 19:00 UTC), nine endpoint bodies
+captured, `VACUUM INTO` snapshot, `git pull` to `0882281`, survey clean,
+copy of 99,725 rows verified identical on all twelve tables with checksums
+equal to the rehearsal's. **`deploy.sh` stalled thirty minutes in the
+frontend build** — 843 MB RAM, one core, no swap — so 2 GB of swap was
+added and the rest run by hand: suite green (two real-ledger skips), API
+restarted, `/health` 219 / 585, **all nine endpoints byte-identical** to
+the captures. Timers re-enabled (results 11:02 UTC next), `bvp-backup`
+run by hand and **restore-drilled** (164 tips / 585 predictions both
+sides). `backup.sh` lost its `bc` dependency on the way (one line).
+Open from the day: the frontend build (PWA not yet on the site), the
+`Environment=` diff of the old installed units (calendar/results flags
+may have been overwritten — check before trusting tomorrow's cycle), the
+off-VM backup copy, and Phase D's documents. `db/premier.db` stays on
+the VM untouched; retire after Saturday's 41 fixtures have been served,
+settled and graded on Postgres. No rule, cycle-shape or ledger change
+(112 / 69 / 202). `POSTGRES_PLAN.md` Phase C carries the full account.
+
+Before that, **2026-09-04** (earlier), after **Phase B of the Postgres move
 — the copier, its tests, and rehearsal (i)**. `scripts/migrate_sqlite_to_pg.py`
 (`--survey` / `--copy` / `--verify`; source opened read-only; `COPY` in
 foreign-key order with ids preserved and NaN → NULL; identities advanced;

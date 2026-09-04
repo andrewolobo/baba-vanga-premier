@@ -22,11 +22,11 @@ export const getPerformance = () => get('/performance');
 export const getTips = (division) => get('/tips', { division });
 export const getTipResults = (division, limit) => get('/tips/results', { division, limit });
 export const getTipRecord = () => get('/tips/record');
-export const getParlay = (division, legs, minClaim) =>
-  get('/parlay', { division, legs, min_claim: minClaim });
+export const getParlay = (division, legs, minClaim, sides) =>
+  get('/parlay', { division, legs, min_claim: minClaim, sides });
 
-// The parlay page's controls (`docs/PARLAY_PLAN.md` D2, D3). These mirror
-// `engine/serve/parlay.py` -- PRESETS and MIN/MAX/WARN_LEGS -- and
+// The parlay page's controls (`docs/PARLAY_PLAN.md` D2, D8, D9). These mirror
+// `engine/serve/parlay.py` -- PRESETS, SIDE_GROUPS and MIN/MAX_LEGS -- and
 // `tests/test_parlay.py` pins the numbers against it, so a change on one
 // side that is not made on the other goes red rather than quietly drifting.
 // The API validates every request against its own copy either way.
@@ -35,7 +35,14 @@ export const RISK_PRESETS = [
   ['balanced', 'Balanced', 0.7],
   ['any', 'Any call', 0]
 ];
-export const LEGS = { min: 2, max: 4, default: 2, warn: 4 };
+export const LEGS = { min: 2, max: 46, default: 2 };
+// Toggle chips, not radio buttons (D8 amended: any mix of the three, never
+// none). The page sends the picked keys comma-separated, or 'any' for all.
+export const SIDE_GROUPS = [
+  ['win', 'Straight wins'],
+  ['dc', 'Double chance'],
+  ['ah', 'Handicap +1.5']
+];
 
 export const DIVISIONS = [
   ['', 'All'],

@@ -306,13 +306,18 @@ def parlay(
                       description=f"{parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}"),
     min_claim: float = Query(parlay_rule.DEFAULT_MIN_CLAIM,
                              description="minimum claimed probability per leg"),
+    sides: str = Query(parlay_rule.DEFAULT_SIDES,
+                       description="'any', or a comma-separated mix of"
+                                   " win,dc,ah -- call-type filter"),
     conn: db.Connection = Depends(get_conn),
 ) -> dict:
     """A parlay generated from the published tip list (`PARLAY_PLAN.md`, B24).
 
     **A view over `/tips`, not a second call.** The legs are rows `/tips`
-    would serve -- unplayed, one per fixture -- at or above `min_claim`,
-    ranked by claim, cut to `legs`, minus any fixture whose UK kick-off has
+    would serve -- unplayed, one per fixture -- of the chosen call type
+    (`sides`: the three groups the rule publishes, D8; over/under is not a
+    published market -- B4), at or above `min_claim`, ranked by claim, cut
+    to `legs` (the slider runs to the day's `pool` under the hard cap), minus any fixture whose UK kick-off has
     passed. `claimed` is the product of the legs' claims: a claimed figure in
     the same sense as `model_prob`, assuming the games are independent, and
     it is not graded -- each leg is graded on its own on the record. Nothing
@@ -331,6 +336,10 @@ def parlay(
             400, f"legs must be {parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}")
     if not 0.0 <= min_claim <= 1.0:
         raise HTTPException(400, "min_claim must be between 0 and 1")
+    try:
+        parlay_rule.parse_sides(sides)
+    except ValueError as error:
+        raise HTTPException(400, str(error)) from error
     clause = " WHERE t.settled_at IS NULL AND f.match_date >= %s"
     params: tuple = (db.today(),)
     if division:
@@ -343,7 +352,7 @@ def parlay(
         params,
     ))
     selected = parlay_rule.select_legs(rows, legs=legs, min_claim=min_claim,
-                                       now=_london_now())
+                                       sides=sides, now=_london_now())
     return {**selected, "division": division}
 
 

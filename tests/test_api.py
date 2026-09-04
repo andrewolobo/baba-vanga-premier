@@ -486,7 +486,7 @@ def test_parlay_ranks_the_published_calls_by_claim_and_multiplies_them(tips_clie
     assert body["claimed"] == pytest.approx(0.78 * 0.61)
     assert (body["requested"], body["available"], body["pool"]) == (2, 2, 2)
     assert body["min_claim"] == 0.5 and body["division"] is None
-    assert body["size_warning"] is False
+    assert body["below_even"] is True      # 0.476 sits under a coin flip (D11)
     # Each leg carries the same shape as a `/tips` row, model view included.
     leg = body["legs"][0]
     assert leg["side"] == "12" and leg["home_team"] == "Arsenal"
@@ -501,22 +501,52 @@ def test_parlay_never_pads_below_the_threshold(tips_client):
     assert [t["tip_id"] for t in body["legs"]] == [1]
     assert (body["requested"], body["available"]) == (2, 1)
     assert body["claimed"] == pytest.approx(0.78)
+    assert body["below_even"] is False
     default = tips_client.get("/parlay").json()
     assert default["legs"] == [] and default["claimed"] is None
     assert (default["requested"], default["min_claim"]) == (2, 0.80)
 
 
-def test_parlay_filters_by_division_and_warns_at_four_legs(tips_client):
+def test_parlay_filters_by_division_and_call_type(tips_client):
     body = tips_client.get("/parlay", params={"division": "E2", "min_claim": 0.5}).json()
     assert [t["tip_id"] for t in body["legs"]] == [2] and body["division"] == "E2"
-    assert tips_client.get("/parlay", params={"legs": 4}).json()["size_warning"] is True
-    assert tips_client.get("/parlay", params={"legs": 3}).json()["size_warning"] is False
+    # D12: a narrowed type derives the other game's leg instead of dropping
+    # it -- the fixture whose call is a `12` contributes its favourite when
+    # straight wins are chosen, marked as not the published call.
+    wins = tips_client.get("/parlay", params={"sides": "win", "min_claim": 0.4}).json()
+    assert [t["tip_id"] for t in wins["legs"]] == [2, 1] and wins["sides"] == "win"
+    ours, derived = wins["legs"]
+    assert ours["derived"] is False and ours["side"] == "H"
+    assert derived["derived"] is True and derived["side"] == "H"
+    assert derived["model_prob"] == pytest.approx(0.48)
+    assert derived["published_side"] == "12"
+    assert wins["pool"] == 2
+    hedges = tips_client.get("/parlay", params={"sides": "dc", "min_claim": 0.5}).json()
+    assert [t["tip_id"] for t in hedges["legs"]] == [1, 2]
+    assert hedges["legs"][0]["derived"] is False          # the published 12
+    assert hedges["legs"][1]["derived"] is True           # the H game's 1X
+    assert hedges["legs"][1]["side"] == "1X"
+    assert hedges["legs"][1]["model_prob"] == pytest.approx(0.74)
+    assert hedges["legs"][1]["published_side"] == "H"
+    # Every game grows a +1.5 leg from its stored lambdas -- the underdog's.
+    dogs = tips_client.get("/parlay", params={"sides": "ah", "min_claim": 0.5}).json()
+    assert len(dogs["legs"]) == 2 and dogs["pool"] == 2
+    assert all(t["derived"] is True and t["side"] == "A+1.5" for t in dogs["legs"])
+    assert all(0.5 < t["model_prob"] < 1.0 for t in dogs["legs"])
+    # A mix is a union (D8 amended: multi-select), echoed canonically.
+    both = tips_client.get("/parlay", params={"sides": "dc,win", "min_claim": 0.5}).json()
+    assert [t["tip_id"] for t in both["legs"]] == [1, 2]
+    assert both["sides"] == "win,dc"
 
 
-def test_parlay_rejects_bad_sizes_thresholds_and_divisions(tips_client):
+def test_parlay_rejects_bad_sizes_thresholds_types_and_divisions(tips_client):
     assert tips_client.get("/parlay", params={"legs": 1}).status_code == 400
-    assert tips_client.get("/parlay", params={"legs": 5}).status_code == 400
+    assert tips_client.get("/parlay", params={"legs": 47}).status_code == 400
+    assert tips_client.get("/parlay", params={"legs": 46}).status_code == 200
     assert tips_client.get("/parlay", params={"min_claim": 1.5}).status_code == 400
+    assert tips_client.get("/parlay", params={"sides": "ou25"}).status_code == 400
+    assert tips_client.get("/parlay", params={"sides": "win,ou25"}).status_code == 400
+    assert tips_client.get("/parlay", params={"sides": ""}).status_code == 400
     assert tips_client.get("/parlay", params={"division": "EC"}).status_code == 400
 
 

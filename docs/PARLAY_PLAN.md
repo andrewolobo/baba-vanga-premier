@@ -122,6 +122,54 @@ measures the one thing the page adds.
   data (independent legs read zero; the planted dependent pair reads
   positive), results `docs/b24_results.json`.
 
+**Amendment 2026-09-04, written before the run** (owner approved §8's
+extension and D8–D11 the same day): the grid gains **k ∈ {5, 8, 10, 15,
+20} and the full-day slip at r = 0**, pooled and on Saturdays, for the
+same 0 configurations. The unit is stated precisely: a **slip** is the
+top-k calls by claim within one matchday (ties by corpus order — the dev
+corpus has one call per match and nothing kicked off, so this is the
+page's selector restated); realised = every leg won, claimed = the
+product; the statistic is mean(realised − claimed) over slips,
+`bootstrap.paired` over ISO-week blocks of matchdays; positive =
+under-claim, the safe direction. Two predictions join P1–P3: **P4** — at
+r = 0, pooled, no k ≤ 10 reads a resolved *negative* gap (the leg-level
+under-claim compounds; a resolved negative would mean top-k selection
+finds over-claimed legs, and caps the slider). **P5** — at k ≥ 15 the
+all-win count implied by the claims themselves is single digits (~5
+Saturdays at k = 20, ~0 at full day), so those cells are **reported, and
+carry no calibration verdict**; the long end of the slider ships as
+labelled theory whatever they show.
+
+### Result — **MEASURED 2026-09-04. The product is calibrated; no consequence fires.**
+
+Ledger row **113** `probe:b24_parlay_independence`, **0 configurations —
+113 / 70 / 202**, ledger re-exported, `--check` clean. Results
+`docs/b24_results.json`; code `engine/eval/b24.py`, tests
+`tests/test_b24.py` (5, planted). **The control fired**: the same match
+entered twice reads +14.33 [+13.43, +15.16] ✱ against an expected +14.59,
+so the instrument sees dependence when it is there and the table is a
+result.
+
+Scorecard: **P1 missed on the point, unresolved** — pooled k = 2 at
+r = 0.80 reads −1.49 [−4.97, +2.23] against the predicted [−1.0, +3.0];
+the CI covers zero comfortably, and the point sits where top-2-of-a-thin-
+midweek-pool selection would put it. **P2 held** (no division resolved
+negative at k = 2; E0–E3 gaps −1.0 to +1.4, none resolved). **P3 held**
+(Saturday k = 3 realised **60.50%**, inside [56, 63]). **P4 held** (no
+resolved negative anywhere k ≤ 10 at r = 0; gaps −1.8 to +2.6, all
+unresolved). **P5 as pre-stated**: k = 15 and 20 read gaps of +0.0
+[−2.0, +2.2] and +0.0 [−1.2, +1.6] — realised hits 18/386 and 5/319
+against claims of 4.65% and 1.52% — and the Saturday full-day cell
+(claimed 0.05%, 0 hits in 319) reads "resolved −0.05" only because a
+fraction of a hit cannot be delivered; the claim itself implies 0.16 hits
+in the sample, so zero observed is what calibration looks like there.
+
+**Reading:** realised tracks the product within ±2 pts at every size with
+data, nine seasons, 964 matchdays. The independence assumption holds to
+the precision available, the pre-registered consequence (an offset or a
+lower cap on a *resolved* negative at k = 2 or 3) does **not** fire, and
+the page's combined figure stays the raw product, labelled "claimed".
+
 ## 4. Build
 
 Each step ends with the check that says it is done.
@@ -245,3 +293,250 @@ days** to a linked page, plus Phase D (1 day) if D6 is yes.
 The rule (`confidence-v3`), the tip list, the cycle, the schema (phase
 1), the record, the book (off), and the ledger except for the one probe
 row in §3.
+
+
+---
+
+## 8. Second assessment — 2026-09-04: call-type selection, and a slider to the full matchday
+
+Owner request: assess (not build) two additions — a selection of call
+options ("1X2, over/under, straight wins and so on") and a legs slider
+scaling to the full number of games available that day. λ-only scan on the
+dev corpus (claims only, no outcomes read, no ledger row — 112 / 69 / 202
+unchanged), run on the Postgres store the day of the cutover.
+
+### 8.1 Call-type selection — feasible as a filter over the three
+published groups; over/under is blocked by measurement, not code
+
+A parlay leg is a published call, so the honest menu is the three groups
+the rule actually publishes, plus "Any call":
+
+| group | share of calls | claims p50 | Saturday pool | Sat top-2 | Sat top-3 | matchdays with ≥ 2 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Straight wins (`H`/`A`) | 14.4% | 0.605 | ~4 | **0.458** | 0.289 | 33% |
+| Double chance (`1X`/`X2`/`12`) | 21.8% | 0.765 | ~8 | 0.613 | 0.472 | 37% |
+| Handicap (`H+1.5`/`A+1.5`) | 63.8% | 0.805 | ~24 | 0.708 | 0.591 | 50% |
+
+Build is ~½ day on clean seams: a `sides` filter parameter on
+`select_legs` (pure; one group constant), a query parameter on
+`GET /parlay`, a chips row on the page, tests. The scarcity sentences
+(`pool` / `available`) already handle the thin pools. Note **a straight-wins
+double is below even (46%) on a typical Saturday** — a type filter makes the
+warning's fixed-legs trigger wrong (§8.2, D11).
+
+**Over/under cannot be offered by a page change.** The rule publishes no
+O/U call: B4 (extend the menu to goal lines) was **measured and closed**
+2026-08-16 — every shape inert, collapsed, or landing on the line the head
+gets most wrong — and B11 measured the popular unders **over-claiming by
+4–9 pts in E1–E3** (worst on the priced 2.5 line); B23 closed BTTS the
+same way. Offering an O/U leg is publishing an O/U call — ungraded, on a
+market the head is measured to be wrong on outside E0, and multiplied into
+other legs. That requires reopening B4 with a measured gate (a head fix
+first — B17/B18/B19 territory), not a parlay feature. Same for the draw
+and literal "1X2": the rule never publishes `D`.
+
+### 8.2 The slider — mechanically small; the number collapses fast and
+the long end is unverifiable
+
+Saturday top-k product of claims (319 Saturdays, ≥ 20 fixtures; sizes p50
+39, max 46):
+
+| k | 2 | 3 | 4 | 5 | 8 | 10 | 15 | 20 | 30 | full day |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| claimed | 0.709 | 0.592 | 0.493 | 0.41 | 0.23 | 0.15 | 0.050 | 0.015 | 0.0012 | **~0.000043 (≈ 1 in 23,000, median)** |
+
+Build is ~½–1 day, also on clean seams — `pool` is already on the wire, so
+the slider's maximum is free and clamps when a filter shrinks the pool.
+What has to change: `MAX_LEGS` becomes a hard server cap (46, the largest
+matchday in the corpus) with the request clamped to the day's pool; the
+2 / 3 / 4 buttons are replaced by the slider; the fixed `WARN_LEGS = 4`
+retires in favour of a server flag `below_even` (`claimed < 0.5`) — with a
+type filter the leg count no longer determines the risk; the combined
+figure needs odds formatting at the long end (`pct(x, 0)` prints **0%**
+from k ≈ 15, and the page must never show a claim of zero — "about 1 in
+N" from ~5% down); and the `LEGS` mirror pin in `tests/test_parlay.py`
+changes shape.
+
+**The measurement condition.** The §3 probe grid extends to the slider's
+range for the same 0 configurations — but beyond k ≈ 10 the product is
+unverifiable in sample: at k = 20 the claim implies ~5 all-win Saturdays
+in nine seasons, at full day ~0. The long end ships as labelled theory
+("assuming the games are independent"), and a per-leg bias of ±1 pt
+compounds to ×0.6–1.7 on a 40-leg product, which is exactly why the probe
+(now overdue twice over — D7 went first) should run before this ships.
+
+### Decisions this needs (D8–D11)
+
+- **D8** — which type filters: recommend **Straight wins / Double chance /
+  Handicap / Any**; O/U only via reopening B4 (recommend not now).
+- **D9** — slider ceiling: recommend **the day's full pool** as asked
+  (hard cap 46), odds-formatted at the long end.
+- **D10** — the slider **replaces** the 2/3/4 buttons (one control).
+- **D11** — warning keys on **`below_even`**, not a fixed leg count.
+
+**Decided 2026-09-04 (owner): D8 without over/unders, D9–D11 as
+recommended, probe first. Built the same day, after the probe (§3 result):**
+`SIDE_GROUPS` + `sides` filter and `MAX_LEGS = 46` + `below_even` in
+`engine/serve/parlay.py` (WARN_LEGS retired), `sides` on `GET /parlay`,
+type chips (labelled **All types** — the risk preset already owns "Any
+call") and the pool-bounded slider on the page (the choice clamps down
+when a filter shrinks the pool, and disables at the minimum),
+`claimLabel` in `$lib/parlay.js` (whole percents to 5%, one decimal to
+0.5%, "about 1 in N" below — the figure can never read 0%). Verified:
+**663 pass** (full suite, no failures), 25 web tests, build clean, and a
+17-check Playwright click-through on a seeded `bvp_scratch` Postgres
+database (dropped after).
+
+**D8 amended 2026-09-04 (owner, later the same day): the type filter is
+multi-select** — the chips are toggles and any mix of the three groups can
+be on, never none (the last chip refuses to turn off). On the wire `sides`
+is a comma-separated key list, normalised to canonical order and to
+`"any"` when all three are named (`parse_sides` in
+`engine/serve/parlay.py`); the pool and the slider's ceiling follow the
+union. The "All types" chip is gone — all-on is the default and means the
+same thing. Verified: 46 selector/API tests, 25 web tests, build clean,
+and the click-through extended to 21 checks (toggling down to one type,
+the last-chip guard, a two-type mix on the wire, all-on normalising back
+to `any`).
+
+Effort ~1–1.5 days including tests and click-through. No schema, rule,
+cycle or ledger change; the probe stays the only ledger row in sight.
+Postgres did not move this seam: the selector is pure and untouched, the
+endpoint is ported, the page is unchanged.
+
+
+---
+
+## 9. Third assessment — 2026-09-04: the type control as a market selector, not a filter
+
+Owner clarification, assessed and **not built**: selecting Double chance on
+a game whose published call is a straight win should show that game's
+double-chance option, not drop the game. That is a different feature from
+D8-as-built (a filter over published calls): the type control becomes a
+**market selector** that re-derives a leg of the chosen type for every
+live game. λ-only scan (claims only, no outcomes, no ledger row).
+
+**Feasible, ~1–1.5 days, from numbers already stored and served.** Every
+tip row already carries the model's view behind the call (B22:
+`p_home/p_draw/p_away`, the three double-chance sums, both +1.5
+marginals), so the derived leg is arithmetic over fields the endpoint
+already fetches. Derived-leg claims (published call kept where its type is
+selected, else the likeliest option of the type):
+
+| type | leg claims p25/50/75 | > 0.85 | Sat top-2 | top-3 | top-5 | top-10 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Straight wins | 0.402 / 0.447 / 0.507 | 0.2% | 0.441 | 0.263 | 0.084 | 0.003 |
+| Double chance | 0.730 / 0.745 / 0.766 | 4.7% | 0.738 | 0.605 | 0.387 | 0.108 |
+| Handicap +1.5 | 0.734 / 0.783 / 0.816 | 2.4% | 0.718 | 0.602 | 0.418 | 0.156 |
+
+The feared near-certainty flood does not happen — most games are close, so
+the derived double chance sits ~0.74; a 0.85 ceiling veto would drop 0.0%
+of double-chance games and 2.4% of handicap games (nearly moot). A
+straight-wins parlay is honest and brutal: a double claims 44%, a treble
+26% — `below_even` will be on almost always, correctly.
+
+**The one real cost: a derived leg is not a published call.** It is not
+graded — the record grades `tips.side` and nothing else, one call per
+fixture — so the page's core sentence ("every leg is one of today's
+published calls") no longer holds for narrowed selections and the legs
+must say so (the B22 pattern: shown as what it is). Existing calibration
+evidence is directionally comforting (favourites under-claim by up to 5.9
+pts §1.10; `1X` +1.07 ✱; `dog +1.5` +0.32; the one over-claimer is `12`
+at −0.75 ✱) but was measured on *published* populations — a derived-leg
+population is a different selection, so a **pre-registered
+0-configuration probe** (claimed vs delivered per derived type, slip
+products under the new leg rule, planted control) goes before the ship,
+exactly as row 113 did for the published-call product. Row 113 stays
+valid for the default view.
+
+**Decisions this needs:**
+
+- **D12 — semantics**: per game, the **published call when its type is
+  selected** (it is the graded one), else the likeliest option among the
+  selected types. With all three types on this reproduces today's page
+  exactly — the default is unchanged; only narrowed selections change
+  meaning. Recommended.
+- **D13 — near-certainties**: (a) **no veto — every live game appears**
+  (recommended; it is the behaviour the owner asked for, and only ~5% of
+  double-chance legs would show above 0.85), or (b) the rule's 0.85
+  ceiling as a veto, which drops almost nothing but reproduces the
+  complaint on the rare lopsided game.
+- **D14 — labelling**: derived legs carry a "not our call" tag naming the
+  published call beside it, and §5's copy becomes "legs marked as our
+  call are graded on the record; the rest are the model's view of the
+  market you chose, and are not graded". Not optional; the wording is the
+  owner's.
+
+Unchanged: the record, the rule, the schema, the slider/risk/below-even
+machinery, and probe row 113 for the default view.
+
+### Pre-registration — `probe:b24_market_legs`, written 2026-09-04 before the run
+
+Owner decision (same day): **D12–D14 as recommended.** Before the build,
+the derived legs' honesty is measured on the dev corpus — the populations
+differ from the published ones every prior number was read on.
+
+- **The leg, per type t** (the D12 rule, fav-relative for the handicap):
+  the published call where its group is t, else the likeliest option of t
+  — favourite for `win`; argmax of `1X`/`X2`/`12` (ties to the earlier)
+  for `dc`; the underdog +1.5 (`D+1.5`) for `ah`. D13: no veto.
+- **Statistics**: per type, delivered − claimed over all legs and over the
+  **derived-only** subset (the new population), `bootstrap.paired` on
+  ISO-week blocks; a 0.1-bucket table (n ≥ 300) reported, not verdicted;
+  and per-type matchday slip products (top-k by claim, k ∈ {2, 3, 5, 10},
+  pooled and Saturdays) — realised vs product, the row-113 statistic on
+  the new legs.
+- **Controls (convention 8)**: the row-113 dependent pair must fire
+  positive on the products, and a planted **+5-pt shift** of every claim
+  must read a resolved *negative* calibration gap, or the instrument
+  cannot see over-claiming and the table is not a result.
+- **Predictions**: **M1** `win` legs deliver above their claims — pooled
+  gap in **[+0.5, +5.0] pts, resolved positive** (§1.10: the head
+  under-claims its favourites by up to 5.9 pts; most derived win legs are
+  favourites below the floor). **M2** `dc` legs in **[−1.0, +2.0]** (`1X`
+  under-claims +1.07 ✱, `12` over-claims −0.75 ✱; the argmax mixes them).
+  **M3** `ah` legs in **[−1.0, +1.5]** (published `D+1.5` +0.32; the
+  below-0.70 region is the unmeasured part). **M4** no per-type slip
+  product at k ∈ {2, 3} reads a resolved negative. **M5** both controls
+  fire. A resolved negative on M2/M3, or M4, is the finding and adds the
+  pre-registered consequence: an offset on the shown claim or a veto on
+  that type's derived legs.
+- **Cost**: 0 configurations, one probe row (re-aggregates outcomes read
+  for rows 110/113). Code `engine/eval/b24_market.py`, tests
+  `tests/test_b24_market.py` (planted), results
+  `docs/b24_market_results.json`; authority machine, ledger re-exported.
+
+### §9 result and build — **MEASURED AND BUILT 2026-09-04**
+
+Ledger row **114** `probe:b24_market_legs`, **0 configurations —
+114 / 71 / 202**, ledger re-exported, `--check` clean; results
+`docs/b24_market_results.json`, code `engine/eval/b24_market.py`, tests
+`tests/test_b24_market.py` (4, planted). **All three planted +5-pt
+over-claim controls fired** (−4.4 to −5.2 ✱), so the calibrated verdicts
+are results. **M2–M5 held; M1 missed benignly**: the win legs are
+*calibrated* rather than under-claiming (+0.61 [−0.20, +1.37], derived-only
++0.14) — the §1.10 favourite under-confidence did not carry to this
+population, the third time a mechanism carried across populations has
+failed, this time in the harmless direction. No cell resolves negative:
+dc all-legs −0.23, derived-only −0.61 [−1.35, +0.15]; ah all-legs −0.09,
+derived-only −0.81 [−2.08, +0.38]; slip products at k = 2/3 read no
+resolved negative (win k = 2 under-claims resolved, +4.6 ✱, the safe
+direction). **The weakest region, recorded**: derived +1.5 legs claiming
+under 0.70 over-claim by 2–4.5 pts in the point estimate (n 459–1,724,
+unresolved). **No pre-registered consequence fires** — no offset, no
+per-type veto.
+
+**Built the same day** (D12–D14 as recommended): `derive_leg` +
+`parse_sides` returning group keys in `engine/serve/parlay.py` — the
+published call whenever its type is chosen (it outranks even a likelier
+option of another chosen type, pinned by test), else the likeliest option
+of the chosen types, the +1.5 always the underdog's; a row missing its
+model view grows no leg. Every live game is the pool now, so the slider
+runs to the whole matchday for any selection. The page marks derived legs
+"Not our call · ours: {phrase}" (D14) and the honesty copy says only
+published calls are graded; scarcity sentences now count games, not
+calls. With all three types on, the leg rule reproduces the published tip
+list exactly — the default view is unchanged, pinned by test. Verified:
+**673 pass** (full suite), 25 web tests, build clean, 22-check Playwright
+click-through on a seeded `bvp_scratch` (a ten-favourite slip reads
+"about 1 in 3,840", nine marks, no game dropped; dropped after).

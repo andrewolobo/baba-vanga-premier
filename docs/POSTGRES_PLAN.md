@@ -464,6 +464,44 @@ Checklist; each line has a check that must pass before the next.
 **Rollback before step 8:** previous commit, previous units, restart the
 API, re-enable the timers. SQLite has not been written since step 3.
 
+**Done 2026-09-04, 08:19–10:50 UTC, the owner at the keyboard and this
+thread confirming each step.** What happened against the list: (1) Ubuntu
+24.04 shipped PostgreSQL 16.15, server already on `Etc/UTC`; role `bvp`
+with `CREATEDB`, database `bvp` from `template0` with `C` collation, peer
+auth over the socket to both `bvp` and `postgres` confirmed. (2) Timers
+off (`bvp-backup.timer` had never existed), lock free, no played tip
+pending, today's single tip open, 08:19 UTC. (3) Nine endpoint bodies
+captured, `VACUUM INTO` snapshot `premier-cutover-20260904T082140Z.db`,
+integrity `ok`, counts matched. (4) `git pull` to `0882281`, psycopg
+installed in the venv, survey clean, copy 99,725 rows committed, verify
+identical on all twelve tables — and the checksums equal the rehearsal's
+here, so production had not moved since its morning snapshot. (5) **Did
+not go as written.** The old units were saved to `/var/backups/bvp/cutover/`
+and the new ones installed; then `deploy.sh --no-pull` **stalled for
+thirty minutes in the frontend build** — 843 MB of RAM, one core, no swap
+(`npm ci` re-extracts every package on every deploy and Vite then wants
+several hundred MB; the box thrashed). `web/build` was untouched, so the
+site kept serving. The frontend was taken off the critical path: 2 GB of
+swap added, the suite run by hand in `tmux` (two skips, the real-ledger
+guards), `systemctl restart bvp-api`, `/health` with 219 fixtures and 585
+predictions. (6) **All nine endpoints byte-identical** to the captures.
+(7) The dry-run was not reported; the first live results pull, 11:02 UTC,
+stands in for it — check its journal. (8) Timers enabled, all three
+listed with a next run; `bvp-backup.service` run by hand: `snapshot ok
+4869 KB`, dump written; **restore drill** — `pg_restore` into
+`bvp_restore_drill`, tips 164 and predictions 585 on both sides, dropped.
+(9) `db/premier.db` and the snapshot remain on the VM.
+
+**Open from the day:** the frontend build (the PWA changes in `0882281`
+are not on the site until `deploy.sh` completes a build — try it once with
+swap, and if it is still slow, make `deploy.sh` skip `npm ci` when
+`package-lock.json` is unchanged and add `--skip-frontend`); the unit
+diff for `Environment=` lines the old installed units may have carried
+(`BVP_BBC_CALENDAR`, `BVP_BBC_RESULTS`, `BVP_BACKUP_CONTAINER`) — not
+reported, and if lost the cycle's calendar and results steps are silently
+off; the off-VM copy (`BVP_BACKUP_CONTAINER` still unset, the backup
+warns on every run). Phase D, the documents, is next.
+
 ### Phase D — documents (~½ day)
 
 `DEPLOY.md` (§2 development setup, §3.8 now about the role's timezone,

@@ -12,17 +12,21 @@
     callMeans,
     DIVISIONS,
     RISK_PRESETS,
+    SIDE_GROUPS,
     LEGS,
     pct
   } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
-  import { availability } from '$lib/parlay.js';
+  import { availability, claimLabel } from '$lib/parlay.js';
 
   // Defaults are the recommendation (`PARLAY_PLAN.md` §1): every league,
   // the Safer threshold, two legs.
   let division = $state('');
   let risk = $state('safer');
+  // D8 (amended): the type chips are toggles -- any mix of the three, never
+  // none. All three on is the default and travels as 'any'.
+  let sides = $state(SIDE_GROUPS.map(([key]) => key));
   let legs = $state(LEGS.default);
 
   let parlay = $state(null);
@@ -30,12 +34,21 @@
   let loading = $state(true);
 
   const minClaim = () => RISK_PRESETS.find(([key]) => key === risk)[2];
+  const sidesParam = () =>
+    sides.length === SIDE_GROUPS.length
+      ? 'any'
+      : SIDE_GROUPS.map(([key]) => key).filter((key) => sides.includes(key)).join(',');
+  const toggleSide = (key) => {
+    if (!sides.includes(key)) sides = [...sides, key];
+    else if (sides.length > 1) sides = sides.filter((k) => k !== key);
+    // The last chip stays on: a parlay drawn from no call types is nothing.
+  };
 
-  async function load(div, size, min) {
+  async function load(div, size, min, type) {
     loading = true;
     error = null;
     try {
-      parlay = await getParlay(div || null, size, min);
+      parlay = await getParlay(div || null, size, min, type);
     } catch (e) {
       error = e.message;
     } finally {
@@ -45,11 +58,18 @@
   // One fetch on mount and one per control change. The controls are read
   // here, synchronously, which is what makes the effect track them.
   $effect(() => {
-    load(division, legs, minClaim());
+    load(division, legs, minClaim(), sidesParam());
   });
 
   const divisionName = (code) => DIVISIONS.find(([c]) => c === code)?.[1] ?? code;
-  const legsOffered = Array.from({ length: LEGS.max - LEGS.min + 1 }, (_, i) => LEGS.min + i);
+
+  // D9: the slider runs to the day's own pool (the response carries it),
+  // under the server's hard cap. When a filter shrinks the pool below the
+  // chosen size, the choice follows it down rather than 400ing.
+  const sliderMax = $derived(Math.max(LEGS.min, Math.min(LEGS.max, parlay?.pool ?? LEGS.min)));
+  $effect(() => {
+    if (legs > sliderMax) legs = sliderMax;
+  });
 
   // Kick-offs arrive as UK wall-clock and are shown in the viewer's zone
   // (`$lib/kickoff.js`), as on the main list.
@@ -73,17 +93,17 @@
     </div>
     <div class="mono summary">
       {#if parlay}
-        {parlay.pool} call{parlay.pool === 1 ? '' : 's'} live
+        {parlay.pool} game{parlay.pool === 1 ? '' : 's'} live
         <span class="zone">· kick-offs in your local time ({zone})</span>
       {/if}
     </div>
   </div>
 
   <p class="intro">
-    Pick a league, how safe each leg must be, and how many legs. The page takes
-    the strongest published calls that clear the bar and multiplies their claimed
-    probabilities. Every leg is one of today's calls from the main list — nothing
-    here is a new call.
+    Pick a league, your markets, how safe each leg must be, and how many legs.
+    Where our published call matches a chosen market, it is the leg. Pick a
+    different market and we show the model's view of it for that game instead —
+    marked, because only our published calls are graded.
   </p>
 
   <div class="tabs">
@@ -104,12 +124,27 @@
       </div>
     </div>
     <div class="control">
-      <span class="label">Legs</span>
-      <div class="switch" role="group" aria-label="Number of legs">
-        {#each legsOffered as n}
-          <button class:on={legs === n} class:warn={n >= LEGS.warn} onclick={() => (legs = n)}>{n}</button>
+      <span class="label">Call types · pick any mix</span>
+      <div class="switch" role="group" aria-label="Call types">
+        {#each SIDE_GROUPS as [key, label]}
+          <button
+            class:on={sides.includes(key)}
+            aria-pressed={sides.includes(key)}
+            onclick={() => toggleSide(key)}>{label}</button>
         {/each}
       </div>
+    </div>
+    <div class="control grow">
+      <span class="label">Legs · {legs}{#if parlay && parlay.pool > 0}&nbsp;· {parlay.pool} available{/if}</span>
+      <input
+        type="range"
+        min={LEGS.min}
+        max={sliderMax}
+        step="1"
+        bind:value={legs}
+        aria-label="Number of legs"
+        disabled={sliderMax <= LEGS.min}
+      />
     </div>
   </div>
 
@@ -120,13 +155,14 @@
   {:else}
     {@const note = availability(parlay)}
 
-    <!-- Owner decision D3: four legs are offered, labelled. On a typical
-         Saturday the best four calls multiply to about 0.49 (PARLAY_PLAN.md
-         §1), so the label is a measured statement, not a hedge. -->
-    {#if parlay.size_warning}
+    <!-- D11: the warning keys on the product sitting under a coin flip, not
+         on a leg count -- a straight-wins double is below even while a
+         five-leg handicap slip need not be. The figure itself is the claim,
+         so the sentence is a measured statement, not a hedge. -->
+    {#if parlay.below_even}
       <p class="warning">
-        A {parlay.requested}-leg parlay is more likely to lose than win. On a
-        typical Saturday the best four calls multiply to about 49%.
+        This parlay is more likely to lose than win: its {parlay.legs.length}
+        legs multiply to {claimLabel(parlay.claimed)}.
       </p>
     {/if}
 
@@ -169,6 +205,13 @@
                   {/if}
                 </div>
                 <div class="league">{divisionName(t.division)} · {shortDay(t.match_date)}</div>
+                <!-- D14: a derived leg is not the published call and is not
+                     graded; it says so and names the call beside it. -->
+                {#if t.derived}
+                  <div class="notours" title="Only our published call is graded on the record">
+                    Not our call · ours: {callLabel(t.published_side, t.home_team, t.away_team)}
+                  </div>
+                {/if}
               </div>
               <div class="conf">
                 <div class="confhead"><span>CLAIMED</span><span class="v">{pct(t.model_prob, 0)}</span></div>
@@ -181,7 +224,7 @@
         <div class="total">
           <div class="figure">
             <span class="label">All {parlay.legs.length} legs · claimed</span>
-            <span class="big">{pct(parlay.claimed, 0)}</span>
+            <span class="big">{claimLabel(parlay.claimed)}</span>
           </div>
           <p class="fine">
             The legs' claimed probabilities multiplied together, on the assumption
@@ -208,9 +251,10 @@
         — uncalibrated, and historically it understates its favourites.
       </p>
       <p>
-        <strong>Each leg is graded; the parlay is not.</strong> Every leg is one of
-        today's published calls and is settled on its own on the record. We keep no
-        record of parlays.
+        <strong>Only our published calls are graded.</strong> An unmarked leg is one
+        of today's calls and settles on its own on the record. A leg marked
+        "not our call" is the model's view of the market you chose for that game —
+        it is not graded, and the parlay itself never is.
       </p>
       <p>
         <strong>It is not a return.</strong> We publish no return for single calls
@@ -269,7 +313,9 @@
   }
   .switch button:hover { border-color: var(--muted); color: var(--body); }
   .switch button.on { background: var(--bg); border-color: var(--accent); color: var(--accent); }
-  .switch button.warn.on { border-color: var(--bad); color: var(--bad); }
+  .control.grow { flex: 1 1 260px; max-width: 340px; }
+  .control input[type='range'] { width: 100%; accent-color: var(--accent); margin: 8px 0 0; }
+  .control input[type='range']:disabled { opacity: 0.4; }
   .switch button:focus-visible, .tabs button:focus-visible {
     outline: 2px solid var(--accent); outline-offset: 2px;
   }
@@ -313,6 +359,7 @@
     text-transform: uppercase; color: var(--accent); line-height: 1.15;
   }
   .league { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .notours { font-family: var(--mono); font-size: 10.5px; color: var(--accent-soft); margin-top: 3px; }
   .code {
     font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--body);
     background: var(--panel-2); border: 1px solid var(--line);

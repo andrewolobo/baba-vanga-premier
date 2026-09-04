@@ -1,0 +1,465 @@
+{
+  "n": 15824,
+  "types": {
+    "win": {
+      "derived_share": 0.8564,
+      "all": {
+        "n": 15824,
+        "claimed": 0.46686,
+        "delivered": 0.47302,
+        "gap": 0.00615,
+        "ci": [
+          -0.00198,
+          0.01368
+        ],
+        "excludes_zero": false
+      },
+      "derived_only": {
+        "n": 13552,
+        "claimed": 0.43965,
+        "delivered": 0.44104,
+        "gap": 0.0014,
+        "ci": [
+          -0.00688,
+          0.00993
+        ],
+        "excludes_zero": false
+      },
+      "buckets_derived": [
+        {
+          "bucket": "[0.3,0.4)",
+          "n": 3712,
+          "claimed": 0.3812,
+          "delivered": 0.3734
+        },
+        {
+          "bucket": "[0.4,0.5)",
+          "n": 7769,
+          "claimed": 0.4454,
+          "delivered": 0.4468
+        },
+        {
+          "bucket": "[0.5,0.6)",
+          "n": 2071,
+          "claimed": 0.5227,
+          "delivered": 0.5408
+        }
+      ],
+      "products": {
+        "k2": {
+          "days": 964,
+          "hits": 388,
+          "claimed": 0.35645,
+          "realised": 0.40249,
+          "gap": 0.04604,
+          "ci": [
+            0.01416,
+            0.0768
+          ],
+          "excludes_zero": true
+        },
+        "k2_saturday": {
+          "days": 319,
+          "hits": 153,
+          "claimed": 0.44066,
+          "realised": 0.47962,
+          "gap": 0.03896,
+          "ci": [
+            -0.01218,
+            0.0952
+          ],
+          "excludes_zero": false
+        },
+        "k3": {
+          "days": 776,
+          "hits": 169,
+          "claimed": 0.21074,
+          "realised": 0.21778,
+          "gap": 0.00705,
+          "ci": [
+            -0.0202,
+            0.03573
+          ],
+          "excludes_zero": false
+        },
+        "k3_saturday": {
+          "days": 319,
+          "hits": 89,
+          "claimed": 0.2631,
+          "realised": 0.279,
+          "gap": 0.0159,
+          "ci": [
+            -0.03108,
+            0.06837
+          ],
+          "excludes_zero": false
+        },
+        "k5": {
+          "days": 575,
+          "hits": 52,
+          "claimed": 0.06794,
+          "realised": 0.09043,
+          "gap": 0.02249,
+          "ci": [
+            -0.00108,
+            0.04879
+          ],
+          "excludes_zero": false
+        },
+        "k5_saturday": {
+          "days": 319,
+          "hits": 34,
+          "claimed": 0.08439,
+          "realised": 0.10658,
+          "gap": 0.02219,
+          "ci": [
+            -0.01306,
+            0.05773
+          ],
+          "excludes_zero": false
+        },
+        "k10": {
+          "days": 453,
+          "hits": 4,
+          "claimed": 0.00271,
+          "realised": 0.00883,
+          "gap": 0.00612,
+          "ci": [
+            -0.00273,
+            0.01864
+          ],
+          "excludes_zero": false
+        },
+        "k10_saturday": {
+          "days": 319,
+          "hits": 4,
+          "claimed": 0.00341,
+          "realised": 0.01254,
+          "gap": 0.00913,
+          "ci": [
+            -0.00338,
+            0.02732
+          ],
+          "excludes_zero": false
+        }
+      },
+      "shift_control": {
+        "gap": -0.04385,
+        "ci": [
+          -0.05198,
+          -0.03632
+        ],
+        "fired": true
+      }
+    },
+    "dc": {
+      "derived_share": 0.782,
+      "all": {
+        "n": 15824,
+        "claimed": 0.75557,
+        "delivered": 0.75329,
+        "gap": -0.00228,
+        "ci": [
+          -0.00912,
+          0.0046
+        ],
+        "excludes_zero": false
+      },
+      "derived_only": {
+        "n": 12374,
+        "claimed": 0.75381,
+        "delivered": 0.7477,
+        "gap": -0.00611,
+        "ci": [
+          -0.01352,
+          0.00147
+        ],
+        "excludes_zero": false
+      },
+      "buckets_derived": [
+        {
+          "bucket": "[0.7,0.8)",
+          "n": 10476,
+          "claimed": 0.7374,
+          "delivered": 0.725
+        },
+        {
+          "bucket": "[0.8,0.9)",
+          "n": 1567,
+          "claimed": 0.8376,
+          "delivered": 0.8724
+        }
+      ],
+      "products": {
+        "k2": {
+          "days": 964,
+          "hits": 687,
+          "claimed": 0.67349,
+          "realised": 0.71266,
+          "gap": 0.03917,
+          "ci": [
+            0.00977,
+            0.06723
+          ],
+          "excludes_zero": true
+        },
+        "k2_saturday": {
+          "days": 319,
+          "hits": 248,
+          "claimed": 0.73826,
+          "realised": 0.77743,
+          "gap": 0.03917,
+          "ci": [
+            -0.00868,
+            0.08596
+          ],
+          "excludes_zero": false
+        },
+        "k3": {
+          "days": 776,
+          "hits": 444,
+          "claimed": 0.54864,
+          "realised": 0.57216,
+          "gap": 0.02352,
+          "ci": [
+            -0.00927,
+            0.05757
+          ],
+          "excludes_zero": false
+        },
+        "k3_saturday": {
+          "days": 319,
+          "hits": 201,
+          "claimed": 0.60455,
+          "realised": 0.63009,
+          "gap": 0.02554,
+          "ci": [
+            -0.02825,
+            0.07632
+          ],
+          "excludes_zero": false
+        },
+        "k5": {
+          "days": 575,
+          "hits": 207,
+          "claimed": 0.35028,
+          "realised": 0.36,
+          "gap": 0.00972,
+          "ci": [
+            -0.02837,
+            0.04933
+          ],
+          "excludes_zero": false
+        },
+        "k5_saturday": {
+          "days": 319,
+          "hits": 119,
+          "claimed": 0.38657,
+          "realised": 0.37304,
+          "gap": -0.01353,
+          "ci": [
+            -0.06508,
+            0.04141
+          ],
+          "excludes_zero": false
+        },
+        "k10": {
+          "days": 453,
+          "hits": 47,
+          "claimed": 0.09781,
+          "realised": 0.10375,
+          "gap": 0.00594,
+          "ci": [
+            -0.02037,
+            0.03504
+          ],
+          "excludes_zero": false
+        },
+        "k10_saturday": {
+          "days": 319,
+          "hits": 35,
+          "claimed": 0.10802,
+          "realised": 0.10972,
+          "gap": 0.0017,
+          "ci": [
+            -0.02915,
+            0.03459
+          ],
+          "excludes_zero": false
+        }
+      },
+      "shift_control": {
+        "gap": -0.05226,
+        "ci": [
+          -0.05909,
+          -0.04538
+        ],
+        "fired": true
+      }
+    },
+    "ah": {
+      "derived_share": 0.3616,
+      "all": {
+        "n": 15824,
+        "claimed": 0.7625,
+        "delivered": 0.76163,
+        "gap": -0.00087,
+        "ci": [
+          -0.0076,
+          0.00587
+        ],
+        "excludes_zero": false
+      },
+      "derived_only": {
+        "n": 5722,
+        "claimed": 0.69105,
+        "delivered": 0.68298,
+        "gap": -0.00807,
+        "ci": [
+          -0.02079,
+          0.00381
+        ],
+        "excludes_zero": false
+      },
+      "buckets_derived": [
+        {
+          "bucket": "[0.5,0.6)",
+          "n": 459,
+          "claimed": 0.5566,
+          "delivered": 0.512
+        },
+        {
+          "bucket": "[0.6,0.7)",
+          "n": 1724,
+          "claimed": 0.6634,
+          "delivered": 0.6444
+        },
+        {
+          "bucket": "[0.7,0.8)",
+          "n": 2896,
+          "claimed": 0.7316,
+          "delivered": 0.7355
+        },
+        {
+          "bucket": "[0.8,0.9)",
+          "n": 380,
+          "claimed": 0.8559,
+          "delivered": 0.85
+        }
+      ],
+      "products": {
+        "k2": {
+          "days": 964,
+          "hits": 610,
+          "claimed": 0.65028,
+          "realised": 0.63278,
+          "gap": -0.0175,
+          "ci": [
+            -0.04779,
+            0.01325
+          ],
+          "excludes_zero": false
+        },
+        "k2_saturday": {
+          "days": 319,
+          "hits": 233,
+          "claimed": 0.71843,
+          "realised": 0.73041,
+          "gap": 0.01198,
+          "ci": [
+            -0.03667,
+            0.05971
+          ],
+          "excludes_zero": false
+        },
+        "k3": {
+          "days": 776,
+          "hits": 392,
+          "claimed": 0.53189,
+          "realised": 0.50515,
+          "gap": -0.02673,
+          "ci": [
+            -0.06114,
+            0.00807
+          ],
+          "excludes_zero": false
+        },
+        "k3_saturday": {
+          "days": 319,
+          "hits": 193,
+          "claimed": 0.60248,
+          "realised": 0.60502,
+          "gap": 0.00254,
+          "ci": [
+            -0.05268,
+            0.05885
+          ],
+          "excludes_zero": false
+        },
+        "k5": {
+          "days": 575,
+          "hits": 212,
+          "claimed": 0.3759,
+          "realised": 0.3687,
+          "gap": -0.00721,
+          "ci": [
+            -0.04744,
+            0.03175
+          ],
+          "excludes_zero": false
+        },
+        "k5_saturday": {
+          "days": 319,
+          "hits": 138,
+          "claimed": 0.41753,
+          "realised": 0.4326,
+          "gap": 0.01507,
+          "ci": [
+            -0.0375,
+            0.07004
+          ],
+          "excludes_zero": false
+        },
+        "k10": {
+          "days": 453,
+          "hits": 61,
+          "claimed": 0.13948,
+          "realised": 0.13466,
+          "gap": -0.00482,
+          "ci": [
+            -0.03467,
+            0.02592
+          ],
+          "excludes_zero": false
+        },
+        "k10_saturday": {
+          "days": 319,
+          "hits": 45,
+          "claimed": 0.15562,
+          "realised": 0.14107,
+          "gap": -0.01456,
+          "ci": [
+            -0.04956,
+            0.02241
+          ],
+          "excludes_zero": false
+        }
+      },
+      "shift_control": {
+        "gap": -0.05087,
+        "ci": [
+          -0.0576,
+          -0.04413
+        ],
+        "fired": true
+      }
+    }
+  },
+  "verdict": {
+    "M1_win_gap_p05_to_p50_resolved": false,
+    "M2_dc_gap_m10_to_p20": true,
+    "M3_ah_gap_m10_to_p15": true,
+    "M4_no_resolved_negative_product_k2_k3": true,
+    "M5_shift_controls_fired": true
+  }
+}
