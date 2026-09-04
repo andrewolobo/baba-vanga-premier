@@ -7,7 +7,94 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-01**, after **the parlay page was assessed and
+Last updated **2026-09-04** (latest), after **Phase A of the Postgres move
+was completed — steps 3, 4 and 5 on top of the morning's 1 and 2**. Every
+SQLite call site is ported (20 production files, 12 test modules, by
+asserted-replacement scripts): `%s` placeholders, `ON CONFLICT` for the
+`INSERT OR` forms, `RETURNING` for `lastrowid`, `db.scalar`/`db.read_frame`
+for positional rows and pandas, `db.today()` and `db.NOW_TEXT` for the two
+SQLite clock functions, `string_agg` for `GROUP_CONCAT`, and the two
+behavioural changes the plan singled out — `run_cycle._guard` rolls back on
+a failed step (pitfall 11, with a test that plants a duplicate key and
+proves the next step runs and the partial write is gone) and
+`/tips/record`'s `matchweeks` is counted in Python with SQLite's
+Monday-first definition (D4, pinned across the 2025/26 year boundary). The
+harness is the template-and-clone fixture family (`make_database`,
+`database_url`, `conn`, `relative_date`); `DEPLOY.md` §2.7 documents the
+two URLs and the development setup. Ops: `backup.sh` is `pg_dump -Fc`
+verified by `pg_restore --list`, all four units carry
+`BVP_DATABASE_URL=postgresql:///bvp`, the API and backup units lose their
+`db/` write access. **645 pass, 2 skipped** (the real-ledger guards, until
+Phase B creates the `bvp` store) in 3 min 10 s on the owner's Postgres.
+`export_ledger.py --restore` also advances the ledger's identity after a
+restore, or the next gate row would have collided. No rule, cycle-shape or
+ledger change (112 / 69 / 202 — in `db/premier.db`, still the authority
+until Phase B). Uncommitted; nothing is on the VM. Next: Phase B, the
+copier, rehearsed first on `db/premier.db` into the `bvp` database here.
+
+Before that, **2026-09-04** (earlier), after **Phase A steps 1 and 2 of the
+Postgres move were built** — owner took D1–D7 as recommended and asked for
+the first two steps. `engine/db.py` now speaks Postgres via psycopg 3
+(`dict_row`, numeric → float loader, UTC as a libpq startup option, a
+one-method `Connection` subclass restoring `executemany`, `scalar` /
+`read_frame` / `today` helpers, the same `.sql` runner with transactional
+migrations); `config.DATABASE_URL` from `BVP_DATABASE_URL` replaces
+`DB_PATH`; `db/migrations/001_baseline.sql` replaces the six SQLite files
+(git-rm'd). The step-1 verification pulled `engine/ledger.py` and
+`engine/ingest/build.py` forward from step 3 (the test exercises both;
+`validate`'s BLOB check is now a NaN check) and the `conn` fixture forward
+from step 4 (template + `FILE_COPY` clone per test, `BVP_TEST_DATABASE_URL`,
+a missing server *fails* rather than skips). **`tests/test_seasons_and_db.py`:
+24 pass on Postgres**; the baseline compared by script against the local
+store is identical in every column, key, constraint and index. **The tree is
+mid-move until step 3**: every other call site still says `?`, so the rest
+of the suite (645 collected) is expected red. Development Postgres: the
+owner's 16.1 instance on port 5433 (credentials in `.env`; verified there
+after a first run on a throwaway cluster), details in `POSTGRES_PLAN.md`
+Phase A.
+Plan amended: `schema_migrations` is not copied, and the survey checks TEXT
+primary keys for NULL (a SQLite quirk). No rule, cycle or ledger change
+(112 / 69 / 202; `--check` clean at session start). Uncommitted.
+
+Before that, **2026-09-04** (later), after **the Postgres move was assessed
+and planned, not built** — owner request: migrate the store to Postgres to
+enable later features (user sign-in); recommend ORM/no ORM and a migration
+approach, name the pitfalls, plan the change on the production server with
+its data carried across. `POSTGRES_PLAN.md`. Verdict: proceed, **no ORM** —
+Sequelize is a Node ORM and nothing but Python touches the store (the web
+tier is a static build); psycopg 3, raw SQL and the existing `.sql` runner
+with a single Postgres `001_baseline.sql`; Postgres on the same VM; a
+survey/copy/verify script with ids preserved and sequences advanced; the
+ledger crosses by `export_ledger.py --restore`, never the copier; cutover
+between matchdays with the SQLite file untouched as the rollback. Twenty
+pitfalls catalogued from the code, the sharpest being that `run_cycle`'s
+`_guard` does not roll back, which on Postgres would leave the shared
+connection aborted and every later step failing — the step independence
+`RUNBOOK.md` §1 rests on. Seven owner decisions (D1–D7), ~5–6 days. Local
+store surveyed: zero type disagreements, FKs clean. Side-finding, out of
+scope: `cycle.py:152` formats `served_at` without seconds. No code, rule,
+cycle or ledger change (112 / 69 / 202). Uncommitted.
+
+Before that, **2026-09-04**, after **the site was made an installable PWA**
+— owner request. What existed: the icon set and `site.webmanifest` sat in
+`web/static/` but nothing linked them, and there was no service worker. Done:
+`app.html` now links the manifest, favicons, apple-touch-icon and a
+`theme-color` of `--bg` (#0e0e11); `site.webmanifest` rebranded (it still said
+"World Cup Forecaster", white theme) and given the `start_url` Chrome requires;
+`web/src/service-worker.js` added using SvelteKit's built-in `$service-worker`
+module (no plugin) — precaches the shell and static files, network-first with
+offline fallback for `/api/tips` and `/api/fixtures` only (a reader checking
+calls on a poor signal), everything else on `/api` untouched so `/book` and
+`/performance` can never show a stale grade; both nginx templates gained
+`location = /service-worker.js { Cache-Control "no-cache" }` beside the
+`index.html` rule, or a stale worker would pin browsers to an old build across
+deploys. Registration is inlined by SvelteKit into the built `index.html`
+(verified), build clean, 24 web tests pass, assets curl 200 off `vite preview`.
+No engine, API, rule or ledger change (112 / 69 / 202). **The nginx change is
+not live until the templates are re-rendered on the VM** (`DEPLOY.md`).
+Uncommitted.
+
+Before that, **2026-09-01**, after **the parlay page was assessed and
 planned, not built** — owner request: assess a parlay/accumulator feature,
 determine the maximum number of games from the strike rate, then plan a
 separate page where a reader generates a parlay by league, risk threshold

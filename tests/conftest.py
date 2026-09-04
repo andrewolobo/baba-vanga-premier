@@ -8,7 +8,13 @@ failure rather than as a quiet change in the numbers.
 
 from __future__ import annotations
 
+import itertools
+import os
+
+import pandas as pd
+import psycopg
 import pytest
+from psycopg.conninfo import make_conninfo
 
 from engine import config, db
 from engine.ingest.teams import FBREF, FOOTBALL_DATA, TeamBridge
@@ -178,10 +184,116 @@ def player_dir(tmp_path):
     return root
 
 
-@pytest.fixture
-def conn(tmp_path):
-    """A migrated, empty database."""
-    connection = db.connect(tmp_path / "test.db")
+# --- databases ------------------------------------------------------------
+#
+# Every test that touches the store gets its own Postgres database, cloned
+# from one migrated once per session (docs/POSTGRES_PLAN.md, decision D5).
+# A clone is a file copy, so a test may do anything to its database --
+# including DDL -- and the next test starts clean. The clone is dropped
+# afterwards; `WITH (FORCE)` covers a connection a test forgot to close.
+#
+# `BVP_TEST_DATABASE_URL` names a *maintenance* database on a server the
+# suite may create and drop databases on. It is never the store itself, and a
+# server that is not there is a failure, not a skip: a suite that quietly
+# skipped its database half would look green while proving nothing.
+
+#: Where the suite creates its databases. libpq's default names `postgres`
+#: over the local socket, which is what the server has; development machines
+#: point it at their own cluster in `.env`.
+TEST_DATABASE_URL = config.setting("BVP_TEST_DATABASE_URL", "postgresql:///postgres")
+_TEMPLATE = "bvp_test_template"
+_serial = itertools.count()
+
+
+def _url(dbname: str) -> str:
+    return make_conninfo(TEST_DATABASE_URL, dbname=dbname)
+
+
+def _create(admin, name: str, template: str) -> None:
+    admin.execute(f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
+    # C collation so ORDER BY on text is byte order, as it was under SQLite
+    # (plan pitfall 14). A clone inherits its template's collation, so this is
+    # only stated when cloning template0.
+    locale = " LC_COLLATE 'C' LC_CTYPE 'C'" if template == "template0" else ""
+    admin.execute(
+        f'CREATE DATABASE "{name}" TEMPLATE "{template}" STRATEGY FILE_COPY{locale}')
+
+
+def _drop(admin, name: str) -> None:
+    admin.execute(f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
+
+
+@pytest.fixture(scope="session")
+def pg_admin():
+    """An autocommit connection to the maintenance database."""
+    try:
+        admin = psycopg.connect(TEST_DATABASE_URL, autocommit=True)
+    except psycopg.OperationalError as exc:
+        pytest.fail(
+            f"the suite needs a Postgres it can create databases on, and none "
+            f"answered at {TEST_DATABASE_URL!r}: {exc}. Set BVP_TEST_DATABASE_URL "
+            f"(docs/POSTGRES_PLAN.md).", pytrace=False)
+    yield admin
+    admin.close()
+
+
+@pytest.fixture(scope="session")
+def pg_template(pg_admin):
+    """The name of a database migrated once for the whole session."""
+    _create(pg_admin, _TEMPLATE, "template0")
+    connection = db.connect(_url(_TEMPLATE))
     db.migrate(connection)
+    connection.close()  # a template must have no connections when cloned
+    yield _TEMPLATE
+    _drop(pg_admin, _TEMPLATE)
+
+
+@pytest.fixture
+def make_database(pg_admin, pg_template):
+    """A factory: each call is the URL of a fresh clone of the migrated
+    template. For tests that need more than one store at once (the ledger
+    comparisons, the API's per-scenario databases). All dropped afterwards."""
+    names: list[str] = []
+
+    def make() -> str:
+        name = f"bvp_test_{os.getpid()}_{next(_serial)}"
+        _create(pg_admin, name, pg_template)
+        names.append(name)
+        return _url(name)
+
+    yield make
+    for name in names:
+        _drop(pg_admin, name)
+
+
+@pytest.fixture
+def database_url(make_database):
+    """URL of a fresh clone of the migrated template, dropped afterwards."""
+    return make_database()
+
+
+def relative_date(days: int) -> str:
+    """ISO date `days` from today in UTC -- what `date('now', '+N days')` was.
+
+    Tests key on the split between played and unplayed, so their fixtures are
+    dated relative to today rather than fixed; the bound the code compares
+    against is `db.today()`, so this must be computed the same way.
+    """
+    return str((pd.Timestamp(db.today()) + pd.Timedelta(days=days)).date())
+
+
+@pytest.fixture
+def empty_database_url(pg_admin):
+    """URL of a database with nothing in it, for tests of `db.migrate` itself."""
+    name = f"bvp_test_{os.getpid()}_{next(_serial)}"
+    _create(pg_admin, name, "template0")
+    yield _url(name)
+    _drop(pg_admin, name)
+
+
+@pytest.fixture
+def conn(database_url):
+    """A migrated, empty database."""
+    connection = db.connect(database_url)
     yield connection
     connection.close()

@@ -29,7 +29,6 @@ price, not on the model's probability being well calibrated.
 from __future__ import annotations
 
 import argparse
-import sqlite3
 
 import pandas as pd
 
@@ -59,9 +58,10 @@ LEGS = (
 )
 
 
-def unbet_predictions(conn: sqlite3.Connection) -> pd.DataFrame:
+def unbet_predictions(conn: db.Connection) -> pd.DataFrame:
     """Predictions with prices attached that have not yet been through the rule."""
-    return pd.read_sql_query(
+    return db.read_frame(
+        conn,
         "SELECT p.*, f.division, f.match_date, f.avg_h, f.avg_d, f.avg_a,"
         "       f.avg_over25, f.avg_under25,"
         "       h.canonical_name AS home_team, a.canonical_name AS away_team "
@@ -72,7 +72,6 @@ def unbet_predictions(conn: sqlite3.Connection) -> pd.DataFrame:
         "WHERE NOT EXISTS (SELECT 1 FROM paper_bets b"
         "                  WHERE b.prediction_id = p.prediction_id) "
         "ORDER BY f.match_date, p.prediction_id",
-        conn,
     )
 
 
@@ -109,14 +108,14 @@ def candidates(predictions: pd.DataFrame, *, min_edge: float = MIN_EDGE) -> pd.D
     return pd.DataFrame(rows)
 
 
-def place(conn: sqlite3.Connection, bets: pd.DataFrame, *, dry_run: bool = False) -> int:
+def place(conn: db.Connection, bets: pd.DataFrame, *, dry_run: bool = False) -> int:
     if bets.empty:
         return 0
     if not dry_run:
         conn.executemany(
             "INSERT INTO paper_bets (prediction_id, fixture_id, market, side, price,"
             " price_source, model_prob, breakeven_prob, edge, expected_value, stake,"
-            " rule_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            " rule_version) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
             [(r.prediction_id, r.fixture_id, r.market, r.side, r.price, r.price_source,
               r.model_prob, r.breakeven_prob, r.edge, r.expected_value, r.stake,
               r.rule_version) for r in bets.itertuples()],
@@ -125,7 +124,7 @@ def place(conn: sqlite3.Connection, bets: pd.DataFrame, *, dry_run: bool = False
     return len(bets)
 
 
-def run(conn: sqlite3.Connection, *, min_edge: float = MIN_EDGE,
+def run(conn: db.Connection, *, min_edge: float = MIN_EDGE,
         dry_run: bool = False) -> pd.DataFrame:
     bets = candidates(unbet_predictions(conn), min_edge=min_edge)
     place(conn, bets, dry_run=dry_run)

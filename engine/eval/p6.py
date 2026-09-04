@@ -41,7 +41,6 @@ Nothing here reads a sealed season: the corpus comes through `p1.load`, which is
 from __future__ import annotations
 
 import argparse
-import sqlite3
 from dataclasses import dataclass, replace
 
 import pandas as pd
@@ -422,11 +421,6 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     conn = db.connect()
-    # DEFLATION.md §1: `count_configurations` raises an opaque ValueError
-    # without this. `db.connect` sets it already; stated here because the
-    # requirement belongs to this module rather than to that one.
-    conn.row_factory = sqlite3.Row
-
     failures = build.validate(conn)
     if failures:
         print("corpus integrity check failed -- no number here would be trusted:")

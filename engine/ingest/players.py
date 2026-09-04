@@ -27,13 +27,12 @@ from __future__ import annotations
 
 import io
 import re
-import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import pandas as pd
 
-from engine import config
+from engine import config, db
 from engine.ingest.holdout import Corpus, Purpose, resolve_seasons
 from engine.ingest.teams import FBREF, BridgeReport, TeamBridge
 from engine.seasons import ALL_DIVISIONS, DIVISIONS
@@ -180,7 +179,7 @@ def load(
     seasons: tuple[str, ...] | None = None,
     divisions: tuple[str, ...] = ALL_DIVISIONS,
     bridge: TeamBridge | None = None,
-    conn: sqlite3.Connection | None = None,
+    conn: db.Connection | None = None,
     unseal_reason: str | None = None,
     player_dir: Path | None = None,
 ) -> tuple[Corpus, PlayerLoadReport]:

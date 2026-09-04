@@ -35,8 +35,7 @@ CHAMPIONSHIP = "urn:bbc:sportsdata:football:tournament:championship"
 _DEFAULT = object()
 
 
-def event(home_slug, away_slug, *, date="2026-08-15", time="15:00",
-          tournament=CHAMPIONSHIP, status="PreEvent", home_urn=_DEFAULT):
+def event(home_slug, away_slug, *, date="2026-08-15", time="15:00", tournament=CHAMPIONSHIP, status="PreEvent", home_urn=_DEFAULT):
     """One event in the shape the page publishes."""
     return {
         "home": {"fullName": home_slug.replace("-", " ").title(),
@@ -59,11 +58,10 @@ def page(*events) -> str:
 
 
 @pytest.fixture
-def conn(tmp_path):
-    connection = db.connect(tmp_path / "calendar.db")
-    db.migrate(connection)
+def conn(database_url):
+    connection = db.connect(database_url)
     for i, name in enumerate(TEAMS, start=1):
-        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
                            (i, name))
     connection.commit()
     yield connection
@@ -151,7 +149,7 @@ def test_a_past_fixture_is_never_inserted(conn):
         conn, [("bbc", REAL_PAGE.read_text(encoding="utf-8"))], today="2026-09-01")
     assert report.inserted == 0
     assert report.past == 5          # four served fixtures, plus the PostEvent row
-    assert conn.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM fixtures") == 0
 
 
 def test_todays_fixtures_are_still_inserted(conn):
@@ -188,7 +186,7 @@ def test_dry_run_writes_nothing(conn):
         conn, [("bbc", REAL_PAGE.read_text(encoding="utf-8"))],
         today="2026-08-15", dry_run=True)
     assert report.inserted == 4
-    assert conn.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM fixtures") == 0
 
 
 def test_rerunning_inserts_nothing_further(conn):
@@ -197,4 +195,4 @@ def test_rerunning_inserts_nothing_further(conn):
     again = bbc_calendar.sync(conn, [("bbc", html)], today="2026-08-15")
     assert again.inserted == 0
     assert again.already_known == 4
-    assert conn.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0] == 4
+    assert db.scalar(conn, "SELECT COUNT(*) FROM fixtures") == 4

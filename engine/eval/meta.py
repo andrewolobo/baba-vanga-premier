@@ -254,7 +254,7 @@ def clv_legs(basis: pd.DataFrame) -> tuple[np.ndarray, pd.Series]:
 
 def g1_training_basis(conn) -> dict:
     """§3.8's survivorship loop cannot exist if the book has never run."""
-    counts = {t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+    counts = {t: db.scalar(conn, f"SELECT COUNT(*) FROM {t}")
               for t in ("predictions", "paper_bets", "clv_grades")}
     out = {"counts": counts, "all_empty": all(v == 0 for v in counts.values())}
     print("\nG1  training basis (§1.1)")

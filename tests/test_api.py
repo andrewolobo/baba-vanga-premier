@@ -8,7 +8,6 @@ stop being evidence.
 
 from __future__ import annotations
 
-import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
@@ -17,21 +16,19 @@ from fastapi.testclient import TestClient
 
 from api.main import app, get_conn
 from engine import db
+from tests.conftest import relative_date
 
 
-def _override(path):
+def _override(url):
     """A fresh connection per request, which is what production does.
 
-    Reusing one connection across requests fails under TestClient because
-    sqlite3 objects are bound to the thread that created them -- and it would
-    be wrong in production too, where uvicorn serves from a thread pool.
-
-    `check_same_thread=False` mirrors `api.main.get_conn` exactly. It has to:
-    without it this override is a *different* dependency from the one that
-    ships, and the defect it guards against is invisible to every test here.
+    `autocommit=True` mirrors `api.main.get_conn` exactly. It has to: without
+    it this override is a *different* dependency from the one that ships, and
+    what it guards against -- a request left idle in transaction -- is
+    invisible to every test here.
     """
     def dependency():
-        conn = db.connect(path, check_same_thread=False)
+        conn = db.connect(url, autocommit=True)
         try:
             yield conn
         finally:
@@ -40,12 +37,12 @@ def _override(path):
 
 
 @pytest.fixture
-def client(tmp_path):
-    path = tmp_path / "api.db"
-    conn = db.connect(path)
+def client(make_database):
+    url = make_database()
+    conn = db.connect(url)
     db.migrate(conn)
     for i, name in enumerate(["Arsenal", "Chelsea", "Luton", "Barnsley"], start=1):
-        conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)", (i, name))
+        conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)", (i, name))
     conn.execute(
         "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
         " home_team_id, away_team_id, avg_h, avg_d, avg_a, avg_over25, avg_under25,"
@@ -80,7 +77,7 @@ def client(tmp_path):
     conn.commit()
     conn.close()
 
-    app.dependency_overrides[get_conn] = _override(path)
+    app.dependency_overrides[get_conn] = _override(url)
     yield TestClient(app)
     app.dependency_overrides.clear()
 
@@ -156,35 +153,35 @@ def test_performance_leads_with_clv_not_roi(client):
 
 
 @pytest.fixture
-def tips_client(tmp_path):
+def tips_client(make_database):
     """A database with tips on both sides of today.
 
-    Dates are relative to `date('now')` rather than fixed, because the split
+    Dates are relative to today rather than fixed, because the split
     between what is published and what is settled is exactly what these
     endpoints key on -- a hard-coded date would make the suite start failing on
     a particular morning for reasons nobody would connect to this file.
     """
-    path = tmp_path / "tips.db"
-    conn = db.connect(path)
+    url = make_database()
+    conn = db.connect(url)
     db.migrate(conn)
     for i, name in enumerate(["Arsenal", "Chelsea", "Luton", "Barnsley"], start=1):
-        conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)", (i, name))
+        conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)", (i, name))
     for fixture_id, division, offset, home, away in (
-        (1, "E0", "+5 days", 1, 2),
-        (2, "E2", "+5 days", 3, 4),
-        (3, "E0", "-4 days", 2, 1),
-        (4, "E0", "-4 days", 1, 3),
+        (1, "E0", 5, 1, 2),
+        (2, "E2", 5, 3, 4),
+        (3, "E0", -4, 2, 1),
+        (4, "E0", -4, 1, 3),
     ):
         conn.execute(
             "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
             " home_team_id, away_team_id, avg_h, avg_d, avg_a, source_file)"
-            f" VALUES (?, ?, date('now', '{offset}'), '15:00', ?, ?, 1.9, 3.6, 4.0, 't')",
-            (fixture_id, division, home, away),
+            " VALUES (%s, %s, %s, '15:00', %s, %s, 1.9, 3.6, 4.0, 't')",
+            (fixture_id, division, relative_date(offset), home, away),
         )
         conn.execute(
             "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
             " information_set, lam_h, lam_a, p_home, p_draw, p_away, p_over25,"
-            " p_under25) VALUES (?, ?, 'v2', 'pre_close', 1.6, 1.1,"
+            " p_under25) VALUES (%s, %s, 'v2', 'pre_close', 1.6, 1.1,"
             " 0.48, 0.26, 0.26, 0.52, 0.48)",
             (fixture_id, fixture_id),
         )
@@ -208,15 +205,15 @@ def tips_client(tmp_path):
         conn.execute(
             "INSERT INTO tips (tip_id, prediction_id, fixture_id, side, model_prob,"
             " floor, ceiling, best_price, avg_price, rule_version, settled_at,"
-            " outcome, pnl_best, pnl_avg, fthg, ftag) VALUES (?, ?, ?, ?, ?, 0.55,"
-            " 0.85, 1.35, 1.28, ?, ?, ?, 0.35, 0.28, ?, ?)",
+            " outcome, pnl_best, pnl_avg, fthg, ftag) VALUES (%s, %s, %s, %s, %s, 0.55,"
+            " 0.85, 1.35, 1.28, %s, %s, %s, 0.35, 0.28, %s, %s)",
             (tip_id, fixture_id, fixture_id, side, prob, rule, settled, outcome,
              fthg, ftag),
         )
     conn.commit()
     conn.close()
 
-    app.dependency_overrides[get_conn] = _override(path)
+    app.dependency_overrides[get_conn] = _override(url)
     yield TestClient(app)
     app.dependency_overrides.clear()
 
@@ -270,27 +267,27 @@ def test_the_api_handicap_is_the_rules_handicap():
     assert served == pytest.approx(expected, abs=1e-12)
 
 
-def test_the_model_view_is_the_prediction_the_tip_was_made_from(tmp_path):
+def test_the_model_view_is_the_prediction_the_tip_was_made_from(make_database):
     """A fixture re-served after its tip was published has a newer prediction
     row. The tip is never revised, so the view shown behind it must be the row
     it was published from -- otherwise the page shows numbers the call was not
     chosen from, and the two can disagree."""
-    path = tmp_path / "stale.db"
-    conn = db.connect(path)
+    url = make_database()
+    conn = db.connect(url)
     db.migrate(conn)
     conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (1, 'Luton')")
     conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (2, 'Barnsley')")
     conn.execute(
         "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
         " home_team_id, away_team_id, source_file)"
-        " VALUES (1, 'E2', date('now', '+2 days'), '15:00', 1, 2, 't')")
+        " VALUES (1, 'E2', %s, '15:00', 1, 2, 't')", (relative_date(2),))
     for prediction_id, served_at, p_home in ((1, "2026-01-01 06:00:00", 0.40),
                                              (2, "2026-01-02 06:00:00", 0.70)):
         conn.execute(
             "INSERT INTO predictions (prediction_id, fixture_id, served_at,"
             " model_version, information_set, lam_h, lam_a, p_home, p_draw,"
             " p_away, p_over25, p_under25)"
-            " VALUES (?, 1, ?, 'v2', 'pre_close', 1.5, 1.1, ?, 0.25, ?, 0.5, 0.5)",
+            " VALUES (%s, 1, %s, 'v2', 'pre_close', 1.5, 1.1, %s, 0.25, %s, 0.5, 0.5)",
             (prediction_id, served_at, p_home, round(0.75 - p_home, 2)))
     conn.execute(
         "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
@@ -298,7 +295,7 @@ def test_the_model_view_is_the_prediction_the_tip_was_made_from(tmp_path):
     conn.commit()
     conn.close()
 
-    app.dependency_overrides[get_conn] = _override(path)
+    app.dependency_overrides[get_conn] = _override(url)
     try:
         [tip] = TestClient(app).get("/tips").json()
     finally:
@@ -381,13 +378,13 @@ def test_the_record_publishes_no_profit_figure(tips_client):
     assert body["return_supported"] is False
 
 
-def test_the_record_reports_no_strike_rate_rather_than_zero_when_nothing_is_graded(tmp_path):
+def test_the_record_reports_no_strike_rate_rather_than_zero_when_nothing_is_graded(make_database):
     """Opening weekend. A zero would read as "we get everything wrong"."""
-    path = tmp_path / "fresh.db"
-    conn = db.connect(path)
+    url = make_database()
+    conn = db.connect(url)
     db.migrate(conn)
     conn.close()
-    app.dependency_overrides[get_conn] = _override(path)
+    app.dependency_overrides[get_conn] = _override(url)
     try:
         body = TestClient(app).get("/tips/record").json()
         assert body["strike_rate"] is None
@@ -396,64 +393,49 @@ def test_the_record_reports_no_strike_rate_rather_than_zero_when_nothing_is_grad
         app.dependency_overrides.clear()
 
 
-def test_the_dependency_survives_being_opened_and_used_on_different_threads(tmp_path):
-    """The defect the tip page found, pinned at the level it actually occurs.
+def test_the_dependency_survives_being_opened_and_used_on_different_threads(make_database):
+    """The defect the tip page found under SQLite, kept as a pin.
 
     FastAPI runs a sync generator dependency's setup, the endpoint body and its
-    teardown as three separate threadpool hand-offs. They are not guaranteed to
-    land on the same worker, so a per-request connection is routinely created on
-    one thread and used on another. sqlite3 rejects that by default.
-
-    It stayed hidden because the old frontend fetched one endpoint per page:
-    with requests strictly serialised the pool reuses one worker and the hand-off
-    is invisible. The tip page fetches three at once, and every load failed.
+    teardown as three separate threadpool hand-offs, so a per-request
+    connection is routinely created on one thread and used on another. psycopg
+    connections are not thread-bound, so this holds by construction now; the
+    test stays so that a driver or wrapper change cannot bring the guard back
+    unnoticed.
     """
-    path = tmp_path / "threads.db"
-    conn = db.connect(path)
-    db.migrate(conn)
-    conn.close()
-
-    opened = db.connect(path, check_same_thread=False)
+    opened = db.connect(make_database(), autocommit=True)
     try:
         with ThreadPoolExecutor(max_workers=1) as pool:
             count = pool.submit(
-                lambda: opened.execute("SELECT COUNT(*) FROM tips").fetchone()[0]
+                lambda: db.scalar(opened, "SELECT COUNT(*) FROM tips")
             ).result()
         assert count == 0
     finally:
         opened.close()
 
-    # The guard is still on everywhere else, so a connection crossing threads
-    # in the cycle or the grader remains the error it should be.
-    guarded = db.connect(path)
-    try:
-        with ThreadPoolExecutor(max_workers=1) as pool:
-            with pytest.raises(sqlite3.ProgrammingError):
-                pool.submit(lambda: guarded.execute("SELECT 1").fetchone()).result()
-    finally:
-        guarded.close()
 
-
-def test_the_request_connection_is_opened_without_the_thread_guard(monkeypatch):
+def test_the_request_connection_is_opened_autocommit(monkeypatch):
     """The half of the fix that lives in `api.main`, pinned directly.
 
-    Asserting it through the app does not work: under `TestClient` the portal
-    reuses a single worker, so the hand-off never crosses threads and the
-    endpoints pass either way. That is precisely why this shipped -- a live
-    uvicorn spreads the same dependency across a real pool and a TestClient
-    does not. So the kwarg is checked at the call, which is deterministic.
+    Asserting it through the app does not work: an endpoint answers the same
+    whether or not its connection sits idle in a transaction afterwards. So
+    the kwarg is checked at the call, which is deterministic.
     """
     seen = {}
 
-    def fake_connect(path=None, **kwargs):
+    class _Closable:
+        def close(self):
+            pass
+
+    def fake_connect(url=None, **kwargs):
         seen.update(kwargs)
-        return sqlite3.connect(":memory:")
+        return _Closable()
 
     monkeypatch.setattr(db, "connect", fake_connect)
     generator = get_conn()
     next(generator)
     generator.close()
-    assert seen.get("check_same_thread") is False
+    assert seen.get("autocommit") is True
 
 
 def test_concurrent_requests_all_succeed(tips_client):
@@ -471,14 +453,14 @@ def test_the_api_exposes_no_write_routes(client):
     assert methods <= {"GET", "HEAD", "OPTIONS"}
 
 
-def test_endpoints_survive_an_empty_database(tmp_path):
+def test_endpoints_survive_an_empty_database(make_database):
     """Opening day: the tables exist but nothing has run yet. Every endpoint
     must answer rather than 500, or the first health check of the season fails."""
-    path = tmp_path / "empty.db"
-    conn = db.connect(path)
+    url = make_database()
+    conn = db.connect(url)
     db.migrate(conn)
     conn.close()
-    app.dependency_overrides[get_conn] = _override(path)
+    app.dependency_overrides[get_conn] = _override(url)
     try:
         empty = TestClient(app)
         assert empty.get("/health").json()["counts"]["fixtures"] == 0
@@ -550,3 +532,46 @@ def test_parlay_drops_fixtures_whose_kickoff_has_passed(tips_client, monkeypatch
     monkeypatch.setattr(main, "_london_now", lambda: datetime(2099, 1, 1, 12, 0))
     after = tips_client.get("/parlay", params={"min_claim": 0.5}).json()
     assert after["available"] == 0 and after["legs"] == [] and after["pool"] == 0
+
+
+def test_matchweeks_keep_the_monday_first_week_number_across_a_year_boundary(make_database):
+    """`matchweeks` was SQLite's `strftime('%Y-%W')`: Monday-first week
+    numbers, 00-53, so a Monday 29 December and the Thursday after it fall in
+    *different* weeks (2025-52 and 2026-00) where ISO would put both in
+    2026-W01. Postgres has no format for that definition; the count moved to
+    Python, whose `%W` is the same one (docs/POSTGRES_PLAN.md D4). Pinned on
+    the one case where the two definitions disagree.
+    """
+    from datetime import date
+
+    assert date(2025, 12, 29).strftime("%Y-%W") == "2025-52"
+    assert date(2026, 1, 1).strftime("%Y-%W") == "2026-00"
+
+    url = make_database()
+    conn = db.connect(url)
+    conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (1, 'Luton'), (2, 'Barnsley')")
+    for fixture_id, played in ((1, "2025-12-29"), (2, "2026-01-01")):
+        conn.execute(
+            "INSERT INTO fixtures (fixture_id, division, match_date, home_team_id,"
+            " away_team_id, source_file) VALUES (%s, 'E2', %s, 1, 2, 't')",
+            (fixture_id, played))
+        conn.execute(
+            "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
+            " information_set, lam_h, lam_a, p_home, p_draw, p_away, p_over25,"
+            " p_under25) VALUES (%s, %s, 'v3', 'pre_close', 1.5, 1.1, 0.5, 0.25,"
+            " 0.25, 0.5, 0.5)", (fixture_id, fixture_id))
+        conn.execute(
+            "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
+            " rule_version, settled_at, outcome) VALUES (%s, %s, '1X', 0.75, 0.55,"
+            " 'confidence-v3', '2026-01-02 06:00:00', 'win')", (fixture_id, fixture_id))
+    conn.commit()
+    conn.close()
+
+    app.dependency_overrides[get_conn] = _override(url)
+    try:
+        body = TestClient(app).get("/tips/record").json()
+    finally:
+        app.dependency_overrides.clear()
+    assert body["matchweeks"] == 2
+    assert body["by_division"][0]["matchweeks"] == 2
+    assert body["by_rule"][0]["matchweeks"] == 2

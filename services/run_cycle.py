@@ -37,7 +37,6 @@ should not be one typo away from placing bets.
 from __future__ import annotations
 
 import argparse
-import sqlite3
 import traceback
 from dataclasses import dataclass, field
 from enum import IntEnum
@@ -135,15 +134,24 @@ class CycleReport:
         return " | ".join(f"{s.name}={s.status.name}:{s.detail}" for s in self.steps)
 
 
-def _guard(step: Step, work) -> Step:
+def _guard(step: Step, work, conn: db.Connection) -> Step:
     """Run `work(step)`, converting any exception into a FAILED step.
 
     An unattended cycle must not lose the steps that already succeeded because
     a later one raised, and it must not lose the traceback either.
+
+    **The rollback is what keeps the steps independent on Postgres.** Every
+    step shares one connection, and a statement that fails leaves that
+    connection's transaction aborted: without the rollback every later step
+    would fail too, with *current transaction is aborted*, and the three exit
+    codes (RUNBOOK.md §1) would collapse into one. It also discards whatever
+    the failed step wrote before it raised, which under SQLite the *next*
+    step's commit used to land silently (docs/POSTGRES_PLAN.md, pitfall 11).
     """
     try:
         work(step)
     except Exception as exc:  # noqa: BLE001 -- deliberately broad; this is the boundary
+        conn.rollback()
         step.status = Status.FAILED
         step.detail = f"{type(exc).__name__}: {exc}"
         step.trace = traceback.format_exc()
@@ -153,7 +161,7 @@ def _guard(step: Step, work) -> Step:
 # --- the steps -------------------------------------------------------------
 
 
-def step_sync(conn: sqlite3.Connection, *, dry_run: bool, url: str,
+def step_sync(conn: db.Connection, *, dry_run: bool, url: str,
               file: Path | None = None) -> Step:
     """Pull the rolling fixtures feed and upsert what it carries."""
 
@@ -174,10 +182,10 @@ def step_sync(conn: sqlite3.Connection, *, dry_run: bool, url: str,
             step.flag(Status.ATTENTION,
                       "unbridged club name(s); re-run scripts/build_team_aliases.py")
 
-    return _guard(Step("sync"), work)
+    return _guard(Step("sync"), work, conn)
 
 
-def step_calendar(conn: sqlite3.Connection, *, dry_run: bool,
+def step_calendar(conn: db.Connection, *, dry_run: bool,
                   days: int = CALENDAR_DAYS) -> Step:
     """Fill fixture gaps from the second calendar. Additive, never destructive.
 
@@ -204,10 +212,10 @@ def step_calendar(conn: sqlite3.Connection, *, dry_run: bool,
 
     if not config.BBC_CALENDAR_ENABLED:
         return Step("calendar", detail="disabled (BVP_BBC_CALENDAR unset)")
-    return _guard(Step("calendar"), work)
+    return _guard(Step("calendar"), work, conn)
 
 
-def step_serve(conn: sqlite3.Connection, report: CycleReport, *,
+def step_serve(conn: db.Connection, report: CycleReport, *,
                dry_run: bool, refreeze: bool, today: pd.Timestamp) -> Step:
     """Freeze if stale, then price every pending fixture the artifact knows."""
 
@@ -239,10 +247,10 @@ def step_serve(conn: sqlite3.Connection, report: CycleReport, *,
             step.flag(Status.ATTENTION,
                       f"{len(unknown)} fixture(s) unpriced, artifact never saw: {names}")
 
-    return _guard(Step("serve"), work)
+    return _guard(Step("serve"), work, conn)
 
 
-def step_grade(conn: sqlite3.Connection, *, dry_run: bool,
+def step_grade(conn: db.Connection, *, dry_run: bool,
                today: pd.Timestamp | None = None) -> Step:
     """Settle played fixtures, write CLV, and settle published tips.
 
@@ -269,6 +277,7 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool,
     """
 
     day = str(pd.Timestamp(today or pd.Timestamp.now().normalize()).date())
+    since = str((pd.Timestamp(day) - pd.Timedelta(days=RECONCILE_DAYS)).date())
 
     def work(step: Step) -> None:
         # **Played fixtures only.** The v1 tip rule covered 14.4% of matches so
@@ -280,11 +289,11 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool,
         pending = conn.execute(
             "SELECT DISTINCT f.division, f.match_date FROM paper_bets b"
             " JOIN fixtures f ON f.fixture_id = b.fixture_id"
-            " WHERE b.settled_at IS NULL AND f.match_date <= ?"
+            " WHERE b.settled_at IS NULL AND f.match_date <= %s"
             " UNION"
             " SELECT DISTINCT f.division, f.match_date FROM tips t"
             " JOIN fixtures f ON f.fixture_id = t.fixture_id"
-            " WHERE t.settled_at IS NULL AND f.match_date <= ?", (day, day),
+            " WHERE t.settled_at IS NULL AND f.match_date <= %s", (day, day),
         ).fetchall()
         # **Recently settled tips pull the file too, to be reconciled.** With
         # `step_results` on, every played tip is settled from the BBC page
@@ -295,8 +304,8 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool,
         recent = conn.execute(
             "SELECT DISTINCT f.division, f.match_date FROM tips t"
             " JOIN fixtures f ON f.fixture_id = t.fixture_id"
-            " WHERE t.settled_at IS NOT NULL AND f.match_date <= ?"
-            " AND f.match_date >= date(?, ?)", (day, day, f"-{RECONCILE_DAYS} days"),
+            " WHERE t.settled_at IS NOT NULL AND f.match_date <= %s"
+            " AND f.match_date >= %s", (day, since),
         ).fetchall()
         if not pending and not recent:
             step.detail = "nothing unsettled"
@@ -345,10 +354,10 @@ def step_grade(conn: sqlite3.Connection, *, dry_run: bool,
                       f"football-data contradicts the settled outcome of tip(s) "
                       f"{total.disagreed} -- settled from the BBC page; check both")
 
-    return _guard(Step("grade"), work)
+    return _guard(Step("grade"), work, conn)
 
 
-def step_results(conn: sqlite3.Connection, *, dry_run: bool,
+def step_results(conn: db.Connection, *, dry_run: bool,
                  today: pd.Timestamp | None = None) -> Step:
     """Settle tips from BBC full-time scores, ahead of football-data's file.
 
@@ -386,10 +395,10 @@ def step_results(conn: sqlite3.Connection, *, dry_run: bool,
 
     if not config.BBC_RESULTS_ENABLED:
         return Step("results", detail="disabled (BVP_BBC_RESULTS unset)")
-    return _guard(Step("results"), work)
+    return _guard(Step("results"), work, conn)
 
 
-def step_tips(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
+def step_tips(conn: db.Connection, *, dry_run: bool) -> Step:
     """Publish the confidence-rule tip list for fixtures priced this cycle.
 
     Runs after `serve` and before `grade`, and is independent of both: a tip
@@ -450,7 +459,7 @@ def step_tips(conn: sqlite3.Connection, *, dry_run: bool) -> Step:
                           f"outside [{100*lo:+.2f}, {100*hi:+.2f}] "
                           f"(V3_ADOPTION_PLAN.md D4)")
 
-    return _guard(Step("tips"), work)
+    return _guard(Step("tips"), work, conn)
 
 
 def _stale(artifact, today: pd.Timestamp) -> bool:
@@ -460,7 +469,7 @@ def _stale(artifact, today: pd.Timestamp) -> bool:
 # --- the cycle -------------------------------------------------------------
 
 
-def run(conn: sqlite3.Connection, *, dry_run: bool = False, refreeze: bool = False,
+def run(conn: db.Connection, *, dry_run: bool = False, refreeze: bool = False,
         url: str = fixture_sync.FIXTURES_URL, file: Path | None = None,
         today: pd.Timestamp | None = None) -> CycleReport:
     today = pd.Timestamp(today or pd.Timestamp.now().normalize())

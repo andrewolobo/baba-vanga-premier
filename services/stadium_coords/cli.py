@@ -26,16 +26,17 @@ OUT = Path("reference/stadiums.csv")
 
 def clubs_and_divisions(conn, divisions: tuple[str, ...]) -> dict[str, str]:
     """canonical_name -> the divisions it has appeared in, comma separated."""
-    placeholders = ",".join("?" * len(divisions))
+    placeholders = ",".join(["%s"] * len(divisions))
     rows = conn.execute(
-        "SELECT t.canonical_name, GROUP_CONCAT(DISTINCT m.division) "
+        "SELECT t.canonical_name,"
+        " string_agg(DISTINCT m.division, ',' ORDER BY m.division) AS divisions "
         "FROM teams t JOIN matches m "
         "  ON m.home_team_id = t.team_id OR m.away_team_id = t.team_id "
         f"WHERE m.division IN ({placeholders}) "
         "GROUP BY t.canonical_name ORDER BY t.canonical_name",
         divisions,
     )
-    return {name: divs or "" for name, divs in rows}
+    return {r["canonical_name"]: r["divisions"] or "" for r in rows}
 
 
 def main(argv=None) -> int:

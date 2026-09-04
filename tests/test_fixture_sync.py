@@ -34,12 +34,11 @@ SCOTTISH = ("SC0,15/08/2026,15:00,Celtic,Rangers,,1.50,4.00,6.00,"
 
 
 @pytest.fixture
-def conn(tmp_path):
-    connection = db.connect(tmp_path / "serve.db")
-    db.migrate(connection)
+def conn(database_url):
+    connection = db.connect(database_url)
     # Only the clubs these tests use need to exist.
     for i, name in enumerate(["Arsenal", "Chelsea", "Luton", "Barnsley"], start=1):
-        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
                            (i, name))
     connection.commit()
     return connection
@@ -111,7 +110,7 @@ def test_first_seen_is_preserved_across_updates(conn):
     """When we first saw a price is the interesting question for any later
     information-set argument, so an update must not reset it."""
     fixture_sync.sync(conn, feed(ARSENAL_CHELSEA), "day1")
-    first_seen = conn.execute("SELECT first_seen_at FROM fixtures").fetchone()[0]
+    first_seen = db.scalar(conn, "SELECT first_seen_at FROM fixtures")
     conn.execute("UPDATE fixtures SET first_seen_at = '2000-01-01 00:00:00'")
     conn.commit()
 
@@ -151,7 +150,7 @@ def test_a_withdrawn_price_is_still_written_as_null(conn):
 def test_dry_run_writes_nothing(conn):
     report = fixture_sync.sync(conn, feed(ARSENAL_CHELSEA), "test", dry_run=True)
     assert report.inserted == 1
-    assert conn.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM fixtures") == 0
 
 
 # --- the bridge ------------------------------------------------------------
@@ -172,7 +171,7 @@ def test_an_unknown_club_is_excluded_by_name_and_counted(conn):
     assert not report.report.clean
     assert ("football-data", "Truro City") in report.report.misses
     assert "Truro City" in report.report.describe()
-    assert conn.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM fixtures") == 0
 
 
 def test_a_bridged_fixture_survives_alongside_an_unbridged_one(conn):

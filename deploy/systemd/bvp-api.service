@@ -29,9 +29,9 @@ WorkingDirectory=/srv/bvp
 # 3.1). An API listening on 0.0.0.0 would let anyone bypass that by going
 # straight to the port.
 #
-# ONE worker, deliberately. The API is read-only and WAL permits concurrent
-# readers, so more would work -- there is simply no load here that needs them,
-# and one process keeps the sqlite story simple.
+# ONE worker, deliberately. The API is read-only and Postgres takes any
+# number of readers, so more would work -- there is simply no load here that
+# needs them.
 ExecStart=/srv/bvp/.venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 8000
 
 Restart=always
@@ -43,8 +43,19 @@ RestartSec=5
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=PYTHONUNBUFFERED=1
 
+# The store. Database `bvp` on the VM's own Postgres over the local socket,
+# peer-authenticated as this unit's user -- no password anywhere. Set here,
+# not in a .env, so what the service reads is what `systemctl cat` shows
+# (docs/DEPLOY.md 3.10, docs/POSTGRES_PLAN.md).
+Environment=BVP_DATABASE_URL=postgresql:///bvp
+
 # --- hardening ----------------------------------------------------------- #
-# The API reads one sqlite file and answers HTTP. It needs nothing else.
+# The API talks to Postgres on a local socket and answers HTTP. It needs
+# nothing else -- and, unlike the SQLite days, no writable path at all: the
+# WAL sidecars that once forced `ReadWritePaths=/srv/bvp/db` are gone.
+# Connecting to the socket under /var/run/postgresql works under
+# ProtectSystem=strict (a read-only mount refuses writes to regular files,
+# not connects to sockets); DEPLOY.md 5.5 checks it on the VM regardless.
 NoNewPrivileges=true
 PrivateTmp=true
 PrivateDevices=true
@@ -56,13 +67,6 @@ ProtectControlGroups=true
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 RestrictNamespaces=true
 LockPersonality=true
-
-# THE ONE WRITABLE PATH, and it is not optional. ProtectSystem=strict would
-# otherwise make db/ read-only, and WAL is not a read-only mode: opening the
-# database creates and writes premier.db-wal and premier.db-shm even for a pure
-# reader. Without this the API fails on its first query with "attempt to write
-# a readonly database", which reads as a permissions bug rather than as WAL.
-ReadWritePaths=/srv/bvp/db
 
 [Install]
 WantedBy=multi-user.target

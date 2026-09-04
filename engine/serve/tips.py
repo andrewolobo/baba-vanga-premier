@@ -57,7 +57,6 @@ not a differentiated forecast — what the model adds is that it can rank a fixt
 from __future__ import annotations
 
 import argparse
-import sqlite3
 
 import numpy as np
 import pandas as pd
@@ -136,8 +135,8 @@ UNTIPPED = """
     WHERE p.prediction_id IN (
               SELECT MAX(prediction_id) FROM predictions GROUP BY fixture_id)
       AND NOT EXISTS (SELECT 1 FROM tips t
-                      WHERE t.fixture_id = p.fixture_id AND t.rule_version = ?)
-      AND f.match_date BETWEEN date('now') AND date('now', ? || ' days')
+                      WHERE t.fixture_id = p.fixture_id AND t.rule_version = %s)
+      AND f.match_date BETWEEN %s AND %s
     ORDER BY f.match_date, f.fixture_id
 """
 
@@ -259,16 +258,17 @@ def referee_gap(selected: pd.DataFrame,
     return len(rows), float((rows.model_prob.to_numpy(float) - implied).mean())
 
 
-def untipped(conn: sqlite3.Connection, *, rule_version: str = RULE_VERSION,
+def untipped(conn: db.Connection, *, rule_version: str = RULE_VERSION,
              within_days: int = PUBLISH_WITHIN_DAYS) -> pd.DataFrame:
     """Predictions eligible to be tipped now. See `PUBLISH_WITHIN_DAYS`."""
-    return pd.read_sql_query(
-        UNTIPPED, conn, params=[rule_version, f"+{int(within_days)}"])
+    today = db.today()
+    last = str((pd.Timestamp(today) + pd.Timedelta(days=int(within_days))).date())
+    return db.read_frame(conn, UNTIPPED, [rule_version, today, last])
 
 
-def publish(conn: sqlite3.Connection, tips: pd.DataFrame, *,
+def publish(conn: db.Connection, tips: pd.DataFrame, *,
             dry_run: bool = False) -> int:
-    """Write the tips. `INSERT OR IGNORE`, so a re-run cannot double-publish.
+    """Write the tips. `ON CONFLICT DO NOTHING`, so a re-run cannot double-publish.
 
     The uniqueness key does the work (migration 003): a second tip for a
     fixture already tipped under this rule is silently dropped rather than
@@ -277,16 +277,17 @@ def publish(conn: sqlite3.Connection, tips: pd.DataFrame, *,
     """
     if tips.empty or dry_run:
         return 0
-    cursor = conn.executemany(
-        "INSERT OR IGNORE INTO tips (prediction_id, fixture_id, side, model_prob,"
+    written = conn.executemany(
+        "INSERT INTO tips (prediction_id, fixture_id, side, model_prob,"
         " floor, ceiling, best_price, avg_price, rule_version)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        " ON CONFLICT (fixture_id, rule_version) DO NOTHING",
         [(int(t.prediction_id), int(t.fixture_id), t.side, float(t.model_prob),
           float(t.floor), float(t.ceiling), _price(t.best_price),
           _price(t.avg_price), t.rule_version) for t in tips.itertuples()],
     )
     conn.commit()
-    return cursor.rowcount
+    return written
 
 
 def _price(value):

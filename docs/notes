@@ -1,0 +1,12 @@
+- PWA support - installable web app
+- Database migration - to postgres
+- Deployment of database migration
+- Parlay behind sign in
+- BV bet parlays - House picks
+- User selected parlay
+- Sharing of parlay in a community board. User likes and comments on a parlay
+- Tracking of parlay accuracy for community board - tricky
+- Development of sign in feature - Google? Native? Phone?
+- Betpawa parlay sharing as li
+- SMS verification
+- Whatsapp agent

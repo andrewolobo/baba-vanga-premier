@@ -249,8 +249,8 @@ def m6_curvature(conn) -> dict:
         "SELECT detail FROM gate_ledger WHERE name='h20_shots_blend'").fetchone()
     sides_row = conn.execute(
         "SELECT detail FROM gate_ledger WHERE name='h21_shots_sides'").fetchone()
-    sweep = json.loads(sweep_row[0])
-    sides = json.loads(sides_row[0])
+    sweep = json.loads(sweep_row["detail"])
+    sides = json.loads(sides_row["detail"])
     d = {a["value"]: a["deviance"] for a in sweep["arms"]}
     se = {a["value"]: a["paired_stderr"] for a in sweep["arms"]}
 

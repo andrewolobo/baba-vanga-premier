@@ -42,7 +42,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import sqlite3
 import time
 import urllib.request
 from dataclasses import dataclass, field
@@ -199,7 +198,7 @@ def _resolve_pair(row, bridge, ids, report) -> tuple[int, int] | None:
     return None if None in out else (out[0], out[1])
 
 
-def sync(conn: sqlite3.Connection, pages: list[tuple[str, str]], *,
+def sync(conn: db.Connection, pages: list[tuple[str, str]], *,
          today: str | None = None, dry_run: bool = False) -> CalendarReport:
     """Insert fixtures from `pages`, a list of (source_label, html).
 
@@ -237,8 +236,8 @@ def _ingest(conn, row, source, bridge, ids, out: CalendarReport, *,
         return
     key = (row["division"], row["match_date"], *resolved)
     existing = conn.execute(
-        "SELECT 1 FROM fixtures WHERE division=? AND match_date=?"
-        " AND home_team_id=? AND away_team_id=?", key,
+        "SELECT 1 FROM fixtures WHERE division=%s AND match_date=%s"
+        " AND home_team_id=%s AND away_team_id=%s", key,
     ).fetchone()
     if existing:
         out.already_known += 1
@@ -248,7 +247,7 @@ def _ingest(conn, row, source, bridge, ids, out: CalendarReport, *,
         conn.execute(
             "INSERT INTO fixtures (division, match_date, home_team_id,"
             " away_team_id, kickoff_time, source_file)"
-            " VALUES (?, ?, ?, ?, ?, ?)",
+            " VALUES (%s, %s, %s, %s, %s, %s)",
             [*key, row["kickoff_time"], source],
         )
 

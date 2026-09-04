@@ -27,7 +27,6 @@ database, where the record is kept; they are simply not what this API publishes.
 
 from __future__ import annotations
 
-import sqlite3
 from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -56,16 +55,17 @@ app.add_middleware(
 )
 
 
-def get_conn() -> sqlite3.Connection:
-    """One connection per request.
+def get_conn() -> db.Connection:
+    """One connection per request, autocommit.
 
-    `check_same_thread=False` because FastAPI may open this dependency on a
-    different threadpool worker from the one that runs the endpoint -- see
-    `engine.db.connect`. Without it, any page fetching two endpoints at once
-    fails intermittently with `SQLite objects created in a thread can only be
-    used in that same thread`.
+    Autocommit because this API only reads: psycopg would otherwise open a
+    transaction on the first SELECT and hold it until the connection closed,
+    leaving every request *idle in transaction* for its whole life. FastAPI
+    runs this dependency's setup, the endpoint and the teardown on whichever
+    threadpool workers are free; psycopg connections are not thread-bound, so
+    that hand-off needs nothing special here.
     """
-    conn = db.connect(check_same_thread=False)
+    conn = db.connect(autocommit=True)
     try:
         yield conn
     finally:
@@ -77,10 +77,10 @@ def _rows(conn, sql: str, params: tuple = ()) -> list[dict[str, Any]]:
 
 
 @app.get("/health")
-def health(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
+def health(conn: db.Connection = Depends(get_conn)) -> dict:
     """Liveness plus enough state to tell whether the cycle is actually running."""
     counts = {
-        table: conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        table: db.scalar(conn, f"SELECT COUNT(*) FROM {table}")
         for table in ("fixtures", "predictions", "paper_bets", "clv_grades")
     }
     latest = conn.execute(
@@ -98,11 +98,11 @@ def health(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
 @app.get("/fixtures")
 def fixtures(
     division: str | None = Query(None, description="E0 | E1 | E2 | E3"),
-    conn: sqlite3.Connection = Depends(get_conn),
+    conn: db.Connection = Depends(get_conn),
 ) -> list[dict]:
     if division and division not in SERVED_DIVISIONS:
         raise HTTPException(400, f"unknown division {division!r}")
-    clause = " WHERE f.division = ?" if division else ""
+    clause = " WHERE f.division = %s" if division else ""
     return _rows(
         conn,
         "SELECT f.fixture_id, f.division, f.match_date, f.kickoff_time,"
@@ -119,7 +119,7 @@ def fixtures(
 @app.get("/predictions")
 def predictions(
     division: str | None = Query(None),
-    conn: sqlite3.Connection = Depends(get_conn),
+    conn: db.Connection = Depends(get_conn),
 ) -> list[dict]:
     """The most recent prediction per fixture, with the price beside it.
 
@@ -127,7 +127,7 @@ def predictions(
     the table and is what makes the record auditable, but a client asking
     "what do we think" wants the current answer.
     """
-    clause = " AND f.division = ?" if division else ""
+    clause = " AND f.division = %s" if division else ""
     return _rows(
         conn,
         "SELECT p.prediction_id, p.fixture_id, p.served_at, p.model_version,"
@@ -224,7 +224,7 @@ def _check_division(division: str | None) -> None:
 @app.get("/tips")
 def tips(
     division: str | None = Query(None, description="E0 | E1 | E2 | E3"),
-    conn: sqlite3.Connection = Depends(get_conn),
+    conn: db.Connection = Depends(get_conn),
 ) -> list[dict]:
     """The published tip list for matches that have not been played.
 
@@ -253,14 +253,16 @@ def tips(
     is a second call** -- one tip per fixture is what the record is graded on.
     """
     _check_division(division)
-    clause = " WHERE t.settled_at IS NULL AND f.match_date >= date('now')"
+    clause = " WHERE t.settled_at IS NULL AND f.match_date >= %s"
+    params: tuple = (db.today(),)
     if division:
-        clause += " AND f.division = ?"
+        clause += " AND f.division = %s"
+        params += (division,)
     return _with_handicap(_rows(
         conn,
         TIP_SELECT + clause
         + " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
-        (division,) if division else (),
+        params,
     ))
 
 
@@ -268,7 +270,7 @@ def tips(
 def tip_results(
     division: str | None = Query(None),
     limit: int = Query(60, ge=1, le=500),
-    conn: sqlite3.Connection = Depends(get_conn),
+    conn: db.Connection = Depends(get_conn),
 ) -> list[dict]:
     """Settled tips, most recently played first.
 
@@ -282,11 +284,11 @@ def tip_results(
     clause = " WHERE t.settled_at IS NOT NULL"
     params: tuple = ()
     if division:
-        clause += " AND f.division = ?"
+        clause += " AND f.division = %s"
         params = (division,)
     return _with_handicap(_rows(
         conn,
-        TIP_SELECT + clause + " ORDER BY f.match_date DESC, t.tip_id DESC LIMIT ?",
+        TIP_SELECT + clause + " ORDER BY f.match_date DESC, t.tip_id DESC LIMIT %s",
         params + (limit,),
     ))
 
@@ -304,7 +306,7 @@ def parlay(
                       description=f"{parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}"),
     min_claim: float = Query(parlay_rule.DEFAULT_MIN_CLAIM,
                              description="minimum claimed probability per leg"),
-    conn: sqlite3.Connection = Depends(get_conn),
+    conn: db.Connection = Depends(get_conn),
 ) -> dict:
     """A parlay generated from the published tip list (`PARLAY_PLAN.md`, B24).
 
@@ -329,14 +331,16 @@ def parlay(
             400, f"legs must be {parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}")
     if not 0.0 <= min_claim <= 1.0:
         raise HTTPException(400, "min_claim must be between 0 and 1")
-    clause = " WHERE t.settled_at IS NULL AND f.match_date >= date('now')"
+    clause = " WHERE t.settled_at IS NULL AND f.match_date >= %s"
+    params: tuple = (db.today(),)
     if division:
-        clause += " AND f.division = ?"
+        clause += " AND f.division = %s"
+        params += (division,)
     rows = _with_handicap(_rows(
         conn,
         TIP_SELECT + clause
         + " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
-        (division,) if division else (),
+        params,
     ))
     selected = parlay_rule.select_legs(rows, legs=legs, min_claim=min_claim,
                                        now=_london_now())
@@ -359,18 +363,38 @@ RECORD = """
            SUM(CASE WHEN t.outcome = 'win' THEN 1 ELSE 0 END) * 1.0
              / NULLIF(SUM(CASE WHEN t.outcome IN ('win', 'lose')
                                THEN 1 ELSE 0 END), 0) AS strike_rate,
-           SUM(CASE WHEN t.settled_at IS NULL AND f.match_date >= date('now')
-                    THEN 1 ELSE 0 END) AS upcoming,
-           COUNT(DISTINCT CASE WHEN t.outcome IN ('win', 'lose')
-                          THEN strftime('%Y-%W', f.match_date) END) AS matchweeks
+           SUM(CASE WHEN t.settled_at IS NULL AND f.match_date >= %s
+                    THEN 1 ELSE 0 END) AS upcoming
     FROM tips t
     JOIN fixtures f ON f.fixture_id = t.fixture_id
     {where}
 """
 
 
+def _matchweeks(conn, column: str | None) -> dict[Any, int]:
+    """Distinct graded matchweeks, per value of `column` (None for one total).
+
+    Counted here rather than in SQL: the record's matchweek is SQLite's
+    `strftime('%Y-%W')` -- the Monday-first week number, 00-53 -- and Postgres
+    has no format for that definition (`IW` is ISO and differs at the year
+    boundary). Python's `strftime('%Y-%W')` is the same definition, so the
+    figure is unchanged by the move (docs/POSTGRES_PLAN.md D4).
+    """
+    select = f"{column}, " if column else ""
+    key = column.split(".")[-1] if column else None
+    weeks: dict[Any, set[str]] = {}
+    for row in conn.execute(
+        f"SELECT DISTINCT {select}f.match_date FROM tips t"
+        " JOIN fixtures f ON f.fixture_id = t.fixture_id"
+        " WHERE t.outcome IN ('win', 'lose')"
+    ):
+        week = datetime.strptime(row["match_date"], "%Y-%m-%d").strftime("%Y-%W")
+        weeks.setdefault(row[key] if key else None, set()).add(week)
+    return {k: len(v) for k, v in weeks.items()}
+
+
 @app.get("/tips/record")
-def tip_record(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
+def tip_record(conn: db.Connection = Depends(get_conn)) -> dict:
     """How the published tips have actually done.
 
     **Strike rate is the whole claim, and this endpoint returns nothing else
@@ -393,17 +417,25 @@ def tip_record(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
     from the table rather than imported from `engine.serve.tips`, so the API
     keeps reading what the cycle wrote and never loads the serving stack.
     """
+    today = (db.today(),)
     rule = conn.execute(
         "SELECT rule_version, floor, ceiling FROM tips"
         " ORDER BY tip_id DESC LIMIT 1").fetchone()
     overall = dict(conn.execute(
-        RECORD.format(group="", where="")).fetchone())
+        RECORD.format(group="", where=""), today).fetchone())
+    overall["matchweeks"] = _matchweeks(conn, None).get(None, 0)
     by_division = _rows(
         conn, RECORD.format(group="f.division,", where="")
-        + " GROUP BY f.division ORDER BY f.division")
+        + " GROUP BY f.division ORDER BY f.division", today)
+    weeks = _matchweeks(conn, "f.division")
+    for row in by_division:
+        row["matchweeks"] = weeks.get(row["division"], 0)
     by_rule = _rows(
         conn, RECORD.format(group="t.rule_version,", where="")
-        + " GROUP BY t.rule_version ORDER BY MAX(t.tip_id) DESC")
+        + " GROUP BY t.rule_version ORDER BY MAX(t.tip_id) DESC", today)
+    weeks = _matchweeks(conn, "t.rule_version")
+    for row in by_rule:
+        row["matchweeks"] = weeks.get(row["rule_version"], 0)
     return {
         **overall,
         "by_division": by_division,
@@ -418,7 +450,7 @@ def tip_record(conn: sqlite3.Connection = Depends(get_conn)) -> dict:
 @app.get("/book")
 def book(
     settled: bool | None = Query(None, description="filter by settlement state"),
-    conn: sqlite3.Connection = Depends(get_conn),
+    conn: db.Connection = Depends(get_conn),
 ) -> list[dict]:
     """The paper book, with CLV attached where it has been graded."""
     clause = ""
@@ -441,7 +473,7 @@ def book(
 
 
 @app.get("/performance")
-def performance(conn: sqlite3.Connection = Depends(get_conn)) -> list[dict]:
+def performance(conn: db.Connection = Depends(get_conn)) -> list[dict]:
     """Per-population running totals.
 
     **CLV is the headline, ROI is confirmatory, hit rate is a diagnostic only**

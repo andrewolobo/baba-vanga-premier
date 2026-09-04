@@ -29,6 +29,7 @@ TimeoutStartSec=15min
 
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=PYTHONUNBUFFERED=1
+Environment=BVP_DATABASE_URL=postgresql:///bvp
 
 # Set this to send snapshots off the VM. Until it is set, backup.sh warns on
 # every run that the copies live only on the machine they protect.
@@ -46,9 +47,9 @@ ProtectControlGroups=true
 RestrictNamespaces=true
 LockPersonality=true
 
-# db/ because opening a WAL database writes its -wal and -shm sidecars even to
-# take a read-only snapshot; the backup directory because that is the output.
-ReadWritePaths=/srv/bvp/db /var/backups/bvp
+# Only the output directory: `pg_dump` reads the store over the socket and
+# writes nothing under the repo.
+ReadWritePaths=/var/backups/bvp
 
 # No [Install] section -- the timer starts it. Enabling it directly would also
 # snapshot at every boot.

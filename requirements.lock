@@ -41,6 +41,8 @@ numpy==2.2.6
 packaging==23.2
 pandas==3.0.3
 pluggy==1.6.0
+psycopg==3.3.5
+psycopg-binary==3.3.5
 pydantic==2.11.7
 pydantic-core==2.33.2
 pygments==2.19.1

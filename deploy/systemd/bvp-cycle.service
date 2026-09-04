@@ -50,6 +50,11 @@ TimeoutStartSec=30min
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=PYTHONUNBUFFERED=1
 
+# The store: database `bvp` on the VM's own Postgres over the local socket,
+# peer-authenticated as this unit's user. Same line in every unit that opens
+# the store (docs/POSTGRES_PLAN.md).
+Environment=BVP_DATABASE_URL=postgresql:///bvp
+
 # --- hardening ----------------------------------------------------------- #
 NoNewPrivileges=true
 PrivateTmp=true
@@ -62,9 +67,9 @@ ProtectControlGroups=true
 RestrictNamespaces=true
 LockPersonality=true
 
-# db/ carries the database, the WAL sidecars, the frozen artifacts the cycle
-# writes under db/artifacts/, and run_cycle.sh's lock file. It is the only
-# thing the cycle writes to.
+# db/ carries the frozen artifacts the cycle writes under db/artifacts/ and
+# run_cycle.sh's lock file. The database itself lives in Postgres now; this
+# is the only filesystem path the cycle writes to.
 ReadWritePaths=/srv/bvp/db
 
 # No [Install] section, deliberately. This unit is started by the timer. If it

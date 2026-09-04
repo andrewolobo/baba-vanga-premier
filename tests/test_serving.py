@@ -20,11 +20,10 @@ from engine.serve.artifact import Artifact
 
 
 @pytest.fixture
-def conn(tmp_path):
-    connection = db.connect(tmp_path / "serve.db")
-    db.migrate(connection)
+def conn(database_url):
+    connection = db.connect(database_url)
     for i, name in enumerate(["Arsenal", "Chelsea", "Luton", "Barnsley"], start=1):
-        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
                            (i, name))
     connection.execute(
         "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
@@ -173,7 +172,7 @@ def test_lambdas_are_stored_raw_so_probabilities_can_be_rederived(conn, artifact
 def test_rerunning_a_cycle_does_not_duplicate_predictions(conn, artifact):
     assert len(cycle.serve(conn, artifact)) == 2
     assert cycle.serve(conn, artifact).empty
-    assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] == 2
+    assert db.scalar(conn, "SELECT COUNT(*) FROM predictions") == 2
 
 
 def test_force_reprices_without_overwriting_the_earlier_record(conn, artifact):
@@ -186,7 +185,7 @@ def test_force_reprices_without_overwriting_the_earlier_record(conn, artifact):
 
 def test_dry_run_writes_no_predictions(conn, artifact):
     assert len(cycle.serve(conn, artifact, dry_run=True)) == 2
-    assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM predictions") == 0
 
 
 def test_registering_an_artifact_is_idempotent(conn, artifact):

@@ -39,7 +39,6 @@ Dates are UK-local (`date.isoDate`), the calendar's convention, so
 from __future__ import annotations
 
 import argparse
-import sqlite3
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -129,7 +128,7 @@ def parse_results(html: str) -> tuple[list[dict], dict]:
     return results, counts
 
 
-def settle(conn: sqlite3.Connection, pages: list[tuple[str, str]], *,
+def settle(conn: db.Connection, pages: list[tuple[str, str]], *,
            dry_run: bool = False) -> ResultsReport:
     """Settle unsettled tips on every full-time result in `pages`.
 
@@ -154,8 +153,8 @@ def settle(conn: sqlite3.Connection, pages: list[tuple[str, str]], *,
             if resolved is None:
                 continue
             fixture = conn.execute(
-                "SELECT fixture_id FROM fixtures WHERE division=? AND match_date=?"
-                " AND home_team_id=? AND away_team_id=?",
+                "SELECT fixture_id FROM fixtures WHERE division=%s AND match_date=%s"
+                " AND home_team_id=%s AND away_team_id=%s",
                 (row["division"], row["match_date"], *resolved),
             ).fetchone()
             if fixture is None:
@@ -168,14 +167,14 @@ def settle(conn: sqlite3.Connection, pages: list[tuple[str, str]], *,
     return out
 
 
-def pending_dates(conn: sqlite3.Connection, today: str, *,
+def pending_dates(conn: db.Connection, today: str, *,
                   lookback: int = LOOKBACK_DAYS) -> list[str]:
     """Dates on or before `today` with a played-or-playing, unsettled tip."""
     first = str((pd.Timestamp(today) - pd.Timedelta(days=lookback)).date())
     rows = conn.execute(
         "SELECT DISTINCT f.match_date FROM tips t"
         " JOIN fixtures f ON f.fixture_id = t.fixture_id"
-        " WHERE t.settled_at IS NULL AND f.match_date <= ? AND f.match_date >= ?"
+        " WHERE t.settled_at IS NULL AND f.match_date <= %s AND f.match_date >= %s"
         " ORDER BY f.match_date", (today, first),
     ).fetchall()
     return [r["match_date"] for r in rows]

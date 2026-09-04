@@ -10,16 +10,15 @@ looks safe.
 
 from __future__ import annotations
 
-import sqlite3
-
 import pandas as pd
 
+from engine import db
 from engine.ingest.holdout import Corpus, Purpose, resolve_seasons
 from engine.seasons import ALL_DIVISIONS
 
 
 def read_matches(
-    conn: sqlite3.Connection,
+    conn: db.Connection,
     *,
     purpose: Purpose = Purpose.DEV,
     seasons: tuple[str, ...] | None = None,
@@ -42,7 +41,7 @@ def read_matches(
 
 
 def read_player_seasons(
-    conn: sqlite3.Connection,
+    conn: db.Connection,
     *,
     purpose: Purpose = Purpose.DEV,
     seasons: tuple[str, ...] | None = None,
@@ -63,12 +62,12 @@ def read_player_seasons(
 
 def _select(conn, table, seasons, divisions, *, order, select="m.*", joins=""):
     if not seasons or not divisions:
-        return pd.read_sql_query(f"SELECT * FROM {table} WHERE 0", conn)
-    s_marks = ",".join("?" * len(seasons))
-    d_marks = ",".join("?" * len(divisions))
-    return pd.read_sql_query(
+        return db.read_frame(conn, f"SELECT * FROM {table} WHERE false")
+    s_marks = ",".join(["%s"] * len(seasons))
+    d_marks = ",".join(["%s"] * len(divisions))
+    return db.read_frame(
+        conn,
         f"SELECT {select} FROM {table} m {joins} "
         f"WHERE m.season IN ({s_marks}) AND m.division IN ({d_marks}) ORDER BY {order}",
-        conn,
-        params=[*seasons, *divisions],
+        [*seasons, *divisions],
     )

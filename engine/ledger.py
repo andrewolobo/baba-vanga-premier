@@ -13,8 +13,9 @@ would defeat the purpose.
 from __future__ import annotations
 
 import json
-import sqlite3
 from typing import Any
+
+from engine import db
 
 HOLDOUT_UNSEAL = "holdout_unseal"
 GATE = "gate"
@@ -23,7 +24,7 @@ PROBE = "probe"
 
 
 def record(
-    conn: sqlite3.Connection,
+    conn: db.Connection,
     *,
     kind: str,
     name: str,
@@ -34,10 +35,12 @@ def record(
     reason: str | None = None,
 ) -> int:
     """Append one entry. Returns its id."""
-    cur = conn.execute(
+    new_id = db.scalar(
+        conn,
         """
         INSERT INTO gate_ledger (kind, name, purpose, seasons, divisions, detail, reason)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        RETURNING id
         """,
         (
             kind,
@@ -50,10 +53,10 @@ def record(
         ),
     )
     conn.commit()
-    return int(cur.lastrowid)
+    return int(new_id)
 
 
-def last_detail(conn: sqlite3.Connection, name: str) -> dict[str, Any]:
+def last_detail(conn: db.Connection, name: str) -> dict[str, Any]:
     """The `detail` of the most recent entry called `name`, or `{}` if none.
 
     Read-only, and deliberately so. The append-only rule (convention 5) is
@@ -62,16 +65,15 @@ def last_detail(conn: sqlite3.Connection, name: str) -> dict[str, Any]:
     recorded, instead of trusting whoever is at the keyboard to have run it.
     """
     row = conn.execute(
-        "SELECT detail FROM gate_ledger WHERE name = ? "
+        "SELECT detail FROM gate_ledger WHERE name = %s "
         "ORDER BY id DESC LIMIT 1", (name,)
     ).fetchone()
     return json.loads(row["detail"]) if row and row["detail"] else {}
 
 
-def trial_count(conn: sqlite3.Connection, kinds: tuple[str, ...] = (GATE, SWEEP, PROBE)) -> int:
+def trial_count(conn: db.Connection, kinds: tuple[str, ...] = (GATE, SWEEP, PROBE)) -> int:
     """How many trials have been run against the corpus. Feeds PBO deflation."""
-    marks = ",".join("?" * len(kinds))
-    row = conn.execute(
-        f"SELECT COUNT(*) AS n FROM gate_ledger WHERE kind IN ({marks})", kinds
-    ).fetchone()
-    return int(row["n"])
+    marks = ",".join(["%s"] * len(kinds))
+    return int(db.scalar(
+        conn, f"SELECT COUNT(*) AS n FROM gate_ledger WHERE kind IN ({marks})", kinds
+    ))

@@ -22,7 +22,6 @@ otherwise. What was served, and when, has to stay true afterwards.
 from __future__ import annotations
 
 import argparse
-import sqlite3
 from dataclasses import replace
 from pathlib import Path
 
@@ -58,7 +57,7 @@ def latest_artifact(directory: Path = ARTIFACT_DIR) -> Artifact | None:
     return Artifact.load(paths[-1]) if paths else None
 
 
-def build_artifact(conn: sqlite3.Connection, cutoff=None,
+def build_artifact(conn: db.Connection, cutoff=None,
                    directory: Path = ARTIFACT_DIR) -> tuple[Artifact, Path]:
     """Refit and freeze at `cutoff` (default today)."""
     cutoff = pd.Timestamp(cutoff or pd.Timestamp.now().normalize())
@@ -68,11 +67,12 @@ def build_artifact(conn: sqlite3.Connection, cutoff=None,
     return artifact, artifact.save(directory)
 
 
-def register(conn: sqlite3.Connection, artifact: Artifact, path: Path | None = None) -> None:
+def register(conn: db.Connection, artifact: Artifact, path: Path | None = None) -> None:
     """Record the artifact so a stored prediction can be traced to a real fit."""
     conn.execute(
-        "INSERT OR IGNORE INTO model_runs (model_version, fitted_at, config_label,"
-        " n_train, n_teams, corpus_digest, artifact_path) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO model_runs (model_version, fitted_at, config_label,"
+        " n_train, n_teams, corpus_digest, artifact_path) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        " ON CONFLICT (model_version) DO NOTHING",
         (artifact.version, artifact.fitted_at, SERVING_CONFIG.label(),
          artifact.n_train, len(artifact.teams), artifact.corpus_digest,
          str(path) if path else None),
@@ -80,22 +80,23 @@ def register(conn: sqlite3.Connection, artifact: Artifact, path: Path | None = N
     conn.commit()
 
 
-def pending_fixtures(conn: sqlite3.Connection, version: str,
+def pending_fixtures(conn: db.Connection, version: str,
                      *, information_set: str = INFORMATION_SET,
                      force: bool = False) -> pd.DataFrame:
     """Fixtures with no prediction yet from this artifact at this information set."""
     clause = "" if force else (
         " AND NOT EXISTS (SELECT 1 FROM predictions p WHERE p.fixture_id = f.fixture_id"
-        "                 AND p.model_version = ? AND p.information_set = ?)"
+        "                 AND p.model_version = %s AND p.information_set = %s)"
     )
     params = [] if force else [version, information_set]
-    return pd.read_sql_query(
+    return db.read_frame(
+        conn,
         "SELECT f.*, h.canonical_name AS home_team, a.canonical_name AS away_team "
         "FROM fixtures f "
         "JOIN teams h ON h.team_id = f.home_team_id "
         "JOIN teams a ON a.team_id = f.away_team_id "
         f"WHERE 1=1{clause} ORDER BY f.match_date, f.fixture_id",
-        conn, params=params,
+        params,
     )
 
 
@@ -124,7 +125,7 @@ def unknown_clubs(fixtures: pd.DataFrame, artifact: Artifact) -> list[str]:
     return sorted(named - set(artifact.teams))
 
 
-def serve(conn: sqlite3.Connection, artifact: Artifact, *,
+def serve(conn: db.Connection, artifact: Artifact, *,
           information_set: str = INFORMATION_SET, force: bool = False,
           dry_run: bool = False) -> pd.DataFrame:
     """Price every pending fixture the artifact knows. Returns what was written."""
@@ -143,7 +144,7 @@ def serve(conn: sqlite3.Connection, artifact: Artifact, *,
 
     if not dry_run:
         # served_at is supplied explicitly at microsecond resolution rather than
-        # left to the column default, which is `datetime('now')` and therefore
+        # left to the column default, which is the UTC second and therefore
         # only accurate to the second. Two deliberate re-serves inside one
         # second are rare in production but routine in tests, and they would
         # collide on the uniqueness key -- turning an intended append into a
@@ -153,7 +154,7 @@ def serve(conn: sqlite3.Connection, artifact: Artifact, *,
         conn.executemany(
             "INSERT INTO predictions (fixture_id, model_version, information_set,"
             " served_at, lam_h, lam_a, p_home, p_draw, p_away, p_over25, p_under25,"
-            " calibrated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)",
+            " calibrated) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 0)",
             [(int(r.fixture_id), artifact.version, information_set, served_at,
               float(r.lam_h), float(r.lam_a), float(r.p_h), float(r.p_d),
               float(r.p_a), float(r.p_over), float(r.p_under))
@@ -164,13 +165,13 @@ def serve(conn: sqlite3.Connection, artifact: Artifact, *,
     return out
 
 
-def snapshot(conn: sqlite3.Connection, *, cycle_label: str, version: str,
+def snapshot(conn: db.Connection, *, cycle_label: str, version: str,
              artifact_path, fixtures_seen: int, predictions_written: int,
              bets_written: int, rule_version: str, notes: str | None = None) -> None:
     conn.execute(
         "INSERT INTO serving_state (cycle_label, model_version, artifact_path,"
         " fixtures_seen, predictions_written, bets_written, rule_version, notes)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
         (cycle_label, version, str(artifact_path) if artifact_path else None,
          fixtures_seen, predictions_written, bets_written, rule_version, notes),
     )

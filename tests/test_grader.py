@@ -35,11 +35,10 @@ def results(*rows: str) -> str:
 
 
 @pytest.fixture
-def conn(tmp_path):
-    connection = db.connect(tmp_path / "grade.db")
-    db.migrate(connection)
+def conn(database_url):
+    connection = db.connect(database_url)
     for i, name in enumerate(["Arsenal", "Chelsea"], start=1):
-        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
                            (i, name))
     connection.execute(
         "INSERT INTO fixtures (fixture_id, division, match_date, home_team_id,"
@@ -57,7 +56,7 @@ def _bet(conn, market="1x2", side="H", price=1.90):
     conn.execute(
         "INSERT INTO paper_bets (prediction_id, fixture_id, market, side, price,"
         " price_source, model_prob, breakeven_prob, edge, expected_value, stake,"
-        " rule_version) VALUES (1, 1, ?, ?, ?, 'avg', 0.62, ?, ?, ?, 1.0, 'test')",
+        " rule_version) VALUES (1, 1, %s, %s, %s, 'avg', 0.62, %s, %s, %s, 1.0, 'test')",
         (market, side, price, 1 / price, 0.62 - 1 / price, 0.62 * price - 1))
     conn.commit()
 
@@ -87,13 +86,13 @@ def test_a_losing_bet_settles_at_minus_stake(conn):
 def test_over_under_settles_on_the_total_not_the_result(conn):
     _bet(conn, market="ou25", side="over", price=1.95)   # 2-1 = 3 goals, over wins
     csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
-    assert conn.execute("SELECT outcome FROM paper_bets").fetchone()[0] == "win"
+    assert db.scalar(conn, "SELECT outcome FROM paper_bets") == "win"
 
     conn.execute("DELETE FROM clv_grades")
     conn.execute("UPDATE paper_bets SET settled_at=NULL, side='under', outcome=NULL")
     conn.commit()
     csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
-    assert conn.execute("SELECT outcome FROM paper_bets").fetchone()[0] == "lose"
+    assert db.scalar(conn, "SELECT outcome FROM paper_bets") == "lose"
 
 
 def test_grading_does_not_overwrite_the_bet_that_was_placed(conn):
@@ -156,14 +155,14 @@ def test_pinnacle_is_preferred_and_the_source_is_recorded(conn):
     margins. Blending them would make a CLV series that drifts with coverage."""
     _bet(conn)
     csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
-    assert conn.execute("SELECT close_source FROM clv_grades").fetchone()[0] == "PSC"
+    assert db.scalar(conn, "SELECT close_source FROM clv_grades") == "PSC"
 
     no_pinnacle = ARSENAL_WIN.replace("1.75,3.90,4.80", ",,")
     conn.execute("DELETE FROM clv_grades")
     conn.execute("UPDATE paper_bets SET settled_at=NULL")
     conn.commit()
     csv_grader.grade(conn, csv_grader.parse_results(results(no_pinnacle)))
-    assert conn.execute("SELECT close_source FROM clv_grades").fetchone()[0] == "AvgC"
+    assert db.scalar(conn, "SELECT close_source FROM clv_grades") == "AvgC"
 
 
 def test_a_bet_is_graded_only_once(conn):
@@ -173,7 +172,7 @@ def test_a_bet_is_graded_only_once(conn):
     conn.commit()
     csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
     assert first.graded == 1
-    assert conn.execute("SELECT COUNT(*) FROM clv_grades").fetchone()[0] == 1
+    assert db.scalar(conn, "SELECT COUNT(*) FROM clv_grades") == 1
 
 
 # --- plumbing --------------------------------------------------------------
@@ -184,8 +183,8 @@ def test_dry_run_settles_nothing(conn):
     report = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)),
                               dry_run=True)
     assert report.settled == 1
-    assert conn.execute("SELECT settled_at FROM paper_bets").fetchone()[0] is None
-    assert conn.execute("SELECT COUNT(*) FROM clv_grades").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT settled_at FROM paper_bets") is None
+    assert db.scalar(conn, "SELECT COUNT(*) FROM clv_grades") == 0
 
 
 def test_a_result_with_no_matching_fixture_is_ignored(conn):
@@ -198,7 +197,7 @@ def test_a_result_with_no_matching_fixture_is_ignored(conn):
 def _tip(conn, side="H", outcome=None):
     conn.execute(
         "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
-        " rule_version, settled_at, outcome) VALUES (1, 1, ?, 0.62, 0.55, 'test', ?, ?)",
+        " rule_version, settled_at, outcome) VALUES (1, 1, %s, 0.62, 0.55, 'test', %s, %s)",
         (side, "2026-08-16" if outcome else None, outcome))
     conn.commit()
 
@@ -209,7 +208,7 @@ def test_a_tip_settled_elsewhere_that_this_feed_agrees_with_is_left_alone(conn):
     _tip(conn, "H", outcome="win")
     report = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
     assert report.disagreed == [] and report.tips_settled == 0
-    assert conn.execute("SELECT settled_at FROM tips").fetchone()[0] == "2026-08-16"
+    assert db.scalar(conn, "SELECT settled_at FROM tips") == "2026-08-16"
 
 
 def test_a_tip_settled_elsewhere_that_this_feed_contradicts_is_named_not_rewritten(conn):
@@ -219,9 +218,9 @@ def test_a_tip_settled_elsewhere_that_this_feed_contradicts_is_named_not_rewritt
     the failure that would otherwise be invisible."""
     _tip(conn, "H", outcome="lose")
     report = csv_grader.grade(conn, csv_grader.parse_results(results(ARSENAL_WIN)))
-    tip_id = conn.execute("SELECT tip_id FROM tips").fetchone()[0]
+    tip_id = db.scalar(conn, "SELECT tip_id FROM tips")
     assert report.disagreed == [tip_id]
-    assert conn.execute("SELECT outcome FROM tips").fetchone()[0] == "lose"
+    assert db.scalar(conn, "SELECT outcome FROM tips") == "lose"
     assert "different outcome" in report.describe()
 
 

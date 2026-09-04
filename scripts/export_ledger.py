@@ -45,7 +45,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import sqlite3
 import sys
 from pathlib import Path
 
@@ -65,8 +64,7 @@ COLUMNS = ("id", "created_at", "kind", "name", "purpose", "seasons",
            "divisions", "detail", "reason")
 
 
-def rows(conn: sqlite3.Connection) -> list[dict]:
-    conn.row_factory = sqlite3.Row
+def rows(conn: db.Connection) -> list[dict]:
     return [dict(r) for r in conn.execute(
         f"SELECT {','.join(COLUMNS)} FROM gate_ledger ORDER BY id")]
 
@@ -93,7 +91,7 @@ def classify(on_disk: str, text: str) -> str:
     return "DISAGREES"
 
 
-def restore(conn: sqlite3.Connection, path: Path) -> int:
+def restore(conn: db.Connection, path: Path) -> int:
     """Load the file's rows into the ledger. Returns rows written.
 
     Two cases are allowed and one is refused. An EMPTY ledger takes the whole
@@ -116,8 +114,13 @@ def restore(conn: sqlite3.Connection, path: Path) -> int:
     missing = records[len(existing):]
     conn.executemany(
         f"INSERT INTO gate_ledger ({','.join(COLUMNS)}) "
-        f"VALUES ({','.join('?' for _ in COLUMNS)})",
+        f"VALUES ({','.join('%s' for _ in COLUMNS)})",
         [tuple(r[c] for c in COLUMNS) for r in missing])
+    # Rows arrive with their ids, which leaves the identity sequence where it
+    # was; advance it, or the next gate's row would collide with a restored
+    # one (docs/POSTGRES_PLAN.md, pitfall 5).
+    conn.execute("SELECT setval(pg_get_serial_sequence('gate_ledger', 'id'),"
+                 " COALESCE((SELECT MAX(id) FROM gate_ledger), 1))")
     conn.commit()
     if render(rows(conn)) != render(records):
         raise SystemExit("restore wrote rows that do not read back identically")

@@ -45,11 +45,10 @@ RESULTS = (
 
 
 @pytest.fixture
-def conn(tmp_path):
-    connection = db.connect(tmp_path / "e2e.db")
-    db.migrate(connection)
+def conn(database_url):
+    connection = db.connect(database_url)
     for i, name in enumerate(["Arsenal", "Barnsley", "Chelsea", "Luton"], start=1):
-        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
                            (i, name))
     connection.commit()
     return connection
@@ -78,7 +77,7 @@ def test_a_full_weekly_cycle(conn, artifact):
     cycle.register(conn, artifact)
     served = cycle.serve(conn, artifact)
     assert len(served) == 2
-    assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] == 2
+    assert db.scalar(conn, "SELECT COUNT(*) FROM predictions") == 2
 
     # 3. the rule turns some of them into bets
     bets = book.run(conn)
@@ -121,7 +120,7 @@ def test_the_cycle_is_idempotent_end_to_end(conn, artifact):
     csv_grader.grade(conn, csv_grader.parse_results(RESULTS))
 
     counts = lambda: tuple(  # noqa: E731
-        conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+        db.scalar(conn, f"SELECT COUNT(*) FROM {t}")
         for t in ("fixtures", "predictions", "paper_bets", "clv_grades")
     )
     before = counts()

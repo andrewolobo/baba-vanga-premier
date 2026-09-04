@@ -16,7 +16,6 @@ with its own WON mark would be worse than showing no score.
 from __future__ import annotations
 
 import argparse
-import sqlite3
 
 import numpy as np
 
@@ -27,7 +26,7 @@ from services.bbc_calendar import _resolve_pair
 from services.bbc_results import collect, parse_results
 
 
-def pending_dates(conn: sqlite3.Connection) -> list[str]:
+def pending_dates(conn: db.Connection) -> list[str]:
     """Dates with a settled tip that has no recorded score."""
     return [r["match_date"] for r in conn.execute(
         "SELECT DISTINCT f.match_date FROM tips t"
@@ -36,7 +35,7 @@ def pending_dates(conn: sqlite3.Connection) -> list[str]:
         " ORDER BY f.match_date")]
 
 
-def backfill(conn: sqlite3.Connection, pages: list[tuple[str, str]], *,
+def backfill(conn: db.Connection, pages: list[tuple[str, str]], *,
              dry_run: bool = False) -> tuple[int, list[int]]:
     """Fill missing scores from `pages`; never touch outcome or P&L.
 
@@ -55,14 +54,14 @@ def backfill(conn: sqlite3.Connection, pages: list[tuple[str, str]], *,
             if resolved is None:
                 continue
             fixture = conn.execute(
-                "SELECT fixture_id FROM fixtures WHERE division=? AND match_date=?"
-                " AND home_team_id=? AND away_team_id=?",
+                "SELECT fixture_id FROM fixtures WHERE division=%s AND match_date=%s"
+                " AND home_team_id=%s AND away_team_id=%s",
                 (row["division"], row["match_date"], *resolved)).fetchone()
             if fixture is None:
                 continue
             tips = conn.execute(
                 "SELECT tip_id, side, outcome FROM tips"
-                " WHERE fixture_id=? AND settled_at IS NOT NULL AND fthg IS NULL",
+                " WHERE fixture_id=%s AND settled_at IS NOT NULL AND fthg IS NULL",
                 (fixture["fixture_id"],)).fetchall()
             for tip in tips:
                 won = bool(selection.won_from_score(
@@ -73,7 +72,7 @@ def backfill(conn: sqlite3.Connection, pages: list[tuple[str, str]], *,
                     disagreed.append(tip["tip_id"])
                     continue
                 if not dry_run:
-                    conn.execute("UPDATE tips SET fthg=?, ftag=? WHERE tip_id=?",
+                    conn.execute("UPDATE tips SET fthg=%s, ftag=%s WHERE tip_id=%s",
                                  (row["fthg"], row["ftag"], tip["tip_id"]))
                 filled += 1
     if not dry_run:
@@ -94,8 +93,8 @@ def main(argv=None) -> int:
         return 0
     print(f"{len(dates)} date page(s): {', '.join(dates)}")
     filled, disagreed = backfill(conn, collect(dates), dry_run=args.dry_run)
-    left = conn.execute("SELECT COUNT(*) FROM tips WHERE settled_at IS NOT NULL"
-                        " AND fthg IS NULL").fetchone()[0]
+    left = db.scalar(conn, "SELECT COUNT(*) FROM tips WHERE settled_at IS NOT NULL"
+                           " AND fthg IS NULL")
     line = f"{filled} tip(s) filled, {left} still missing a score"
     if disagreed:
         line += f"; ATTENTION -- outcome disagreement, left alone: {disagreed}"

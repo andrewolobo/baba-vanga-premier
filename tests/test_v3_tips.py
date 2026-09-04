@@ -14,6 +14,7 @@ import itertools
 
 import numpy as np
 import pandas as pd
+import psycopg
 import pytest
 
 from engine import db
@@ -127,14 +128,13 @@ def test_a_handicap_tip_carries_no_price():
 # --- migration 005 ---------------------------------------------------------
 
 
-def test_migration_005_accepts_the_handicap_and_still_refuses_nonsense(tmp_path):
-    conn = db.connect(tmp_path / "m005.db")
-    db.migrate(conn)
+def test_migration_005_accepts_the_handicap_and_still_refuses_nonsense(database_url):
+    conn = db.connect(database_url)
     conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (1, 'A'),"
                  " (2, 'B')")
     conn.execute("INSERT INTO fixtures (fixture_id, division, match_date,"
                  " home_team_id, away_team_id, source_file)"
-                 " VALUES (1, 'E0', date('now'), 1, 2, 't')")
+                 " VALUES (1, 'E0', %s, 1, 2, 't')", (db.today(),))
     conn.execute("INSERT INTO predictions (prediction_id, fixture_id,"
                  " model_version, information_set, served_at, lam_h, lam_a,"
                  " p_home, p_draw, p_away, p_over25, p_under25)"
@@ -142,8 +142,7 @@ def test_migration_005_accepts_the_handicap_and_still_refuses_nonsense(tmp_path)
                  " 0.4, 0.3, 0.3, 0.5, 0.5)")
     conn.execute("INSERT INTO tips (prediction_id, fixture_id, side, model_prob,"
                  " floor, rule_version) VALUES (10, 1, 'A+1.5', 0.79, 0.55, 'confidence-v3')")
-    import sqlite3
-    with pytest.raises(sqlite3.IntegrityError):
+    with pytest.raises(psycopg.errors.IntegrityError):
         conn.execute("INSERT INTO tips (prediction_id, fixture_id, side,"
                      " model_prob, floor, rule_version)"
                      " VALUES (10, 1, 'H-1.5', 0.5, 0.55, 'confidence-v3')")
@@ -187,18 +186,17 @@ def test_referee_gap_ignores_priced_sides():
 # --- the cycle step --------------------------------------------------------
 
 
-def _serving_db(tmp_path, avg_odds):
+def _serving_db(database_url, avg_odds):
     """One weak-favourite fixture today, its prediction stored with lambdas
     (1.5, 1.0) -- the v3 rule publishes `A+1.5` at ~0.754 -- and the fixture
     priced at `avg_odds` (h, d, a)."""
-    conn = db.connect(tmp_path / "cycle.db")
-    db.migrate(conn)
+    conn = db.connect(database_url)
     conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (1, 'A'),"
                  " (2, 'B')")
     conn.execute(
         "INSERT INTO fixtures (fixture_id, division, match_date, home_team_id,"
         " away_team_id, avg_h, avg_d, avg_a, source_file)"
-        " VALUES (1, 'E0', date('now'), 1, 2, ?, ?, ?, 't')", avg_odds)
+        " VALUES (1, 'E0', %s, 1, 2, %s, %s, %s, 't')", (db.today(), *avg_odds))
     conn.execute(
         "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
         " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
@@ -208,25 +206,25 @@ def _serving_db(tmp_path, avg_odds):
     return conn
 
 
-def test_step_tips_reports_the_referee_gap_and_stays_quiet_in_band(tmp_path):
+def test_step_tips_reports_the_referee_gap_and_stays_quiet_in_band(database_url):
     from services import run_cycle
 
     # Odds planted vig-free from the model's own probabilities: gap ~ 0.
-    conn = _serving_db(tmp_path, (1.0 / 0.488, 1.0 / 0.260, 1.0 / 0.252))
+    conn = _serving_db(database_url, (1.0 / 0.488, 1.0 / 0.260, 1.0 / 0.252))
     step = run_cycle.step_tips(conn, dry_run=False)
 
-    assert conn.execute("SELECT side FROM tips").fetchone()[0] == "A+1.5"
+    assert db.scalar(conn, "SELECT side FROM tips") == "A+1.5"
     assert "referee gap" in step.detail
     assert step.status is run_cycle.Status.OK, step.detail
     conn.close()
 
 
-def test_step_tips_flags_attention_when_the_model_leaves_the_market(tmp_path):
+def test_step_tips_flags_attention_when_the_model_leaves_the_market(database_url):
     from services import run_cycle
 
     # The market prices a heavy home favourite the prediction does not see:
     # market-implied A+1.5 sits far below the model's 0.754 claim.
-    conn = _serving_db(tmp_path, (1.20, 6.5, 12.0))
+    conn = _serving_db(database_url, (1.20, 6.5, 12.0))
     step = run_cycle.step_tips(conn, dry_run=False)
 
     assert "referee gap" in step.detail
@@ -235,13 +233,13 @@ def test_step_tips_flags_attention_when_the_model_leaves_the_market(tmp_path):
     conn.close()
 
 
-def test_step_tips_survives_a_fixture_without_odds(tmp_path):
+def test_step_tips_survives_a_fixture_without_odds(database_url):
     from services import run_cycle
 
-    conn = _serving_db(tmp_path, (None, None, None))
+    conn = _serving_db(database_url, (None, None, None))
     step = run_cycle.step_tips(conn, dry_run=False)
 
-    assert conn.execute("SELECT COUNT(*) FROM tips").fetchone()[0] == 1
+    assert db.scalar(conn, "SELECT COUNT(*) FROM tips") == 1
     assert step.status is not run_cycle.Status.FAILED, step.detail
     assert "referee gap" not in step.detail
     conn.close()

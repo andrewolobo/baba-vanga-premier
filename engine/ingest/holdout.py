@@ -20,13 +20,12 @@ DataFrame) and calls `for_measurement()`, which refuses a LIVE corpus.
 
 from __future__ import annotations
 
-import sqlite3
 from dataclasses import dataclass
 from enum import Enum
 
 import pandas as pd
 
-from engine import ledger
+from engine import db, ledger
 from engine.seasons import DEV_SEASONS, HOLDOUT_SEASONS, SEASONS
 
 
@@ -82,7 +81,7 @@ def resolve_seasons(
     purpose: Purpose,
     requested: tuple[str, ...] | None,
     *,
-    conn: sqlite3.Connection | None = None,
+    conn: db.Connection | None = None,
     unseal_reason: str | None = None,
     name: str = "unnamed",
 ) -> tuple[str, ...]:

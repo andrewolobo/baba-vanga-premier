@@ -10,9 +10,12 @@ from the one that was chosen while leaving every test about probabilities green.
 from __future__ import annotations
 
 import pandas as pd
+import psycopg
 import pytest
 
+from engine import db
 from engine.serve import tips
+from tests.conftest import relative_date
 
 
 def predictions(rows, lams=None) -> pd.DataFrame:
@@ -136,33 +139,30 @@ def test_the_published_columns_are_stable():
 
 
 @pytest.fixture
-def conn(tmp_path):
+def conn(database_url):
     """Two fixtures, both priced, both predicted, neither tipped.
 
     Both are dated **today**: the rule publishes on matchday only
     (`tips.PUBLISH_WITHIN_DAYS`), so a fixed future date would make every test
     below assert on an empty frame rather than on the tip rule.
     """
-    from engine import db
-
-    connection = db.connect(tmp_path / "tips.db")
-    db.migrate(connection)
+    connection = db.connect(database_url)
     for i, name in enumerate(["Arsenal", "Chelsea", "Luton", "Barnsley"], start=1):
-        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
                            (i, name))
     for fid, home, away, prices in ((1, 1, 2, (1.60, 4.00, 6.00)),
                                     (2, 3, 4, (2.40, 3.30, 3.10))):
         connection.execute(
             "INSERT INTO fixtures (fixture_id, division, match_date, home_team_id,"
             " away_team_id, max_h, max_d, max_a, avg_h, avg_d, avg_a, source_file)"
-            " VALUES (?, 'E0', date('now'), ?, ?, ?, ?, ?, ?, ?, ?, 'test')",
-            (fid, home, away, *prices, *[p * 0.95 for p in prices]))
+            " VALUES (%s, 'E0', %s, %s, %s, %s, %s, %s, %s, %s, %s, 'test')",
+            (fid, db.today(), home, away, *prices, *[p * 0.95 for p in prices]))
     for pid, fid, probs in ((10, 1, (0.62, 0.24, 0.14)), (11, 2, (0.44, 0.28, 0.28))):
         connection.execute(
             "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
             " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
-            " p_over25, p_under25) VALUES (?, ?, 'v1', 'pre_close', '2026-08-10',"
-            " 1.5, 1.0, ?, ?, ?, 0.5, 0.5)", (pid, fid, *probs))
+            " p_over25, p_under25) VALUES (%s, %s, 'v1', 'pre_close', '2026-08-10',"
+            " 1.5, 1.0, %s, %s, %s, 0.5, 0.5)", (pid, fid, *probs))
     connection.commit()
     yield connection
     connection.close()
@@ -176,7 +176,7 @@ def test_a_fixture_beyond_the_publish_window_is_not_tipped_yet(conn):
     source was football-data's rolling window this bounded itself; a forward
     calendar removes that bound and this restores it.
     """
-    conn.execute("UPDATE fixtures SET match_date = date('now', '+6 days')")
+    conn.execute("UPDATE fixtures SET match_date = %s", (relative_date(6),))
     conn.commit()
 
     assert tips.untipped(conn).empty
@@ -186,7 +186,7 @@ def test_a_fixture_beyond_the_publish_window_is_not_tipped_yet(conn):
 def test_a_fixture_already_played_is_never_tipped(conn):
     """The lower bound. A missed cycle must not publish a call on a match whose
     result is already known -- unreachable before a forward calendar existed."""
-    conn.execute("UPDATE fixtures SET match_date = date('now', '-1 day')")
+    conn.execute("UPDATE fixtures SET match_date = %s", (relative_date(-1),))
     conn.commit()
 
     assert tips.untipped(conn).empty
@@ -212,13 +212,11 @@ def test_publishing_then_re_running_produces_no_second_tip(conn):
 def test_the_database_refuses_a_second_tip_on_the_same_fixture(conn):
     """The safety property, enforced in migration 003 rather than in Python: a
     tipster publishing two recommendations for one match has no strike rate."""
-    import sqlite3
-
     tips.publish(conn, tips.select(tips.untipped(conn)))
-    with pytest.raises(sqlite3.IntegrityError):
+    with pytest.raises(psycopg.errors.IntegrityError):
         conn.execute(
             "INSERT INTO tips (prediction_id, fixture_id, side, model_prob,"
-            " floor, rule_version) VALUES (10, 1, 'A', 0.9, 0.55, ?)",
+            " floor, rule_version) VALUES (10, 1, 'A', 0.9, 0.55, %s)",
             (tips.RULE_VERSION,))
 
 
@@ -234,7 +232,7 @@ def test_a_missing_price_is_stored_as_null_not_nan(conn):
 
 def test_dry_run_publishes_nothing(conn):
     assert tips.publish(conn, tips.select(tips.untipped(conn)), dry_run=True) == 0
-    assert conn.execute("SELECT COUNT(*) FROM tips").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM tips") == 0
 
 
 # --- settlement ------------------------------------------------------------

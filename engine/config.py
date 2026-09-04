@@ -62,7 +62,11 @@ BBC_RESULTS_ENABLED = setting("BVP_BBC_RESULTS") == "1"
 
 DB_DIR = REPO_ROOT / "db"
 MIGRATIONS_DIR = DB_DIR / "migrations"
-DB_PATH = Path(setting("BVP_DB_PATH") or DB_DIR / "premier.db")
+#: A libpq connection URL. The default is libpq's own: database `bvp` over the
+#: local socket as the OS user on Linux (peer auth on the server), localhost
+#: 5432 on Windows. Development machines set it in `.env`; the server sets it
+#: in the systemd units. docs/POSTGRES_PLAN.md.
+DATABASE_URL = setting("BVP_DATABASE_URL", "postgresql:///bvp")
 
 
 def relpath(path: Path) -> str:

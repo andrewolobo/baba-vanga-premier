@@ -103,7 +103,7 @@ Three constraints that bite if forgotten:
   they agree only on a UTC machine.
 - **Never edit a tracked file on the server.** Everything environment-specific
   goes in an env var or a systemd unit. The overridable settings are
-  `BVP_DB_PATH`, `BVP_DATA_DIR`, `BVP_REFERENCE_DIR`, `BVP_BBC_CALENDAR`,
+  `BVP_DATABASE_URL`, `BVP_TEST_DATABASE_URL`, `BVP_DATA_DIR`, `BVP_REFERENCE_DIR`, `BVP_BBC_CALENDAR`,
   `BVP_BBC_RESULTS`, and `BVP_API_URL` / `BVP_API_PORT` for Vite dev.
 
 ---

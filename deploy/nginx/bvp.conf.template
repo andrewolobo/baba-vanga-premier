@@ -118,4 +118,10 @@ server {
     location = /index.html {
         add_header Cache-Control "no-cache";
     }
+
+    # The service worker must never be cached either: a browser holding a stale
+    # worker keeps serving the old build it precached, surviving deploys.
+    location = /service-worker.js {
+        add_header Cache-Control "no-cache";
+    }
 }

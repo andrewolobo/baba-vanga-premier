@@ -260,6 +260,43 @@ hero at 7.8 MB, read from a `ls -la` before the asset was replaced mid-session.
 
 ---
 
+### 2.7 The store is a Postgres database, and the suite needs one too
+
+Since 2026-09-04 (`POSTGRES_PLAN.md`) the store is **PostgreSQL 16**, not
+`db/premier.db`. Two settings, both libpq URLs, resolved environment-first
+like everything else (§3.10):
+
+| setting | what | default |
+| --- | --- | --- |
+| `BVP_DATABASE_URL` | the store | `postgresql:///bvp` — database `bvp` over the local socket as the OS user, which is the server's shape (peer auth, no password) |
+| `BVP_TEST_DATABASE_URL` | a **maintenance** database on a server the test suite may `CREATE`/`DROP` databases on — never the store | `postgresql:///postgres` |
+
+**A development machine** points both at its own Postgres in `.env`, with
+credentials in the URL (`postgresql://user:password@127.0.0.1:5433/bvp`;
+URL-encode the password). Any 16.x install does: the Windows installer, `apt
+install postgresql`, Docker. Nothing needs configuring on the server side —
+`engine/db.py` forces UTC per connection and the suite creates every
+database with `LC_COLLATE 'C'`, so the server's zone and locale do not reach
+the store. Then:
+
+```bash
+createdb bvp                          # once; or CREATE DATABASE bvp LC_COLLATE 'C' LC_CTYPE 'C' TEMPLATE template0
+python -m engine.ingest.build         # migrates, loads the CSVs, validates -- as §2.2
+python scripts/export_ledger.py --restore   # the gate ledger, on a development machine only
+pytest -q                             # clones a migrated template per test; ~1/4 s each
+```
+
+`pytest` **fails, not skips**, when no server answers at
+`BVP_TEST_DATABASE_URL`: a suite that quietly skipped its database half
+would look green while proving nothing.
+
+**On the server** the units carry `Environment=BVP_DATABASE_URL=postgresql:///bvp`
+(§5.5); `deploy.sh` runs the suite as `bvp`, so that role needs `CREATEDB`
+and `BVP_TEST_DATABASE_URL` in its environment. The rest of this document —
+§2.2, §3.2, §3.7, §3.8, §5.4, §6.1 — still describes the SQLite store where
+it names `premier.db`, `VACUUM INTO` or WAL; `POSTGRES_PLAN.md` Phase D
+rewrites those sections at cutover.
+
 ## 3. What does not conform to this deployment type
 
 Real conflicts between the application as built and a single public VM.

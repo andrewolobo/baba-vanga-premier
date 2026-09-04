@@ -1,86 +1,130 @@
-"""SQLite access and the forward-only migration runner.
+"""Postgres access and the forward-only migration runner.
 
-Thin on purpose: a connection factory plus `migrate()`. Keeping SQL in .sql
-files and access behind this module is what makes the eventual Postgres move a
-connection-string change rather than a rewrite.
+Thin on purpose: a connection factory, three query helpers and `migrate()`.
+SQL stays in the callers and in db/migrations/*.sql; nothing here knows what a
+tip or a fixture is. Moved from SQLite on the plan in docs/POSTGRES_PLAN.md.
 """
 
 from __future__ import annotations
 
-import sqlite3
+import datetime as dt
 from pathlib import Path
+from typing import Any
 
-import numpy as np
+import pandas as pd
+import psycopg
+from psycopg.rows import dict_row, tuple_row
+from psycopg.types.numeric import FloatLoader
 
 from engine import config
 
-# sqlite3 does not recognise numpy scalars. Without these adapters it stores the
-# raw 8-byte buffer as a BLOB, so the value round-trips as bytes and SUM() over
-# the column silently returns 0 -- row counts still look perfect, which is what
-# makes it dangerous. pandas hands out numpy scalars from every nullable-integer
-# column, so this is registered once, globally, rather than at each call site.
-for _np_int in (np.int8, np.int16, np.int32, np.int64):
-    sqlite3.register_adapter(_np_int, int)
-for _np_float in (np.float32, np.float64):
-    sqlite3.register_adapter(_np_float, float)
-sqlite3.register_adapter(np.bool_, int)
+#: The store keeps timestamps as UTC text, 'YYYY-MM-DD HH:MM:SS' (plan
+#: decision D3). This is that as a SQL expression -- what `datetime('now')`
+#: was -- for column defaults and for the graders' `settled_at`.
+NOW_TEXT = "to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS')"
 
 
-def connect(path: Path | None = None, *,
-            check_same_thread: bool = True) -> sqlite3.Connection:
-    """Open the database. `check_same_thread=False` is for the API only.
+class Connection(psycopg.Connection):
+    """psycopg's connection plus `executemany`.
 
-    FastAPI runs a sync generator dependency's setup, the endpoint body and its
-    teardown as three separate threadpool hand-offs, which are not guaranteed to
-    land on the same worker. So a per-request connection is routinely *created*
-    on one thread and *used* on another, and sqlite3's guard rejects it --
-    intermittently, only once two requests are ever in flight at the same time,
-    which is why a frontend that fetched one endpoint per page never saw it.
-
-    Relaxing the guard is safe **here and only here**: the three stages run
-    strictly in sequence for one request, so no two threads touch the connection
-    at once, and each request still gets its own. It is not a licence to share a
-    connection between concurrent workers. Everything else -- the cycle, the
-    grader, the gates -- keeps the guard, because a connection crossing threads
-    anywhere else is a bug rather than a framework detail.
+    psycopg keeps `executemany` on the cursor; the callers were written against
+    sqlite3, where it lives on the connection. One method here is cheaper than
+    a cursor at every bulk insert, and keeps the call sites saying what they
+    mean.
     """
-    target = Path(path) if path is not None else config.DB_PATH
-    target.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(target, check_same_thread=check_same_thread)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA foreign_keys = ON")
-    # WAL so the cycle can write while the API is reading. Under the default
-    # rollback journal the two lock each other out, which is why the runbook
-    # used to say "stop the API, re-run, restart it" -- an instruction nobody
-    # remembers at 8am on a matchday.
-    #
-    # This is a property of the database file, not of the connection, so the
-    # first connect converts it and the rest are no-ops. It lives here rather
-    # than in a migration because a fresh checkout must get it too, before any
-    # migration has run.
-    #
-    # Two consequences worth knowing (docs/RUNBOOK.md sec 8):
-    #   - a backup must be VACUUM INTO or .backup, never a copy of the .db
-    #     alone; committed transactions can still be sitting in the -wal file
-    #   - WAL needs shared memory, so the database cannot live on NFS or SMB
-    conn.execute("PRAGMA journal_mode = WAL")
+
+    def executemany(self, query: str, params_seq) -> int:
+        """Returns the rows affected over the whole batch, as sqlite3's cursor
+        did -- `ON CONFLICT DO NOTHING` inserts count only what landed."""
+        with self.cursor() as cur:
+            cur.executemany(query, params_seq)
+            return cur.rowcount
+
+
+def connect(url: str | None = None, *, autocommit: bool = False) -> Connection:
+    """Open the database at `url` (default `BVP_DATABASE_URL`).
+
+    Rows come back as dicts, so `row["column"]` works everywhere; positional
+    access does not -- use `scalar()` for a one-value query.
+
+    Three things are fixed per connection rather than left to the server:
+
+    - **Timezone UTC**, passed as a startup option so it is outside any
+      transaction and cannot be undone by a rollback. Every stored timestamp
+      and every `today()` comparison is UTC (docs/DEPLOY.md 3.8), and the
+      server's zone must not be able to move them.
+    - **`numeric` loads as float.** `AVG()` and `SUM(...) * 1.0` return
+      `numeric`, which psycopg hands back as `Decimal`; the callers, the JSON
+      encoder and pandas all want a float. Registered here once, for the same
+      reason the numpy adapters used to be: a driver quirk fixed at one site
+      rather than at every call.
+    - **numpy scalars** adapt natively in psycopg 3, so nothing is registered
+      for them any more. `np.bool_` becomes a real boolean, which Postgres
+      will not put in a numeric column -- the strictness is the point.
+
+    `autocommit=True` is for the read-only API: without it psycopg opens a
+    transaction on the first statement of any kind, including a SELECT, and a
+    per-request connection would sit *idle in transaction* until closed.
+    Everything that writes keeps the default and commits explicitly.
+    """
+    conn = Connection.connect(
+        url or config.DATABASE_URL,
+        row_factory=dict_row,
+        autocommit=autocommit,
+        options="-c timezone=UTC",
+    )
+    conn.adapters.register_loader("numeric", FloatLoader)
     return conn
 
 
-def _applied(conn: sqlite3.Connection) -> set[str]:
+def scalar(conn: Connection, sql: str, params=()) -> Any:
+    """The single value of a one-row, one-column query, or None for no row."""
+    row = conn.execute(sql, params).fetchone()
+    return None if row is None else next(iter(row.values()))
+
+
+def read_frame(conn: Connection, sql: str, params=()) -> pd.DataFrame:
+    """A query as a DataFrame, columns named from the cursor.
+
+    Replaces `pd.read_sql_query`, which supports only SQLAlchemy connectables
+    and sqlite3 and routes anything else through an untested fallback. An
+    empty result still carries its column names.
+    """
+    with conn.cursor(row_factory=tuple_row) as cur:
+        cur.execute(sql, params)
+        columns = [d.name for d in cur.description]
+        return pd.DataFrame.from_records(cur.fetchall(), columns=columns)
+
+
+def today() -> str:
+    """Today's date in UTC as ISO text -- what SQLite's `date('now')` was.
+
+    Dates are stored as text and compared as text, so the bound has to be
+    text too, and it has to be UTC whatever the process's local zone is.
+    """
+    return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
+
+
+def _applied(conn: Connection) -> set[str]:
     conn.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS schema_migrations (
             version    TEXT PRIMARY KEY,
-            applied_at TEXT NOT NULL DEFAULT (datetime('now'))
+            applied_at TEXT NOT NULL DEFAULT {NOW_TEXT}
         )
         """
     )
+    conn.commit()
     return {r["version"] for r in conn.execute("SELECT version FROM schema_migrations")}
 
 
-def migrate(conn: sqlite3.Connection, migrations_dir: Path | None = None) -> list[str]:
-    """Apply every unapplied migration in filename order. Returns those applied."""
+def migrate(conn: Connection, migrations_dir: Path | None = None) -> list[str]:
+    """Apply every unapplied migration in filename order. Returns those applied.
+
+    Each file and its `schema_migrations` row commit together. DDL is
+    transactional in Postgres, so a migration that fails halfway leaves
+    nothing behind -- neither the tables it made nor a row claiming it ran.
+    """
     directory = Path(migrations_dir or config.MIGRATIONS_DIR)
     done = _applied(conn)
     newly = []
@@ -88,8 +132,8 @@ def migrate(conn: sqlite3.Connection, migrations_dir: Path | None = None) -> lis
         version = path.stem
         if version in done:
             continue
-        conn.executescript(path.read_text(encoding="utf-8"))
-        conn.execute("INSERT INTO schema_migrations (version) VALUES (?)", (version,))
+        conn.execute(path.read_text(encoding="utf-8"))
+        conn.execute("INSERT INTO schema_migrations (version) VALUES (%s)", (version,))
         conn.commit()
         newly.append(version)
     return newly

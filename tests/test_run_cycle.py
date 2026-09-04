@@ -9,8 +9,6 @@ which, because a scheduled job reports only its exit code.
 
 from __future__ import annotations
 
-import sqlite3
-
 import pandas as pd
 import pytest
 
@@ -25,11 +23,10 @@ FEED_HEADER = ("Div,Date,Time,HomeTeam,AwayTeam,AvgH,AvgD,AvgA,MaxH,MaxD,MaxA,"
 
 
 @pytest.fixture
-def conn(tmp_path):
-    connection = db.connect(tmp_path / "t.db")
-    db.migrate(connection)
+def conn(database_url):
+    connection = db.connect(database_url)
     connection.executemany(
-        "INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        "INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
         [(1, "Arsenal"), (2, "Chelsea"), (3, "Aldershot")])
     connection.commit()
     return connection
@@ -65,8 +62,8 @@ def add_fixture(conn, division, home_id, away_id, date=None):
     """
     conn.execute(
         "INSERT INTO fixtures (division, match_date, home_team_id, away_team_id,"
-        " source_file) VALUES (?, COALESCE(?, date('now')), ?, ?, 'test')",
-        (division, date, home_id, away_id))
+        " source_file) VALUES (%s, %s, %s, %s, 'test')",
+        (division, date or db.today(), home_id, away_id))
     conn.commit()
 
 
@@ -94,8 +91,7 @@ def test_an_empty_feed_is_attention_not_success(conn, tmp_path, monkeypatch):
     assert report.status.exit_code == 2
 
 
-def test_a_club_the_artifact_never_saw_does_not_take_the_matchday_down(
-        conn, artifact, monkeypatch):
+def test_a_club_the_artifact_never_saw_does_not_take_the_matchday_down(conn, artifact, monkeypatch):
     """One National League newcomer must not cost the Premier League its prices."""
     monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
     monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "")
@@ -113,7 +109,7 @@ def test_a_club_the_artifact_never_saw_does_not_take_the_matchday_down(
     priced = conn.execute(
         "SELECT f.division FROM predictions p JOIN fixtures f USING (fixture_id)"
     ).fetchall()
-    assert [r[0] for r in priced] == ["E0"]
+    assert [r["division"] for r in priced] == ["E0"]
 
 
 def test_an_unbridged_club_name_is_attention(conn, tmp_path, artifact, monkeypatch):
@@ -198,8 +194,7 @@ def test_a_failing_step_keeps_its_traceback(conn, monkeypatch):
 # --- the audit trail -------------------------------------------------------
 
 
-def test_every_run_records_a_serving_state_row_even_when_it_fails(
-        conn, artifact, monkeypatch):
+def test_every_run_records_a_serving_state_row_even_when_it_fails(conn, artifact, monkeypatch):
     """A run that left no trace is indistinguishable from one that never started."""
     monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
     monkeypatch.setattr(run_cycle.fixture_sync, "fetch",
@@ -218,8 +213,8 @@ def test_dry_run_writes_nothing(conn, artifact, monkeypatch):
     add_fixture(conn, "E0", 1, 2)
     run_cycle.run(conn, file=_empty_feed(), dry_run=True,
                   today=pd.Timestamp("2026-08-02"))
-    assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] == 0
-    assert conn.execute("SELECT COUNT(*) FROM serving_state").fetchone()[0] == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM predictions") == 0
+    assert db.scalar(conn, "SELECT COUNT(*) FROM serving_state") == 0
 
 
 def test_rerunning_is_idempotent(conn, artifact, monkeypatch):
@@ -228,7 +223,7 @@ def test_rerunning_is_idempotent(conn, artifact, monkeypatch):
     add_fixture(conn, "E0", 1, 2)
     for _ in range(2):
         run_cycle.run(conn, file=_empty_feed(), today=pd.Timestamp("2026-08-02"))
-    assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] == 1
+    assert db.scalar(conn, "SELECT COUNT(*) FROM predictions") == 1
 
 
 def test_exit_codes_do_not_collide(conn):
@@ -316,8 +311,7 @@ def test_a_failing_calendar_does_not_stop_the_cycle(conn, monkeypatch):
 # --- the tip step ----------------------------------------------------------
 
 
-def test_the_cycle_publishes_tips_for_the_fixtures_it_just_priced(
-        conn, artifact, monkeypatch, tmp_path):
+def test_the_cycle_publishes_tips_for_the_fixtures_it_just_priced(conn, artifact, monkeypatch, tmp_path):
     """serve -> tips in one pass: a fixture priced this cycle is tippable this
     cycle, not next week.
 
@@ -343,7 +337,7 @@ def test_the_cycle_publishes_tips_for_the_fixtures_it_just_priced(
     report = run_cycle.run(conn, file=path, today=FRESH_ARTIFACT_DAY)
 
     step = next(s for s in report.steps if s.name == "tips")
-    published = conn.execute("SELECT COUNT(*) FROM tips").fetchone()[0]
+    published = db.scalar(conn, "SELECT COUNT(*) FROM tips")
     assert step.status is not Status.FAILED, step.detail
     assert published == 1, step.detail
     row = conn.execute("SELECT side, floor FROM tips").fetchone()
@@ -351,8 +345,7 @@ def test_the_cycle_publishes_tips_for_the_fixtures_it_just_priced(
     assert row["floor"] == 0.50, "the cycle must read TIP_FLOOR"
 
 
-def test_a_fixture_below_the_floor_falls_back_rather_than_going_untipped(
-        conn, artifact, monkeypatch, tmp_path):
+def test_a_fixture_below_the_floor_falls_back_rather_than_going_untipped(conn, artifact, monkeypatch, tmp_path):
     """v2 covers every fixture. The stub prices this at ~0.53, below the shipped
     0.55, so the cycle must publish a double chance rather than nothing -- v1
     published nothing here, and that 14.4% coverage is what B8 replaced."""
@@ -369,8 +362,8 @@ def test_a_fixture_below_the_floor_falls_back_rather_than_going_untipped(
 
     step = next(s for s in report.steps if s.name == "tips")
     assert step.status is Status.OK, step.detail
-    assert conn.execute("SELECT COUNT(*) FROM predictions").fetchone()[0] == 1
-    side = conn.execute("SELECT side FROM tips").fetchone()[0]
+    assert db.scalar(conn, "SELECT COUNT(*) FROM predictions") == 1
+    side = db.scalar(conn, "SELECT side FROM tips")
     assert side in {"1X", "X2", "12"}, f"expected a fallback, got {side}"
 
 
@@ -379,15 +372,15 @@ def test_grading_does_not_chase_results_for_unplayed_fixtures(conn, monkeypatch)
     the cycle would pull a results CSV for every upcoming match, every run, all
     season -- fetching files that cannot contain the result yet."""
     add_fixture(conn, "E0", 1, 2, date="2099-01-01")
-    fixture_id = conn.execute("SELECT fixture_id FROM fixtures").fetchone()[0]
+    fixture_id = db.scalar(conn, "SELECT fixture_id FROM fixtures")
     conn.execute(
         "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
         " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
-        " p_over25, p_under25) VALUES (1, ?, 'v1', 'pre_close', '2026-08-10',"
+        " p_over25, p_under25) VALUES (1, %s, 'v1', 'pre_close', '2026-08-10',"
         " 1.5, 1.0, 0.62, 0.24, 0.14, 0.5, 0.5)", (fixture_id,))
     conn.execute(
         "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
-        " best_price, avg_price, rule_version) VALUES (1, ?, 'H', 0.62, 0.55,"
+        " best_price, avg_price, rule_version) VALUES (1, %s, 'H', 0.62, 0.55,"
         " 1.6, 1.5, 'confidence-v2')", (fixture_id,))
     conn.commit()
 
@@ -407,15 +400,15 @@ def test_grading_still_runs_when_only_tips_are_unsettled(conn, monkeypatch):
     shipped, `step_grade` short-circuited on that and would have left every tip
     ungraded forever while reporting success."""
     add_fixture(conn, "E0", 1, 2, date="2020-01-01")
-    fixture_id = conn.execute("SELECT fixture_id FROM fixtures").fetchone()[0]
+    fixture_id = db.scalar(conn, "SELECT fixture_id FROM fixtures")
     conn.execute(
         "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
         " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
-        " p_over25, p_under25) VALUES (1, ?, 'v1', 'pre_close', '2026-08-10',"
+        " p_over25, p_under25) VALUES (1, %s, 'v1', 'pre_close', '2026-08-10',"
         " 1.5, 1.0, 0.62, 0.24, 0.14, 0.5, 0.5)", (fixture_id,))
     conn.execute(
         "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
-        " best_price, avg_price, rule_version) VALUES (1, ?, 'H', 0.62, 0.55,"
+        " best_price, avg_price, rule_version) VALUES (1, %s, 'H', 0.62, 0.55,"
         " 1.6, 1.5, 'confidence-v2')", (fixture_id,))
     conn.commit()
 
@@ -476,7 +469,7 @@ def test_the_results_step_settles_a_played_tip_from_the_page(conn, monkeypatch):
     assert step.status is Status.OK, step.detail
     assert fetched == ["2026-08-14"]
     assert "1 tip(s) settled" in step.detail
-    assert conn.execute("SELECT outcome FROM tips").fetchone()[0] == "win"
+    assert db.scalar(conn, "SELECT outcome FROM tips") == "win"
 
 
 def test_the_results_step_fetches_nothing_when_nothing_is_pending(conn, monkeypatch):
@@ -490,8 +483,7 @@ def test_the_results_step_fetches_nothing_when_nothing_is_pending(conn, monkeypa
     assert step.status is Status.OK and step.detail == "nothing unsettled"
 
 
-def test_a_past_page_with_no_full_time_result_is_attention_but_today_is_not(
-        conn, monkeypatch):
+def test_a_past_page_with_no_full_time_result_is_attention_but_today_is_not(conn, monkeypatch):
     """At 06:00 UTC today's page is all PreEvent, which is not a failure.
     Yesterday's page being all PreEvent means the source did not deliver."""
     from tests.test_bbc_calendar import event, page
@@ -571,26 +563,25 @@ def test_grade_flags_a_tip_football_data_disagrees_with(conn, monkeypatch):
 
     assert step.status is Status.ATTENTION, step.detail
     assert "contradicts the settled outcome" in step.detail
-    assert conn.execute("SELECT outcome FROM tips").fetchone()[0] == "lose"
+    assert db.scalar(conn, "SELECT outcome FROM tips") == "lose"
 
 
 def _unsettled_tip(conn, division="E1", date="2026-08-14"):
     add_fixture(conn, division, 1, 2, date=date)
-    fixture_id = conn.execute("SELECT fixture_id FROM fixtures").fetchone()[0]
+    fixture_id = db.scalar(conn, "SELECT fixture_id FROM fixtures")
     conn.execute(
         "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
         " information_set, served_at, lam_h, lam_a, p_home, p_draw, p_away,"
-        " p_over25, p_under25) VALUES (1, ?, 'v1', 'pre_close', '2026-08-13',"
+        " p_over25, p_under25) VALUES (1, %s, 'v1', 'pre_close', '2026-08-13',"
         " 1.5, 1.0, 0.62, 0.24, 0.14, 0.5, 0.5)", (fixture_id,))
     conn.execute(
         "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
-        " best_price, avg_price, rule_version) VALUES (1, ?, 'H', 0.62, 0.55,"
+        " best_price, avg_price, rule_version) VALUES (1, %s, 'H', 0.62, 0.55,"
         " 1.6, 1.5, 'confidence-v2')", (fixture_id,))
     conn.commit()
 
 
-def test_a_season_that_has_not_published_results_yet_is_attention_not_failure(
-        conn, monkeypatch):
+def test_a_season_that_has_not_published_results_yet_is_attention_not_failure(conn, monkeypatch):
     """The 2026-08-14 cycle exited 1 on this. For the first week or so of a
     season a division can have a played fixture pending settlement while
     football-data has not put that division's file up -- which is nobody's bug
@@ -609,8 +600,7 @@ def test_a_season_that_has_not_published_results_yet_is_attention_not_failure(
     assert "E1/2627" in step.detail
 
 
-def test_a_results_file_carrying_none_of_its_own_division_is_attention(
-        conn, monkeypatch):
+def test_a_results_file_carrying_none_of_its_own_division_is_attention(conn, monkeypatch):
     """The shape the BOM defect took: rows fetched, rows parsed, every one
     dropped at the division filter, nothing settled, exit 0."""
     _unsettled_tip(conn)
@@ -622,3 +612,27 @@ def test_a_results_file_carrying_none_of_its_own_division_is_attention(
 
     assert step.status is Status.ATTENTION, step.detail
     assert "carried no row of that division" in step.detail
+
+
+def test_a_failed_step_leaves_the_connection_usable_for_the_next(conn):
+    """Postgres leaves a connection's transaction aborted after a failed
+    statement. Without the rollback in `_guard` every later step would fail
+    with *current transaction is aborted*, and the independence of the steps
+    that the three exit codes rest on would silently collapse
+    (docs/POSTGRES_PLAN.md, pitfall 11). The failed step's own partial write
+    is discarded with it: under SQLite the next step's commit used to land it.
+    """
+    def broken(step):
+        conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (4, 'Wrexham')")
+        conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (1, 'duplicate')")
+
+    failed = run_cycle._guard(run_cycle.Step("broken"), broken, conn)
+    assert failed.status is Status.FAILED
+    assert "UniqueViolation" in failed.detail
+
+    def fine(step):
+        step.detail = f"{db.scalar(conn, 'SELECT COUNT(*) FROM teams')} clubs"
+
+    after = run_cycle._guard(run_cycle.Step("fine"), fine, conn)
+    assert after.status is Status.OK, after.detail
+    assert after.detail == "3 clubs", "the failed step's insert must not survive it"

@@ -11,6 +11,9 @@ dependencies = [
     "pandas>=2.0",
     "numpy>=1.24",
     "scipy>=1.10",
+    # The store is Postgres (docs/POSTGRES_PLAN.md). [binary] ships libpq, so a
+    # fresh machine needs no client library installed first.
+    "psycopg[binary]>=3.2",
 ]
 
 [project.optional-dependencies]

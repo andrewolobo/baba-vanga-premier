@@ -29,7 +29,6 @@ from __future__ import annotations
 import argparse
 import csv
 import io
-import sqlite3
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
@@ -61,9 +60,9 @@ PRESERVE_IF_NULL = frozenset({"kickoff_time"})
 
 
 def _assignment(column: str) -> str:
-    """`col=?`, or a COALESCE for columns that must survive a null update."""
-    return (f"{column}=COALESCE(?, {column})" if column in PRESERVE_IF_NULL
-            else f"{column}=?")
+    """`col=%s`, or a COALESCE for columns that must survive a null update."""
+    return (f"{column}=COALESCE(%s, {column})" if column in PRESERVE_IF_NULL
+            else f"{column}=%s")
 
 
 @dataclass
@@ -145,7 +144,7 @@ def _resolve_pair(row, bridge, ids, report) -> tuple[int, int] | None:
     return None if None in out else (out[0], out[1])
 
 
-def sync(conn: sqlite3.Connection, text: str, source_file: str,
+def sync(conn: db.Connection, text: str, source_file: str,
          *, dry_run: bool = False) -> SyncReport:
     bridge = TeamBridge.load()
     ids = {row["canonical_name"]: row["team_id"]
@@ -160,8 +159,8 @@ def sync(conn: sqlite3.Connection, text: str, source_file: str,
             continue
         key = (row["division"], row["match_date"], *resolved)
         existing = conn.execute(
-            "SELECT fixture_id FROM fixtures WHERE division=? AND match_date=? "
-            "AND home_team_id=? AND away_team_id=?", key,
+            "SELECT fixture_id FROM fixtures WHERE division=%s AND match_date=%s "
+            "AND home_team_id=%s AND away_team_id=%s", key,
         ).fetchone()
 
         if existing:
@@ -169,8 +168,8 @@ def sync(conn: sqlite3.Connection, text: str, source_file: str,
             if not dry_run:
                 assignments = ", ".join(_assignment(c) for c in UPSERT_COLUMNS)
                 conn.execute(
-                    f"UPDATE fixtures SET {assignments}, updated_at=datetime('now'), "
-                    "source_file=? WHERE fixture_id=?",
+                    f"UPDATE fixtures SET {assignments}, updated_at={db.NOW_TEXT}, "
+                    "source_file=%s WHERE fixture_id=%s",
                     [*(row[c] for c in UPSERT_COLUMNS), source_file, existing["fixture_id"]],
                 )
         else:
@@ -179,7 +178,7 @@ def sync(conn: sqlite3.Connection, text: str, source_file: str,
                 conn.execute(
                     "INSERT INTO fixtures (division, match_date, home_team_id, away_team_id,"
                     f" {', '.join(UPSERT_COLUMNS)}, source_file)"
-                    f" VALUES (?, ?, ?, ?, {', '.join('?' * len(UPSERT_COLUMNS))}, ?)",
+                    f" VALUES (%s, %s, %s, %s, {', '.join(['%s'] * len(UPSERT_COLUMNS))}, %s)",
                     [*key, *(row[c] for c in UPSERT_COLUMNS), source_file],
                 )
     if not dry_run:

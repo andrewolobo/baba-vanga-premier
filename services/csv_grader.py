@@ -27,7 +27,6 @@ from __future__ import annotations
 import argparse
 import csv
 import io
-import sqlite3
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
@@ -198,7 +197,7 @@ def _won(market: str, side: str, result: dict) -> bool:
     return (total > 2.5) if side == "over" else (total < 2.5)
 
 
-def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
+def settle_tips(conn: db.Connection, fixture_id: int, result: dict, *,
                 dry_run: bool = False) -> int:
     """Settle every unsettled tip on this fixture, at BOTH price levels.
 
@@ -218,7 +217,7 @@ def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
     """
     tips = conn.execute(
         "SELECT tip_id, side, best_price, avg_price FROM tips"
-        " WHERE fixture_id=? AND settled_at IS NULL", (fixture_id,),
+        " WHERE fixture_id=%s AND settled_at IS NULL", (fixture_id,),
     ).fetchall()
     for tip in tips:
         # Not `_won("1x2", ...)`: a tip may be a union of outright legs or a
@@ -234,15 +233,15 @@ def settle_tips(conn: sqlite3.Connection, fixture_id: int, result: dict, *,
                for name in ("best_price", "avg_price")}
         if not dry_run:
             conn.execute(
-                "UPDATE tips SET settled_at=datetime('now'), outcome=?,"
-                " pnl_best=?, pnl_avg=?, fthg=?, ftag=? WHERE tip_id=?",
+                f"UPDATE tips SET settled_at={db.NOW_TEXT}, outcome=%s,"
+                " pnl_best=%s, pnl_avg=%s, fthg=%s, ftag=%s WHERE tip_id=%s",
                 ("win" if won else "lose", pnl["best_price"], pnl["avg_price"],
                  result["fthg"], result["ftag"], tip["tip_id"]),
             )
     return len(tips)
 
 
-def reconcile_tips(conn: sqlite3.Connection, fixture_id: int, result: dict) -> list[int]:
+def reconcile_tips(conn: db.Connection, fixture_id: int, result: dict) -> list[int]:
     """Tip ids on this fixture already settled with an outcome this result contradicts.
 
     A second results source (`services/bbc_results.py`) may settle a tip days
@@ -253,7 +252,7 @@ def reconcile_tips(conn: sqlite3.Connection, fixture_id: int, result: dict) -> l
     otherwise be invisible.
     """
     rows = conn.execute(
-        "SELECT tip_id, side, outcome FROM tips WHERE fixture_id=?"
+        "SELECT tip_id, side, outcome FROM tips WHERE fixture_id=%s"
         " AND outcome IN ('win', 'lose')", (fixture_id,),
     ).fetchall()
     out = []
@@ -309,7 +308,7 @@ def _closing_price_for(market: str, side: str, raw: dict) -> tuple[float | None,
     return _float(raw.get(columns[index])), ou_source, ou[index]
 
 
-def grade(conn: sqlite3.Connection, results: list[dict], *,
+def grade(conn: db.Connection, results: list[dict], *,
           dry_run: bool = False) -> GradeReport:
     bridge = TeamBridge.load()
     ids = {row["canonical_name"]: row["team_id"]
@@ -322,8 +321,8 @@ def grade(conn: sqlite3.Connection, results: list[dict], *,
         if home not in ids or away not in ids:
             continue
         fixture = conn.execute(
-            "SELECT fixture_id FROM fixtures WHERE division=? AND match_date=?"
-            " AND home_team_id=? AND away_team_id=?",
+            "SELECT fixture_id FROM fixtures WHERE division=%s AND match_date=%s"
+            " AND home_team_id=%s AND away_team_id=%s",
             (result["division"], result["match_date"], ids[home], ids[away]),
         ).fetchone()
         if fixture is None:
@@ -335,10 +334,10 @@ def grade(conn: sqlite3.Connection, results: list[dict], *,
 
         odds_at_bet = conn.execute(
             "SELECT avg_h, avg_d, avg_a, avg_over25, avg_under25 FROM fixtures"
-            " WHERE fixture_id=?", (fixture["fixture_id"],),
+            " WHERE fixture_id=%s", (fixture["fixture_id"],),
         ).fetchone()
         bets = conn.execute(
-            "SELECT * FROM paper_bets WHERE fixture_id=? AND settled_at IS NULL",
+            "SELECT * FROM paper_bets WHERE fixture_id=%s AND settled_at IS NULL",
             (fixture["fixture_id"],),
         ).fetchall()
         for bet in bets:
@@ -347,8 +346,8 @@ def grade(conn: sqlite3.Connection, results: list[dict], *,
             out.settled += 1
             if not dry_run:
                 conn.execute(
-                    "UPDATE paper_bets SET settled_at=datetime('now'), outcome=?, pnl=?"
-                    " WHERE bet_id=?",
+                    f"UPDATE paper_bets SET settled_at={db.NOW_TEXT}, outcome=%s, pnl=%s"
+                    " WHERE bet_id=%s",
                     ("win" if won else "lose", pnl, bet["bet_id"]),
                 )
 
@@ -360,9 +359,10 @@ def grade(conn: sqlite3.Connection, results: list[dict], *,
             out.graded += 1
             if not dry_run:
                 conn.execute(
-                    "INSERT OR IGNORE INTO clv_grades (bet_id, bet_price, close_price,"
+                    "INSERT INTO clv_grades (bet_id, bet_price, close_price,"
                     " close_source, bet_prob, close_prob, clv, clv_pct)"
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                    " ON CONFLICT (bet_id) DO NOTHING",
                     (bet["bet_id"], bet["price"], close_price, source,
                      bet_prob, close_prob, close_prob - bet_prob,
                      bet["price"] / close_price - 1.0),

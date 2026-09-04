@@ -1,9 +1,10 @@
 """Registry facts and database mechanics.
 
-Includes the regression test for the numpy-to-SQLite BLOB defect, which stored
-every integer column as a raw byte buffer: row counts stayed perfect and only
-aggregates were wrong, so nothing surfaced it until a minutes total was checked
-against a known quantity.
+Includes the regression tests for the missing-value round trip. Under SQLite
+the defect was numpy scalars stored as raw byte buffers; under Postgres it is
+a float NaN stored as a value where a NULL was meant. In both, row counts stay
+perfect and only aggregates are wrong, so nothing surfaces it until a minutes
+total is checked against a known quantity.
 """
 
 from __future__ import annotations
@@ -79,7 +80,7 @@ def test_a_split_spanning_a_regime_change_is_detected():
 # --- migrations -----------------------------------------------------------
 
 
-def test_migrations_are_idempotent(tmp_path):
+def test_migrations_are_idempotent(empty_database_url):
     """Applies every migration on disk once, and nothing on a second call.
 
     Asserted against the migrations directory rather than a hardcoded list, so
@@ -89,44 +90,55 @@ def test_migrations_are_idempotent(tmp_path):
     from engine import config
 
     on_disk = sorted(p.stem for p in config.MIGRATIONS_DIR.glob("*.sql"))
-    conn = db.connect(tmp_path / "m.db")
+    conn = db.connect(empty_database_url)
     first = db.migrate(conn)
     second = db.migrate(conn)
     assert first == on_disk
     assert second == []
-    assert "001_data_spine" in on_disk  # the spine must never be renamed away
+    assert "001_baseline" in on_disk  # the baseline must never be renamed away
     conn.close()
 
 
-# --- the BLOB regression --------------------------------------------------
+# --- the missing-value regression -----------------------------------------
 
 
 @pytest.mark.parametrize(
     "value",
-    [np.int64(90), np.int32(90), np.float64(1.5), np.float32(1.5), np.bool_(True)],
+    [np.int64(90), np.int32(90), np.float64(1.5), np.float32(1.5)],
 )
-def test_numpy_scalars_store_as_numbers_not_blobs(conn, value):
-    """Without an adapter, sqlite3 writes the raw 8-byte buffer as a BLOB. The
-    value round-trips as bytes and SUM() silently returns 0."""
-    conn.execute("CREATE TABLE t (v)")
-    conn.execute("INSERT INTO t (v) VALUES (?)", (value,))
-    stored_type = conn.execute("SELECT typeof(v) FROM t").fetchone()[0]
-    assert stored_type in ("integer", "real")
+def test_numpy_scalars_store_as_numbers(conn, value):
+    """psycopg adapts numpy scalars natively; this pins that nothing has to be
+    registered for it, since a regression would surface as a driver error at
+    the first bulk insert rather than as a wrong number."""
+    conn.execute("CREATE TABLE t (v DOUBLE PRECISION)")
+    conn.execute("INSERT INTO t (v) VALUES (%s)", (value,))
+    assert db.scalar(conn, "SELECT v FROM t") == float(value)
 
 
 def test_nullable_integer_columns_survive_the_round_trip(conn):
-    """pandas hands out numpy scalars from every Int64 column, which is how the
-    defect reached the whole corpus at once."""
+    """pandas hands out numpy scalars and pd.NA from every Int64 column, which
+    is how a missing-value defect reaches the whole corpus at once. The NA
+    must land as NULL -- a NaN would count as a row and poison SUM()."""
     from engine.ingest.build import _rows
 
     frame = pd.DataFrame({"minutes": pd.array([3420, 1620, None], dtype="Int64")})
     conn.execute("CREATE TABLE t (minutes INTEGER)")
-    conn.executemany("INSERT INTO t (minutes) VALUES (?)", _rows(frame, ("minutes",)))
-    total = conn.execute("SELECT SUM(minutes) FROM t").fetchone()[0]
-    assert total == 5040
-    assert conn.execute(
-        "SELECT COUNT(*) FROM t WHERE typeof(minutes) NOT IN ('integer','null')"
-    ).fetchone()[0] == 0
+    conn.executemany("INSERT INTO t (minutes) VALUES (%s)", _rows(frame, ("minutes",)))
+    assert db.scalar(conn, "SELECT SUM(minutes) FROM t") == 5040
+    assert db.scalar(conn, "SELECT COUNT(*) FROM t WHERE minutes IS NULL") == 1
+
+
+def test_a_float_nan_lands_as_null_not_as_a_value(conn):
+    """Postgres will happily store NaN in a double precision column, and it
+    then sorts above every number and survives AVG(). `_rows` is the one
+    place frames become records, so it is where the guarantee lives."""
+    from engine.ingest.build import _rows
+
+    frame = pd.DataFrame({"avg_h": [1.5, float("nan")]})
+    conn.execute("CREATE TABLE t (avg_h DOUBLE PRECISION)")
+    conn.executemany("INSERT INTO t (avg_h) VALUES (%s)", _rows(frame, ("avg_h",)))
+    assert db.scalar(conn, "SELECT COUNT(*) FROM t WHERE avg_h = 'NaN'::float8") == 0
+    assert db.scalar(conn, "SELECT AVG(avg_h) FROM t") == 1.5
 
 
 def test_validate_reports_an_empty_store_as_failing(conn):
@@ -148,12 +160,13 @@ def test_numeric_checks_cover_both_tables():
 def _seed_matches(conn, rows):
     """Insert into the real migrated schema, not a convenient stand-in -- the
     point is to exercise the check the build actually runs."""
-    conn.executemany("INSERT OR IGNORE INTO teams (team_id, canonical_name)"
-                     " VALUES (?, ?)", [(1, "Home FC"), (2, "Away FC")])
+    conn.executemany("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)"
+                     " ON CONFLICT DO NOTHING", [(1, "Home FC"), (2, "Away FC")])
     conn.executemany(
-        "INSERT INTO matches (season, division, match_date, home_team_id,"
+        "INSERT INTO matches (match_id, season, division, match_date, home_team_id,"
         " away_team_id, fthg, ftag, odds_era, source_file)"
-        " VALUES (?, ?, ?, ?, ?, ?, ?, 'market', 'test')", rows,
+        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'market', 'test')",
+        [(f"{r[0]}:{r[1]}:{r[2]}:{r[3]}:{r[4]}", *r) for r in rows],
     )
 
 

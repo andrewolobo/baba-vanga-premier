@@ -13,7 +13,7 @@ oracle arm -- a null is not a result without a positive control.
 from __future__ import annotations
 
 import importlib.util
-import sqlite3
+import psycopg
 
 import numpy as np
 import pandas as pd
@@ -121,11 +121,10 @@ def test_the_split_count_is_the_symmetric_combination_count():
 # --- counting -------------------------------------------------------------
 
 
-def test_configurations_are_counted_from_arms_not_from_rows(tmp_path):
+def test_configurations_are_counted_from_arms_not_from_rows(database_url):
     """The §3.2 correction: one sweep row is a whole grid, and counting rows
     understates multiplicity rather than overstating it."""
-    conn = db.connect(tmp_path / "t.db")
-    db.migrate(conn)
+    conn = db.connect(database_url)
     ledger.record(conn, kind=ledger.SWEEP, name="sweep_a", purpose="dev",
                   seasons=("202021",), divisions=("E0",),
                   detail={"arms": [{"value": v} for v in range(9)]}, reason="r")
@@ -143,32 +142,28 @@ def test_configurations_are_counted_from_arms_not_from_rows(tmp_path):
     assert count.unattributed == 1
 
 
-def test_the_post_hoc_trial_is_named_when_present(tmp_path):
-    conn = db.connect(tmp_path / "t.db")
-    db.migrate(conn)
+def test_the_post_hoc_trial_is_named_when_present(database_url):
+    conn = db.connect(database_url)
     ledger.record(conn, kind=ledger.PROBE, name="h19_alpha_interaction",
                   purpose="dev", seasons=("202021",), divisions=("E0",),
                   detail={"arms": [{}, {}]}, reason="post-hoc")
     assert trials.count_configurations(conn).post_hoc == ("h19_alpha_interaction",)
 
 
-def _real_ledger_or_skip() -> sqlite3.Connection:
+def _real_ledger_or_skip() -> db.Connection:
     """The development machine's `gate_ledger`, or skip.
 
     Three states look alike from a test and are all "nothing to guard": no
-    database file at all (a fresh checkout before `engine.ingest.build`), a file
-    without the table (connected to but never migrated), and a migrated ledger
-    with no rows (every deployed server). The first two used to raise `no such
-    table` rather than skip, and `db.connect()` also *creates* the empty file on
-    the way, so the file is checked before anything opens it.
+    store at `BVP_DATABASE_URL` at all (a fresh machine before the Phase B
+    copy), a store without the table (connected to but never migrated), and a
+    migrated ledger with no rows (every deployed server).
     """
-    if not config.DB_PATH.exists():
-        pytest.skip("no database on this checkout -- nothing to guard")
-    conn = db.connect()
-    table = conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='gate_ledger'"
-    ).fetchone()
-    if table is None or trials.count_configurations(conn).runs == 0:
+    try:
+        conn = db.connect()
+    except psycopg.OperationalError:
+        pytest.skip("no store at BVP_DATABASE_URL -- nothing to guard")
+    if (db.scalar(conn, "SELECT to_regclass('gate_ledger')") is None
+            or trials.count_configurations(conn).runs == 0):
         pytest.skip("no gate ledger in this database -- nothing to guard")
     return conn
 
@@ -230,21 +225,20 @@ def test_the_ledger_export_is_current():
         f"difference, then re-export and commit the diff.")
 
 
-def _ledger_with(tmp_path, name, arms):
+def _ledger_with(make_database, name, arms):
     """A ledger whose rows depend on `arms` alone. `ledger.record` stamps
-    `created_at` with `datetime('now')`, so two ledgers built a second apart
+    `created_at` with the current second, so two ledgers built a second apart
     would differ on every row -- which is what made these tests pass on a fast
     machine and fail on the server. Pinned per id so the comparison is about
     content."""
-    conn = db.connect(tmp_path / f"{name}.db")
-    db.migrate(conn)
+    conn = db.connect(make_database())
     _ledger(conn, [(f"g{i}", a) for i, a in enumerate(arms)])
-    conn.execute("UPDATE gate_ledger SET created_at = '2026-01-01 00:00:' || printf('%02d', id)")
+    conn.execute("UPDATE gate_ledger SET created_at = '2026-01-01 00:00:' || lpad(id::text, 2, '0')")
     conn.commit()
     return conn
 
 
-def test_check_names_the_shape_of_the_difference(tmp_path):
+def test_check_names_the_shape_of_the_difference(make_database):
     """`--check` has three non-matching shapes and each wants a different
     reaction: BEHIND is the normal post-gate state and wants an export; AHEAD
     is a gate that ran on another machine and arrived by `git pull`
@@ -252,9 +246,9 @@ def test_check_names_the_shape_of_the_difference(tmp_path):
     append-only violation. AHEAD used to fall through to DISAGREES."""
     export = _export_ledger_module()
     text = lambda conn: export.render(export.rows(conn))  # noqa: E731
-    two = text(_ledger_with(tmp_path, "two", [["a"], ["b"]]))
-    three = text(_ledger_with(tmp_path, "three", [["a"], ["b"], ["c"]]))
-    other = text(_ledger_with(tmp_path, "other", [["a"], ["z"]]))
+    two = text(_ledger_with(make_database, "two", [["a"], ["b"]]))
+    three = text(_ledger_with(make_database, "three", [["a"], ["b"], ["c"]]))
+    other = text(_ledger_with(make_database, "other", [["a"], ["z"]]))
 
     assert export.classify(on_disk=three, text=three) == "MATCHES"
     assert export.classify(on_disk=two, text=three) == "BEHIND"
@@ -262,22 +256,22 @@ def test_check_names_the_shape_of_the_difference(tmp_path):
     assert export.classify(on_disk=three, text=other) == "DISAGREES"
 
 
-def test_restore_appends_only_what_a_prefix_ledger_lacks(tmp_path):
+def test_restore_appends_only_what_a_prefix_ledger_lacks(tmp_path, make_database):
     export = _export_ledger_module()
-    three = _ledger_with(tmp_path, "three", [["a"], ["b"], ["c"]])
+    three = _ledger_with(make_database, "three", [["a"], ["b"], ["c"]])
     out = tmp_path / "ledger.jsonl"
     out.write_text(export.render(export.rows(three)), encoding="utf-8")
 
-    empty = db.connect(tmp_path / "empty.db"); db.migrate(empty)
+    empty = db.connect(make_database())
     assert export.restore(empty, out) == 3
     assert export.render(export.rows(empty)) == out.read_text(encoding="utf-8")
 
-    two = _ledger_with(tmp_path, "two", [["a"], ["b"]])
+    two = _ledger_with(make_database, "two", [["a"], ["b"]])
     assert export.restore(two, out) == 1                     # the tail only
     assert export.render(export.rows(two)) == out.read_text(encoding="utf-8")
     assert export.restore(two, out) == 0                     # idempotent
 
-    other = _ledger_with(tmp_path, "other", [["a"], ["z"]])
+    other = _ledger_with(make_database, "other", [["a"], ["z"]])
     with pytest.raises(SystemExit, match="not a prefix"):
         export.restore(other, out)
 

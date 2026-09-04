@@ -40,8 +40,10 @@ TimeoutStartSec=15min
 
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=PYTHONUNBUFFERED=1
+Environment=BVP_DATABASE_URL=postgresql:///bvp
 
 # --- hardening (as bvp-cycle.service) ------------------------------------ #
+# db/ for the lock file only; the store is Postgres.
 NoNewPrivileges=true
 PrivateTmp=true
 PrivateDevices=true

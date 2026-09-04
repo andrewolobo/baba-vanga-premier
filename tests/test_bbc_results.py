@@ -42,11 +42,10 @@ def played(home_slug, away_slug, fthg, ftag, *, status="PostEvent", comment="FT"
 
 
 @pytest.fixture
-def conn(tmp_path):
-    connection = db.connect(tmp_path / "results.db")
-    db.migrate(connection)
+def conn(database_url):
+    connection = db.connect(database_url)
     for i, name in enumerate(TEAMS, start=1):
-        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (?, ?)",
+        connection.execute("INSERT INTO teams (team_id, canonical_name) VALUES (%s, %s)",
                            (i, name))
     connection.commit()
     yield connection
@@ -57,17 +56,24 @@ def tip(conn, division, date, home_id, away_id, side, *, fixture_id=None):
     """A fixture, a prediction and one published tip on it. Returns fixture_id."""
     cur = conn.execute(
         "INSERT INTO fixtures (fixture_id, division, match_date, home_team_id,"
-        " away_team_id, max_h, avg_h, source_file) VALUES (?, ?, ?, ?, ?, 2.0, 1.9, 'test')",
+        " away_team_id, max_h, avg_h, source_file) VALUES"
+        # An explicit id when the test needs one, else the identity's next
+        # value: Postgres will not read NULL as "assign one" the way SQLite did.
+        " (COALESCE(%s, nextval(pg_get_serial_sequence('fixtures', 'fixture_id'))),"
+        "  %s, %s, %s, %s, 2.0, 1.9, 'test')"
+        " RETURNING fixture_id",
         (fixture_id, division, date, home_id, away_id))
-    fid = cur.lastrowid
+    fid = cur.fetchone()["fixture_id"]
     cur = conn.execute(
         "INSERT INTO predictions (fixture_id, model_version, information_set,"
         " lam_h, lam_a, p_home, p_draw, p_away, p_over25, p_under25)"
-        " VALUES (?, 'v1', 'pre_close', 1.5, 1.0, 0.6, 0.25, 0.15, 0.5, 0.5)", (fid,))
+        " VALUES (%s, 'v1', 'pre_close', 1.5, 1.0, 0.6, 0.25, 0.15, 0.5, 0.5)"
+        " RETURNING prediction_id", (fid,))
+    pid = cur.fetchone()["prediction_id"]
     conn.execute(
         "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
-        " best_price, avg_price, rule_version) VALUES (?, ?, ?, 0.6, 0.55,"
-        " 2.0, 1.9, 'confidence-v2')", (cur.lastrowid, fid, side))
+        " best_price, avg_price, rule_version) VALUES (%s, %s, %s, 0.6, 0.55,"
+        " 2.0, 1.9, 'confidence-v2')", (pid, fid, side))
     conn.commit()
     return fid
 
@@ -118,7 +124,7 @@ def test_settles_the_tip_through_the_measured_rule(conn):
     report = bbc_results.settle(conn, [("2026-08-15", REAL_PAGE.read_text(encoding="utf-8"))])
 
     row = conn.execute("SELECT outcome, pnl_best, settled_at, fthg, ftag FROM tips"
-                       " WHERE fixture_id=?", (fid,)).fetchone()
+                       " WHERE fixture_id=%s", (fid,)).fetchone()
     assert (report.full_time, report.matched, report.tips_settled) == (4, 1, 1)
     assert row["outcome"] == "win" and row["settled_at"] is not None
     assert (row["fthg"], row["ftag"]) == (2, 1)   # the page's score, kept (006)
@@ -127,15 +133,15 @@ def test_settles_the_tip_through_the_measured_rule(conn):
 
 def test_a_draw_loses_a_12_and_wins_a_1x(conn):
     a = tip(conn, "E1", "2026-08-15", 3, 4, "12")            # Sheff Utd 0-0 Birmingham
-    pid = conn.execute("SELECT prediction_id FROM tips WHERE fixture_id=?", (a,)).fetchone()[0]
+    pid = db.scalar(conn, "SELECT prediction_id FROM tips WHERE fixture_id=%s", (a,))
     conn.execute(   # a second rule version on the same fixture, as the schema allows
         "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor,"
-        " rule_version) VALUES (?, ?, '1X', 0.6, 0.55, 'confidence-v1')", (pid, a))
+        " rule_version) VALUES (%s, %s, '1X', 0.6, 0.55, 'confidence-v1')", (pid, a))
     conn.commit()
     bbc_results.settle(conn, [("2026-08-15", REAL_PAGE.read_text(encoding="utf-8"))])
 
-    outcomes = dict(conn.execute(
-        "SELECT rule_version, outcome FROM tips WHERE fixture_id=?", (a,)).fetchall())
+    outcomes = {r["rule_version"]: r["outcome"] for r in conn.execute(
+        "SELECT rule_version, outcome FROM tips WHERE fixture_id=%s", (a,))}
     assert outcomes == {"confidence-v2": "lose", "confidence-v1": "win"}
 
 
@@ -146,20 +152,20 @@ def test_a_result_with_no_fixture_here_is_dropped_not_inserted(conn):
     tip(conn, "E1", "2026-08-15", 1, 2, "12")
     report = bbc_results.settle(conn, [("2026-08-15", REAL_PAGE.read_text(encoding="utf-8"))])
     assert report.full_time == 4 and report.matched == 1
-    assert conn.execute("SELECT COUNT(*) FROM fixtures").fetchone()[0] == 1
+    assert db.scalar(conn, "SELECT COUNT(*) FROM fixtures") == 1
 
 
 def test_a_second_pass_settles_nothing_twice(conn):
     fid = tip(conn, "E1", "2026-08-15", 1, 2, "12")
     pages = [("2026-08-15", REAL_PAGE.read_text(encoding="utf-8"))]
     bbc_results.settle(conn, pages)
-    first = conn.execute("SELECT settled_at FROM tips WHERE fixture_id=?", (fid,)).fetchone()[0]
+    first = db.scalar(conn, "SELECT settled_at FROM tips WHERE fixture_id=%s", (fid,))
 
     again = bbc_results.settle(conn, pages)
 
     assert again.tips_settled == 0
-    assert conn.execute("SELECT settled_at FROM tips WHERE fixture_id=?",
-                        (fid,)).fetchone()[0] == first
+    assert db.scalar(conn, "SELECT settled_at FROM tips WHERE fixture_id=%s",
+                        (fid,)) == first
 
 
 def test_an_unbridged_club_is_reported_by_name(conn):
@@ -182,8 +188,8 @@ def test_dry_run_writes_nothing(conn):
     report = bbc_results.settle(conn, [("2026-08-15", REAL_PAGE.read_text(encoding="utf-8"))],
                                 dry_run=True)
     assert report.tips_settled == 1
-    assert conn.execute("SELECT settled_at FROM tips WHERE fixture_id=?",
-                        (fid,)).fetchone()[0] is None
+    assert db.scalar(conn, "SELECT settled_at FROM tips WHERE fixture_id=%s",
+                        (fid,)) is None
 
 
 # --- which dates to fetch --------------------------------------------------
@@ -195,7 +201,7 @@ def test_pending_dates_are_played_unsettled_and_recent(conn):
     tip(conn, "E1", "2026-08-22", 5, 6, "12")     # future
     tip(conn, "E1", "2026-08-01", 7, 8, "12")     # beyond the lookback
     settled = tip(conn, "E2", "2026-08-15", 8, 7, "12")
-    conn.execute("UPDATE tips SET settled_at='x', outcome='win' WHERE fixture_id=?", (settled,))
+    conn.execute("UPDATE tips SET settled_at='x', outcome='win' WHERE fixture_id=%s", (settled,))
     conn.commit()
 
     assert bbc_results.pending_dates(conn, "2026-08-17") == ["2026-08-15", "2026-08-16"]
