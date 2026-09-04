@@ -373,6 +373,57 @@ data and **diff the JSON** of `/health`, `/tips`, `/tips/results`,
 bar (D3); every difference is either a bug or a documented consequence of
 §3.4.
 
+**Built 2026-09-04**, `scripts/migrate_sqlite_to_pg.py`, with
+`tests/test_migrate_sqlite_to_pg.py` (9) pinning every claim in its
+docstring: the survey names a text in an integer column and a NULL text
+key; the copy preserves ids across a gap, loads an integer stored in a REAL
+column as `2.0`, drops the old `schema_migrations` rows, advances the
+identity so the next insert lands past the highest copied id, refuses a
+non-empty target and a locale-collated one, never copies the ledger; the
+verifier fails on a changed value, a NaN, a lagging identity and a
+missing ledger; the source opens read-only. Two things the plan did not
+say: the copier **checks the target's collation is `C`** before writing
+(pitfall 14 enforced, not documented), and `--verify` **includes
+`gate_ledger`** so a target whose ledger has not been restored reads as
+incomplete rather than done.
+
+**Rehearsal (i) done the same day**, from a `VACUUM INTO` snapshot of
+`db/premier.db` into database `bvp` on the owner's instance. Survey clean.
+**The first copy loaded 99,408 rows and committed none of them**: the
+emptiness checks had opened psycopg's implicit transaction, so the
+`with conn.transaction()` around the load was a savepoint inside it, and
+closing the connection rolled everything back — while the copy's own
+output reported success. `--verify` caught it (every table `DIFFERS`,
+target 0 rows). The commit is explicit now, and the lesson belongs beside
+pitfall 11: **on psycopg, `conn.transaction()` after any statement on a
+non-autocommit connection is a nested savepoint, not a transaction.**
+Second copy: all twelve tables verify identical (checksums equal, 99,408
+rows plus the 112 ledger rows via `--restore`, `--check` clean). Then the
+JSON diff: the API at the last SQLite commit (`d372a13`, a scratch
+worktree, `BVP_DB_PATH` at the snapshot) against the ported tree on `bvp`,
+**19 endpoint calls including the error shapes — byte-identical**,
+`/tips/record`'s `matchweeks` included.
+
+**Consequence for this machine:** `bvp` on the owner's instance is now the
+store every command reads, so it is the **gate-ledger authority** from here
+on; `db/premier.db` is the frozen pre-move copy and must not be written
+(the SQLite code that could write it is gone from the tree). The two
+real-ledger guards in `test_trials.py` run again instead of skipping.
+**Rehearsal (ii) done the same day**, on `db/premier-prod-20260904T075552Z.db`
+— a `VACUUM INTO` snapshot the owner took on the VM (as `bvp`, into
+`/var/backups/bvp`, integrity `ok`) and copied here. Survey clean: 219
+fixtures, 585 predictions, 164 tips, 30 serving-state rows, 4 model runs,
+the same 40,922 matches and 57,345 player-seasons as the development
+store, and an **empty ledger**, as a server should have. Copied into a
+scratch database `bvp_prod_rehearsal` on the owner's instance (not `bvp`,
+which is this machine's store): `--verify` identical on all twelve tables.
+JSON diff of the same 19 endpoint calls, `d372a13` on the snapshot against
+the ported tree on the copy: **byte-identical**, and this time with a live
+call on `/tips`, 164 tips behind `/tips/record`, and a four-leg `/parlay`.
+**Phase C is unblocked.** The scratch database can be dropped whenever;
+the snapshot file is gitignored (`db/*.db`) and is the rollback-rehearsal
+source for Phase C.
+
 ### Phase C — production cutover (~1 hour, between matchdays)
 
 Checklist; each line has a check that must pass before the next.
@@ -383,7 +434,16 @@ Checklist; each line has a check that must pass before the next.
 2. `systemctl disable --now bvp-cycle.timer bvp-results.timer
    bvp-backup.timer`; confirm nothing holds `db/.cycle.lock`. **The API
    stays up on SQLite** — it only reads, so the site is unaffected until
-   step 7.
+   step 7. Then confirm the store is quiet: no played fixture with an
+   unsettled tip (`sqlite3 db/premier.db "SELECT COUNT(*) FROM tips t JOIN
+   fixtures f USING (fixture_id) WHERE t.settled_at IS NULL AND
+   f.match_date < date('now')"` is 0, and a fixture dated today has not
+   kicked off yet), and the 06:00 cycle is not due inside the next two
+   hours. If a played tip is pending, run `python -m services.bbc_results`
+   once by hand as `bvp` before the snapshot, so the snapshot carries it.
+   **The window is any stretch between the last write and the next one**,
+   not "after the last match" — with the timers off the store changes only
+   at the 06:00 cycle and at a results pull that finds a full-time score.
 3. Capture the pre-cutover JSON of the endpoints in Phase B to
    `/var/backups/bvp/cutover/`. Final `VACUUM INTO` snapshot: the copy
    source and the rollback artefact.

@@ -7,7 +7,39 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-04** (latest), after **Phase A of the Postgres move
+Last updated **2026-09-04** (latest), after **Phase B of the Postgres move
+— the copier, its tests, and rehearsal (i)**. `scripts/migrate_sqlite_to_pg.py`
+(`--survey` / `--copy` / `--verify`; source opened read-only; `COPY` in
+foreign-key order with ids preserved and NaN → NULL; identities advanced;
+refuses a non-empty or non-`C`-collated target; never copies `gate_ledger`
+or `schema_migrations`; verify = count + order-independent checksum over
+every column, NaN scan, identity position, collation, baseline row, and
+the ledger too so an unrestored target reads as incomplete), with
+`tests/test_migrate_sqlite_to_pg.py` (9) pinning each of those. Rehearsal
+from a `VACUUM INTO` snapshot of `db/premier.db` into `bvp` on the owner's
+instance: survey clean; **the first copy committed nothing** — psycopg's
+implicit transaction made the `with conn.transaction()` a savepoint and the
+close rolled it back while the copy reported 99,408 rows — **caught by
+`--verify`**, fixed to an explicit commit, lesson recorded beside pitfall
+11; second copy verifies identical on all twelve tables, ledger via
+`--restore` (112 rows, `--check` clean). JSON diff of 19 endpoint calls
+between the API at `d372a13` (SQLite, scratch worktree on the snapshot)
+and the ported tree on `bvp`: **byte-identical**, `matchweeks` included.
+**`bvp` on 5433 is now this machine's store and ledger authority;
+`db/premier.db` is the frozen pre-move copy.** Full suite **656 pass, no
+skips** in 3 min 43 s — the two real-ledger guards run against `bvp` now
+and hold (configurations ≥ 133, export current). **Rehearsal (ii) done the same
+day** on a `VACUUM INTO` snapshot the owner took on the VM
+(`db/premier-prod-20260904T075552Z.db`, gitignored): survey clean (219
+fixtures, 585 predictions, 164 tips, empty ledger), copied into scratch
+database `bvp_prod_rehearsal` on the owner's instance, `--verify`
+identical on all twelve tables, and the 19-call JSON diff against
+`d372a13` **byte-identical** — with a live `/tips` call and a four-leg
+parlay in it this time. No rule, cycle or ledger change (112 / 69 / 202).
+Uncommitted (Phase A is committed as `c4a2c30`). **Next: Phase C, the
+cutover, between matchdays** — `POSTGRES_PLAN.md` §4 Phase C checklist.
+
+Before that, **2026-09-04** (earlier), after **Phase A of the Postgres move
 was completed — steps 3, 4 and 5 on top of the morning's 1 and 2**. Every
 SQLite call site is ported (20 production files, 12 test modules, by
 asserted-replacement scripts): `%s` placeholders, `ON CONFLICT` for the

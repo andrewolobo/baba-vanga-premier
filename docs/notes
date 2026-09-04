@@ -1,4 +1,4 @@
-- PWA support - installable web app
+- PWA support - installable web app [x]
 - Database migration - to postgres
 - Deployment of database migration
 - Parlay behind sign in

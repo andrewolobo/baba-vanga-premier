@@ -215,8 +215,11 @@ def _create(admin, name: str, template: str) -> None:
     # (plan pitfall 14). A clone inherits its template's collation, so this is
     # only stated when cloning template0.
     locale = " LC_COLLATE 'C' LC_CTYPE 'C'" if template == "template0" else ""
-    admin.execute(
-        f'CREATE DATABASE "{name}" TEMPLATE "{template}" STRATEGY FILE_COPY{locale}')
+    # FILE_COPY clones a small template faster than the WAL_LOG default, but
+    # the clause only exists from Postgres 15; a 14 server (Ubuntu 22.04's
+    # package) takes the default.
+    strategy = " STRATEGY FILE_COPY" if admin.info.server_version >= 150000 else ""
+    admin.execute(f'CREATE DATABASE "{name}" TEMPLATE "{template}"{strategy}{locale}')
 
 
 def _drop(admin, name: str) -> None:
