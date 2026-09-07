@@ -37,7 +37,7 @@ from engine import db
 from engine.ingest.teams import FOOTBALL_DATA, BridgeReport, TeamBridge
 from engine.seasons import SERVED_DIVISIONS
 
-FIXTURES_URL = "https://www.football-data.co.uk/fixtures.csv"
+FIXTURES_URL = "https://football-data.co.uk/fixtures.csv"
 
 #: Feed column -> our column. The feed publishes the modern market-era schema,
 #: which is the same one `matches` stores, so nothing has to be translated.

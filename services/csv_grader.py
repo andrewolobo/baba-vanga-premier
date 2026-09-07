@@ -40,7 +40,7 @@ from engine.ingest.teams import FOOTBALL_DATA, TeamBridge
 from engine.odds import devig_probs
 from engine.seasons import SERVED_DIVISIONS, season_code
 
-RESULTS_URL = "https://www.football-data.co.uk/mmz4281/{season}/{division}.csv"
+RESULTS_URL = "https://football-data.co.uk/mmz4281/{season}/{division}.csv"
 
 #: Closing 1X2 columns in preference order. Pinnacle first: sharpest book, and
 #: the one SPEC §5.1 names as primary. Never blended -- the chosen source is

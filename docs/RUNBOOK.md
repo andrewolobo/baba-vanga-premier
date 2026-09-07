@@ -280,7 +280,7 @@ after kickoff the pre-close information set is gone for good.
 Expected out of season. A problem from roughly T-7.
 
 ```powershell
-curl.exe -s https://www.football-data.co.uk/fixtures.csv | Select-Object -First 3
+curl.exe -s https://football-data.co.uk/fixtures.csv | Select-Object -First 3
 ```
 
 - **Rows exist but are all Scottish** → the publisher has not posted English

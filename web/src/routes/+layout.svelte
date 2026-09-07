@@ -139,6 +139,17 @@
     ['record', 'Record']
   ];
 
+  // Bottom-bar icons (owner request 2026-09-07): stroke paths on a 24px
+  // grid, drawn inline so there is no icon dependency and `currentColor`
+  // lets the active state colour icon and label together. Compound paths
+  // (several M commands in one `d`) keep each icon a single element.
+  const icons = {
+    tips: 'M11 5 6 9H3v6h3l5 4V5z M15.5 8.5a5 5 0 0 1 0 7', // a call, spoken
+    results: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z m-3.8 9.2 2.6 2.6 5-5.6', // graded
+    record: 'M5 20v-4 M12 20v-9 M19 20V6', // the strike-rate chart
+    parlay: 'M12 3 3 7.5l9 4.5 9-4.5z m-9 9 9 4.5 9-4.5 M3 16.5 12 21l9-4.5' // stacked legs
+  };
+
   const internal = $derived(['/book', '/performance'].includes($page.url.pathname));
 </script>
 
@@ -152,13 +163,14 @@
       {/each}
     </nav>
 
-    <!-- Two actions: the calls (the product) and the parlay page beside it,
-         solid accent orange so it stands out in its own right (owner
-         request). Owner decision 2026-09-01, ahead of the B24 probe
-         (PARLAY_PLAN.md D7). -->
+    <!-- Two actions, side by side: the parlay page (solid accent orange so it
+         stands out in its own right -- owner decision 2026-09-01, ahead of
+         the B24 probe, PARLAY_PLAN.md D7) and sign-in. The "This week's
+         calls" CTA that used to sit between them was removed at the owner's
+         request on 2026-09-07: the calls are the front page, which the
+         wordmark and the Tips link already reach. -->
     <div class="actions">
       <a href="/parlay" class="cta parlay" aria-current={$page.url.pathname === '/parlay' ? 'page' : undefined}>Build a parlay</a>
-      <a href="/#tips" class="cta">This week's calls</a>
       <!-- Sign-in (AUTH_PLAN.md). Nothing renders until the server has said
            who this is and whether sign-in is configured at all: an empty
            client id means the site behaves exactly as it did before B25. -->
@@ -231,6 +243,27 @@
 {:else}
   {@render children()}
 {/if}
+
+<!-- On phones the header's links live down here instead (owner request,
+     2026-09-07): a fixed bottom bar, the pattern the PWA install implies.
+     The CTAs and sign-in stay in the header. CSS swaps the two navs at the
+     existing 820px breakpoint; the section links highlight on tap (hash),
+     the parlay link by route, same as the header CTA. -->
+<nav class="bottom-nav" aria-label="Sections">
+  {#each sections as [id, label]}
+    <a
+      href="/#{id}"
+      aria-current={$page.url.pathname === '/' && $page.url.hash === `#${id}` ? 'page' : undefined}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons[id]} /></svg>
+      <span>{label}</span>
+    </a>
+  {/each}
+  <a href="/parlay" aria-current={$page.url.pathname === '/parlay' ? 'page' : undefined}>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons.parlay} /></svg>
+    <span>Parlay</span>
+  </a>
+</nav>
 
 <footer>
   <div class="bar">
@@ -430,10 +463,46 @@
   }
   .banner code { background: var(--panel-2); padding: 0.1rem 0.35rem; border-radius: 3px; }
 
+  /* Mobile bottom navigation. Nothing on desktop; below 820px it replaces
+     the header nav's old third row. Fixed over the page, so the body gains
+     matching bottom padding at the same breakpoint or the footer would end
+     behind it. The phone-gate veil (z 50) still covers it. */
+  .bottom-nav { display: none; }
+
   @media (max-width: 820px) {
     .bar { padding: 0 18px; gap: 16px; }
     header .bar { height: auto; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
-    nav { gap: 18px; order: 3; width: 100%; }
+    header nav { display: none; } /* moved to .bottom-nav */
     .cta { padding: 9px 16px; font-size: 13px; }
+
+    .bottom-nav {
+      display: flex; gap: 0;
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+      background: rgba(14, 14, 17, 0.92);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line);
+      /* iOS home indicator; 0 wherever there is no inset. */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .bottom-nav a {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      padding: 13px 0;
+      /* The label under the icon takes the house small-label style
+         (.link/.eyebrow), not the header nav's display face. */
+      font-family: var(--mono); font-size: 10px; line-height: 1;
+      letter-spacing: 0.14em;
+    }
+    .bottom-nav svg {
+      width: 24px; height: 24px;
+      fill: none; stroke: currentColor; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .bottom-nav a[aria-current='page'] { color: var(--accent); }
+
+    /* Bar = 13px x2 padding + 24px icon + 5px gap + 10px label + 1px border
+       = 66px; a little slack so rounding never puts the footer's last line
+       under the bar. */
+    :global(body) { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
   }
 </style>

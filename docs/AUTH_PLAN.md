@@ -572,7 +572,7 @@ and email fallback), the `plausiblePhone` accept/reject set.
 | --- | --- | --- |
 | **A** backend (~1.5 d) — **built 2026-09-07**: 702 pass (28 new), `002_users` applied to the dev store, 401 unconfigured; logout returns an explicit empty `Response` (FastAPI refuses `status_code=204` on a bodied signature); `phone_country` is the region derived from the number, not the one picked | `002_users.sql`; `engine/config.py`; `api/auth.py`; `api/main.py` dependencies, five endpoints, docstrings; `pyproject.toml`; `tests/test_auth.py`; the two amended pins | `pytest -q` green (last quoted 673 — re-run, don't quote; expect ≈ +25); on the dev store `python -c "from engine import db; print(db.migrate(db.connect()))"` prints `['002_users']`; `curl -X POST localhost:8000/auth/google -H 'content-type: application/json' -d '{"credential":"x"}'` → 401. Independently mergeable: no behaviour change for anonymous readers |
 | **B** frontend (~1.5 d) — **built 2026-09-07**: 33 web tests (8 new), build clean, 22-check Playwright click-through on a seeded `bvp_scratch` (planted sessions; anonymous / forged / expired cookies, the gate, zone-detected country, client and server validation, the one-time write, the cross-account 409, sign-out from the gate and from the header at 390 px). `ZONE_COUNTRY` is generated from `zone.tab` *first* (Africa/Accra is GH; tzdata has folded it into Abidjan), then `zone1970.tab`, then the links | `app.html`; `api.js` `post`/`ApiError`; `session.js`; `country.js` + zone table; `+layout.svelte` button, header state, phone modal; the JS tests | `cd web && npm test` (≈ +10 from 25); `npm run build` clean; the dev stack (`scripts/dev.ps1`, a real client id, `BVP_COOKIE_SECURE=0`): real Google sign-in → modal with the detected country → an invalid number shows the server's message → a valid one saves and the modal closes → a refresh keeps the session → sign out clears it. Playwright click-through against a seeded `bvp_scratch` (the project recipe): Google's popup cannot be scripted, so seed `users` + `user_sessions` rows and set the cookie on the context; check the header name, the modal for a phone-less user, the 409 path, sign-out, the 390 px layout; drop `bvp_scratch` after |
-| **C** deploy + docs (~0.5–1 d) — **repo side done 2026-09-07** (`bvp-limits.conf`, the two `limit_req` locations in `bvp.conf.template`, the unit's client-id line and wording, `backup.sh`, pins appended to `requirements.lock`, `DEPLOY.md` §2.7/§5.3/§7, `RUNBOOK.md` §5.10); **the VM steps are the owner's, §9.1 below** | lock regen; unit line; nginx limits + template; `backup.sh`; Google console; `deploy.sh`; this file's §11, `BACKLOG.md` B25, `OUTSTANDING.md`, `STATE.md`, `DEPLOY.md`, `.env.example`, `docs/notes` | `deploy.sh` shows `applied: ['002_users']`, the suite green on the VM, `nginx -t` ok; a real sign-in on the domain over HTTPS; DevTools shows the cookie Secure/HttpOnly/Lax; `journalctl -u bvp-api` clean; a backup run prints `users=… user_sessions=…` |
+| **C** deploy + docs (~0.5–1 d) — **done 2026-09-07, LIVE** (`ad9995f`): `bvp-limits.conf`, the two `limit_req` locations in `bvp.conf.template`, the unit's client-id line and wording, `backup.sh`, pins appended to `requirements.lock`, `DEPLOY.md` §2.7/§5.3/§7, `RUNBOOK.md` §5.10; the owner ran §9.1 on the VM — real sign-in verified on `https://babavanga.net`, backup run. Still open: a full `requirements.lock` regeneration on the VM | lock regen; unit line; nginx limits + template; `backup.sh`; Google console; `deploy.sh`; this file's §11, `BACKLOG.md` B25, `OUTSTANDING.md`, `STATE.md`, `DEPLOY.md`, `.env.example`, `docs/notes` | `deploy.sh` shows `applied: ['002_users']`, the suite green on the VM, `nginx -t` ok; a real sign-in on the domain over HTTPS; DevTools shows the cookie Secure/HttpOnly/Lax; `journalctl -u bvp-api` clean; a backup run prints `users=… user_sessions=…` |
 
 Total **≈ 3.5–4 days**. No rule, cycle, grading or ledger change.
 
@@ -586,15 +586,21 @@ rollback beyond `git checkout` of the previous commit and a restart.
    then); `git status` clean on the VM's branch before `deploy.sh` will run.
 2. **Google Cloud console** (once): the OAuth client's authorised JavaScript
    origins include `https://<domain>`; the consent screen is published.
-3. **nginx, before the deploy**: `sudo cp deploy/nginx/bvp-limits.conf
+3. **nginx, before the deploy** — after a `git pull --ff-only` on the VM,
+   since steps 3 and 4 read files from the checkout (`deploy.sh --no-pull`
+   in step 5 then skips the pull it would otherwise repeat):
+   `sudo cp deploy/nginx/bvp-limits.conf
    /etc/nginx/conf.d/`, re-render `bvp.conf.template` (`DEPLOY.md` §5.3),
    `sudo nginx -t`, reload. The new locations proxy to paths that 404 until
    the API restarts — harmless.
-4. **The unit**: put the client id on the `Environment=BVP_GOOGLE_CLIENT_ID=`
-   line of `deploy/systemd/bvp-api.service` *on the VM copy in
-   /etc/systemd/system* (the tracked file stays empty — `DEPLOY.md` §3.6),
-   `sudo systemctl daemon-reload`. Do not restart yet: the deploy migrates
-   first.
+4. **The unit**: the tracked file keeps its empty
+   `Environment=BVP_GOOGLE_CLIENT_ID=` line (`DEPLOY.md` §3.6); the id goes in
+   a drop-in, which a later `cp` of the unit cannot wipe and which overrides
+   the empty line because drop-ins apply after the unit:
+   `/etc/systemd/system/bvp-api.service.d/google.conf` containing
+   `[Service]` and `Environment=BVP_GOOGLE_CLIENT_ID=<id>`. Then copy the
+   unit, `sudo systemctl daemon-reload`, and `systemctl cat bvp-api | grep
+   GOOGLE` shows both lines. Do not restart yet: the deploy migrates first.
 5. **`scripts/deploy.sh`**: pull → pip (the appended pins install
    `google-auth`, `requests`, `phonenumbers`) → build → **migrate** (expect
    `applied: ['002_users']`) → `pytest -q` (expect the 28 auth tests among

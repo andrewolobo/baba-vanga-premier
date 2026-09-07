@@ -7,7 +7,72 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-07** (latest), after **the repo side of Phase C of
+Last updated **2026-09-07** (latest), after **the football-data feed URLs
+moved to the bare domain** — the local cycle failed all day with `HTTP 503`
+on both `sync` and `grade`. Assessed, not a bug here: `www.football-data.co.uk`
+answers the IONOS "temporarily unavailable" page to every client (curl,
+urllib, headless Chromium, and a fetch from a second network), while
+`football-data.co.uk` — same IP, Apache rather than the nginx front — serves
+the real, current files. The owner's browser had reached it without the
+`www`. Owner decision: switch both constants to the bare domain for now —
+`FIXTURES_URL` in `fixture_sync.py`, `RESULTS_URL` in `csv_grader.py`, plus
+the test landing URL and the `RUNBOOK.md` curl for consistency. The
+missing-file contract holds on the bare host (an unknown division still
+answers 300). 60 tests pass (grader / sync / cycle); `--dry-run` cycle exit 0
+with sync and grade green. Uncommitted; the VM runs the same code and has
+been failing identically, so deploy is what fixes it there. Watch for: the
+site later redirecting bare → `www` (harmless, redirects are followed and
+the grader checks the path only) or `www` recovering, in which case the
+constants can go back or stay. No rule, cycle-logic or ledger change.
+Before that, the same day, **the mobile bottom navigation
+bar was built** — owner request, assessed and decided the same session (D1–D4
+taken as recommended: the three section links + Parlay move to the bar, the
+two CTAs and sign-in stay in the header; plain fixed bar, no hide-on-scroll;
+text labels in the house style, no icons; tap-based active state — hash for
+the sections, route for `/parlay`). One file,
+`web/src/routes/+layout.svelte`: a `.bottom-nav` above the footer markup,
+swapped with the header nav at the existing 820px breakpoint; fixed, the
+header's translucent blur, z 40 — the phone-gate veil at 50 still covers
+it — `env(safe-area-inset-bottom)` for the iOS home indicator, and the body
+gains 58px bottom padding at the breakpoint (the bar is 55px with its
+border; a first cut at 54px put the footer's last line under the bar,
+caught by the click-through). No new unit tests — markup and CSS, and the
+node runner cannot load components (the settled-controls precedent). **33
+web tests pass, build clean, 20-check Playwright click-through** at 390px
+and 1280px on a migrated empty `bvp_scratch` with a planted phoneless
+session (bar contents and visibility both widths, header nav hidden, fixed
+geometry, hash + scroll + active state on tap, the `/parlay` round trip,
+footer clear of the bar at full scroll, veil over the bar, desktop
+unchanged); `bvp_scratch` dropped after. **Then the owner asked for a
+taller bar with an icon over each label** — four stroke icons drawn inline
+on a 24px grid (`icons` beside `sections` in the layout; speaker /
+check-circle / rising bars / stacked layers; `currentColor`, so the active
+state colours icon and label together, and no icon dependency), the label
+in the mono small-label style, bar 55 → 66px, body padding 70px. The
+click-through grew to **22 checks** (icon + label per link, the taller
+geometry) and re-ran green; 33 web tests, build clean; scratch stack torn
+down after. Deploy is the next frontend build — nginx and the service
+worker untouched. No API, engine, rule, cycle or ledger change
+(114 / 71 / 202, `--check` clean at session start). Uncommitted.
+
+Before that, the same day, **B25 — Google sign-in with the
+one-time phone capture — went live on `https://babavanga.net`**. The owner
+ran `AUTH_PLAN.md` §9.1 on the VM: commit `ad9995f` pushed; `git pull`;
+`bvp-limits.conf` into conf.d and the site template re-rendered; the client
+id as a systemd drop-in (`bvp-api.service.d/google.conf` — the tracked
+unit keeps its empty line, `systemctl cat` shows both and the drop-in
+wins); `deploy.sh --no-pull` (migrate `002_users`, suite, restart); **a
+real Google sign-in verified working on the domain**, and `bvp-backup` run
+by hand with the new counts. So the TLS posture is confirmed too:
+`DEPLOY.md` 5b is done, not "blocked". Open from the day: the
+`requirements.lock` regeneration on the VM (the nine appended pins served
+the install), and the three owner decisions that shipped as recommended —
+D5 phone UNIQUE, D6 time-zone default, D12 nothing gated — stand until
+the owner says otherwise. The next feature on `docs/notes` is the parlay
+gate (`AUTH_PLAN.md` §10, about half a day). No rule, cycle or ledger
+change (114 / 71 / 202).
+
+Before that, the same day, after **the repo side of Phase C of
 B25 was done and the real button rendered** — owner instruction, after the
 owner created the OAuth client and put its id in `.env`. Deploy-side code:
 `deploy/nginx/bvp-limits.conf` (new; the `limit_req_zone`, copied to

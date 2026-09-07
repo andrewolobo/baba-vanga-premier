@@ -1057,7 +1057,7 @@ to prevent.
 | 6      | `deploy.sh`, run once against no changes                                          | `/api/health` answers afterwards                                              | **done** `3c58e43`     |
 | 7      | Backup timer + first restore drill —**and the development machine first** (§6.1)  | a restored copy passes`integrity_check` and matches row counts                |                        |
 | 8      | Alerting:`OnFailure` + dead-man's switch                                          | **test all three** — break the cycle on purpose, and stop the timer for a day |                        |
-| **5b** | **Domain, TLS, basic auth**                                                       | `https://` serves; `/api/performance` is 401                                  | **domain attached (owner, 2026-09-07)** — verify the three curls in §5.3 over `https://`; sign-in (`AUTH_PLAN.md`) needs it |
+| **5b** | **Domain, TLS, basic auth**                                                       | `https://` serves; `/api/performance` is 401                                  | **done** — `https://babavanga.net`, confirmed by the B25 sign-in deploy 2026-09-07 (`AUTH_PLAN.md` §9.1) |
 | 9      | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck                             | the runbook describes the machine that is serving                             |                        |
 
 **Step 5 splits and 5b moves to the end**, because there is no domain yet

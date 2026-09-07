@@ -294,7 +294,7 @@ def test_a_redirect_onto_another_division_is_refused(monkeypatch):
     so asking for the 2026-27 Premier League returns the National League with a
     200. Grading E0's fixtures against EC's results is the failure to avoid."""
     _serve(monkeypatch, results(ARSENAL_WIN).encode("cp1252"),
-           landing="https://www.football-data.co.uk/mmz4281/2627/EC.csv")
+           landing="https://football-data.co.uk/mmz4281/2627/EC.csv")
 
     with pytest.raises(csv_grader.ResultsNotPublished):
         csv_grader.fetch("E0", "2627")
