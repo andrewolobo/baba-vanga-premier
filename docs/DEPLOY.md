@@ -22,7 +22,7 @@ of the deployment.
 | piece                | what it is                                                 | how it runs                   |
 | -------------------- | ---------------------------------------------------------- | ----------------------------- |
 | `services.run_cycle` | a**batch job that exits** — sync → serve → tips → grade    | systemd**timer**, daily       |
-| `api.main:app`       | a read-only FastAPI over what the cycle wrote              | systemd**service**, always up |
+| `api.main:app`       | a FastAPI over what the cycle wrote; its only writes are the account rows (`AUTH_PLAN.md`) | systemd**service**, always up |
 | `web/build`          | a**static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx         |
 
 Nothing daemonises itself and nothing retries itself, by design
@@ -270,6 +270,9 @@ like everything else (§3.10):
 | --- | --- | --- |
 | `BVP_DATABASE_URL` | the store | `postgresql:///bvp` — database `bvp` over the local socket as the OS user, which is the server's shape (peer auth, no password) |
 | `BVP_TEST_DATABASE_URL` | a **maintenance** database on a server the test suite may `CREATE`/`DROP` databases on — never the store | `postgresql:///postgres` |
+| `BVP_GOOGLE_CLIENT_ID` | the Google OAuth client id for sign-in (`AUTH_PLAN.md`); public, not a secret, but environment — empty means sign-in answers 401 and the site renders no button | *(empty)* |
+| `BVP_COOKIE_SECURE` | `Secure` on the session cookie; a development machine on `http://localhost` sets `0` | `1` |
+| `BVP_SESSION_DAYS` | sliding session length | `30` |
 
 **A development machine** points both at its own Postgres in `.env`, with
 credentials in the URL (`postgresql://user:password@127.0.0.1:5433/bvp`;
@@ -678,6 +681,25 @@ curl -sI  https://<domain>/api/performance     # 401
 
 `/api/health` returning JSON is the one that proves §2.4 is right.
 
+**Sign-in (B25, `AUTH_PLAN.md`), added 2026-09-07.** Two more things on the
+nginx side and one on the unit. The rate-limit zone is a plain file, not a
+template: `sudo cp deploy/nginx/bvp-limits.conf /etc/nginx/conf.d/` — it must
+be in place *before* the re-rendered site file is loaded, or `nginx -t` fails
+on the unknown zone. Then re-render `bvp.conf.template` as above; it now
+carries `location /api/auth/` and `location = /api/me/phone` with
+`limit_req`. And `bvp-api.service` carries `Environment=BVP_GOOGLE_CLIENT_ID=`
+(§5.5): fill it, copy, `daemon-reload`, restart. Verify:
+
+```bash
+curl -s  https://<domain>/api/auth/config | head -c 80      # {"google_client_id":"...","regions":[...
+curl -s  https://<domain>/api/me                            # {"user":null}
+curl -sI -X POST https://<domain>/api/auth/google            # 415 (no JSON) -- and a burst of 25 gets 503s
+```
+
+Google Identity Services only runs from an origin listed on the OAuth client
+in the Google Cloud console, over HTTPS (localhost excepted) — so this whole
+block presumes 5b is done.
+
 ### 5.4 The application — _verify:_ `build.validate()` passes, the suite is green
 
 A **read-only deploy key**, not a personal key and not a token in a URL. As
@@ -799,8 +821,8 @@ Four decisions worth stating outside the files:
 - **The API binds `127.0.0.1`, one worker.** nginx is the only thing that
   should reach it, and nginx is what enforces basic auth on `/api/book` and
   `/api/performance` (§3.1) — an API on `0.0.0.0` lets anyone bypass that by
-  going straight to the port. One worker because the API is read-only and there
-  is no load here that needs more.
+  going straight to the port. One worker because the API mostly reads (its only
+  writes are the account rows) and there is no load here that needs more.
 - **`ReadWritePaths=/srv/bvp/db` is not optional.** `ProtectSystem=strict`
   makes the hierarchy read-only, and **WAL is not a read-only mode**: opening
   the database creates and writes `premier.db-wal` and `premier.db-shm` even
@@ -1035,7 +1057,7 @@ to prevent.
 | 6      | `deploy.sh`, run once against no changes                                          | `/api/health` answers afterwards                                              | **done** `3c58e43`     |
 | 7      | Backup timer + first restore drill —**and the development machine first** (§6.1)  | a restored copy passes`integrity_check` and matches row counts                |                        |
 | 8      | Alerting:`OnFailure` + dead-man's switch                                          | **test all three** — break the cycle on purpose, and stop the timer for a day |                        |
-| **5b** | **Domain, TLS, basic auth**                                                       | `https://` serves; `/api/performance` is 401                                  | **blocked: no domain** |
+| **5b** | **Domain, TLS, basic auth**                                                       | `https://` serves; `/api/performance` is 401                                  | **domain attached (owner, 2026-09-07)** — verify the three curls in §5.3 over `https://`; sign-in (`AUTH_PLAN.md`) needs it |
 | 9      | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck                             | the runbook describes the machine that is serving                             |                        |
 
 **Step 5 splits and 5b moves to the end**, because there is no domain yet

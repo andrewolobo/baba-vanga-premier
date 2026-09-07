@@ -18,10 +18,16 @@
 # The backup should not inherit the cycle's verdict.
 #
 # WHAT THIS PROTECTS. `predictions`, `tips`, `clv_grades` and `serving_state` --
-# what was predicted and when. Everything else in the store is reproducible
-# from the tracked CSVs by engine.ingest.build. The DEVELOPMENT machine holds a
-# different irreplaceable thing, `gate_ledger`, and that is handled by
-# scripts/export_ledger.py rather than here.
+# what was predicted and when -- and, since docs/AUTH_PLAN.md (B25), `users`
+# and `user_sessions`: the accounts. Everything else in the store is
+# reproducible from the tracked CSVs by engine.ingest.build. The DEVELOPMENT
+# machine holds a different irreplaceable thing, `gate_ledger`, and that is
+# handled by scripts/export_ledger.py rather than here.
+#
+# WHAT THAT MEANS. The dump now contains personal data -- names, emails and
+# phone numbers -- so $DIR and the off-machine container are stores of it,
+# with KEEP below as the only retention policy. A deleted account survives in
+# the snapshots until they age out.
 
 set -uo pipefail
 
@@ -81,7 +87,9 @@ COUNTS="$(psql "$URL" -At -c "
         || '  tips=' || (SELECT COUNT(*) FROM tips)
         || '  clv_grades=' || (SELECT COUNT(*) FROM clv_grades)
         || '  serving_state=' || (SELECT COUNT(*) FROM serving_state)
-        || '  gate_ledger=' || (SELECT COUNT(*) FROM gate_ledger)")" || exit 1
+        || '  gate_ledger=' || (SELECT COUNT(*) FROM gate_ledger)
+        || '  users=' || (SELECT COUNT(*) FROM users)
+        || '  user_sessions=' || (SELECT COUNT(*) FROM user_sessions)")" || exit 1
 SIZE="$(stat -c %s "$TARGET" 2>/dev/null || stat -f %z "$TARGET")"
 printf 'snapshot ok  %d KB  %s\n' "$((SIZE / 1024))" "$COUNTS"
 echo "wrote $TARGET"

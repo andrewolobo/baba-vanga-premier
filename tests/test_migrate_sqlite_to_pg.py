@@ -127,7 +127,9 @@ def test_copy_preserves_ids_and_the_next_insert_does_not_collide(source, empty_d
     assert [r["fixture_id"] for r in pg.execute("SELECT fixture_id FROM fixtures ORDER BY 1")] == [1, 7]
     assert db.scalar(pg, "SELECT avg_h FROM matches") == 2.0
     assert db.scalar(pg, "SELECT served_at FROM predictions") == "2026-08-11 06:00:123456"
-    assert db.scalar(pg, "SELECT COUNT(*) FROM schema_migrations") == 1, "the SQLite rows are not copied"
+    on_disk = sorted(path.stem for path in config.MIGRATIONS_DIR.glob("*.sql"))
+    applied = sorted(r["version"] for r in pg.execute("SELECT version FROM schema_migrations"))
+    assert applied == on_disk, "the SQLite rows are not copied; the target carries its own history"
     new_id = db.scalar(pg, "INSERT INTO fixtures (division, match_date, home_team_id,"
                            " away_team_id, source_file) VALUES ('E2', '2026-08-29', 2, 1, 't')"
                            " RETURNING fixture_id")

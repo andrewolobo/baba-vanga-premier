@@ -1,17 +1,53 @@
-// Thin wrapper over the read-only API. Kept deliberately dumb: the frontend
-// displays what the engine already decided and never recomputes a probability
-// or an edge, so that what a user sees is provably what was stored.
+// Thin wrapper over the API. Kept deliberately dumb: the frontend displays
+// what the engine already decided and never recomputes a probability or an
+// edge, so that what a user sees is provably what was stored. The reads are
+// here; the three account writes (`$lib/session.js`) share `post`.
 
 const BASE = '/api';
 
-async function get(path, params = {}) {
+// A failed call. The message is what the pages have always shown; `status`
+// lets a caller tell a 401 from a 409, and `detail` is the API's own sentence
+// when it sent one (FastAPI's `{"detail": ...}`), which the phone form shows
+// verbatim.
+export class ApiError extends Error {
+  constructor(status, statusText, url, detail) {
+    super(`${status} ${statusText} for ${url}`);
+    this.status = status;
+    this.detail = detail;
+  }
+}
+
+async function fail(response, url) {
+  const detail = await response
+    .json()
+    .then((body) => (typeof body?.detail === 'string' ? body.detail : null))
+    .catch(() => null);
+  throw new ApiError(response.status, response.statusText, url, detail);
+}
+
+export async function get(path, params = {}) {
   const query = new URLSearchParams(
     Object.entries(params).filter(([, v]) => v !== null && v !== undefined && v !== '')
   );
   const url = `${BASE}${path}${query.toString() ? `?${query}` : ''}`;
   const response = await fetch(url);
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText} for ${url}`);
+  if (!response.ok) await fail(response, url);
   return response.json();
+}
+
+// JSON in, JSON (or nothing, on 204) out. Same-origin, so the session cookie
+// rides along; the JSON content type is what the API's write endpoints
+// require (docs/AUTH_PLAN.md D9).
+export async function post(path, body) {
+  const url = `${BASE}${path}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body ?? {})
+  });
+  if (!response.ok) await fail(response, url);
+  return response.status === 204 ? null : response.json();
 }
 
 export const getHealth = () => get('/health');

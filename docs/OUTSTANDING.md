@@ -7,7 +7,121 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-04** (latest), after **the parlay's second feature
+Last updated **2026-09-07** (latest), after **the repo side of Phase C of
+B25 was done and the real button rendered** — owner instruction, after the
+owner created the OAuth client and put its id in `.env`. Deploy-side code:
+`deploy/nginx/bvp-limits.conf` (new; the `limit_req_zone`, copied to
+conf.d) and two `limit_req` locations in `bvp.conf.template`
+(`/api/auth/`, `= /api/me/phone`; the `-http` template is untouched — it is
+the pre-TLS posture and sign-in needs TLS); `bvp-api.service` carries an
+empty `Environment=BVP_GOOGLE_CLIENT_ID=` stub and drops "read-only";
+`scripts/backup.sh` names `users`/`user_sessions`, says the dump now holds
+personal data, and counts both; **`requirements.lock` has the nine sign-in
+pins appended** from this machine (a full regeneration is still the
+server's, per its header). Docs: `DEPLOY.md` §2.7 (three settings), §5.3
+(the sign-in block with its three curls), §7's 5b row (domain attached —
+verify, no longer "blocked"), `RUNBOOK.md` §5.10 ("sign-in is down", three
+symptoms), `AUTH_PLAN.md` §9.1 — **the VM checklist, eight steps, the
+owner's to run between matchdays**: commit/push, console origins, limits
+file before the re-render, the id on the VM's unit copy, `deploy.sh`
+(migrate → suite → restart), the HTTPS curls and a real sign-in, a backup
+run, docs. Verified here: with the real id in `.env`, the dev stack at
+`http://localhost:5173` renders Google's button (an `accounts.google.com`
+iframe in the `.gsi` host, no GIS error in the console); a real sign-in
+needs a human in the popup and is step 6 on the domain. Dev store took no
+writes. No rule, cycle or ledger change (114 / 71 / 202). Uncommitted —
+**step 1 of §9.1 is the commit.**
+
+Before that, the same day, after **Phase B of B25 — the sign-in
+frontend — was built**, owner instruction. `web/src/app.html` loads Google
+Identity Services; `web/src/lib/api.js` gained `ApiError` (`status`,
+`detail`) and a same-origin JSON `post`; `web/src/lib/session.js` (the five
+account calls + `phoneRequired` / `firstName` / `plausiblePhone`);
+`web/src/lib/country.js` (D6: `detectCountry` = browser time zone → locale
+region → `GB`, over a generated `ZONE_COUNTRY` — `zone.tab` first so
+Africa/Accra stays GH after tzdata folded it into Abidjan, then
+`zone1970.tab`, then the backward links; IANA 2025b, 553 names);
+`+layout.svelte` owns `me`/`cfg` (server-asked on every load), renders
+Google's button into a `.gsi` host once the async script is there, shows
+avatar + first name + Sign out when signed in, and puts the one-time phone
+form over every route while `phone_required` — nothing renders at all while
+the client id is empty, so an unconfigured site is unchanged. Service
+worker untouched (one sentence in its header). **33 web tests** (8 new),
+build clean, **22-check Playwright click-through** on a seeded
+`bvp_scratch` with planted sessions (anonymous, forged and expired cookies;
+the gate; Nairobi → KE default; the disabled Save; the server's own 400
+sentence; the write and its E.164 row; reload; `/parlay` ungated; the
+cross-account 409; sign-out from the gate and from the header at 390 px,
+both revoked server-side); `bvp_scratch` dropped after. Nothing on the VM.
+No rule, cycle or ledger change (114 / 71 / 202). Uncommitted. **Next:
+phase C** — the OAuth client (owner), lock regen on the VM, the unit line
+(stubbed), nginx limits, `backup.sh`, deploy, and a real sign-in on the
+domain.
+
+Before that, the same day, after **Phase A of B25 — the sign-in
+backend — was built**, owner instruction, on the plan below as written
+(D5 phone UNIQUE, D6, D12 taken as recommended, not separately confirmed).
+`db/migrations/002_users.sql` (`users`, `user_sessions`; TIMESTAMPTZ /
+BOOLEAN, the stated departure), `api/auth.py` (verify / token / hash /
+`normalise_phone` / `regions`), and in `api/main.py` the `_same_site_json`,
+`current_user`, `require_user` dependencies and `GET /auth/config`,
+`POST /auth/google`, `GET /me`, `POST /me/phone`, `POST /auth/logout` — the
+module's "read-only" docstring now names the three write routes, and
+`test_the_api_exposes_no_write_routes` became
+`test_the_only_write_routes_are_the_account_ones`, an exact pin.
+`engine/config.py` gained `GOOGLE_CLIENT_ID`, `SESSION_DAYS`, `COOKIE_SECURE`
+(`.env.example` documents them; `BVP_COOKIE_SECURE=0` for development);
+`pyproject.toml`'s `serve` extra gained `google-auth`, `requests`,
+`phonenumbers` (installed here; **`requirements.lock` not regenerated** —
+phase C, on the Ubuntu target). Two small deviations from the plan text:
+logout returns an explicit empty `Response` (FastAPI refuses
+`status_code=204` on a bodied signature), and `phone_country` is the region
+`phonenumbers` derives from the number, so a Guernsey mobile typed under GB
+records `GG`. `tests/test_auth.py` (28) covers sign-in, cookie flags, the
+upsert, the four refusals, `/me` states, expiry, revocation, the once-a-day
+refresh, E.164 normalisation, the one-time write, the cross-account 409 and
+logout; `tests/test_migrate_sqlite_to_pg.py` compares `schema_migrations`
+to the files on disk. **702 pass** (full suite, 3 min 53 s). Verify per
+`AUTH_PLAN.md` §9: `002_users` applied to the development store `bvp`
+(this machine's authority — additive, two empty tables), and with no client
+id configured `POST /auth/google` answers 401 while `/me`, `/auth/config`
+and `/health` serve. Nothing on the VM. No rule, cycle or ledger change
+(114 / 71 / 202, `--check` clean at session start). Uncommitted. **Next:
+phase B (frontend), then phase C** — and the owner still has to create the
+OAuth client and confirm D5/D6/D12 before the deploy.
+
+Before that, the same day, after **Google sign-in with a one-time phone
+capture was assessed and planned, not built** — owner request: add Google
+authentication; capture a phone number once at the end of it; some features
+will later sit behind sign-in (out of scope, but design for it). Plan:
+`AUTH_PLAN.md`, `BACKLOG.md` B25. Owner decisions taken first: DB-backed
+session (opaque HttpOnly cookie, not JWT); phone mandatory, E.164,
+format-validated only with the default country *detected* (SMS verification
+stays a later item); **the domain is attached** (TLS is a verify step —
+`DEPLOY.md` 5b's "blocked: no domain" is stale). Shape: GIS ID-token flow →
+`POST /auth/google` verified with `google-auth`; `002_users.sql` (`users`
+keyed on `google_sub`, `user_sessions` with the SHA-256 of the cookie token;
+TIMESTAMPTZ/BOOLEAN, the stated departure from the baseline's TEXT that
+`POSTGRES_PLAN.md` §1.2 licensed); `GET /auth/config`, `GET /me`,
+`POST /me/phone` (write-once by `WHERE phone_e164 IS NULL`, 409 after),
+`POST /auth/logout`; `current_user`/`require_user` dependencies with a
+30-day sliding expiry throttled to one write a day; CSRF by SameSite=Lax +
+JSON-only + `Sec-Fetch-Site`, CORS untouched; country from the browser time
+zone with a picker; a phone modal in `+layout.svelte`; nginx `limit_req` on
+the auth paths. **Three collisions named**: the API's read-only contract
+(`test_the_api_exposes_no_write_routes` becomes an exact pin of the three
+write routes), `get_conn`'s autocommit (kept; `conn.transaction()` around
+the sign-in pair), and `test_migrate_sqlite_to_pg`'s migration count.
+Sixteen decisions D1–D16; **owner to confirm D5 (phone UNIQUE across
+accounts), D6 (time-zone detection vs GeoIP) and D12 (gate nothing now)**
+and create the OAuth client in the Google console. ~3.5–4 days in three
+phases, backend first and independently mergeable. No code, rule, cycle or
+ledger change (114 / 71 / 202). Side-findings: `api/main.py` comments cite
+SQLite-era migrations 002–006; `STATE.md`'s header date is stale; an
+untracked `web/vite.config.js.timestamp-*.mjs` sits in the tree.
+Uncommitted.
+
+Before that, **2026-09-04** (latest of that day), after **the parlay's second feature
 request was assessed, not built** — owner: add call-type selection ("1X2,
 over/under, straight wins…") and a legs slider scaling to the whole
 matchday; assess feasibility. `PARLAY_PLAN.md` §8 carries the numbers

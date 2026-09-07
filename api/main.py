@@ -1,4 +1,4 @@
-"""Read-only serving API.
+"""The serving API.
 
     uvicorn api.main:app --reload
 
@@ -8,6 +8,11 @@ prices a fixture, or places a bet: predictions are produced by
 change what was served. That is what makes a stored prediction auditable --
 "what did we say, when, from which artifact" has one answer, not one per
 request.
+
+Since `002_users.sql` (docs/AUTH_PLAN.md, B25) the API also **writes** -- only
+to `users` and `user_sessions`, and only from `POST /auth/google`,
+`POST /auth/logout` and `POST /me/phone`. Nothing a request can do changes
+what was served; `tests/test_api.py` pins the write routes to that list.
 
 Probabilities are served as-is and flagged `calibrated: false` until P3 exists.
 Marking that on the wire rather than in a document is deliberate: a consumer
@@ -32,11 +37,13 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 import numpy as np
-from fastapi import Depends, FastAPI, HTTPException, Query
+import psycopg
+from fastapi import Body, Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from scipy import stats
 
-from engine import db
+from api import auth
+from engine import config, db
 from engine.seasons import SERVED_DIVISIONS
 from engine.serve import parlay as parlay_rule
 
@@ -46,7 +53,10 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# The frontend is served separately in development.
+# The frontend is served separately in development. GET only and no
+# credentials, deliberately: the SPA reaches this API same-origin through the
+# Vite proxy and through nginx, and a credential-less CORS policy is part of
+# the write endpoints' CSRF posture (docs/AUTH_PLAN.md D9).
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -58,12 +68,15 @@ app.add_middleware(
 def get_conn() -> db.Connection:
     """One connection per request, autocommit.
 
-    Autocommit because this API only reads: psycopg would otherwise open a
+    Autocommit because this API mostly reads: psycopg would otherwise open a
     transaction on the first SELECT and hold it until the connection closed,
     leaving every request *idle in transaction* for its whole life. FastAPI
     runs this dependency's setup, the endpoint and the teardown on whichever
     threadpool workers are free; psycopg connections are not thread-bound, so
-    that hand-off needs nothing special here.
+    that hand-off needs nothing special here. The account endpoints
+    (docs/AUTH_PLAN.md) write on the same connection; the one
+    multi-statement write, sign-in, wraps its pair in `conn.transaction()`,
+    which on an autocommit connection is an explicit BEGIN/COMMIT.
     """
     conn = db.connect(autocommit=True)
     try:
@@ -508,3 +521,170 @@ def performance(conn: db.Connection = Depends(get_conn)) -> list[dict]:
         " LEFT JOIN clv_grades g ON g.bet_id = b.bet_id"
         " GROUP BY f.division, b.market ORDER BY f.division, b.market",
     )
+
+
+# --- accounts (docs/AUTH_PLAN.md, B25) ------------------------------------ #
+# The only routes that write. `users` and `user_sessions` are the only tables
+# they touch, and `tests/test_api.py` pins the write routes to exactly these.
+
+
+def _same_site_json(request: Request) -> None:
+    """The write endpoints take JSON from this site only (AUTH_PLAN.md D9).
+
+    SameSite=Lax keeps the cookie off cross-site POSTs; requiring
+    application/json keeps a cross-site form or no-cors fetch from reaching
+    the handler at all (a JSON body forces a CORS preflight, which the
+    middleware above never grants credentials for); Sec-Fetch-Site is the
+    browser saying which it was. No CSRF token: nothing here is a form.
+    """
+    if not request.headers.get("content-type", "").startswith("application/json"):
+        raise HTTPException(415, "send application/json")
+    if request.headers.get("sec-fetch-site") == "cross-site":
+        raise HTTPException(403, "cross-site request refused")
+
+
+def current_user(request: Request, conn: db.Connection = Depends(get_conn)) -> dict | None:
+    """The signed-in user behind the request's cookie, or None.
+
+    One SELECT per request. The sliding expiry (D8) is written at most once a
+    day per session, so a page that polls `/me` does not turn every read into
+    a write.
+    """
+    token = request.cookies.get(auth.COOKIE)
+    if not token:
+        return None
+    row = conn.execute(
+        "SELECT u.user_id, u.email, u.name, u.picture_url, u.phone_e164,"
+        "       u.phone_country, s.session_id"
+        " FROM user_sessions s JOIN users u ON u.user_id = s.user_id"
+        " WHERE s.token_hash = %s AND s.revoked_at IS NULL AND s.expires_at > now()",
+        (auth.hash_token(token),),
+    ).fetchone()
+    if row is None:
+        return None
+    conn.execute(
+        "UPDATE user_sessions SET last_seen_at = now(),"
+        " expires_at = now() + %s * interval '1 day'"
+        " WHERE session_id = %s AND last_seen_at < now() - interval '1 day'",
+        (config.SESSION_DAYS, row["session_id"]),
+    )
+    return dict(row)
+
+
+def require_user(user: dict | None = Depends(current_user)) -> dict:
+    if user is None:
+        raise HTTPException(401, "sign in required")
+    return user
+
+
+def _user_summary(row) -> dict:
+    return {
+        "user_id": row["user_id"],
+        "name": row["name"],
+        "email": row["email"],
+        "picture_url": row["picture_url"],
+        "phone_e164": row["phone_e164"],
+        "phone_required": row["phone_e164"] is None,
+    }
+
+
+@app.get("/auth/config")
+def auth_config() -> dict:
+    """What the browser needs before it can sign anyone in: the Google client
+    id (public -- it is the `aud` of every ID token; D7 serves it at runtime
+    so one build is the same on every machine) and the country list for the
+    phone step."""
+    return {"google_client_id": config.GOOGLE_CLIENT_ID, "regions": auth.regions()}
+
+
+@app.post("/auth/google", dependencies=[Depends(_same_site_json)])
+def auth_google(
+    request: Request,
+    response: Response,
+    payload: dict = Body(...),
+    conn: db.Connection = Depends(get_conn),
+) -> dict:
+    """Sign in with a Google ID token: verify it, upsert the user on
+    `google_sub`, open a session, set the cookie (D1, D2, D15)."""
+    credential = payload.get("credential")
+    if not isinstance(credential, str) or not credential:
+        raise HTTPException(400, "credential required")
+    try:
+        claims = auth.verify_google_token(credential)
+    except ValueError as error:
+        raise HTTPException(401, "invalid google credential") from error
+    if not claims.get("email"):
+        raise HTTPException(401, "google returned no email")
+    token = auth.new_token()
+    # The one multi-statement write: on an autocommit connection this is an
+    # explicit BEGIN/COMMIT, so a failed session insert leaves no user row.
+    with conn.transaction():
+        row = conn.execute(
+            "INSERT INTO users (google_sub, email, email_verified, name, picture_url)"
+            " VALUES (%s, %s, %s, %s, %s)"
+            " ON CONFLICT (google_sub) DO UPDATE SET email = EXCLUDED.email,"
+            "   email_verified = EXCLUDED.email_verified, name = EXCLUDED.name,"
+            "   picture_url = EXCLUDED.picture_url, last_login_at = now()"
+            " RETURNING user_id, email, name, picture_url, phone_e164",
+            (claims["sub"], claims["email"].lower(), bool(claims.get("email_verified")),
+             claims.get("name"), claims.get("picture")),
+        ).fetchone()
+        conn.execute(
+            "INSERT INTO user_sessions (user_id, token_hash, expires_at, user_agent)"
+            " VALUES (%s, %s, now() + %s * interval '1 day', %s)",
+            (row["user_id"], auth.hash_token(token), config.SESSION_DAYS,
+             (request.headers.get("user-agent") or "")[:200]),
+        )
+    response.set_cookie(
+        auth.COOKIE, token, max_age=config.SESSION_DAYS * 86400, path="/",
+        httponly=True, secure=config.COOKIE_SECURE, samesite="lax",
+    )
+    return {"user": _user_summary(row)}
+
+
+@app.get("/me")
+def me(user: dict | None = Depends(current_user)) -> dict:
+    """200 with `user: null` when anonymous, not 401: the layout asks this on
+    every load, and a 401 is an error in every browser console."""
+    return {"user": _user_summary(user) if user else None}
+
+
+@app.post("/me/phone", dependencies=[Depends(_same_site_json)])
+def set_phone(
+    payload: dict = Body(...),
+    user: dict = Depends(require_user),
+    conn: db.Connection = Depends(get_conn),
+) -> dict:
+    """The one-time phone capture (D5). The WHERE clause is the guard: a
+    second call updates zero rows and is refused, whatever the client believed."""
+    try:
+        e164, region = auth.normalise_phone(
+            str(payload.get("phone", "")), str(payload.get("country", "")).upper())
+    except ValueError as error:
+        raise HTTPException(400, str(error)) from error
+    try:
+        cur = conn.execute(
+            "UPDATE users SET phone_e164 = %s, phone_country = %s,"
+            " phone_captured_at = now() WHERE user_id = %s AND phone_e164 IS NULL",
+            (e164, region, user["user_id"]),
+        )
+    except psycopg.errors.UniqueViolation as error:
+        raise HTTPException(409, "that phone number is already on another account") from error
+    if cur.rowcount == 0:
+        raise HTTPException(409, "phone number already captured")
+    return {"user": _user_summary({**user, "phone_e164": e164})}
+
+
+@app.post("/auth/logout", dependencies=[Depends(_same_site_json)])
+def logout(
+    user: dict | None = Depends(current_user),
+    conn: db.Connection = Depends(get_conn),
+) -> Response:
+    """Revoke the session behind the cookie and clear it. Without a live
+    session there is nothing to revoke, and clearing the cookie is still right."""
+    if user:
+        conn.execute("UPDATE user_sessions SET revoked_at = now() WHERE session_id = %s",
+                     (user["session_id"],))
+    response = Response(status_code=204)
+    response.delete_cookie(auth.COOKIE, path="/")
+    return response

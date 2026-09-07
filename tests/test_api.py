@@ -1,9 +1,11 @@
 """The serving API.
 
-Read-only by contract: a request must never change what was served. If an
-endpoint could fit, price or bet, then "what did we predict and when" would
-have a different answer every time it was asked, and the stored record would
-stop being evidence.
+Read-only by contract, with one named exception: a request must never change
+what was served. If an endpoint could fit, price or bet, then "what did we
+predict and when" would have a different answer every time it was asked, and
+the stored record would stop being evidence. The account endpoints
+(docs/AUTH_PLAN.md, `tests/test_auth.py`) write to `users` and
+`user_sessions` and nothing else; the route-table pin below names them.
 """
 
 from __future__ import annotations
@@ -446,11 +448,13 @@ def test_concurrent_requests_all_succeed(tips_client):
     assert set(codes) == {200}
 
 
-def test_the_api_exposes_no_write_routes(client):
+def test_the_only_write_routes_are_the_account_ones(client):
     """Read-only by contract, asserted against the route table rather than
-    trusted -- a POST added later would otherwise pass unnoticed."""
-    methods = {m for route in app.routes for m in getattr(route, "methods", set())}
-    assert methods <= {"GET", "HEAD", "OPTIONS"}
+    trusted. The three account routes (AUTH_PLAN.md) are the named exception;
+    a POST added later goes red here until it is listed on purpose."""
+    writes = {(route.path, m) for route in app.routes
+              for m in getattr(route, "methods", set()) if m not in {"GET", "HEAD", "OPTIONS"}}
+    assert writes == {("/auth/google", "POST"), ("/auth/logout", "POST"), ("/me/phone", "POST")}
 
 
 def test_endpoints_survive_an_empty_database(make_database):

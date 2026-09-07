@@ -37,6 +37,13 @@ dev = [
 serve = [
     "fastapi>=0.110",
     "uvicorn[standard]>=0.27",
+    # Sign-in (docs/AUTH_PLAN.md, B25): google-auth verifies the ID token
+    # against Google's certificates over its `requests` transport, and
+    # phonenumbers normalises the one-time phone number to E.164. api/auth.py
+    # only; nothing under engine/ imports them.
+    "google-auth>=2.30",
+    "requests>=2.31",
+    "phonenumbers>=8.13",
 ]
 # services/fbref_scraper only. curl_cffi impersonates Chrome's TLS fingerprint
 # and patchright drives a real Chrome; nothing else clears fbref's Cloudflare

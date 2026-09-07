@@ -6,7 +6,9 @@
 // /api/fixtures fall back to the last successful response when the network is
 // away (the one case a reader benefits from — checking the published calls on
 // a poor signal). Every other /api endpoint is left alone: /api/book and
-// /api/performance must never show a stale grade as current.
+// /api/performance must never show a stale grade as current, and the account
+// calls (/api/me, /api/auth/*) must never be answered from a cache -- they
+// are not in the set below, and POSTs never reach the worker at all.
 import { build, files, version } from '$service-worker';
 
 const CACHE = `bvp-${version}`;

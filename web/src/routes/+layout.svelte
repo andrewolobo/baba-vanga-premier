@@ -1,6 +1,132 @@
 <script>
   import { page } from '$app/stores';
+  import { onMount } from 'svelte';
+  import {
+    getAuthConfig,
+    getMe,
+    signInWithGoogle,
+    savePhone,
+    signOut,
+    phoneRequired,
+    firstName,
+    plausiblePhone
+  } from '$lib/session.js';
+  import { detectCountry } from '$lib/country.js';
   let { children } = $props();
+
+  // Sign-in (docs/AUTH_PLAN.md, B25). The layout owns the session state
+  // because the control lives in the header and the phone gate covers every
+  // route; nothing below it needs `me` yet (AUTH_PLAN.md §10 says when it
+  // moves to a shared module). The server is the only authority: `getMe`
+  // asks it on every load and the cookie is HttpOnly, so nothing here can
+  // decide anyone is signed in.
+  let me = $state(null);
+  let authReady = $state(false);
+  let cfg = $state(null);
+  let authError = $state(null);
+  let buttonHost = $state(null);
+
+  // The one-time phone step (D5, D6).
+  let phone = $state('');
+  let country = $state('GB');
+  let phoneError = $state(null);
+  let saving = $state(false);
+
+  const regionName = (() => {
+    try {
+      const names = new Intl.DisplayNames(['en'], { type: 'region' });
+      return (code) => names.of(code) ?? code;
+    } catch {
+      return (code) => code;
+    }
+  })();
+  const regionOptions = $derived(
+    (cfg?.regions ?? [])
+      .map((r) => ({ ...r, name: regionName(r.code) }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+  );
+
+  onMount(async () => {
+    try {
+      cfg = await getAuthConfig();
+      me = await getMe();
+      country = detectCountry(
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        navigator.language,
+        new Set(cfg.regions.map((r) => r.code))
+      );
+    } catch (e) {
+      authError = e.message;
+    }
+    authReady = true;
+  });
+
+  // Google's script loads async and its button is an iframe it draws into a
+  // host element, so render once both exist; the host is conditional on
+  // being signed out, so a sign-out re-mounts it and this runs again.
+  $effect(() => {
+    const host = buttonHost;
+    const clientId = cfg?.google_client_id;
+    if (!host || !clientId || me) return;
+    let tries = 0;
+    let cancelled = false;
+    const tick = () => {
+      if (cancelled) return;
+      const gsi = window.google?.accounts?.id;
+      if (gsi) {
+        gsi.initialize({
+          client_id: clientId,
+          callback: ({ credential }) => onCredential(credential),
+          ux_mode: 'popup'
+        });
+        gsi.renderButton(host, { theme: 'filled_black', size: 'medium', shape: 'pill', text: 'signin_with' });
+      } else if (tries++ < 50) {
+        setTimeout(tick, 100);
+      }
+    };
+    tick();
+    return () => {
+      cancelled = true;
+    };
+  });
+
+  async function onCredential(credential) {
+    authError = null;
+    try {
+      me = await signInWithGoogle(credential);
+    } catch {
+      authError = 'Sign-in did not go through. Try again.';
+    }
+  }
+
+  async function doSignOut() {
+    try {
+      await signOut();
+    } catch {
+      // The cookie is cleared server-side on success; on failure the next
+      // load asks /me again, which is the truth either way.
+    }
+    me = null;
+    phone = '';
+    phoneError = null;
+  }
+
+  async function savePhoneNow(event) {
+    event.preventDefault();
+    saving = true;
+    phoneError = null;
+    try {
+      me = await savePhone(phone, country);
+    } catch (e) {
+      if (e.status === 409 && !/another account/.test(e.detail ?? '')) {
+        me = await getMe(); // already captured elsewhere: the gate closes itself
+      } else {
+        phoneError = e.detail ?? 'That number could not be saved. Try again.';
+      }
+    } finally {
+      saving = false;
+    }
+  }
 
   // The public site is one page with three sections, plus /parlay (B24). /book
   // and /performance are the internal views that existed before it and are
@@ -33,9 +159,65 @@
     <div class="actions">
       <a href="/parlay" class="cta parlay" aria-current={$page.url.pathname === '/parlay' ? 'page' : undefined}>Build a parlay</a>
       <a href="/#tips" class="cta">This week's calls</a>
+      <!-- Sign-in (AUTH_PLAN.md). Nothing renders until the server has said
+           who this is and whether sign-in is configured at all: an empty
+           client id means the site behaves exactly as it did before B25. -->
+      {#if authReady && cfg?.google_client_id}
+        {#if me}
+          <div class="who">
+            {#if me.picture_url}
+              <img class="avatar" src={me.picture_url} alt="" referrerpolicy="no-referrer" />
+            {/if}
+            <span class="name">{firstName(me)}</span>
+            <button type="button" class="link" onclick={doSignOut}>Sign out</button>
+          </div>
+        {:else}
+          <div class="gsi" bind:this={buttonHost}></div>
+        {/if}
+      {/if}
     </div>
   </div>
+  {#if authError}
+    <p class="auth-error">{authError}</p>
+  {/if}
 </header>
+
+<!-- The one-time phone step (AUTH_PLAN.md D5): a signed-in account without a
+     number sees this over every route until it saves one. The server writes
+     it once and refuses a second; this form only asks. -->
+{#if phoneRequired(me) && cfg}
+  <div class="veil" role="dialog" aria-modal="true" aria-labelledby="phone-title">
+    <form class="phone" onsubmit={savePhoneNow}>
+      <p class="eyebrow">One more thing</p>
+      <h2 id="phone-title">Your mobile number</h2>
+      <p class="copy">
+        We ask once. It is kept with your account, shown nowhere on the site, and
+        is the number we would reach you on.
+      </p>
+      <label>
+        <span>Country</span>
+        <select bind:value={country}>
+          {#each regionOptions as r (r.code)}
+            <option value={r.code}>{r.name} (+{r.dial})</option>
+          {/each}
+        </select>
+      </label>
+      <label>
+        <span>Mobile number</span>
+        <input type="tel" inputmode="tel" autocomplete="tel" bind:value={phone} />
+      </label>
+      {#if phoneError}
+        <p class="bad">{phoneError}</p>
+      {/if}
+      <div class="row">
+        <button type="submit" class="cta" disabled={!plausiblePhone(phone) || saving}>
+          {saving ? 'Saving…' : 'Save number'}
+        </button>
+        <button type="button" class="link" onclick={doSignOut}>Sign out instead</button>
+      </div>
+    </form>
+  </div>
+{/if}
 
 {#if internal}
   <div class="shell">
@@ -168,6 +350,66 @@
      are here" rather than "go here", so it settles to the softer shade. */
   .cta.parlay[aria-current="page"] { background: var(--accent-soft); }
   .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .cta:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
+
+  /* --- sign-in (AUTH_PLAN.md) --------------------------------------------- */
+  /* Google draws its own button into .gsi; the height keeps the header from
+     jumping while the script loads. */
+  .gsi { min-height: 40px; display: flex; align-items: center; }
+  .who { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); }
+  .name {
+    font-family: var(--display); font-weight: 600; font-size: 17px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--text);
+  }
+  .link {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .link:hover { color: var(--accent-soft); }
+  .link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .auth-error {
+    max-width: var(--page); margin: 0 auto; padding: 0 32px 10px;
+    font-family: var(--mono); font-size: 12px; color: var(--bad);
+  }
+
+  .veil {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(14, 14, 17, 0.85);
+    display: flex; align-items: center; justify-content: center; padding: 18px;
+  }
+  .phone {
+    width: min(460px, 100%);
+    background: var(--panel); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); border-radius: 5px; padding: 26px 28px;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--dim); margin: 0 0 6px;
+  }
+  .phone h2 {
+    font-family: var(--display); font-weight: 700; font-size: 28px;
+    text-transform: uppercase; color: #fff; margin: 0 0 10px;
+  }
+  .copy { font-size: 14px; line-height: 1.6; color: var(--body); margin: 0 0 18px; }
+  .phone label { display: block; margin-bottom: 14px; }
+  .phone label span {
+    display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--dim); margin-bottom: 6px;
+  }
+  .phone select, .phone input {
+    width: 100%; padding: 10px 12px; border-radius: 3px;
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+    font: 15px/1.4 var(--sans);
+  }
+  .phone input { font-family: var(--mono); letter-spacing: 0.04em; }
+  .phone select:focus-visible, .phone input:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 1px;
+  }
+  .bad { color: var(--bad); font-size: 14px; margin: -4px 0 12px; }
+  .row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 6px; }
+  .phone .cta { border: 0; cursor: pointer; }
 
   footer { border-top: 1px solid var(--line); background: #0b0b0e; margin-top: 90px; }
   footer .bar { padding: 40px 32px; align-items: flex-start; flex-wrap: wrap; }

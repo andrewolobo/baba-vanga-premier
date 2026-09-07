@@ -68,6 +68,17 @@ MIGRATIONS_DIR = DB_DIR / "migrations"
 #: in the systemd units. docs/POSTGRES_PLAN.md.
 DATABASE_URL = setting("BVP_DATABASE_URL", "postgresql:///bvp")
 
+#: Google OAuth client id for sign-in (docs/AUTH_PLAN.md). Public, not a
+#: secret -- it is the `aud` of every ID token -- but environment, not code.
+#: Empty means sign-in is unconfigured: /auth/google answers 401.
+GOOGLE_CLIENT_ID = setting("BVP_GOOGLE_CLIENT_ID")
+#: Session lifetime in days, sliding (`api.main.current_user`).
+SESSION_DAYS = int(setting("BVP_SESSION_DAYS", "30"))
+#: Secure flag on the session cookie. On unless a development machine says
+#: otherwise: the server is behind TLS, and http://localhost cannot receive a
+#: Secure cookie at all.
+COOKIE_SECURE = setting("BVP_COOKIE_SECURE", "1") == "1"
+
 
 def relpath(path: Path) -> str:
     """Provenance string for a source file: repo-relative when it is inside the

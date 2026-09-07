@@ -59,3 +59,19 @@ typing-inspection==0.4.1
 uvicorn==0.34.3
 watchfiles==1.1.0
 websockets==15.0.1
+
+# --- sign-in (docs/AUTH_PLAN.md, B25), added 2026-09-07 ----------------------
+# The `serve` extra grew google-auth, requests and phonenumbers. These are the
+# versions the suite passed against on the development machine (Windows,
+# CPython 3.11); certifi and idna above already cover the rest of requests'
+# closure. Re-run `pytest -q` on the server after the install, as the header
+# says -- and fold these into a full regeneration next time one is due.
+cachetools==5.5.2
+charset-normalizer==3.4.2
+google-auth==2.40.3
+phonenumbers==9.0.38
+pyasn1==0.6.1
+pyasn1-modules==0.4.2
+requests==2.32.3
+rsa==4.9.1
+urllib3==2.4.0

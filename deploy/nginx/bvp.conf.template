@@ -78,6 +78,33 @@ server {
         proxy_read_timeout 30s;
     }
 
+    # Sign-in (docs/AUTH_PLAN.md D13). The three account writes and the
+    # config read are the only unauthenticated endpoints that do work per
+    # hit -- /auth/google makes an outbound call to Google's certificate
+    # endpoint -- so they get a lid the rest of /api/ does not need. The zone
+    # is declared in deploy/nginx/bvp-limits.conf (conf.d). A prefix location
+    # is matched longest-first, so /api/auth/ wins over /api/ above; the
+    # phone write is an exact match. Both proxy_pass lines strip /api the
+    # same way as the main block.
+    location /api/auth/ {
+        limit_req zone=bvp_auth burst=10 nodelay;
+        proxy_pass http://127.0.0.1:8000/auth/;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
+    }
+    location = /api/me/phone {
+        limit_req zone=bvp_auth burst=10 nodelay;
+        proxy_pass http://127.0.0.1:8000/me/phone;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
+    }
+
     # The internal views, fenced off. docs/DEPLOY.md 3.1: /performance returns
     # `pnl` and `roi` and /book returns paper_bets.*, and B7's honesty test
     # covers /tips/record ONLY. Both are empty today because the book is off --

@@ -62,10 +62,11 @@ def connect(url: str | None = None, *, autocommit: bool = False) -> Connection:
       for them any more. `np.bool_` becomes a real boolean, which Postgres
       will not put in a numeric column -- the strictness is the point.
 
-    `autocommit=True` is for the read-only API: without it psycopg opens a
+    `autocommit=True` is for the API, which mostly reads: without it psycopg opens a
     transaction on the first statement of any kind, including a SELECT, and a
     per-request connection would sit *idle in transaction* until closed.
-    Everything that writes keeps the default and commits explicitly.
+    Everything that writes keeps the default and commits explicitly; the API's
+    account endpoints are the exception and use `conn.transaction()`.
     """
     conn = Connection.connect(
         url or config.DATABASE_URL,

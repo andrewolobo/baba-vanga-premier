@@ -477,6 +477,33 @@ parsed and every row was discarded, which is what a changed column name or
 encoding looks like. That is a real defect — it was live for two seasons behind
 a UTF-8 BOM — and it wants a person, not a wait.
 
+### 5.10 Sign-in is down (`AUTH_PLAN.md`, B25)
+
+The calls, the record and the parlay page do not depend on sign-in; only the
+button and the phone step do. Three symptoms, three causes:
+
+- **No button in the header.** Either the browser blocked
+  `accounts.google.com/gsi/client` (an ad blocker; nothing to do), or
+  `curl -s https://<domain>/api/auth/config` shows an empty
+  `google_client_id` — the unit's `Environment=BVP_GOOGLE_CLIENT_ID=` line is
+  empty or the API was restarted from a unit that lost it (`systemctl cat
+  bvp-api`).
+- **The button is there, the popup completes, and the site says the sign-in
+  did not go through.** `journalctl -u bvp-api` shows `401 invalid google
+  credential`: the id token's `aud` is not the configured client id, or the
+  site's origin is not on the OAuth client's authorised JavaScript origins
+  in the Google Cloud console. Every sign-in failing while `/api/me` still
+  answers is Google's certificate endpoint being unreachable from the VM
+  (`google-auth` fetches it once per sign-in; it fails closed).
+- **Signed in, but the phone form keeps refusing a real number.** The form
+  shows the API's own sentence: "not a valid phone number for that country"
+  is `phonenumbers` disagreeing with the picked country, so change the
+  country; "already on another account" is the UNIQUE constraint (D5) and is
+  correct.
+
+Nothing here touches the cycle, and no sign-in state is cached: a fix on the
+server is live on the next page load.
+
 ## 6. Re-running is safe
 
 Every write path is idempotent, which is what makes an unattended retry
