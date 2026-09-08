@@ -1,0 +1,15 @@
+curl ^"https://www.betpawa.ug/api/sportsbook/v4/events/lists/by-queries?q=^%^7B^%^22queries^%^22^%^3A^%^5B^%^7B^%^22query^%^22^%^3A^%^7B^%^22eventType^%^22^%^3A^%^22LIVE^%^22^%^2C^%^22categories^%^22^%^3A^%^5B^%^22101^%^22^%^5D^%^2C^%^22zones^%^22^%^3A^%^7B^%^22competitions^%^22^%^3A^%^5B^%^2217491^%^22^%^5D^%^7D^%^7D^%^2C^%^22view^%^22^%^3A^%^7B^%^22marketTypes^%^22^%^3A^%^5B^%^223743^%^22^%^5D^%^7D^%^2C^%^22skip^%^22^%^3A0^%^2C^%^22take^%^22^%^3A100^%^7D^%^2C^%^7B^%^22query^%^22^%^3A^%^7B^%^22eventType^%^22^%^3A^%^22UPCOMING^%^22^%^2C^%^22categories^%^22^%^3A^%^5B^%^22101^%^22^%^5D^%^2C^%^22zones^%^22^%^3A^%^7B^%^22competitions^%^22^%^3A^%^5B^%^2217491^%^22^%^5D^%^7D^%^2C^%^22hasOdds^%^22^%^3Atrue^%^7D^%^2C^%^22view^%^22^%^3A^%^7B^%^22marketTypes^%^22^%^3A^%^5B^%^223743^%^22^%^5D^%^7D^%^2C^%^22skip^%^22^%^3A0^%^2C^%^22take^%^22^%^3A20^%^7D^%^5D^%^7D^" ^
+  -H ^"X-Pawa-Language: en^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"Referer: https://www.betpawa.ug/events?categoryId=101^&marketId=1X2^&competitions=17491^" ^
+  -H ^"sec-ch-ua: ^\^"Not;A=Brand^\^";v=^\^"8^\^", ^\^"Chromium^\^";v=^\^"150^\^", ^\^"Google Chrome^\^";v=^\^"150^\^"^" ^
+  -H ^"X-Device-Fingerprint: 3f6f803293f8e670c1ff7b755274e050^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"X-Pawa-Brand: betpawa-uganda^" ^
+  -H ^"baggage: sentry-environment=production,sentry-release=frontend-react-web^%^402.234.122,sentry-public_key=7dbd827f7c2773299b99ce1c442758d5,sentry-trace_id=adc9fd303fc041c7b4c2709467eb303a,sentry-org_id=318738,sentry-transaction=^%^2Fevents,sentry-sampled=false,sentry-sample_rand=0.3794893626011976,sentry-sample_rate=0.1^" ^
+  -H ^"sentry-trace: adc9fd303fc041c7b4c2709467eb303a-8bda0ee43f859c87-0^" ^
+  -H ^"deviceType: web^" ^
+  -H ^"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36^" ^
+  -H ^"Accept: application/x-protobuf^" ^
+  -H ^"traceId: 290eab96-e8bb-4b2c-9826-56ca4927c08a^" ^
+  -H ^"Content-Type: application/x-protobuf^"

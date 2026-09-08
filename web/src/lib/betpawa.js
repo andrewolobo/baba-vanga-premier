@@ -5,6 +5,7 @@
 // call, and joins a slip's selection ids into the one prefill URL the parlay
 // page needs. No probability, no price -- the site shows no odds (D9).
 import { get } from './api.js';
+import { ukInstant } from './kickoff.js';
 
 export const getBetpawaLinks = () => get('/betpawa/links');
 
@@ -49,4 +50,34 @@ export const slipLink = (host, legs, byFixture) => {
   }
   if (!host || legs.length === 0 || missing.length) return { url: null, missing };
   return { url: prefillUrl(host, ids), missing };
+};
+
+// Every call in the list as one betslip (BETPAWA_PLAN.md 6, D13/D14). The
+// opposite policy to `slipLink`, on purpose: a chosen parlay is exactly its
+// legs, so a missing line refuses the slip; "all of today's calls" is a
+// basket, so a call the book has no line for is left out and *named*, and a
+// call whose UK kick-off has passed is left out and counted -- betPawa drops
+// an expired selection silently, and the count on the button must be true.
+// Returns `{ url, loaded, skipped: [names], kickedOff }`; `url` is null when
+// nothing is loadable.
+export const daySlip = (host, tips, byFixture, now) => {
+  const ids = [];
+  const skipped = [];
+  let kickedOff = 0;
+  for (const t of tips ?? []) {
+    const instant = ukInstant(t.match_date, t.kickoff_time);
+    if (instant && instant <= now) {
+      kickedOff += 1;
+      continue;
+    }
+    const id = byFixture?.[String(t.fixture_id)]?.sides?.[t.side]?.selection_id;
+    if (id) ids.push(id);
+    else skipped.push(`${t.home_team} v ${t.away_team}`);
+  }
+  return {
+    url: host && ids.length ? prefillUrl(host, ids) : null,
+    loaded: ids.length,
+    skipped,
+    kickedOff
+  };
 };

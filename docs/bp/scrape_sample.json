@@ -1,0 +1,4252 @@
+[
+    {
+        "id": "543302",
+        "kickoff": "2026-07-03T20:45:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 8,
+        "matchNr": 16,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T20:59:18.536Z",
+        "result": {
+            "id": "543295",
+            "stats": {
+                "away_score": 2,
+                "home_score": 0
+            }
+        },
+        "participants": [
+            {
+                "id": "1086243",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106602",
+                    "player": {
+                        "id": 132,
+                        "name": " ",
+                        "nickname": "Furious"
+                    },
+                    "team": {
+                        "id": 307,
+                        "name": "Senegal",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408642212Flag_of_Senegal.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086244",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106604",
+                    "player": {
+                        "id": 134,
+                        "name": " ",
+                        "nickname": "Jack"
+                    },
+                    "team": {
+                        "id": 203,
+                        "name": "Norway",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1620724368841norway.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543301",
+        "kickoff": "2026-07-03T20:45:00.000Z",
+        "seasonId": 20870,
+        "status": 4,
+        "week": 8,
+        "matchNr": 15,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T18:08:45.701Z",
+        "result": {
+            "id": "543294",
+            "stats": {
+                "away_score": null,
+                "home_score": null
+            }
+        },
+        "participants": [
+            {
+                "id": "1086241",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106605",
+                    "player": {
+                        "id": 236,
+                        "name": "Giorgio",
+                        "nickname": "Baba"
+                    },
+                    "team": {
+                        "id": 309,
+                        "name": "DR Congo",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408854336Flag_of_the_Democratic_Republic_of_the_Congo.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086242",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106603",
+                    "player": {
+                        "id": 183,
+                        "name": " ",
+                        "nickname": "Vendetta"
+                    },
+                    "team": {
+                        "id": 308,
+                        "name": "Iraq",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408808246Flag_of_Iraq.svg.webp"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543654",
+        "kickoff": "2026-07-03T20:45:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 4,
+        "matchNr": 8,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:59:32.841Z",
+        "result": {
+            "id": "543647",
+            "stats": {
+                "away_score": 4,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086947",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106695",
+                    "player": {
+                        "id": 154,
+                        "name": " ",
+                        "nickname": "Carlos"
+                    },
+                    "team": {
+                        "id": 175,
+                        "name": "Colombia",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978786595colombia.png"
+                    }
+                }
+            },
+            {
+                "id": "1086948",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106691",
+                    "player": {
+                        "id": 264,
+                        "name": " ",
+                        "nickname": "Doctor"
+                    },
+                    "team": {
+                        "id": 159,
+                        "name": "England",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978603018england.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543653",
+        "kickoff": "2026-07-03T20:45:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 4,
+        "matchNr": 7,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:59:24.160Z",
+        "result": {
+            "id": "543646",
+            "stats": {
+                "away_score": 4,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086945",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106693",
+                    "player": {
+                        "id": 260,
+                        "name": " ",
+                        "nickname": "Shaolin"
+                    },
+                    "team": {
+                        "id": 304,
+                        "name": "Bosnia Herzegovina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408407587Flag_of_Bosnia_and_Herzegovina.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086946",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106692",
+                    "player": {
+                        "id": 206,
+                        "name": " ",
+                        "nickname": "Titan"
+                    },
+                    "team": {
+                        "id": 293,
+                        "name": "Croatia",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797584743Flag_of_Croatia.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543300",
+        "kickoff": "2026-07-03T20:30:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 7,
+        "matchNr": 14,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T20:44:18.478Z",
+        "result": {
+            "id": "543293",
+            "stats": {
+                "away_score": 1,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086239",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106602",
+                    "player": {
+                        "id": 132,
+                        "name": " ",
+                        "nickname": "Furious"
+                    },
+                    "team": {
+                        "id": 307,
+                        "name": "Senegal",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408642212Flag_of_Senegal.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086240",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106601",
+                    "player": {
+                        "id": 270,
+                        "name": " ",
+                        "nickname": "Ultrex"
+                    },
+                    "team": {
+                        "id": 187,
+                        "name": "France",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978955234france.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543299",
+        "kickoff": "2026-07-03T20:30:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 7,
+        "matchNr": 13,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T20:44:12.998Z",
+        "result": {
+            "id": "543292",
+            "stats": {
+                "away_score": 1,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086237",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106604",
+                    "player": {
+                        "id": 134,
+                        "name": " ",
+                        "nickname": "Jack"
+                    },
+                    "team": {
+                        "id": 203,
+                        "name": "Norway",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1620724368841norway.png"
+                    }
+                }
+            },
+            {
+                "id": "1086238",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106603",
+                    "player": {
+                        "id": 183,
+                        "name": " ",
+                        "nickname": "Vendetta"
+                    },
+                    "team": {
+                        "id": 308,
+                        "name": "Iraq",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408808246Flag_of_Iraq.svg.webp"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543652",
+        "kickoff": "2026-07-03T20:30:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 3,
+        "matchNr": 6,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:44:28.994Z",
+        "result": {
+            "id": "543645",
+            "stats": {
+                "away_score": 2,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086943",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106694",
+                    "player": {
+                        "id": 202,
+                        "name": " ",
+                        "nickname": "Eminem"
+                    },
+                    "team": {
+                        "id": 311,
+                        "name": "Haiti",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780493663023img-flag-shop-flags-of-the-world-haiti-flag-1-2.webp"
+                    }
+                }
+            },
+            {
+                "id": "1086944",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106692",
+                    "player": {
+                        "id": 206,
+                        "name": " ",
+                        "nickname": "Titan"
+                    },
+                    "team": {
+                        "id": 293,
+                        "name": "Croatia",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797584743Flag_of_Croatia.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543651",
+        "kickoff": "2026-07-03T20:30:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 3,
+        "matchNr": 5,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:44:24.196Z",
+        "result": {
+            "id": "543644",
+            "stats": {
+                "away_score": 2,
+                "home_score": 0
+            }
+        },
+        "participants": [
+            {
+                "id": "1086941",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106693",
+                    "player": {
+                        "id": 260,
+                        "name": " ",
+                        "nickname": "Shaolin"
+                    },
+                    "team": {
+                        "id": 304,
+                        "name": "Bosnia Herzegovina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408407587Flag_of_Bosnia_and_Herzegovina.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086942",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106695",
+                    "player": {
+                        "id": 154,
+                        "name": " ",
+                        "nickname": "Carlos"
+                    },
+                    "team": {
+                        "id": 175,
+                        "name": "Colombia",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978786595colombia.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543298",
+        "kickoff": "2026-07-03T20:15:00.000Z",
+        "seasonId": 20870,
+        "status": 4,
+        "week": 6,
+        "matchNr": 12,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T18:08:35.676Z",
+        "result": {
+            "id": "543291",
+            "stats": {
+                "away_score": null,
+                "home_score": null
+            }
+        },
+        "participants": [
+            {
+                "id": "1086235",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106605",
+                    "player": {
+                        "id": 236,
+                        "name": "Giorgio",
+                        "nickname": "Baba"
+                    },
+                    "team": {
+                        "id": 309,
+                        "name": "DR Congo",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408854336Flag_of_the_Democratic_Republic_of_the_Congo.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086236",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106602",
+                    "player": {
+                        "id": 132,
+                        "name": " ",
+                        "nickname": "Furious"
+                    },
+                    "team": {
+                        "id": 307,
+                        "name": "Senegal",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408642212Flag_of_Senegal.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543297",
+        "kickoff": "2026-07-03T20:15:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 6,
+        "matchNr": 11,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T20:29:46.403Z",
+        "result": {
+            "id": "543290",
+            "stats": {
+                "away_score": 2,
+                "home_score": 0
+            }
+        },
+        "participants": [
+            {
+                "id": "1086233",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106604",
+                    "player": {
+                        "id": 134,
+                        "name": " ",
+                        "nickname": "Jack"
+                    },
+                    "team": {
+                        "id": 203,
+                        "name": "Norway",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1620724368841norway.png"
+                    }
+                }
+            },
+            {
+                "id": "1086234",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106601",
+                    "player": {
+                        "id": 270,
+                        "name": " ",
+                        "nickname": "Ultrex"
+                    },
+                    "team": {
+                        "id": 187,
+                        "name": "France",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978955234france.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543650",
+        "kickoff": "2026-07-03T20:15:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 2,
+        "matchNr": 4,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:28:54.914Z",
+        "result": {
+            "id": "543643",
+            "stats": {
+                "away_score": 0,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086939",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106691",
+                    "player": {
+                        "id": 264,
+                        "name": " ",
+                        "nickname": "Doctor"
+                    },
+                    "team": {
+                        "id": 159,
+                        "name": "England",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978603018england.png"
+                    }
+                }
+            },
+            {
+                "id": "1086940",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106692",
+                    "player": {
+                        "id": 206,
+                        "name": " ",
+                        "nickname": "Titan"
+                    },
+                    "team": {
+                        "id": 293,
+                        "name": "Croatia",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797584743Flag_of_Croatia.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543649",
+        "kickoff": "2026-07-03T20:15:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 2,
+        "matchNr": 3,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:29:12.017Z",
+        "result": {
+            "id": "543642",
+            "stats": {
+                "away_score": 3,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086937",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106693",
+                    "player": {
+                        "id": 260,
+                        "name": " ",
+                        "nickname": "Shaolin"
+                    },
+                    "team": {
+                        "id": 304,
+                        "name": "Bosnia Herzegovina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408407587Flag_of_Bosnia_and_Herzegovina.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086938",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106694",
+                    "player": {
+                        "id": 202,
+                        "name": " ",
+                        "nickname": "Eminem"
+                    },
+                    "team": {
+                        "id": 311,
+                        "name": "Haiti",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780493663023img-flag-shop-flags-of-the-world-haiti-flag-1-2.webp"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543296",
+        "kickoff": "2026-07-03T20:00:00.000Z",
+        "seasonId": 20870,
+        "status": 4,
+        "week": 5,
+        "matchNr": 10,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T18:08:22.570Z",
+        "result": {
+            "id": "543289",
+            "stats": {
+                "away_score": null,
+                "home_score": null
+            }
+        },
+        "participants": [
+            {
+                "id": "1086231",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106605",
+                    "player": {
+                        "id": 236,
+                        "name": "Giorgio",
+                        "nickname": "Baba"
+                    },
+                    "team": {
+                        "id": 309,
+                        "name": "DR Congo",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408854336Flag_of_the_Democratic_Republic_of_the_Congo.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086232",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106604",
+                    "player": {
+                        "id": 134,
+                        "name": " ",
+                        "nickname": "Jack"
+                    },
+                    "team": {
+                        "id": 203,
+                        "name": "Norway",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1620724368841norway.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543295",
+        "kickoff": "2026-07-03T20:00:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 5,
+        "matchNr": 9,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T20:14:10.915Z",
+        "result": {
+            "id": "543288",
+            "stats": {
+                "away_score": 1,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086229",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106603",
+                    "player": {
+                        "id": 183,
+                        "name": " ",
+                        "nickname": "Vendetta"
+                    },
+                    "team": {
+                        "id": 308,
+                        "name": "Iraq",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408808246Flag_of_Iraq.svg.webp"
+                    }
+                }
+            },
+            {
+                "id": "1086230",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106601",
+                    "player": {
+                        "id": 270,
+                        "name": " ",
+                        "nickname": "Ultrex"
+                    },
+                    "team": {
+                        "id": 187,
+                        "name": "France",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978955234france.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543648",
+        "kickoff": "2026-07-03T20:00:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 1,
+        "matchNr": 2,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:15:03.409Z",
+        "result": {
+            "id": "543641",
+            "stats": {
+                "away_score": 0,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086935",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106692",
+                    "player": {
+                        "id": 206,
+                        "name": " ",
+                        "nickname": "Titan"
+                    },
+                    "team": {
+                        "id": 293,
+                        "name": "Croatia",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797584743Flag_of_Croatia.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086936",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106695",
+                    "player": {
+                        "id": 154,
+                        "name": " ",
+                        "nickname": "Carlos"
+                    },
+                    "team": {
+                        "id": 175,
+                        "name": "Colombia",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978786595colombia.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543647",
+        "kickoff": "2026-07-03T20:00:00.000Z",
+        "seasonId": 20882,
+        "status": 3,
+        "week": 1,
+        "matchNr": 1,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:22:19.036Z",
+        "updatedAt": "2026-07-03T20:15:30.350Z",
+        "result": {
+            "id": "543640",
+            "stats": {
+                "away_score": 2,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086933",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106691",
+                    "player": {
+                        "id": 264,
+                        "name": " ",
+                        "nickname": "Doctor"
+                    },
+                    "team": {
+                        "id": 159,
+                        "name": "England",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978603018england.png"
+                    }
+                }
+            },
+            {
+                "id": "1086934",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106694",
+                    "player": {
+                        "id": 202,
+                        "name": " ",
+                        "nickname": "Eminem"
+                    },
+                    "team": {
+                        "id": 311,
+                        "name": "Haiti",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780493663023img-flag-shop-flags-of-the-world-haiti-flag-1-2.webp"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20882,
+            "name": "World Cup B (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 77,
+            "tournament": {
+                "id": 77,
+                "name": "Group E",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543294",
+        "kickoff": "2026-07-03T19:45:00.000Z",
+        "seasonId": 20870,
+        "status": 4,
+        "week": 4,
+        "matchNr": 8,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T18:07:51.427Z",
+        "result": {
+            "id": "543287",
+            "stats": {
+                "away_score": null,
+                "home_score": null
+            }
+        },
+        "participants": [
+            {
+                "id": "1086227",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106605",
+                    "player": {
+                        "id": 236,
+                        "name": "Giorgio",
+                        "nickname": "Baba"
+                    },
+                    "team": {
+                        "id": 309,
+                        "name": "DR Congo",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408854336Flag_of_the_Democratic_Republic_of_the_Congo.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086228",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106601",
+                    "player": {
+                        "id": 270,
+                        "name": " ",
+                        "nickname": "Ultrex"
+                    },
+                    "team": {
+                        "id": 187,
+                        "name": "France",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978955234france.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543293",
+        "kickoff": "2026-07-03T19:45:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 4,
+        "matchNr": 7,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.319Z",
+        "updatedAt": "2026-07-03T20:00:51.494Z",
+        "result": {
+            "id": "543286",
+            "stats": {
+                "away_score": 1,
+                "home_score": 0
+            }
+        },
+        "participants": [
+            {
+                "id": "1086225",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106603",
+                    "player": {
+                        "id": 183,
+                        "name": " ",
+                        "nickname": "Vendetta"
+                    },
+                    "team": {
+                        "id": 308,
+                        "name": "Iraq",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408808246Flag_of_Iraq.svg.webp"
+                    }
+                }
+            },
+            {
+                "id": "1086226",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106602",
+                    "player": {
+                        "id": 132,
+                        "name": " ",
+                        "nickname": "Furious"
+                    },
+                    "team": {
+                        "id": 307,
+                        "name": "Senegal",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408642212Flag_of_Senegal.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543586",
+        "kickoff": "2026-07-03T19:30:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 10,
+        "matchNr": 20,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T19:44:13.243Z",
+        "result": {
+            "id": "543579",
+            "stats": {
+                "away_score": 4,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086811",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106674",
+                    "player": {
+                        "id": 278,
+                        "name": " ",
+                        "nickname": "Voodoo"
+                    },
+                    "team": {
+                        "id": 298,
+                        "name": "Jordan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780407702611jordan-flag-logo-vector.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086812",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106675",
+                    "player": {
+                        "id": 276,
+                        "name": " ",
+                        "nickname": "William"
+                    },
+                    "team": {
+                        "id": 196,
+                        "name": "Canada",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1606907743872canada.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543585",
+        "kickoff": "2026-07-03T19:30:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 10,
+        "matchNr": 19,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T19:44:04.839Z",
+        "result": {
+            "id": "543578",
+            "stats": {
+                "away_score": 2,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086809",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106671",
+                    "player": {
+                        "id": 262,
+                        "name": " ",
+                        "nickname": "Lawyer"
+                    },
+                    "team": {
+                        "id": 155,
+                        "name": "Argentina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978535876argentina.png"
+                    }
+                }
+            },
+            {
+                "id": "1086810",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106673",
+                    "player": {
+                        "id": 280,
+                        "name": " ",
+                        "nickname": "Penn"
+                    },
+                    "team": {
+                        "id": 180,
+                        "name": "Austria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978836495austria.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543292",
+        "kickoff": "2026-07-03T19:30:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 3,
+        "matchNr": 6,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.318Z",
+        "updatedAt": "2026-07-03T19:43:59.814Z",
+        "result": {
+            "id": "543285",
+            "stats": {
+                "away_score": 0,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086223",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106604",
+                    "player": {
+                        "id": 134,
+                        "name": " ",
+                        "nickname": "Jack"
+                    },
+                    "team": {
+                        "id": 203,
+                        "name": "Norway",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1620724368841norway.png"
+                    }
+                }
+            },
+            {
+                "id": "1086224",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106602",
+                    "player": {
+                        "id": 132,
+                        "name": " ",
+                        "nickname": "Furious"
+                    },
+                    "team": {
+                        "id": 307,
+                        "name": "Senegal",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408642212Flag_of_Senegal.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543291",
+        "kickoff": "2026-07-03T19:30:00.000Z",
+        "seasonId": 20870,
+        "status": 4,
+        "week": 3,
+        "matchNr": 5,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.318Z",
+        "updatedAt": "2026-07-03T18:07:41.172Z",
+        "result": {
+            "id": "543284",
+            "stats": {
+                "away_score": null,
+                "home_score": null
+            }
+        },
+        "participants": [
+            {
+                "id": "1086221",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106603",
+                    "player": {
+                        "id": 183,
+                        "name": " ",
+                        "nickname": "Vendetta"
+                    },
+                    "team": {
+                        "id": 308,
+                        "name": "Iraq",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408808246Flag_of_Iraq.svg.webp"
+                    }
+                }
+            },
+            {
+                "id": "1086222",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106605",
+                    "player": {
+                        "id": 236,
+                        "name": "Giorgio",
+                        "nickname": "Baba"
+                    },
+                    "team": {
+                        "id": 309,
+                        "name": "DR Congo",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408854336Flag_of_the_Democratic_Republic_of_the_Congo.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543584",
+        "kickoff": "2026-07-03T19:15:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 9,
+        "matchNr": 18,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T19:28:30.703Z",
+        "result": {
+            "id": "543577",
+            "stats": {
+                "away_score": 2,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086807",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106671",
+                    "player": {
+                        "id": 262,
+                        "name": " ",
+                        "nickname": "Lawyer"
+                    },
+                    "team": {
+                        "id": 155,
+                        "name": "Argentina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978535876argentina.png"
+                    }
+                }
+            },
+            {
+                "id": "1086808",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106675",
+                    "player": {
+                        "id": 276,
+                        "name": " ",
+                        "nickname": "William"
+                    },
+                    "team": {
+                        "id": 196,
+                        "name": "Canada",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1606907743872canada.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543583",
+        "kickoff": "2026-07-03T19:15:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 9,
+        "matchNr": 17,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T19:28:20.299Z",
+        "result": {
+            "id": "543576",
+            "stats": {
+                "away_score": 1,
+                "home_score": 0
+            }
+        },
+        "participants": [
+            {
+                "id": "1086805",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106672",
+                    "player": {
+                        "id": 273,
+                        "name": " ",
+                        "nickname": "Snake"
+                    },
+                    "team": {
+                        "id": 297,
+                        "name": "Algeria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408896900algeria.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086806",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106673",
+                    "player": {
+                        "id": 280,
+                        "name": " ",
+                        "nickname": "Penn"
+                    },
+                    "team": {
+                        "id": 180,
+                        "name": "Austria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978836495austria.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543290",
+        "kickoff": "2026-07-03T19:15:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 2,
+        "matchNr": 4,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.318Z",
+        "updatedAt": "2026-07-03T19:29:55.540Z",
+        "result": {
+            "id": "543283",
+            "stats": {
+                "away_score": 1,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086219",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106601",
+                    "player": {
+                        "id": 270,
+                        "name": " ",
+                        "nickname": "Ultrex"
+                    },
+                    "team": {
+                        "id": 187,
+                        "name": "France",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978955234france.png"
+                    }
+                }
+            },
+            {
+                "id": "1086220",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106602",
+                    "player": {
+                        "id": 132,
+                        "name": " ",
+                        "nickname": "Furious"
+                    },
+                    "team": {
+                        "id": 307,
+                        "name": "Senegal",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408642212Flag_of_Senegal.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543289",
+        "kickoff": "2026-07-03T19:15:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 2,
+        "matchNr": 3,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.318Z",
+        "updatedAt": "2026-07-03T19:28:27.534Z",
+        "result": {
+            "id": "543282",
+            "stats": {
+                "away_score": 4,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086217",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106603",
+                    "player": {
+                        "id": 183,
+                        "name": " ",
+                        "nickname": "Vendetta"
+                    },
+                    "team": {
+                        "id": 308,
+                        "name": "Iraq",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408808246Flag_of_Iraq.svg.webp"
+                    }
+                }
+            },
+            {
+                "id": "1086218",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106604",
+                    "player": {
+                        "id": 134,
+                        "name": " ",
+                        "nickname": "Jack"
+                    },
+                    "team": {
+                        "id": 203,
+                        "name": "Norway",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1620724368841norway.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543582",
+        "kickoff": "2026-07-03T19:00:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 8,
+        "matchNr": 16,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T19:14:36.940Z",
+        "result": {
+            "id": "543575",
+            "stats": {
+                "away_score": 1,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086803",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106672",
+                    "player": {
+                        "id": 273,
+                        "name": " ",
+                        "nickname": "Snake"
+                    },
+                    "team": {
+                        "id": 297,
+                        "name": "Algeria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408896900algeria.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086804",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106674",
+                    "player": {
+                        "id": 278,
+                        "name": " ",
+                        "nickname": "Voodoo"
+                    },
+                    "team": {
+                        "id": 298,
+                        "name": "Jordan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780407702611jordan-flag-logo-vector.jpg"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543581",
+        "kickoff": "2026-07-03T19:00:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 8,
+        "matchNr": 15,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T19:14:26.136Z",
+        "result": {
+            "id": "543574",
+            "stats": {
+                "away_score": 1,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086801",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106675",
+                    "player": {
+                        "id": 276,
+                        "name": " ",
+                        "nickname": "William"
+                    },
+                    "team": {
+                        "id": 196,
+                        "name": "Canada",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1606907743872canada.png"
+                    }
+                }
+            },
+            {
+                "id": "1086802",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106673",
+                    "player": {
+                        "id": 280,
+                        "name": " ",
+                        "nickname": "Penn"
+                    },
+                    "team": {
+                        "id": 180,
+                        "name": "Austria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978836495austria.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543288",
+        "kickoff": "2026-07-03T19:00:00.000Z",
+        "seasonId": 20870,
+        "status": 4,
+        "week": 1,
+        "matchNr": 2,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:15:44.318Z",
+        "updatedAt": "2026-07-03T18:07:25.682Z",
+        "result": {
+            "id": "543281",
+            "stats": {
+                "away_score": null,
+                "home_score": null
+            }
+        },
+        "participants": [
+            {
+                "id": "1086215",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106602",
+                    "player": {
+                        "id": 132,
+                        "name": " ",
+                        "nickname": "Furious"
+                    },
+                    "team": {
+                        "id": 307,
+                        "name": "Senegal",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408642212Flag_of_Senegal.svg.png"
+                    }
+                }
+            },
+            {
+                "id": "1086216",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106605",
+                    "player": {
+                        "id": 236,
+                        "name": "Giorgio",
+                        "nickname": "Baba"
+                    },
+                    "team": {
+                        "id": 309,
+                        "name": "DR Congo",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408854336Flag_of_the_Democratic_Republic_of_the_Congo.svg.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543287",
+        "kickoff": "2026-07-03T19:00:00.000Z",
+        "seasonId": 20870,
+        "status": 3,
+        "week": 1,
+        "matchNr": 1,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:15:44.318Z",
+        "updatedAt": "2026-07-03T19:14:33.385Z",
+        "result": {
+            "id": "543280",
+            "stats": {
+                "away_score": 2,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086213",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106601",
+                    "player": {
+                        "id": 270,
+                        "name": " ",
+                        "nickname": "Ultrex"
+                    },
+                    "team": {
+                        "id": 187,
+                        "name": "France",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978955234france.png"
+                    }
+                }
+            },
+            {
+                "id": "1086214",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106604",
+                    "player": {
+                        "id": 134,
+                        "name": " ",
+                        "nickname": "Jack"
+                    },
+                    "team": {
+                        "id": 203,
+                        "name": "Norway",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1620724368841norway.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20870,
+            "name": "World Cup I (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 73,
+            "tournament": {
+                "id": 73,
+                "name": "Group B",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543580",
+        "kickoff": "2026-07-03T18:45:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 7,
+        "matchNr": 14,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:58:44.112Z",
+        "result": {
+            "id": "543573",
+            "stats": {
+                "away_score": 2,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086799",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106672",
+                    "player": {
+                        "id": 273,
+                        "name": " ",
+                        "nickname": "Snake"
+                    },
+                    "team": {
+                        "id": 297,
+                        "name": "Algeria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408896900algeria.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086800",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106671",
+                    "player": {
+                        "id": 262,
+                        "name": " ",
+                        "nickname": "Lawyer"
+                    },
+                    "team": {
+                        "id": 155,
+                        "name": "Argentina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978535876argentina.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543579",
+        "kickoff": "2026-07-03T18:45:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 7,
+        "matchNr": 13,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:58:37.710Z",
+        "result": {
+            "id": "543572",
+            "stats": {
+                "away_score": 3,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086797",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106674",
+                    "player": {
+                        "id": 278,
+                        "name": " ",
+                        "nickname": "Voodoo"
+                    },
+                    "team": {
+                        "id": 298,
+                        "name": "Jordan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780407702611jordan-flag-logo-vector.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086798",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106673",
+                    "player": {
+                        "id": 280,
+                        "name": " ",
+                        "nickname": "Penn"
+                    },
+                    "team": {
+                        "id": 180,
+                        "name": "Austria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978836495austria.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543226",
+        "kickoff": "2026-07-03T18:30:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 10,
+        "matchNr": 20,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:12:13.917Z",
+        "updatedAt": "2026-07-03T18:47:31.059Z",
+        "result": {
+            "id": "543219",
+            "stats": {
+                "away_score": 3,
+                "home_score": 4
+            }
+        },
+        "participants": [
+            {
+                "id": "1086091",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106584",
+                    "player": {
+                        "id": 91,
+                        "name": " ",
+                        "nickname": "Lio"
+                    },
+                    "team": {
+                        "id": 193,
+                        "name": "Czech Republic",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605979018480czech_republic.png"
+                    }
+                }
+            },
+            {
+                "id": "1086092",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106585",
+                    "player": {
+                        "id": 272,
+                        "name": " ",
+                        "nickname": "Fox"
+                    },
+                    "team": {
+                        "id": 301,
+                        "name": "South Korea",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408102903Flag-South-Korea.webp"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543225",
+        "kickoff": "2026-07-03T18:30:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 10,
+        "matchNr": 19,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:12:13.917Z",
+        "updatedAt": "2026-07-03T18:46:47.430Z",
+        "result": {
+            "id": "543218",
+            "stats": {
+                "away_score": 4,
+                "home_score": 4
+            }
+        },
+        "participants": [
+            {
+                "id": "1086089",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106581",
+                    "player": {
+                        "id": 48,
+                        "name": " ",
+                        "nickname": "Crysis"
+                    },
+                    "team": {
+                        "id": 295,
+                        "name": "Ghana",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797640301%CE%B1%CF%81%CF%87%CE%B5%CE%AF%CE%BF%20%CE%BB%CE%AE%CF%88%CE%B7%CF%82.png"
+                    }
+                }
+            },
+            {
+                "id": "1086090",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106583",
+                    "player": {
+                        "id": 259,
+                        "name": " ",
+                        "nickname": "Goat"
+                    },
+                    "team": {
+                        "id": 167,
+                        "name": "Sweden",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978694817sweden.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543578",
+        "kickoff": "2026-07-03T18:30:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 6,
+        "matchNr": 12,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:48:26.934Z",
+        "result": {
+            "id": "543571",
+            "stats": {
+                "away_score": 3,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086795",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106675",
+                    "player": {
+                        "id": 276,
+                        "name": " ",
+                        "nickname": "William"
+                    },
+                    "team": {
+                        "id": 196,
+                        "name": "Canada",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1606907743872canada.png"
+                    }
+                }
+            },
+            {
+                "id": "1086796",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106672",
+                    "player": {
+                        "id": 273,
+                        "name": " ",
+                        "nickname": "Snake"
+                    },
+                    "team": {
+                        "id": 297,
+                        "name": "Algeria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408896900algeria.jpg"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543577",
+        "kickoff": "2026-07-03T18:30:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 6,
+        "matchNr": 11,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:45:49.897Z",
+        "result": {
+            "id": "543570",
+            "stats": {
+                "away_score": 4,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086793",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106674",
+                    "player": {
+                        "id": 278,
+                        "name": " ",
+                        "nickname": "Voodoo"
+                    },
+                    "team": {
+                        "id": 298,
+                        "name": "Jordan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780407702611jordan-flag-logo-vector.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086794",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106671",
+                    "player": {
+                        "id": 262,
+                        "name": " ",
+                        "nickname": "Lawyer"
+                    },
+                    "team": {
+                        "id": 155,
+                        "name": "Argentina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978535876argentina.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543224",
+        "kickoff": "2026-07-03T18:15:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 9,
+        "matchNr": 18,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:12:13.917Z",
+        "updatedAt": "2026-07-03T18:47:26.642Z",
+        "result": {
+            "id": "543217",
+            "stats": {
+                "away_score": 5,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086087",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106581",
+                    "player": {
+                        "id": 48,
+                        "name": " ",
+                        "nickname": "Crysis"
+                    },
+                    "team": {
+                        "id": 295,
+                        "name": "Ghana",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797640301%CE%B1%CF%81%CF%87%CE%B5%CE%AF%CE%BF%20%CE%BB%CE%AE%CF%88%CE%B7%CF%82.png"
+                    }
+                }
+            },
+            {
+                "id": "1086088",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106585",
+                    "player": {
+                        "id": 272,
+                        "name": " ",
+                        "nickname": "Fox"
+                    },
+                    "team": {
+                        "id": 301,
+                        "name": "South Korea",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408102903Flag-South-Korea.webp"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543223",
+        "kickoff": "2026-07-03T18:15:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 9,
+        "matchNr": 17,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:12:13.917Z",
+        "updatedAt": "2026-07-03T18:47:19.773Z",
+        "result": {
+            "id": "543216",
+            "stats": {
+                "away_score": 2,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086085",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106582",
+                    "player": {
+                        "id": 204,
+                        "name": " ",
+                        "nickname": "Eros"
+                    },
+                    "team": {
+                        "id": 302,
+                        "name": "Japan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408273572istockphoto-1332466002-612x612.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086086",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106583",
+                    "player": {
+                        "id": 259,
+                        "name": " ",
+                        "nickname": "Goat"
+                    },
+                    "team": {
+                        "id": 167,
+                        "name": "Sweden",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978694817sweden.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543576",
+        "kickoff": "2026-07-03T18:15:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 5,
+        "matchNr": 10,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:45:43.423Z",
+        "result": {
+            "id": "543569",
+            "stats": {
+                "away_score": 4,
+                "home_score": 4
+            }
+        },
+        "participants": [
+            {
+                "id": "1086791",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106675",
+                    "player": {
+                        "id": 276,
+                        "name": " ",
+                        "nickname": "William"
+                    },
+                    "team": {
+                        "id": 196,
+                        "name": "Canada",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1606907743872canada.png"
+                    }
+                }
+            },
+            {
+                "id": "1086792",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106674",
+                    "player": {
+                        "id": 278,
+                        "name": " ",
+                        "nickname": "Voodoo"
+                    },
+                    "team": {
+                        "id": 298,
+                        "name": "Jordan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780407702611jordan-flag-logo-vector.jpg"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543575",
+        "kickoff": "2026-07-03T18:15:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 5,
+        "matchNr": 9,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:45:10.763Z",
+        "result": {
+            "id": "543568",
+            "stats": {
+                "away_score": 2,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086789",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106673",
+                    "player": {
+                        "id": 280,
+                        "name": " ",
+                        "nickname": "Penn"
+                    },
+                    "team": {
+                        "id": 180,
+                        "name": "Austria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978836495austria.png"
+                    }
+                }
+            },
+            {
+                "id": "1086790",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106671",
+                    "player": {
+                        "id": 262,
+                        "name": " ",
+                        "nickname": "Lawyer"
+                    },
+                    "team": {
+                        "id": 155,
+                        "name": "Argentina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978535876argentina.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543222",
+        "kickoff": "2026-07-03T18:00:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 8,
+        "matchNr": 16,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:12:13.917Z",
+        "updatedAt": "2026-07-03T18:14:55.813Z",
+        "result": {
+            "id": "543215",
+            "stats": {
+                "away_score": 0,
+                "home_score": 2
+            }
+        },
+        "participants": [
+            {
+                "id": "1086083",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106582",
+                    "player": {
+                        "id": 204,
+                        "name": " ",
+                        "nickname": "Eros"
+                    },
+                    "team": {
+                        "id": 302,
+                        "name": "Japan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408273572istockphoto-1332466002-612x612.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086084",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106584",
+                    "player": {
+                        "id": 91,
+                        "name": " ",
+                        "nickname": "Lio"
+                    },
+                    "team": {
+                        "id": 193,
+                        "name": "Czech Republic",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605979018480czech_republic.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543221",
+        "kickoff": "2026-07-03T18:00:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 8,
+        "matchNr": 15,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:12:13.916Z",
+        "updatedAt": "2026-07-03T18:14:42.819Z",
+        "result": {
+            "id": "543214",
+            "stats": {
+                "away_score": 3,
+                "home_score": 5
+            }
+        },
+        "participants": [
+            {
+                "id": "1086081",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106585",
+                    "player": {
+                        "id": 272,
+                        "name": " ",
+                        "nickname": "Fox"
+                    },
+                    "team": {
+                        "id": 301,
+                        "name": "South Korea",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408102903Flag-South-Korea.webp"
+                    }
+                }
+            },
+            {
+                "id": "1086082",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106583",
+                    "player": {
+                        "id": 259,
+                        "name": " ",
+                        "nickname": "Goat"
+                    },
+                    "team": {
+                        "id": 167,
+                        "name": "Sweden",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978694817sweden.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543574",
+        "kickoff": "2026-07-03T18:00:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 4,
+        "matchNr": 8,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:14:59.245Z",
+        "result": {
+            "id": "543567",
+            "stats": {
+                "away_score": 1,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086787",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106675",
+                    "player": {
+                        "id": 276,
+                        "name": " ",
+                        "nickname": "William"
+                    },
+                    "team": {
+                        "id": 196,
+                        "name": "Canada",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1606907743872canada.png"
+                    }
+                }
+            },
+            {
+                "id": "1086788",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106671",
+                    "player": {
+                        "id": 262,
+                        "name": " ",
+                        "nickname": "Lawyer"
+                    },
+                    "team": {
+                        "id": 155,
+                        "name": "Argentina",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978535876argentina.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543573",
+        "kickoff": "2026-07-03T18:00:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 4,
+        "matchNr": 7,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.605Z",
+        "updatedAt": "2026-07-03T18:14:49.603Z",
+        "result": {
+            "id": "543566",
+            "stats": {
+                "away_score": 3,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086785",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106673",
+                    "player": {
+                        "id": 280,
+                        "name": " ",
+                        "nickname": "Penn"
+                    },
+                    "team": {
+                        "id": 180,
+                        "name": "Austria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978836495austria.png"
+                    }
+                }
+            },
+            {
+                "id": "1086786",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106672",
+                    "player": {
+                        "id": 273,
+                        "name": " ",
+                        "nickname": "Snake"
+                    },
+                    "team": {
+                        "id": 297,
+                        "name": "Algeria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408896900algeria.jpg"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543220",
+        "kickoff": "2026-07-03T17:45:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 7,
+        "matchNr": 14,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:12:13.916Z",
+        "updatedAt": "2026-07-03T17:58:34.014Z",
+        "result": {
+            "id": "543213",
+            "stats": {
+                "away_score": 3,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086079",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106582",
+                    "player": {
+                        "id": 204,
+                        "name": " ",
+                        "nickname": "Eros"
+                    },
+                    "team": {
+                        "id": 302,
+                        "name": "Japan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408273572istockphoto-1332466002-612x612.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086080",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106581",
+                    "player": {
+                        "id": 48,
+                        "name": " ",
+                        "nickname": "Crysis"
+                    },
+                    "team": {
+                        "id": 295,
+                        "name": "Ghana",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797640301%CE%B1%CF%81%CF%87%CE%B5%CE%AF%CE%BF%20%CE%BB%CE%AE%CF%88%CE%B7%CF%82.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543219",
+        "kickoff": "2026-07-03T17:45:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 7,
+        "matchNr": 13,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:12:13.916Z",
+        "updatedAt": "2026-07-03T17:58:41.864Z",
+        "result": {
+            "id": "543212",
+            "stats": {
+                "away_score": 3,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086077",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106584",
+                    "player": {
+                        "id": 91,
+                        "name": " ",
+                        "nickname": "Lio"
+                    },
+                    "team": {
+                        "id": 193,
+                        "name": "Czech Republic",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605979018480czech_republic.png"
+                    }
+                }
+            },
+            {
+                "id": "1086078",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106583",
+                    "player": {
+                        "id": 259,
+                        "name": " ",
+                        "nickname": "Goat"
+                    },
+                    "team": {
+                        "id": 167,
+                        "name": "Sweden",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978694817sweden.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543572",
+        "kickoff": "2026-07-03T17:45:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 3,
+        "matchNr": 6,
+        "channel": "TV4",
+        "createdAt": "2026-07-02T13:20:47.604Z",
+        "updatedAt": "2026-07-03T17:58:27.983Z",
+        "result": {
+            "id": "543565",
+            "stats": {
+                "away_score": 0,
+                "home_score": 4
+            }
+        },
+        "participants": [
+            {
+                "id": "1086783",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106674",
+                    "player": {
+                        "id": 278,
+                        "name": " ",
+                        "nickname": "Voodoo"
+                    },
+                    "team": {
+                        "id": 298,
+                        "name": "Jordan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780407702611jordan-flag-logo-vector.jpg"
+                    }
+                }
+            },
+            {
+                "id": "1086784",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106672",
+                    "player": {
+                        "id": 273,
+                        "name": " ",
+                        "nickname": "Snake"
+                    },
+                    "team": {
+                        "id": 297,
+                        "name": "Algeria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408896900algeria.jpg"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543571",
+        "kickoff": "2026-07-03T17:45:00.000Z",
+        "seasonId": 20894,
+        "status": 3,
+        "week": 3,
+        "matchNr": 5,
+        "channel": "TV3",
+        "createdAt": "2026-07-02T13:20:47.604Z",
+        "updatedAt": "2026-07-03T17:58:51.787Z",
+        "result": {
+            "id": "543564",
+            "stats": {
+                "away_score": 4,
+                "home_score": 1
+            }
+        },
+        "participants": [
+            {
+                "id": "1086781",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106673",
+                    "player": {
+                        "id": 280,
+                        "name": " ",
+                        "nickname": "Penn"
+                    },
+                    "team": {
+                        "id": 180,
+                        "name": "Austria",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605978836495austria.png"
+                    }
+                }
+            },
+            {
+                "id": "1086782",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106675",
+                    "player": {
+                        "id": 276,
+                        "name": " ",
+                        "nickname": "William"
+                    },
+                    "team": {
+                        "id": 196,
+                        "name": "Canada",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1606907743872canada.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20894,
+            "name": "World Cup A (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 80,
+            "tournament": {
+                "id": 80,
+                "name": " Group H",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543218",
+        "kickoff": "2026-07-03T17:30:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 6,
+        "matchNr": 12,
+        "channel": "TV2",
+        "createdAt": "2026-07-02T13:12:13.916Z",
+        "updatedAt": "2026-07-03T17:44:48.507Z",
+        "result": {
+            "id": "543211",
+            "stats": {
+                "away_score": 3,
+                "home_score": 3
+            }
+        },
+        "participants": [
+            {
+                "id": "1086075",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106585",
+                    "player": {
+                        "id": 272,
+                        "name": " ",
+                        "nickname": "Fox"
+                    },
+                    "team": {
+                        "id": 301,
+                        "name": "South Korea",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408102903Flag-South-Korea.webp"
+                    }
+                }
+            },
+            {
+                "id": "1086076",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106582",
+                    "player": {
+                        "id": 204,
+                        "name": " ",
+                        "nickname": "Eros"
+                    },
+                    "team": {
+                        "id": 302,
+                        "name": "Japan",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1780408273572istockphoto-1332466002-612x612.jpg"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    },
+    {
+        "id": "543217",
+        "kickoff": "2026-07-03T17:30:00.000Z",
+        "seasonId": 20866,
+        "status": 3,
+        "week": 6,
+        "matchNr": 11,
+        "channel": "TV1",
+        "createdAt": "2026-07-02T13:12:13.916Z",
+        "updatedAt": "2026-07-03T17:44:18.837Z",
+        "result": {
+            "id": "543210",
+            "stats": {
+                "away_score": 2,
+                "home_score": 4
+            }
+        },
+        "participants": [
+            {
+                "id": "1086073",
+                "side": "home",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106584",
+                    "player": {
+                        "id": 91,
+                        "name": " ",
+                        "nickname": "Lio"
+                    },
+                    "team": {
+                        "id": 193,
+                        "name": "Czech Republic",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1605979018480czech_republic.png"
+                    }
+                }
+            },
+            {
+                "id": "1086074",
+                "side": "away",
+                "backupPlayerId": null,
+                "participant": {
+                    "id": "106581",
+                    "player": {
+                        "id": 48,
+                        "name": " ",
+                        "nickname": "Crysis"
+                    },
+                    "team": {
+                        "id": 295,
+                        "name": "Ghana",
+                        "tagId": "soccer",
+                        "crest": "https://50yo4fzxk02ujr25gm9y.s3.eu-west-1.amazonaws.com/files_from_node/1779797640301%CE%B1%CF%81%CF%87%CE%B5%CE%AF%CE%BF%20%CE%BB%CE%AE%CF%88%CE%B7%CF%82.png"
+                    }
+                }
+            }
+        ],
+        "season": {
+            "id": 20866,
+            "name": "World Cup F (03-07-2026)",
+            "status": 3,
+            "format": [
+                1,
+                1
+            ],
+            "tournamentId": 72,
+            "tournament": {
+                "id": 72,
+                "name": "Group A",
+                "crest": null,
+                "categoryId": 23,
+                "category": {
+                    "id": 23,
+                    "name": "GT Leagues",
+                    "crest": null,
+                    "sportId": 6,
+                    "sport": {
+                        "id": 6,
+                        "name": "FC25",
+                        "crest": null
+                    }
+                }
+            }
+        }
+    }
+]

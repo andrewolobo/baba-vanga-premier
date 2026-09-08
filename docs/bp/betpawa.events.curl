@@ -1,0 +1,15 @@
+curl --url ^"https://www.betpawa.ug/api/sportsbook/v4/events/37489810^" ^
+  -H ^"X-Pawa-Language: en^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"Referer: https://www.betpawa.ug/event/37489810?filter=all^" ^
+  -H ^"sec-ch-ua: ^\^"Not=A?Brand^\^";v=^\^"99^\^", ^\^"Google Chrome^\^";v=^\^"151^\^", ^\^"Chromium^\^";v=^\^"151^\^"^" ^
+  -H ^"X-Device-Fingerprint: 082f0f5dc7f34dec6bfdee5ba002a237^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"X-Pawa-Brand: betpawa-uganda^" ^
+  -H ^"baggage: sentry-environment=production,sentry-release=frontend-react-web^%^402.238.93,sentry-public_key=7dbd827f7c2773299b99ce1c442758d5,sentry-trace_id=a90da1ba5be94af1b8f64a56134b3ebb,sentry-org_id=318738,sentry-transaction=^%^2Fevent^%^2F^%^5BeventId^%^5D,sentry-sampled=false,sentry-sample_rand=0.2044426111815053,sentry-sample_rate=0.1^" ^
+  -H ^"sentry-trace: a90da1ba5be94af1b8f64a56134b3ebb-ae9b2eadef52bf08-0^" ^
+  -H ^"deviceType: web^" ^
+  -H ^"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36^" ^
+  -H ^"Accept: application/x-protobuf^" ^
+  -H ^"traceId: dc87bfbb-51e5-41e5-9d5b-47f3878e52f6^" ^
+  -H ^"Content-Type: application/x-protobuf^"

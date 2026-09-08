@@ -1,7 +1,7 @@
 // node --test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { indexLinks, wagerLink, wagerLabel, prefillUrl, slipLink } from './betpawa.js';
+import { indexLinks, wagerLink, wagerLabel, prefillUrl, slipLink, daySlip } from './betpawa.js';
 
 const KE = 'www.betpawa.co.ke';
 const body = {
@@ -102,4 +102,46 @@ test('no host, or no legs, is no slip link', () => {
   const { byFixture } = indexLinks(body);
   assert.deepEqual(slipLink(null, [{ fixture_id: 212, side: 'H' }], byFixture), { url: null, missing: [] });
   assert.deepEqual(slipLink(KE, [], byFixture), { url: null, missing: [] });
+});
+
+// --- every call in the list as one slip (D13, D14) ---------------------------
+
+const NOW = new Date('2026-09-08T12:00:00Z'); // 13:00 in London, BST
+const tips = [
+  { fixture_id: 212, side: 'A+1.5', home_team: 'Southampton', away_team: 'Swansea', match_date: '2026-09-08', kickoff_time: '19:45' },
+  { fixture_id: 214, side: 'H+1.5', home_team: 'Wrexham', away_team: 'Burnley', match_date: '2026-09-08', kickoff_time: '19:45' },
+  { fixture_id: 212, side: 'H', home_team: 'Southampton', away_team: 'Swansea', match_date: '2026-09-08', kickoff_time: '20:00' }
+];
+
+test('a lineless call is left out and named, and the rest load (D13)', () => {
+  const { byFixture } = indexLinks(body);
+  const slip = daySlip(KE, tips, byFixture, NOW);
+  assert.equal(slip.url, `https://${KE}/external-prefill?selectionIds=1539591711,1537500854`);
+  assert.equal(slip.loaded, 2);
+  assert.deepEqual(slip.skipped, ['Wrexham v Burnley']);
+  assert.equal(slip.kickedOff, 0);
+});
+
+test('a call whose UK kick-off has passed is left out and counted', () => {
+  const { byFixture } = indexLinks(body);
+  const later = new Date('2026-09-08T18:50:00Z'); // 19:50 London: the 19:45 games are on
+  const slip = daySlip(KE, tips, byFixture, later);
+  assert.equal(slip.url, `https://${KE}/external-prefill?selectionIds=1537500854`);
+  assert.equal(slip.loaded, 1);
+  assert.equal(slip.kickedOff, 2);
+  assert.deepEqual(slip.skipped, [], 'a kicked-off lineless call is counted once, as kicked off');
+});
+
+test('a call with no kick-off time is kept, as the server keeps it', () => {
+  const { byFixture } = indexLinks(body);
+  const slip = daySlip(KE, [{ ...tips[0], kickoff_time: null }], byFixture, NOW);
+  assert.equal(slip.loaded, 1);
+});
+
+test('nothing loadable is no link, not an empty one', () => {
+  const { byFixture } = indexLinks(body);
+  assert.equal(daySlip(KE, [tips[1]], byFixture, NOW).url, null);
+  assert.equal(daySlip(KE, [], byFixture, NOW).url, null);
+  assert.equal(daySlip(null, tips, byFixture, NOW).url, null);
+  assert.equal(daySlip(KE, tips, {}, NOW).url, null);
 });

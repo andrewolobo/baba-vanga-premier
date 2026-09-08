@@ -18,7 +18,7 @@
   import HeroClassic from './HeroClassic.svelte';
   import HeroVideo from './HeroVideo.svelte';
   import { VIDEO_HERO } from '$lib/hero.js';
-  import { wagerLink, wagerLabel } from '$lib/betpawa.js';
+  import { wagerLink, wagerLabel, daySlip } from '$lib/betpawa.js';
 
   // The betPawa button (B26): state and links come from the layout, which
   // owns the session. A click on the button must not toggle the row's
@@ -335,6 +335,31 @@
           {/if}
         {/each}
       {/each}
+
+      <!-- Every call in the list as one betslip (BETPAWA_PLAN.md 6). A basket,
+           not a parlay: lineless calls are left out and named (D13), kicked-off
+           calls left out and counted, and the copy says what a single multibet
+           of this size is (D14). The count on the button is what loads. -->
+      {#if $betpawa.status === 'anonymous'}
+        <div class="place">
+          <button type="button" class="bet ghost" onclick={promptSignIn}>Sign in to place these on betPawa</button>
+        </div>
+      {:else if $betpawa.status === 'ready'}
+        {@const slip = daySlip($betpawa.host, tips, $betpawa.byFixture, new Date())}
+        {#if slip.url}
+          <div class="place">
+            <a class="bet big" href={slip.url} target="_blank" rel="noopener noreferrer"
+              >{slip.loaded === 1 ? 'Place this call' : `Place all ${slip.loaded} calls`} on betPawa ↗</a>
+            <p class="fine">
+              Loads {slip.loaded} selection{slip.loaded === 1 ? '' : 's'} into one betPawa betslip.
+              {#if slip.loaded > 1}As a single multibet it will almost never win — remove legs
+              there, or see what a slip claims on the <a href="/parlay">parlay page</a>.{/if}
+              {#if slip.skipped.length}No line on betPawa for {slip.skipped.join(', ')}.{/if}
+              {#if slip.kickedOff}{slip.kickedOff} already kicked off and left out.{/if}
+            </p>
+          </div>
+        {/if}
+      {/if}
     </div>
 
     <p class="note">
@@ -636,6 +661,14 @@
   .bet.ghost { border-style: dashed; border-color: var(--line); color: var(--muted); }
   .bet.ghost:hover { background: transparent; border-color: var(--accent); color: var(--accent); }
   .bet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .bet.big { font-size: 12px; padding: 10px 18px; margin-top: 0; background: var(--accent); color: var(--bg); }
+  .bet.big:hover { background: var(--accent-soft); }
+  .place {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 16px 22px; background: var(--panel-2); border-top: 1px solid var(--line-2);
+  }
+  .place .fine { margin: 0; max-width: 60ch; }
+  .place .fine a { color: var(--accent); }
   .conf { width: 92px; flex: none; }
   .confhead {
     display: flex; justify-content: space-between; font-family: var(--mono);

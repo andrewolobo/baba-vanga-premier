@@ -450,3 +450,72 @@ existing table, the book (off), and the ledger — **0 configurations, no
 probe**: nothing here forms or measures a probability. The honesty copy
 gains one line: the button links to a bookmaker; the call's strike rate is
 the only thing the site stands behind, and it is not a return.
+
+---
+
+## 6. Second assessment — 2026-09-08: "place every call in the list on one slip"
+
+Owner request, assessed and not built: beside the tips list, a button like
+the parlay page's "Place this slip on betPawa" that loads **every call in
+the current selection** (All, or one league tab) into one betslip.
+
+**Small to build — about half a day — and the mechanics already exist.**
+`$lib/betpawa.js` `slipLink(host, legs, byFixture)` takes rows with
+`fixture_id`, `side`, `home_team`, `away_team`, which is what `/tips` rows
+are; the page already holds the filtered `tips` array and the links store;
+the markup is the parlay page's `.place` block. No API, schema, cycle or
+rule change. Checked live (headless, 2026-09-08): a prefill link with
+**40 selections loads all 40** (URL 492 characters, betPawa shows the
+multibet at 401,328.79), and one with 54 loads all 54 — the bundle carries
+a "maximum amount of legs" error, so a cap exists, but it is above 54 and
+the largest matchday in the corpus is 46.
+
+**Four things the parlay page settled that this button re-opens:**
+
+1. **Lineless legs.** `slipLink` refuses a slip if any leg lacks a line and
+   names the leg — right for a chosen parlay, whose claimed figure is the
+   product of exactly those legs. Applied to "every call today" it would
+   make the button unusable on most Saturdays (1 of 65 events lacked our
+   side's line this week; 40 games a Saturday). **D13:** for this button,
+   *skip the lineless calls and say so* — "38 of 40 calls loaded; no line
+   on betPawa for X, Y" — leaving the parlay page's refusal as it is.
+2. **Kicked-off games.** `/tips` keeps a 15:00 game listed at 17:00 (harmless
+   in a list); the parlay endpoint drops it server-side. betPawa silently
+   omits an expired selection, so a slip would load short without saying
+   why. The page must exclude kicked-off calls itself: `$lib/kickoff.js`
+   `ukInstant` already gives the instant, one comparison to `Date.now()`.
+   The count on the button then means what it says.
+3. **What the slip is.** betPawa's betslip treats several selections as one
+   multibet by default, so this button places the **full-day accumulator**
+   `PARLAY_PLAN.md` §8.2 measured at about 1 in 23,000 on a Saturday. The
+   parlay page shows that claim and the below-even warning beside its slip;
+   the tips list shows neither. **D14:** the button's copy must say it —
+   "loads N selections into one betslip; as a single multibet it will
+   almost never win; remove legs there or use the parlay page to see what a
+   slip claims" — and the count must be on the button. It is a basket
+   loader, and should read as one.
+4. **Days.** Tips publish on matchday only, so the list is normally one day;
+   a postponed game's tip can linger. The button takes the list as filtered
+   (the league tab), which is what was asked; no per-day split.
+
+**BUILT 2026-09-08 (owner: D13 and D14 as recommended).** `daySlip(host,
+tips, byFixture, now)` in `$lib/betpawa.js` — a lineless call is left out
+and named, a call whose UK kick-off has passed (`ukInstant`) is left out and
+counted, no kick-off time keeps the call as the server does, nothing
+loadable is no link (4 node tests; 53 web tests in all). Under the tips
+list, inside the panel: signed out, "Sign in to place these on betPawa";
+ready, **"Place all N calls on betPawa ↗"** ("Place this call" at one) with
+the count being what loads, and the fine print: "Loads N selections into
+one betPawa betslip. As a single multibet it will almost never win — remove
+legs there, or see what a slip claims on the parlay page. No line on
+betPawa for X. K already kicked off and left out." The block follows the
+league tab (it is built from the filtered list) and is absent when the tab
+is empty or nothing is loadable. Verified: build clean, **16-check
+Playwright click-through** on a re-seeded `bvp_scratch` with four tips
+today (Swansea +1.5 with a line, Wrexham +1.5 without, Watford 1X, and a
+00:01 kick-off already gone): the button says 2, the href carries exactly
+those two ids, Wrexham is named, the kicked-off one counted, the parlay link
+present, no odds, new tab + noopener; an empty league tab has no block and
+the Championship tab rebuilds it; GB sees nothing; 390 px fits with no
+horizontal scroll. `bvp_scratch` dropped after. No backend change; nothing
+on the VM until the next frontend build.

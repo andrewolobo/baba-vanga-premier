@@ -7,7 +7,32 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-08** (latest), after **Phase D of the betPawa wager
+Last updated **2026-09-08** (latest), after **the "place every call in the
+list on one slip" button was built** — owner took D13 (skip lineless calls
+and name them) and D14 (the count on the button, the multibet copy) as
+recommended. `daySlip` in `$lib/betpawa.js` (4 node tests, 53 web in all;
+kicked-off calls excluded via `ukInstant`, counted), the `.place` block
+inside the tips panel in `+page.svelte` following the league tab, the
+signed-out state matching the parlay page; build clean; 16-check
+click-through on a re-seeded `bvp_scratch` with a lineless and a kicked-off
+tip (button says 2 of 4, href exact, both exclusions named/counted, parlay
+link, no odds, empty tab → no block, GB → nothing, 390 px clean);
+`bvp_scratch` dropped. No backend, rule, cycle or ledger change
+(114 / 71 / 202). Uncommitted on top of `0f03e69`; ships with the next
+frontend build — `BETPAWA_PLAN.md` §4 Phase D's checklist stands.
+Before that, same day, **a "place every call in the
+list on one slip" button was assessed, not built** (`BETPAWA_PLAN.md` §6):
+half a day on existing seams (`slipLink`, the page's filtered `tips`, the
+parlay page's `.place` block; no backend change); a 40- and a 54-selection
+prefill link both loaded in full (a leg cap exists in betPawa's bundle but
+sits above 54; the largest matchday is 46). Two decisions posed: **D13**
+skip lineless calls and say so (the parlay page's refusal would make the
+button unusable most Saturdays), **D14** the copy must say it is a
+full-day multibet basket (~1 in 23,000 on a Saturday, `PARLAY_PLAN.md`
+§8.2) with the count on the button; kicked-off calls must be excluded
+client-side (`ukInstant`), since betPawa drops expired selections
+silently. No code change.
+Before that, same day, **Phase D of the betPawa wager
 button — the documents — was done and the deploy checklist written**, owner
 instruction. `PRODUCT.md` §6 (a link, not a price: no odds, the wager is the
 call exactly, the event-page fallback, the two-part gate, nothing measured
