@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import itertools
 import os
+import time
 
 import pandas as pd
 import psycopg
@@ -210,7 +211,7 @@ def _url(dbname: str) -> str:
 
 
 def _create(admin, name: str, template: str) -> None:
-    admin.execute(f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
+    _drop(admin, name)
     # C collation so ORDER BY on text is byte order, as it was under SQLite
     # (plan pitfall 14). A clone inherits its template's collation, so this is
     # only stated when cloning template0.
@@ -223,7 +224,19 @@ def _create(admin, name: str, template: str) -> None:
 
 
 def _drop(admin, name: str) -> None:
-    admin.execute(f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
+    # FORCE terminates whatever is still connected, and as a non-superuser
+    # (`bvp` on a server) that is refused while an autovacuum worker happens
+    # to be in the database: the worker runs under no role, so no role short
+    # of superuser or `pg_signal_backend` may signal it. It is gone within a
+    # moment, so wait and try again rather than fail the teardown.
+    for attempt in range(10):
+        try:
+            admin.execute(f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
+            return
+        except psycopg.errors.InsufficientPrivilege:
+            if attempt == 9:
+                raise
+            time.sleep(0.5)
 
 
 @pytest.fixture(scope="session")

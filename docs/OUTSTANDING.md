@@ -7,7 +7,21 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-08** (latest), after **the front-page hero became
+Last updated **2026-09-08** (latest), after **a flaky test teardown was
+made to wait for autovacuum** — two `ERROR at teardown` results on the
+non-superuser machine (suite run as `bvp`, python 3.12), not caused by the
+hero work: `DROP DATABASE ... WITH (FORCE)` was refused with `permission
+denied to terminate process` because an autovacuum worker was in the clone
+at that instant, and a worker runs under no role, so only a superuser or a
+member of `pg_signal_backend` may signal it. `tests/conftest.py` `_drop`
+now retries that one error (10 x 0.5s) before re-raising, and `_create`
+goes through it. Cannot reproduce on this machine (its test connection is
+the `postgres` superuser); verified with a stub and the two affected files
+(22 pass). The server-side alternative, `GRANT pg_signal_backend TO bvp`,
+was not taken. The inline drops in `test_migrate_sqlite_to_pg.py`
+(locale-collated test, skipped where the default collation is `C`) still
+carry the race and were left alone.
+Before that, same day, **the front-page hero became
 the pixel-video band** — owner request, design supplied as a Claude Design
 artboard plus clip in `docs/ui/designs/new-header/`, three decisions taken
 in-session (it replaces the parallax hero, not the sticky header; mockup
