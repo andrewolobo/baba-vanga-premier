@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0e0e11}
+a{color:#ff6a1f;text-decoration:none} a:hover{color:#fff}
+@keyframes bvblink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes bvglitch{0%,92%,100%{transform:translate(0,0)}94%{transform:translate(-4px,2px)}96%{transform:translate(4px,-2px)}98%{transform:translate(-2px,0)}}
+</style>
+</helmet>
+<header data-screen-label="Header" onDrop="{{ onDrop }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" style="position:relative;height:300px;overflow:hidden;background:#0e0e11;font-family:'Barlow Condensed','Arial Narrow',sans-serif;color:#fff">
+  <canvas ref="{{ canvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;display:block;image-rendering:pixelated"></canvas>
+  <video ref="{{ videoRef }}" muted="{{ true }}" loop="{{ true }}" playsInline="{{ true }}" crossOrigin="anonymous" style="display:none"></video>
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,14,17,.9) 0%,rgba(14,14,17,.82) 55%,rgba(14,14,17,.35) 78%,rgba(14,14,17,0) 92%);pointer-events:none"></div>
+  <sc-if value="{{ scanlines }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px);pointer-events:none;mix-blend-mode:multiply"></div>
+  </sc-if>
+  <div style="position:absolute;top:0;left:0;right:0;height:4px;background:#ff6a1f"></div>
+  <div style="position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:0 clamp(20px,4vw,56px);pointer-events:none">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.32em;color:#ff6a1f;text-transform:uppercase;align-self:flex-start;background:#0e0e11;padding:8px 14px 8px 12px">
+      <span style="width:9px;height:9px;background:#ff6a1f;box-shadow:0 0 12px #ff6a1f;animation:bvblink 1.4s steps(2) infinite"></span>
+      <span>Premier League</span><span style="opacity:.5">/</span>
+      <span>Championship</span><span style="opacity:.5">/</span>
+      <span>League One</span><span style="opacity:.5">/</span>
+      <span>League Two</span>
+    </div>
+    <h1 style="margin:0;font-weight:900;font-size:clamp(36px,4.2vw,64px);line-height:.9;letter-spacing:-.01em;text-transform:uppercase;text-shadow:0 0 24px rgba(14,14,17,.9);animation:bvglitch 6s infinite">We call<br>It Before<br>Kick-Off</h1>
+  </div>
+  <label style="position:absolute;right:18px;bottom:14px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:#0e0e11;background:#fff;padding:8px 12px;cursor:pointer;text-transform:uppercase" style-hover="background:#0e0e11;color:#fff">
+    {{ videoButtonLabel }}
+    <input type="file" accept="video/*" onChange="{{ onPick }}" style="display:none">
+  </label>
+  <sc-if value="{{ dragging }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:8px;border:3px dashed #ff6a1f;pointer-events:none"></div>
+  </sc-if>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;videoUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Video&quot;},&quot;pixelSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:12,&quot;min&quot;:4,&quot;max&quot;:32,&quot;step&quot;:1,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Video&quot;},&quot;scanlines&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Video&quot;}}">
+class Component extends DCLogic {
+  state = { hasVideo: false, dragging: false };
+  canvasRef = React.createRef();
+  videoRef = React.createRef();
+  grid = null;
+  componentDidMount() {
+    if (this.props.videoUrl) this.load(this.props.videoUrl);
+    this.loop();
+  }
+  componentDidUpdate(prev) {
+    if (prev.videoUrl !== this.props.videoUrl && this.props.videoUrl) this.load(this.props.videoUrl);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); }
+  load(url) {
+    const v = this.videoRef.current; if (!v) return;
+    v.src = url; v.muted = true; v.loop = true;
+    v.play().catch(() => {});
+    this.setState({ hasVideo: true });
+  }
+  loop = () => {
+    this.raf = requestAnimationFrame(this.loop);
+    const c = this.canvasRef.current; if (!c || !c.parentElement) return;
+    const px = Math.max(3, this.props.pixelSize ?? 12);
+    const W = c.parentElement.clientWidth || 1200, H = c.parentElement.clientHeight || 260;
+    const w = Math.max(8, Math.round(W / px)), h = Math.max(4, Math.round(H / px));
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; this.grid = null; }
+    const ctx = c.getContext('2d');
+    const v = this.videoRef.current;
+    if (this.state.hasVideo && v && v.readyState >= 2) {
+      ctx.drawImage(v, 0, 0, w, h);
+    } else {
+      this.noise(ctx, w, h);
+    }
+    const img = ctx.getImageData(0, 0, w, h), d = img.data;
+    const dark = [14, 14, 17], mid = [255, 106, 31], light = [255, 226, 200];
+    for (let i = 0; i < d.length; i += 4) {
+      let L = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) / 255;
+      L = Math.min(1, Math.max(0, (L - 0.5) * 1.4 + 0.5));
+      const a = L < 0.62 ? dark : mid, b = L < 0.62 ? mid : light, t = L < 0.62 ? L / 0.62 : (L - 0.62) / 0.38;
+      d[i] = a[0] + (b[0] - a[0]) * t; d[i + 1] = a[1] + (b[1] - a[1]) * t; d[i + 2] = a[2] + (b[2] - a[2]) * t;
+    }
+    ctx.putImageData(img, 0, 0);
+  };
+  noise(ctx, w, h) {
+    if (!this.grid) { this.grid = new Float32Array(w * h); for (let i = 0; i < this.grid.length; i++) this.grid[i] = Math.random() * 0.5; }
+    const g = this.grid, t = performance.now() / 1000;
+    for (let k = 0; k < w * h * 0.04; k++) g[(Math.random() * g.length) | 0] = Math.random() < 0.85 ? Math.random() * 0.45 : 0.6 + Math.random() * 0.4;
+    const sweep = ((t * 0.35) % 1.4) * w - w * 0.2;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      let L = g[y * w + x];
+      const dx = Math.abs(x - sweep - y * 0.35); if (dx < 3) L = Math.min(1, L + (3 - dx) * 0.25);
+      const v = (L * 255) | 0; ctx.fillStyle = `rgb(${v},${v},${v})`; ctx.fillRect(x, y, 1, 1);
+    }
+  }
+  useFile(file) {
+    if (!file || !file.type.startsWith('video/')) return;
+    if (this.objUrl) URL.revokeObjectURL(this.objUrl);
+    this.objUrl = URL.createObjectURL(file);
+    this.load(this.objUrl);
+  }
+  renderVals() {
+    return {
+      canvasRef: this.canvasRef, videoRef: this.videoRef,
+      scanlines: this.props.scanlines ?? true,
+      dragging: this.state.dragging,
+      videoButtonLabel: this.state.hasVideo ? 'Change video' : 'Drop or pick a video clip',
+      onDragOver: e => { e.preventDefault(); if (!this.state.dragging) this.setState({ dragging: true }); },
+      onDragLeave: () => this.setState({ dragging: false }),
+      onDrop: e => { e.preventDefault(); this.setState({ dragging: false }); this.useFile(e.dataTransfer.files[0]); },
+      onPick: e => this.useFile(e.target.files[0]),
+    };
+  }
+}
+</script>
+</body>
+</html>

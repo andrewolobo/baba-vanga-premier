@@ -7,7 +7,53 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-07** (latest), after **the football-data feed URLs
+Last updated **2026-09-08** (latest), after **the front-page hero became
+the pixel-video band** — owner request, design supplied as a Claude Design
+artboard plus clip in `docs/ui/designs/new-header/`, three decisions taken
+in-session (it replaces the parallax hero, not the sticky header; mockup
+as-is, so the explainer paragraph and its two CTAs go; revert is a
+one-line flag). `web/src/routes/HeroVideo.svelte` draws the clip
+(`web/static/header-video.mp4`, ~2.3MB) every frame onto a coarse canvas
+grid (12px blocks) and recolours it through a dark → accent → light ramp —
+the mapping is pure and unit-tested in `$lib/pixel.js` — under gradient +
+scanline overlays, the blinking league strip and the glitching three-line
+headline. Until the video has a frame, or when it never will (offline,
+autoplay refused), an animated noise field stands in; reduced-motion gets
+one static frame with the blink/glitch stilled. The mockup's file-picker
+and drag-drop were design-tool affordances and were dropped; its Space
+Mono and off-by-one accent became the house `--mono` and `--accent`. The
+old hero moved **verbatim** to `HeroClassic.svelte` (markup, parallax,
+styles, its two 940px media rules), and **the revert is one line**:
+`web/src/lib/hero.js`, `VIDEO_HERO = false`, rebuild — both components
+stay in the tree. The service worker leaves the clip out of the precache
+(it would ride into every new version's cache; offline the hero degrades
+to noise, nothing breaks). **39 web tests pass** (33 + 6 palette), build
+clean, **43-check Playwright click-through** at 1280px and 390px on a
+migrated empty `bvp_scratch` (band geometry, canvas coarse and painting,
+palette held, clip playing, strip + headline, no picker, old hero gone,
+stats/nav/bottom-bar untouched, no horizontal scroll, no page errors, and
+the flag flipped live: false → parallax hero back → true → band back);
+`bvp_scratch` dropped after. A follow-up the same session: the band's
+text now sits in **the page's own column** — the `.inner` takes the
+header bar's `max-width: var(--page)` and side padding (32px, 18px below
+820px), so the strip and headline start exactly under the wordmark,
+left-justified (a first cut centred it; the owner corrected to
+left-in-column). Below 820px the league strip — which had swallowed a third of the band on a phone — shrinks to
+9px and splits into **two snug stacked chips** ("Premier League /
+Championship" over "League One / League Two", the mid separator hidden;
+one line as before on desktop). The phone headline also grew on
+owner request: below 820px it scales with the viewport
+(`clamp(42px, 12.5vw, 56px)`, ~49px at 390px) instead of the desktop
+clamp's 36px floor — still three lines inside the 300px band.
+Click-through grew to **50 checks**
+(strip and headline x-aligned to the wordmark within 2px at both widths;
+strip ≤60px tall, headline 46–52px and inside the band at 390px) and re-ran green, with the flag-flip revert still exercised both
+ways. Deploy is the next frontend build.
+Uncommitted; `docs/ui/designs/new-header/` (design + clip + canvas
+runtime) is untracked — owner's call whether the reference is committed.
+No API, engine, rule, cycle or ledger change (114 / 71 / 202, `--check`
+clean at session start).
+Before that, on 2026-09-07, **the football-data feed URLs
 moved to the bare domain** — the local cycle failed all day with `HTTP 503`
 on both `sync` and `grade`. Assessed, not a bug here: `www.football-data.co.uk`
 answers the IONOS "temporarily unavailable" page to every client (curl,

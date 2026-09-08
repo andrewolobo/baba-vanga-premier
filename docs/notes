@@ -2,8 +2,9 @@
 - Database migration - to postgres [x]
 - Deployment of database migration [x]
 - Additional Parlay options - select selection types (1x, straight wins, over/under) [x]
-- Development of sign in feature - Google? Native? Phone? [x] Google, live 2026-09-07 (AUTH_PLAN.md)
-- mobile navigation bar in mobile view, tips, results, records, parlay, sign in
+- Development of sign in feature - Google? Native? Phone? [x] Google, live 2026-09-07 (AUTH_PLAN.md) [x]
+- mobile navigation bar in mobile view, tips, results, records, parlay, sign in [x]
+- prediction history, how well babavanga has predicted matchups between the these teams
 - Separate last time out/record, separate pages
 - Parlay behind sign in
 - BV bet parlays - House picks

@@ -15,7 +15,10 @@ const CACHE = `bvp-${version}`;
 
 // '/' is the adapter-static fallback page — the shell every client-side route
 // boots from — and is not listed in `build` or `files`.
-const PRECACHE = [...build, ...files, '/'];
+// The hero clip (~2.3MB) is left out: precaching would pull it into every
+// new version's cache on activate, and offline the video hero already
+// falls back to its animated noise, so nothing is lost without it.
+const PRECACHE = [...build, ...files.filter((f) => f !== '/header-video.mp4'), '/'];
 const PRECACHED = new Set(PRECACHE);
 
 // Cached per full URL, so each division's query string keeps its own entry.
