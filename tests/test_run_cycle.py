@@ -308,6 +308,85 @@ def test_a_failing_calendar_does_not_stop_the_cycle(conn, monkeypatch):
     assert step.trace is not None
 
 
+# --- the betPawa scrape ----------------------------------------------------
+
+
+def test_the_betpawa_step_is_off_unless_the_flag_is_set(conn, monkeypatch):
+    """Calling a bookmaker's API is a decision (`BETPAWA_PLAN.md` D1), not a
+    default. Off must mean no request at all."""
+    def explode(*a, **k):
+        raise AssertionError("must not reach the network when disabled")
+
+    monkeypatch.setattr(run_cycle.betpawa_feed, "fetch", explode)
+    monkeypatch.setattr(run_cycle.config, "BETPAWA_ENABLED", False)
+
+    step = run_cycle.step_betpawa(conn, dry_run=True)
+
+    assert step.status is Status.OK
+    assert "disabled" in step.detail
+
+
+def test_the_betpawa_step_stores_ids_for_a_fixture_ahead(conn, monkeypatch):
+    """The captured Southampton v Swansea event, re-dated to tomorrow so the
+    step's own clock treats it as ahead, lands on the matching fixture."""
+    from services import betpawa_feed
+    from tests.test_betpawa_feed import CAPTURE
+
+    monkeypatch.setattr(run_cycle.config, "BETPAWA_ENABLED", True)
+    raw = [e for e in betpawa_feed.load_capture(CAPTURE) if e["id"] == "37536526"]
+    tomorrow = pd.Timestamp.now(tz="UTC").normalize() + pd.Timedelta(days=1)
+    raw[0]["startTime"] = tomorrow.strftime("%Y-%m-%dT14:00:00Z")
+    match_date, kickoff = betpawa_feed.uk_clock(raw[0]["startTime"])
+    monkeypatch.setattr(run_cycle.betpawa_feed, "fetch", lambda *a, **k: raw)
+    conn.execute("INSERT INTO teams (team_id, canonical_name)"
+                 " VALUES (90, 'Southampton'), (91, 'Swansea')")
+    conn.execute("INSERT INTO fixtures (division, match_date, kickoff_time, home_team_id,"
+                 " away_team_id, source_file) VALUES ('E1', %s, %s, 90, 91, 'test')",
+                 (match_date, kickoff))
+    conn.commit()
+
+    step = run_cycle.step_betpawa(conn, dry_run=False)
+
+    assert step.status is Status.OK, step.detail
+    assert "1 event(s); 1 matched" in step.detail
+    assert db.scalar(conn, "SELECT selection_id FROM betpawa_selections"
+                     " WHERE side='A+1.5'") == "1539591711"
+
+
+def test_no_events_from_betpawa_is_attention(conn, monkeypatch):
+    monkeypatch.setattr(run_cycle.config, "BETPAWA_ENABLED", True)
+    monkeypatch.setattr(run_cycle.betpawa_feed, "fetch", lambda *a, **k: [])
+
+    step = run_cycle.step_betpawa(conn, dry_run=True)
+
+    assert step.status is Status.ATTENTION
+    assert "NO EVENTS" in step.detail
+
+
+def test_a_failing_betpawa_scrape_does_not_stop_the_cycle(conn, artifact, monkeypatch):
+    """The buttons are the only thing a dead bookmaker API may cost."""
+    monkeypatch.setattr(run_cycle.config, "BETPAWA_ENABLED", True)
+    monkeypatch.setattr(cycle, "latest_artifact", lambda *a, **k: artifact)
+    monkeypatch.setattr(run_cycle.csv_grader, "fetch", lambda *a, **k: "")
+
+    def boom(*a, **k):
+        raise TimeoutError("betpawa.ug unreachable")
+
+    monkeypatch.setattr(run_cycle.betpawa_feed, "fetch", boom)
+    add_fixture(conn, "E0", 1, 2)
+
+    report = run_cycle.run(conn, today=FRESH_ARTIFACT_DAY)
+    names = {s.name: s for s in report.steps}
+    assert names["betpawa"].status is Status.FAILED
+    assert "TimeoutError" in names["betpawa"].detail and names["betpawa"].trace
+    # tips reads ATTENTION here on its own account (a priceless 1X tip),
+    # which is the point: the scrape's failure changed nothing after it.
+    assert names["tips"].status is not Status.FAILED
+    assert names["results"].status is Status.OK
+    assert names["grade"].status is Status.OK
+    assert report.status.exit_code == 1
+
+
 # --- the tip step ----------------------------------------------------------
 
 

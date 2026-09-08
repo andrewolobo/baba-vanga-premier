@@ -273,6 +273,7 @@ like everything else (§3.10):
 | `BVP_GOOGLE_CLIENT_ID` | the Google OAuth client id for sign-in (`AUTH_PLAN.md`); public, not a secret, but environment — empty means sign-in answers 401 and the site renders no button | *(empty)* |
 | `BVP_COOKIE_SECURE` | `Secure` on the session cookie; a development machine on `http://localhost` sets `0` | `1` |
 | `BVP_SESSION_DAYS` | sliding session length | `30` |
+| `BVP_BETPAWA` | `1` enables the cycle's `betpawa` step (`RUNBOOK.md` §5.11; `BETPAWA_PLAN.md` D1) — one GET a morning to `www.betpawa.ug` for the ids behind the wager buttons; the VM's egress was verified served on 2026-09-08 | *(off)* |
 
 **A development machine** points both at its own Postgres in `.env`, with
 credentials in the URL (`postgresql://user:password@127.0.0.1:5433/bvp`;
@@ -699,6 +700,26 @@ curl -sI -X POST https://<domain>/api/auth/google            # 415 (no JSON) -- 
 Google Identity Services only runs from an origin listed on the OAuth client
 in the Google Cloud console, over HTTPS (localhost excepted) — so this whole
 block presumes 5b is done.
+
+**The betPawa button (B26, `BETPAWA_PLAN.md`), added 2026-09-08.** Nothing
+on the nginx side — `/api/betpawa/links` is one more `GET` behind the same
+`location /api/`. One drop-in on the *cycle* unit, on the client-id pattern:
+the tracked `bvp-cycle.service` carries `Environment=BVP_BETPAWA=0`, and
+`/etc/systemd/system/bvp-cycle.service.d/betpawa.conf` (`[Service]` +
+`Environment=BVP_BETPAWA=1`) turns the scrape on; `systemctl cat bvp-cycle |
+grep BETPAWA` shows both lines and the drop-in wins. Migration `003_betpawa`
+is additive (two empty tables) and `deploy.sh` applies it before the
+restart. Verify:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://<domain>/api/betpawa/links      # 401 -- signed-in only
+sudo -u bvp psql bvp -c "SELECT COUNT(*) AS fixtures FROM betpawa_events"        # > 0 after the first scrape
+```
+
+The first scrape is the next 06:00 UTC cycle — or by hand, once, from the
+checkout as the service user: `BVP_DATABASE_URL=postgresql:///bvp
+.venv/bin/python -m services.betpawa_feed` (add `--dry-run` first). The VM's
+egress was checked served on 2026-09-08 (`BETPAWA_PLAN.md` §4 Phase 0).
 
 ### 5.4 The application — _verify:_ `build.validate()` passes, the suite is green
 

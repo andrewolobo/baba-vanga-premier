@@ -42,7 +42,7 @@ from fastapi import Body, Depends, FastAPI, HTTPException, Query, Request, Respo
 from fastapi.middleware.cors import CORSMiddleware
 from scipy import stats
 
-from api import auth
+from api import auth, betpawa
 from engine import config, db
 from engine.seasons import SERVED_DIVISIONS
 from engine.serve import parlay as parlay_rule
@@ -584,6 +584,7 @@ def _user_summary(row) -> dict:
         "email": row["email"],
         "picture_url": row["picture_url"],
         "phone_e164": row["phone_e164"],
+        "phone_country": row["phone_country"],
         "phone_required": row["phone_e164"] is None,
     }
 
@@ -625,7 +626,7 @@ def auth_google(
             " ON CONFLICT (google_sub) DO UPDATE SET email = EXCLUDED.email,"
             "   email_verified = EXCLUDED.email_verified, name = EXCLUDED.name,"
             "   picture_url = EXCLUDED.picture_url, last_login_at = now()"
-            " RETURNING user_id, email, name, picture_url, phone_e164",
+            " RETURNING user_id, email, name, picture_url, phone_e164, phone_country",
             (claims["sub"], claims["email"].lower(), bool(claims.get("email_verified")),
              claims.get("name"), claims.get("picture")),
         ).fetchone()
@@ -672,7 +673,68 @@ def set_phone(
         raise HTTPException(409, "that phone number is already on another account") from error
     if cur.rowcount == 0:
         raise HTTPException(409, "phone number already captured")
-    return {"user": _user_summary({**user, "phone_e164": e164})}
+    return {"user": _user_summary({**user, "phone_e164": e164, "phone_country": region})}
+
+
+# --- betPawa links (docs/BETPAWA_PLAN.md, B26) ----------------------------- #
+
+
+BETPAWA_SELECT = """
+    SELECT f.fixture_id, e.event_id, s.side, s.selection_id
+    FROM tips t
+    JOIN fixtures f ON f.fixture_id = t.fixture_id
+    JOIN betpawa_events e ON e.fixture_id = f.fixture_id
+    LEFT JOIN betpawa_selections s ON s.fixture_id = f.fixture_id
+    WHERE t.settled_at IS NULL AND f.match_date >= %s
+    ORDER BY f.fixture_id, s.side
+"""
+
+
+@app.get("/betpawa/links")
+def betpawa_links(
+    user: dict = Depends(require_user),
+    conn: db.Connection = Depends(get_conn),
+) -> dict:
+    """Where each live call can be placed on betPawa, for the signed-in user.
+
+    **Its own route, on purpose.** `/tips` is public, cached offline by the
+    service worker and pinned byte-identical; a per-user link inside it would
+    put account-dependent content into a shared cache. This is signed-in only
+    (401 otherwise), never cached, and carries no probability -- ids and URLs.
+
+    The user's country is the one their phone number was validated under
+    (`users.phone_country`, D6). When betPawa serves it, `host` is that
+    country's site and `links` has one entry per fixture with a live tip that
+    the scrape matched: the event page (`event_url`, the D11 fallback) and,
+    for every side the book carried at the last scrape, the prefill URL that
+    opens that wager (`sides`). The published side can be absent from
+    `sides` -- the +1.5 ladder is one-sided -- and a fixture the scrape did
+    not match is absent altogether; the page renders no wager button for
+    either. When betPawa does not serve the country, `eligible` is false and
+    `links` is empty: the site shows nothing, rather than a wrong country.
+
+    No odds on the wire (D9): the site publishes no prices, and a morning's
+    odds are stale by kick-off.
+    """
+    country = user.get("phone_country")
+    host = betpawa.host_for(country)
+    if host is None:
+        return {"eligible": False, "country": country, "host": None, "links": []}
+    links: dict[int, dict] = {}
+    for row in _rows(conn, BETPAWA_SELECT, (db.today(),)):
+        entry = links.setdefault(row["fixture_id"], {
+            "fixture_id": row["fixture_id"],
+            "event_id": row["event_id"],
+            "event_url": betpawa.event_url(host, row["event_id"]),
+            "sides": {},
+        })
+        if row["side"] is not None:
+            entry["sides"][row["side"]] = {
+                "selection_id": row["selection_id"],
+                "url": betpawa.prefill_url(host, [row["selection_id"]]),
+            }
+    return {"eligible": True, "country": country, "host": host,
+            "links": list(links.values())}
 
 
 @app.post("/auth/logout", dependencies=[Depends(_same_site_json)])

@@ -14,7 +14,7 @@ Everything below is arranged around not losing a matchday.
 ## 0. What runs
 
 ```
-python -m services.run_cycle          # sync -> calendar -> serve -> tips -> grade -> record
+python -m services.run_cycle          # sync -> calendar -> serve -> tips -> betpawa -> results -> grade -> record
 ```
 
 Five independent steps. Each records its own outcome; the cycle reports the
@@ -26,6 +26,7 @@ worst one and always writes a `serving_state` row, including when it failed.
 | `calendar` | fill fixture gaps from the second source — **off by default** (§5.8) | yes |
 | `serve` | refit if stale, price every pending fixture it can | no |
 | `tips` | publish one recommendation per fixture **played today** (§5.7) | no |
+| `betpawa` | store betPawa's event and selection ids for the fixtures ahead — **off by default** (§5.11) | yes |
 | `grade` | settle played fixtures, write CLV, settle tips | yes |
 
 **The book does not run.** It is measured-negative and absent from the runner
@@ -503,6 +504,44 @@ button and the phone step do. Three symptoms, three causes:
 
 Nothing here touches the cycle, and no sign-in state is cached: a fix on the
 server is live on the next page load.
+
+### 5.11 The betPawa scrape (`betpawa` step)
+
+Off unless `BVP_BETPAWA=1` (on the server, a drop-in on `bvp-cycle.service`
+— `DEPLOY.md` §5.3's betPawa block; the tracked unit keeps `=0`). It writes the bookmaker's event id and, per side the
+rule can publish, the selection id behind the site's "bet this on betPawa"
+button (`BETPAWA_PLAN.md`) — its own two tables, nothing else. It runs after
+`tips` and under the same guard as every step: **failing costs the buttons,
+never the matchday.** One GET a morning against `www.betpawa.ug`.
+
+- **`disabled (BVP_BETPAWA unset)`** → the default. No request was made.
+- **`N event(s); M matched, U unmatched; S selection(s)`** → the normal line.
+  `unmatched` counts games betPawa lists that this store has no fixture for
+  yet — the book runs a fortnight ahead of football-data's window — and is
+  expected to be non-zero midweek. A matched fixture whose *published* side
+  has no selection is also normal (`BETPAWA_PLAN.md` 1.2: the +1.5 ladder is
+  one-sided, so the model's underdog can lack a line where the market
+  disagrees — Wrexham v Burnley on the first live run); the site falls back
+  to a plain event link for it (D11).
+- **`NO EVENTS from betPawa`** (ATTENTION) → in season the book always lists
+  something; nothing means the query, the competition ids or the response
+  shape have changed. Reproduce with `python -m services.betpawa_feed
+  --dry-run`; the parse is pinned by `tests/data/betpawa_efl_2026-09-08.json`.
+- **`unbridged betPawa club(s)`** (ATTENTION) → a participant id
+  `reference/betpawa_teams.csv` does not know: a promoted club, or a rename
+  that came with a new id. Excluded by name and counted, never guessed:
+
+  ```powershell
+  python -m services.betpawa_feed --dry-run                      # names the club and its id
+  python scriptsuild_betpawa_teams.py <saved capture>          # proposes the row; MANUAL for the rest
+  python scriptsuild_team_aliases.py
+  python scriptsuild_team_aliases.py --check
+  ```
+
+- **The step failed** → the cycle continues; yesterday's rows stand and the
+  buttons keep pointing at them until the next clean run. Look at the
+  traceback in the journal only if it persists — the API is undocumented and
+  a shape change is the likely cause.
 
 ## 6. Re-running is safe
 

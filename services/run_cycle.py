@@ -46,7 +46,7 @@ import pandas as pd
 
 from engine import config, db
 from engine.serve import cycle, tips
-from services import bbc_calendar, bbc_results, csv_grader, fixture_sync
+from services import bbc_calendar, bbc_results, betpawa_feed, csv_grader, fixture_sync
 
 #: Refit once the frozen artifact is older than this. P1's H1 measured
 #: day-frozen refits worth 0.00007 nats over weekly, so weekly is what the base
@@ -462,6 +462,37 @@ def step_tips(conn: db.Connection, *, dry_run: bool) -> Step:
     return _guard(Step("tips"), work, conn)
 
 
+def step_betpawa(conn: db.Connection, *, dry_run: bool) -> Step:
+    """Store betPawa's event and selection ids for the fixtures ahead.
+
+    Additive, never destructive: it writes only its own two tables
+    (`003_betpawa.sql`) and touches no fixture, prediction or tip. Runs after
+    `tips` because the buttons it feeds hang off the day's calls, and under
+    `_guard` like every step so a bookmaker's API being down costs the
+    buttons, not the matchday. Enabled only by `BVP_BETPAWA=1`
+    (`docs/BETPAWA_PLAN.md` D1).
+    """
+
+    def work(step: Step) -> None:
+        parsed = betpawa_feed.parse(betpawa_feed.fetch())
+        report = betpawa_feed.sync(conn, parsed.events, dry_run=dry_run)
+        step.detail = (f"{report.events} event(s); {report.matched} matched, "
+                       f"{report.unmatched} unmatched; "
+                       f"{report.selections} selection(s)")
+        if report.events == 0:
+            # In season the book lists a fortnight ahead, so nothing at all
+            # means the query or the competition ids have stopped meaning what
+            # they did -- the failure a shape change would produce quietly.
+            step.flag(Status.ATTENTION, "NO EVENTS from betPawa")
+        if not report.report.clean:
+            step.flag(Status.ATTENTION,
+                      "unbridged betPawa club(s); add to reference/betpawa_teams.csv")
+
+    if not config.BETPAWA_ENABLED:
+        return Step("betpawa", detail="disabled (BVP_BETPAWA unset)")
+    return _guard(Step("betpawa"), work, conn)
+
+
 def _stale(artifact, today: pd.Timestamp) -> bool:
     return (today - pd.Timestamp(artifact.fitted_at[:10])).days > REFIT_AFTER_DAYS
 
@@ -480,6 +511,7 @@ def run(conn: db.Connection, *, dry_run: bool = False, refreeze: bool = False,
     report.steps.append(step_serve(conn, report, dry_run=dry_run,
                                    refreeze=refreeze, today=today))
     report.steps.append(step_tips(conn, dry_run=dry_run))
+    report.steps.append(step_betpawa(conn, dry_run=dry_run))
     report.steps.append(step_results(conn, dry_run=dry_run, today=today))
     report.steps.append(step_grade(conn, dry_run=dry_run, today=today))
 

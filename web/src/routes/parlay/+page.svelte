@@ -19,6 +19,12 @@
   import { fixtureBadges } from '$lib/badge.js';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { availability, claimLabel } from '$lib/parlay.js';
+  import { getContext } from 'svelte';
+  import { wagerLink, wagerLabel, slipLink } from '$lib/betpawa.js';
+
+  // The betPawa buttons (B26): one per leg as on the main list, and the
+  // whole slip as one accumulator link when every leg has a line there.
+  const { store: betpawa, promptSignIn } = getContext('betpawa');
 
   // Defaults are the recommendation (`PARLAY_PLAN.md` §1): every league,
   // the Safer threshold, two legs.
@@ -212,6 +218,13 @@
                     Not our call · ours: {callLabel(t.published_side, t.home_team, t.away_team)}
                   </div>
                 {/if}
+                {#if $betpawa.status === 'ready'}
+                  {@const bet = wagerLink($betpawa.byFixture, t.fixture_id, t.side)}
+                  {#if bet}
+                    <a class="bet" class:event={bet.kind === 'event'} href={bet.url} target="_blank"
+                      rel="noopener noreferrer">{wagerLabel(bet.kind)} ↗</a>
+                  {/if}
+                {/if}
               </div>
               <div class="conf">
                 <div class="confhead"><span>CLAIMED</span><span class="v">{pct(t.model_prob, 0)}</span></div>
@@ -232,6 +245,31 @@
             on this site.
           </p>
         </div>
+
+        <!-- The slip on betPawa (B26): every leg's selection in one prefill
+             link, or nothing -- a slip missing a leg is a different bet. -->
+        {#if $betpawa.status === 'anonymous'}
+          <div class="place">
+            <button type="button" class="bet ghost" onclick={promptSignIn}>Sign in to place this on betPawa</button>
+          </div>
+        {:else if $betpawa.status === 'ready'}
+          {@const slip = slipLink($betpawa.host, parlay.legs, $betpawa.byFixture)}
+          <div class="place">
+            {#if slip.url}
+              <a class="bet big" href={slip.url} target="_blank" rel="noopener noreferrer"
+                >Place this slip on betPawa ↗</a>
+              <p class="fine">
+                Opens a betPawa betslip with these {parlay.legs.length} legs. The odds
+                and any payout there are the bookmaker's, not ours.
+              </p>
+            {:else if slip.missing.length}
+              <p class="fine">
+                Not available as one slip on betPawa — no line there for
+                {slip.missing.join(', ')}.
+              </p>
+            {/if}
+          </div>
+        {/if}
       </div>
 
       <!-- Fewer calls cleared the bar than legs asked for (owner decision D5):
@@ -260,6 +298,12 @@
         <strong>It is not a return.</strong> We publish no return for single calls
         because we cannot support one, and a parlay compounds whatever the singles
         return — it would be worse, not better.
+      </p>
+      <p>
+        <strong>The betPawa button is a link, not advice to stake.</strong> It
+        loads these legs into a betslip on betPawa's site for your country; the
+        odds, the payout and the terms there are the bookmaker's. This site shows
+        no odds and takes no stake.
       </p>
     </div>
   {/if}
@@ -365,6 +409,26 @@
     background: var(--panel-2); border: 1px solid var(--line);
     border-radius: 3px; padding: 1px 5px; vertical-align: 2px; cursor: help;
   }
+  .bet {
+    display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    line-height: 1.2; padding: 5px 10px; border-radius: 3px; white-space: nowrap;
+    border: 1px solid var(--accent); color: var(--accent); background: transparent;
+    cursor: pointer;
+  }
+  .bet:hover { background: var(--accent); color: var(--bg); }
+  .bet.event { border-color: var(--line); color: var(--muted); }
+  .bet.event:hover { background: transparent; border-color: var(--muted); color: var(--body); }
+  .bet.ghost { border-style: dashed; border-color: var(--line); color: var(--muted); }
+  .bet.ghost:hover { background: transparent; border-color: var(--accent); color: var(--accent); }
+  .bet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .bet.big { font-size: 12px; padding: 10px 18px; margin-top: 0; background: var(--accent); color: var(--bg); }
+  .bet.big:hover { background: var(--accent-soft); }
+  .place {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 16px 22px; border-top: 1px solid var(--line-2);
+  }
+  .place .fine { margin: 0; }
   .conf { width: 92px; flex: none; }
   .confhead {
     display: flex; justify-content: space-between; font-family: var(--mono);

@@ -25,6 +25,9 @@ FBREF = "fbref"
 #: one on every English side and it does not move when a club's rendered name
 #: does. `Telford United` (FINDINGS.md) is what name-keyed bridging costs.
 BBC = "bbc"
+#: betPawa aliases are the bookmaker's numeric participant id, for the same
+#: reason: "Tranmere Rovers FC" is a spelling, 657061 is the club.
+BETPAWA = "betpawa"
 
 
 class UnbridgedTeam(KeyError):

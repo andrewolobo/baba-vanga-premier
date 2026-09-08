@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, getContext } from 'svelte';
   import {
     getTips,
     getTipResults,
@@ -18,6 +18,13 @@
   import HeroClassic from './HeroClassic.svelte';
   import HeroVideo from './HeroVideo.svelte';
   import { VIDEO_HERO } from '$lib/hero.js';
+  import { wagerLink, wagerLabel } from '$lib/betpawa.js';
+
+  // The betPawa button (B26): state and links come from the layout, which
+  // owns the session. A click on the button must not toggle the row's
+  // drawer, and Enter on it must not be swallowed by the row's key handler.
+  const { store: betpawa, promptSignIn } = getContext('betpawa');
+  const keep = (event) => event.stopPropagation();
 
   let tipsDivision = $state('');
   // The settled section filters and sizes itself independently of the tips
@@ -263,6 +270,20 @@
                   {/if}
                 </div>
                 <div class="league">{divisionName(t.division)}</div>
+                <!-- The wager button (BETPAWA_PLAN.md D8, D11): sign-in when
+                     anonymous; the wager when the book carries this side; the
+                     event page when it does not; nothing when the account's
+                     country is not served or the scrape never saw the game. -->
+                {#if $betpawa.status === 'anonymous'}
+                  <button type="button" class="bet ghost" onclick={(e) => { keep(e); promptSignIn(); }} onkeydown={keep}
+                    >Sign in to bet on betPawa</button>
+                {:else if $betpawa.status === 'ready'}
+                  {@const bet = wagerLink($betpawa.byFixture, t.fixture_id, t.side)}
+                  {#if bet}
+                    <a class="bet" class:event={bet.kind === 'event'} href={bet.url} target="_blank"
+                      rel="noopener noreferrer" onclick={keep} onkeydown={keep}>{wagerLabel(bet.kind)} ↗</a>
+                  {/if}
+                {/if}
               </div>
               <div class="conf">
                 <div class="confhead"><span>CONF</span><span class="v">{pct(t.model_prob, 0)}</span></div>
@@ -326,6 +347,11 @@
       Confidence is the model's own probability for the call as published — it
       is uncalibrated and historically understates itself. Click a fixture to
       see what the model thought of each result; only the call is graded.
+      Signed in from a country betPawa serves, a call also carries a
+      <span class="code">Bet this on betPawa</span> button: it opens that
+      wager in a betslip on betPawa's site for your country. It is a link,
+      not a stake, and the odds there are the bookmaker's — this site shows
+      none.
     </p>
   {/if}
 </section>
@@ -596,6 +622,20 @@
     background: var(--panel-2); border: 1px solid var(--line);
     border-radius: 3px; padding: 1px 5px; vertical-align: 2px; cursor: help;
   }
+  /* --- the betPawa button (B26) ------------------------------------------ */
+  .bet {
+    display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+    line-height: 1.2; padding: 5px 10px; border-radius: 3px; white-space: nowrap;
+    border: 1px solid var(--accent); color: var(--accent); background: transparent;
+    cursor: pointer;
+  }
+  .bet:hover { background: var(--accent); color: var(--bg); }
+  .bet.event { border-color: var(--line); color: var(--muted); }
+  .bet.event:hover { background: transparent; border-color: var(--muted); color: var(--body); }
+  .bet.ghost { border-style: dashed; border-color: var(--line); color: var(--muted); }
+  .bet.ghost:hover { background: transparent; border-color: var(--accent); color: var(--accent); }
+  .bet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .conf { width: 92px; flex: none; }
   .confhead {
     display: flex; justify-content: space-between; font-family: var(--mono);

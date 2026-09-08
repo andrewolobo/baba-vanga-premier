@@ -50,6 +50,7 @@ PLAYER_DIR = DATA_DIR / "player-stats"
 REFERENCE_DIR = Path(setting("BVP_REFERENCE_DIR") or REPO_ROOT / "reference")
 TEAM_ALIASES_CSV = REFERENCE_DIR / "team_aliases.csv"
 BBC_TEAMS_CSV = REFERENCE_DIR / "bbc_teams.csv"
+BETPAWA_TEAMS_CSV = REFERENCE_DIR / "betpawa_teams.csv"
 
 #: Opt-in for the second fixture calendar (`services.bbc_calendar`). Off unless
 #: set, because running it is a recorded decision with an exit condition rather
@@ -59,6 +60,11 @@ BBC_CALENDAR_ENABLED = setting("BVP_BBC_CALENDAR") == "1"
 #: which settle tips before football-data publishes the season's file. Same
 #: decision, same exit condition; a separate switch so either can run alone.
 BBC_RESULTS_ENABLED = setting("BVP_BBC_RESULTS") == "1"
+#: Opt-in for the betPawa scrape (`services.betpawa_feed`): the bookmaker's
+#: event and selection ids behind the site's wager buttons
+#: (docs/BETPAWA_PLAN.md D1). Off unless set. Additive and never fatal, but
+#: calling a bookmaker's API every morning is a decision, not a default.
+BETPAWA_ENABLED = setting("BVP_BETPAWA") == "1"
 
 DB_DIR = REPO_ROOT / "db"
 MIGRATIONS_DIR = DB_DIR / "migrations"

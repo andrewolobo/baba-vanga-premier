@@ -7,7 +7,123 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-08** (latest), after **a flaky test teardown was
+Last updated **2026-09-08** (latest), after **Phase D of the betPawa wager
+button — the documents — was done and the deploy checklist written**, owner
+instruction. `PRODUCT.md` §6 (a link, not a price: no odds, the wager is the
+call exactly, the event-page fallback, the two-part gate, nothing measured
+changes); `BACKLOG.md` B26 to its shipped shape; `DEPLOY.md` §5.3 gains a
+betPawa block (no nginx change; the cycle unit's `BVP_BETPAWA=1` as a
+drop-in on the client-id pattern, the tracked unit keeping `=0`; two verify
+lines; the first scrape by hand); `RUNBOOK.md` §5.11 says drop-in;
+`BETPAWA_PLAN.md` §4 Phase D carries the **owner's eight-step VM
+checklist** (commit → drop-in → `deploy.sh`, expect `003_betpawa` applied
+→ one scrape by hand → 401 curl and a real sign-in from a served country
+→ tomorrow's journal line → backup unchanged → docs). Nothing is on the VM.
+No rule, cycle-shape or ledger change (114 / 71 / 202). Uncommitted —
+**step 1 of the checklist is the commit.**
+Before that, same day, **Phase C of the betPawa wager
+button was built** — owner instruction. `web/src/lib/betpawa.js` (pure,
+10 node tests: index the links body, the wager / event-page / nothing
+choice per call, the prefill URL mirrored from `api/betpawa.py`, the slip
+as one accumulator link or the legs named that lack a line); the layout
+fetches `/betpawa/links` once `me` is known and shares a store by context
+(`anonymous` / `ineligible` / `ready` / `unconfigured`); the front page
+puts a small outlined button under each call — accent for the wager, muted
+"See on betPawa" for the event-page fallback (D11), a dashed "Sign in to
+bet on betPawa" when anonymous (D8: One Tap where possible, and the header
+button scrolled into view), nothing when the account's country is not
+served — with click and Enter stopped from toggling the drawer; the parlay
+page gets the same button per leg and "Place this slip on betPawa" under
+the total when every leg has a line, else the sentence naming the legs that
+do not; the note and the honesty block each gain a "link, not a stake"
+sentence; no odds anywhere (D9). **49 web tests**, build clean, **30-check
+Playwright click-through** at 1280/390 px on a migrated `bvp_scratch` with
+three planted sessions (KE, GB, phoneless) and three tips today including
+the lineless Wrexham +1.5 — anonymous, KE (exact prefill hrefs, fallback,
+new-tab + noopener, drawer untouched by click or Enter, slip refused by
+name then linking as one accumulator with handicaps off), GB (signed in,
+no button), phone width inside the viewport with no horizontal scroll;
+`bvp_scratch` dropped after; a first click-through run mis-read the
+CSS-uppercased labels and one filter combination cleared no legs — script
+faults, fixed, page unchanged. No API, rule, cycle or ledger change
+(114 / 71 / 202). Uncommitted. **Next: Phase D** — `PRODUCT.md`,
+`BACKLOG.md` B26, then the deploy: migrate 003, `BVP_BETPAWA=1` on the
+cycle unit, frontend build, and a real sign-in from a served country.
+Before that, same day, **Phase B of the betPawa wager
+button was built** — owner instruction ("implement Phase B; prompt me if a
+decision is needed"); none was: D5 (host table server-side), D6 (country =
+`users.phone_country`), D7 (own signed-in endpoint) and D11 (event-page
+fallback) taken as recommended, and South Sudan left out of the host table
+until a site is confirmed. `api/betpawa.py` (pure: 17 hosts, `host_for`,
+`event_url`, `prefill_url`); `GET /betpawa/links` behind `require_user` —
+`{eligible, country, host, links: [{fixture_id, event_id, event_url, sides:
+{side: {selection_id, url}}}]}` over the `/tips` predicate joined to
+`betpawa_events`/`betpawa_selections`; unserved country or no phone yet →
+`eligible: false`, no links; no odds on the wire (D9). `_user_summary` gained
+`phone_country`, which meant the sign-in `RETURNING` list and the phone
+route's summary had to carry it too (23 auth tests went red on a KeyError
+until they did). `tests/test_betpawa_api.py` (11); auth + API suites green
+(72 with the new file). No web change yet — Phase C. No rule, cycle or
+ledger change (114 / 71 / 202). Uncommitted.
+Before that, same day, **Phase A of the betPawa wager
+button was built** — owner ran Phase 0 on the VM first (both curls 200: the
+event 440,043 B, the list 562,796 B / 65 events), said there is no partner or
+affiliate agreement (D10), and the technical decisions D1–D3 were taken as
+recommended; the product decisions D6/D8/D9 bind only Phases B–C and are
+still the owner's to reverse. Built: `services/betpawa_feed.py` (one
+`by-queries` GET, JSON, the brand header; parse pinned on a five-event
+capture in `tests/data/`; UK-clock conversion; upsert per fixture with the
+selections replaced wholesale, and an event id that moves fixtures leaves
+the old row), `db/migrations/003_betpawa.sql` (`betpawa_events`,
+`betpawa_selections`, TEXT ids), `reference/betpawa_teams.csv` — **all 92
+E0–E3 clubs from one capture** via the new `scripts/build_betpawa_teams.py`
+(six hand pairs) — folded into `team_aliases.csv` as source `betpawa` keyed
+on participant id (511 aliases, `--check` clean), `step_betpawa` after
+`tips` (`BVP_BETPAWA=1`; off in every test via `conftest.py`; the unit
+carries the line at 0). **738 pass** (full suite, 4 min 06 s); a live dry
+run and a real run into the development store `bvp` (migration 003 applied
+there — additive, two empty tables before it): 65 events, 55 matched, 10
+unmatched (beyond our feed window), 407 selections, every club bridged.
+Tonight's six calls: five resolve to a selection; **Wrexham +1.5 has none**
+— the market makes Wrexham favourite, so the book's only +1.5 is Burnley's:
+the D11 fallback case, live on day one. Docs: `RUNBOOK.md` §0 table + §5.11,
+`DEPLOY.md` §2.7 row, `.env.example`, `BACKLOG.md` B26, `BETPAWA_PLAN.md`
+Phase A. **Next: Phase B** — `GET /betpawa/links` behind `require_user`,
+country from `users.phone_country`, the host table; then Phase C, the
+buttons. No rule, cycle-shape (one additive step), or ledger change
+(114 / 71 / 202). Uncommitted.
+Before that, same day, **the betPawa wager button was
+assessed, not built** — owner request: on each call a button that opens
+betPawa with that wager selected (and the parlay likewise), gated behind
+sign-in and the countries betPawa serves, driven by a scrape of the day's
+games. `BETPAWA_PLAN.md` carries the whole account. Found live: the
+sportsbook API answers JSON (`Accept: application/json` + the required
+`X-Pawa-Brand` header; nothing else from the captured curls matters); one
+`by-queries` call (`take` ≤ 100) lists every upcoming E0–E3 event — 65
+today — with the three markets the rule publishes on (1X2 3743, Double
+Chance 4693, Asian Handicap 3774), and every `tips.side` maps to one
+selection with identical settlement (the +1.5 sits on the AH `hcp` row
+stated from home; the line is one-sided, so the *model* underdog's +1.5
+can be absent — 1 of 65 today). **Deep link verified headless**:
+`/external-prefill?selectionIds=<id>[,<id>…]` pre-fills the betslip
+(Swansea +1.5 single; a three-event slip at 2.05) and works logged-out;
+the booking-code POST was deliberately not exercised (creates state at
+betPawa; not needed). Event and selection ids are identical on the UG and
+KE brands, so one scrape serves all 17 country hosts found in betPawa's
+bundle (South Sudan has none — unverified). All 92 E0–E3 clubs appeared in
+one pull; 88 bridge automatically, four need hand entries; bridge on the
+stable participant id (the BBC-URN lesson). Tonight's 6 tipped fixtures
+are all present with matching kick-offs. **Collisions named**: `/api/tips`
+is public, offline-cached and byte-pinned, so links need their own
+`require_user` endpoint; country is only detected client-side today —
+`users.phone_country` is the server-side signal to gate on; `/me` does not
+return it yet. **Unverifiable from here**: the probe's egress was Uganda
+(`ipinfo`), so whether betPawa answers from the Azure VM is Phase 0's one
+curl; and whether a partner/affiliate agreement dictates the link (D10).
+Twelve decisions D1–D12, ~3 days in four phases, 0 configurations.
+Captures saved as test fixtures in `docs/bp/fixtures/` (untracked folder,
+owner's call). No code, rule, cycle or ledger change (114 / 71 / 202).
+Before that, same day, **a flaky test teardown was
 made to wait for autovacuum** — two `ERROR at teardown` results on the
 non-superuser machine (suite run as `bvp`, python 3.12), not caused by the
 hero work: `DROP DATABASE ... WITH (FORCE)` was refused with `permission

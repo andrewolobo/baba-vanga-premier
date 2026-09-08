@@ -29,6 +29,7 @@ from engine.seasons import DIVISIONS, SEASONS
 FOOTBALL_DATA = "football-data"
 FBREF = "fbref"
 BBC = "bbc"
+BETPAWA = "betpawa"
 
 #: fbref squad name -> football-data name, for pairs the normaliser cannot
 #: reach (football-data drops the suffix: "Birmingham City" -> "Birmingham").
@@ -118,6 +119,22 @@ def _read_bbc_teams(path: Path) -> list[tuple[str, str]]:
                 for row in csv.DictReader(fh)]
 
 
+def _read_betpawa_teams(path: Path) -> list[tuple[str, str]]:
+    """(canonical_name, betpawa participant id) from the hand-reviewed file.
+
+    Same footing as the BBC rows: names come from a live API, so the mapping
+    is authored once (`scripts/build_betpawa_teams.py` proposes it from a
+    saved capture) into `reference/betpawa_teams.csv` and reviewed there.
+    The alias is the numeric **participant id** -- identical on every betPawa
+    country site and stable across renames -- not the display name.
+    """
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        return [(row["canonical_name"].strip(), row["betpawa_id"].strip())
+                for row in csv.DictReader(fh)]
+
+
 def normalise(name: str) -> str:
     s = name.lower().replace("&", "and").replace("'", "").replace("’", "")
     s = re.sub(r"[^a-z0-9 ]", " ", s)
@@ -177,6 +194,18 @@ def bbc_rows(canonicals: set[str]) -> tuple[list[tuple[str, str, str]], list[str
     return rows, unresolved
 
 
+def betpawa_rows(canonicals: set[str]) -> tuple[list[tuple[str, str, str]], list[str]]:
+    """(rows, unresolved) for the betPawa source -- the BBC check, again: a
+    canonical name the corpus does not know would mint a phantom club."""
+    rows, unresolved = [], []
+    for canonical, participant_id in _read_betpawa_teams(config.BETPAWA_TEAMS_CSV):
+        if canonical not in canonicals:
+            unresolved.append(f"betpawa {participant_id!r} -> {canonical!r} (no such canonical club)")
+            continue
+        rows.append((canonical, BETPAWA, participant_id))
+    return rows, unresolved
+
+
 def build_rows() -> list[tuple[str, str, str]]:
     fd_names, fb_names = collect_names()
 
@@ -210,11 +239,14 @@ def build_rows() -> list[tuple[str, str, str]]:
     bbc, bbc_unresolved = bbc_rows(canonicals)
     rows.extend(bbc)
     unresolved.extend(bbc_unresolved)
+    betpawa, betpawa_unresolved = betpawa_rows(canonicals)
+    rows.extend(betpawa)
+    unresolved.extend(betpawa_unresolved)
 
     if unresolved:
         raise SystemExit(
             "Cannot bridge these names; fix MANUAL_FBREF_TO_FD or "
-            "reference/bbc_teams.csv:\n  " + "\n  ".join(unresolved)
+            "reference/bbc_teams.csv or reference/betpawa_teams.csv:\n  " + "\n  ".join(unresolved)
         )
     return sorted(set(rows))
 
@@ -248,7 +280,7 @@ def main() -> int:
     path.write_text(text, encoding="utf-8")
     clubs = len({r[0] for r in rows})
     counts = {source: sum(1 for r in rows if r[1] == source)
-              for source in (FOOTBALL_DATA, FBREF, BBC)}
+              for source in (FOOTBALL_DATA, FBREF, BBC, BETPAWA)}
     print(f"wrote {path}")
     print(f"  {clubs} canonical clubs, "
           + ", ".join(f"{n} {source} aliases" for source, n in counts.items()))

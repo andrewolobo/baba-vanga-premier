@@ -12,6 +12,9 @@
     plausiblePhone
   } from '$lib/session.js';
   import { detectCountry } from '$lib/country.js';
+  import { getBetpawaLinks, indexLinks } from '$lib/betpawa.js';
+  import { setContext } from 'svelte';
+  import { writable } from 'svelte/store';
   let { children } = $props();
 
   // Sign-in (docs/AUTH_PLAN.md, B25). The layout owns the session state
@@ -25,6 +28,52 @@
   let cfg = $state(null);
   let authError = $state(null);
   let buttonHost = $state(null);
+
+  // The betPawa buttons (docs/BETPAWA_PLAN.md, B26) hang off the session, so
+  // the layout fetches the links once `me` is known and hands the pages a
+  // store: `anonymous` (the button offers sign-in, D8), `ineligible` (the
+  // account's country is not one betPawa serves -- nothing renders),
+  // `ready` (links by fixture, the host), `unconfigured` (no client id: the
+  // site is as it was before B25), `loading` / `error`. The server chose the
+  // country and the site; the pages only read.
+  const betpawa = writable({ status: 'loading', host: null, byFixture: {} });
+  setContext('betpawa', { store: betpawa, promptSignIn });
+
+  // The signed-out button's action: Google's One Tap where the browser has
+  // a Google session, and the header's button brought into view either way.
+  function promptSignIn() {
+    try {
+      window.google?.accounts?.id?.prompt?.();
+    } catch {
+      // One Tap is best-effort; the header button is the reliable path.
+    }
+    buttonHost?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  $effect(() => {
+    const ready = authReady;
+    const clientId = cfg?.google_client_id;
+    const user = me;
+    if (!ready) return;
+    const idle = (status) => betpawa.set({ status, host: null, byFixture: {} });
+    if (!clientId) return idle('unconfigured');
+    if (!user) return idle('anonymous');
+    if (phoneRequired(user)) return idle('loading'); // the phone gate is up
+    let cancelled = false;
+    idle('loading');
+    getBetpawaLinks()
+      .then((body) => {
+        if (cancelled) return;
+        const idx = indexLinks(body);
+        betpawa.set({ status: idx.eligible ? 'ready' : 'ineligible', host: idx.host, byFixture: idx.byFixture });
+      })
+      .catch(() => {
+        if (!cancelled) idle('error');
+      });
+    return () => {
+      cancelled = true;
+    };
+  });
 
   // The one-time phone step (D5, D6).
   let phone = $state('');

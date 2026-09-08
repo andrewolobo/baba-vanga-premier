@@ -29,9 +29,11 @@ def _calendar_off(monkeypatch):
     the suite's behaviour depends on a gitignored file on the developer's
     machine: `run_cycle.run()` would reach bbc.com, and a green run here would
     not mean a green run in CI or on a colleague's checkout. Tests that want the
-    step enabled patch it back on themselves.
+    step enabled patch it back on themselves. The betPawa scrape
+    (`BVP_BETPAWA`) is off here for the same reason.
     """
     monkeypatch.setattr(config, "BBC_CALENDAR_ENABLED", False)
+    monkeypatch.setattr(config, "BETPAWA_ENABLED", False)
 
 # Header of the Betbrain era (2010-11..2018-19): no Time, no market Avg/Max.
 BETBRAIN_HEADER = (

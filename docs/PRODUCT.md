@@ -206,3 +206,37 @@ Carried forward so the next thread does not re-derive it:
 - **The head is under-confident on its own favourites**, by up to 5.9 points.
   Correcting it raises **volume**, not strike rate (`BACKLOG.md` B2).
 - **Nothing here changes the book.** It stays off (`CALIBRATION.md` §5).
+
+---
+
+## 6. The betPawa button — a link, not a price
+
+Added **2026-09-08** (`BETPAWA_PLAN.md`, `BACKLOG.md` B26). Signed in from a
+country betPawa serves, every published call carries a small button that
+opens that exact wager in a betslip on betPawa's site for the user's country,
+and the parlay page offers the whole slip as one link. What that changes
+about the product, and what it does not:
+
+- **It is a link.** The site publishes a call; the button is where a reader
+  who wants to act on it can. Nothing is staked here, nothing is
+  recommended beyond the call itself, and the copy beside the button says so.
+- **It shows no odds.** The scrape that finds the selection ids also sees the
+  bookmaker's prices, and they are stored; **none reaches the page** (owner
+  decision D9). The site's position — strike rate is honest, a return is not
+  (§5) — would be undercut by the first price on it, and a morning's odds are
+  stale by kick-off anyway.
+- **The wager is the call, exactly.** Each side the rule publishes maps to one
+  betPawa market with identical settlement: 1X2 outrights, the three double
+  chances, and the +1.5 handicap as betPawa's Asian half-line (no push; wins
+  unless the side loses by two or more, which is what the call means). Where
+  the book has no line for our side — the +1.5 ladder is one-sided, so the
+  *model's* underdog can lack one when the market disagrees — the button
+  drops to "See on betPawa", the event page, rather than offer a different
+  bet.
+- **It is gated.** Sign-in first (the signed-out button offers it); then the
+  country the account's phone number was validated under must be one of the
+  seventeen betPawa serves. Anyone else sees no button at all. A paid tier
+  later sits on the same gate.
+- **Nothing measured changes.** No probability is formed or read, no call is
+  added or removed, the record and the rule are untouched, and the cycle
+  gains one additive step that cannot fail the matchday.

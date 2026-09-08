@@ -55,6 +55,11 @@ Environment=PYTHONUNBUFFERED=1
 # the store (docs/POSTGRES_PLAN.md).
 Environment=BVP_DATABASE_URL=postgresql:///bvp
 
+# The betPawa scrape behind the site's wager buttons (docs/BETPAWA_PLAN.md,
+# RUNBOOK.md 5.11). Set to 1 with the deploy that ships the buttons; the
+# step is additive and cannot fail the cycle.
+Environment=BVP_BETPAWA=0
+
 # --- hardening ----------------------------------------------------------- #
 NoNewPrivileges=true
 PrivateTmp=true

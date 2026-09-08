@@ -1,0 +1,1618 @@
+{
+ "responses": [
+  {
+   "responses": [
+    {
+     "id": "37536526",
+     "name": "Southampton FC - Swansea City",
+     "participants": [
+      {
+       "id": "655237",
+       "name": "Southampton FC",
+       "position": 1
+      },
+      {
+       "id": "657906",
+       "name": "Swansea City",
+       "position": 2
+      }
+     ],
+     "startTime": "2026-09-08T18:45:00Z",
+     "markets": [
+      {
+       "marketType": {
+        "id": "3743",
+        "name": "1X2 - FT",
+        "displayName": "1X2 | Full Time",
+        "explainer": "Pick 1 (home team), X (draw), or 2 (away team). Result is based on regular playing time only - Extra time and Overtime don't count.",
+        "priority": 1,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "401216974",
+         "prices": [
+          {
+           "id": "1537500854",
+           "name": "1",
+           "typeId": "3744",
+           "odds": 1.84,
+           "displayName": "1",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.518817,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1537500855",
+           "name": "X",
+           "typeId": "3745",
+           "odds": 3.81,
+           "displayName": "X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.249671,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1537500856",
+           "name": "2",
+           "typeId": "3746",
+           "odds": 4.11,
+           "displayName": "2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.231511,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "4693",
+        "name": "Double Chance - FT",
+        "displayName": "Double Chance | Full Time",
+        "explainer": "One bet covering two results: 1X (home win or draw), X2 (draw or away win) or 12 (home or away win). Based on normal time only.",
+        "priority": 20,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "401216971",
+         "prices": [
+          {
+           "id": "1537500845",
+           "name": "1X",
+           "typeId": "4694",
+           "odds": 1.25,
+           "displayName": "1X",
+           "additionalInfo": {
+            "hot": true
+           },
+           "probability": {
+            "win": 0.769177045051545,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1537500847",
+           "name": "X2",
+           "typeId": "4695",
+           "odds": 1.91,
+           "displayName": "X2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.48272238171275833,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1537500846",
+           "name": "12",
+           "typeId": "4696",
+           "odds": 1.29,
+           "displayName": "12",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.7481020340853005,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "3774",
+        "name": "Asian Handicap - FT",
+        "displayName": "2-Way Handicap | Full Time",
+        "explainer": "The handicap you pick is added to or taken off that team's score before the bet is settled. Pick 1 (home team) or 2 (away team) to be ahead on the adjusted score. Based on normal time only.",
+        "priority": 105,
+        "tabs": [
+         "all",
+         "specials"
+        ],
+        "handicapType": "ASIAN"
+       },
+       "row": [
+        {
+         "id": "401828492",
+         "handicap": -10,
+         "prices": [
+          {
+           "id": "1539591993",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 6.31,
+           "handicap": "-2.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.13100582605457778,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-2.5"
+           }
+          },
+          {
+           "id": "1539591994",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.09,
+           "handicap": "+2.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.8689942176494212,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+2.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-2.5"
+         }
+        },
+        {
+         "id": "401828423",
+         "handicap": -6,
+         "prices": [
+          {
+           "id": "1539591710",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 3.11,
+           "handicap": "-1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.28951866173051294,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-1.5"
+           }
+          },
+          {
+           "id": "1539591711",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.32,
+           "handicap": "+1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.7104813917443203,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+1.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-1.5"
+         }
+        },
+        {
+         "id": "401828495",
+         "handicap": -2,
+         "prices": [
+          {
+           "id": "1539592000",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.79,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.5172344351574427,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          },
+          {
+           "id": "1539592001",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.92,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.48276556508580026,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-0.5"
+         }
+        },
+        {
+         "id": "401828460",
+         "handicap": 2,
+         "prices": [
+          {
+           "id": "1539591834",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.22,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.769118,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          },
+          {
+           "id": "1539591835",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 3.83,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.230882,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "0.5"
+         }
+        }
+       ],
+       "displayNameColumns": [
+        "1",
+        "2"
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      }
+     ],
+     "totalMarketCount": "180",
+     "category": {
+      "id": "2",
+      "name": "Football"
+     },
+     "region": {
+      "id": "288",
+      "name": "England"
+     },
+     "competition": {
+      "id": "12101",
+      "name": "Championship"
+     },
+     "version": "402"
+    },
+    {
+     "id": "37632855",
+     "name": "Gillingham FC - Tranmere Rovers FC",
+     "participants": [
+      {
+       "id": "661380",
+       "name": "Gillingham FC",
+       "position": 1
+      },
+      {
+       "id": "657061",
+       "name": "Tranmere Rovers FC",
+       "position": 2
+      }
+     ],
+     "startTime": "2026-09-12T14:00:00Z",
+     "markets": [
+      {
+       "marketType": {
+        "id": "3743",
+        "name": "1X2 - FT",
+        "displayName": "1X2 | Full Time",
+        "explainer": "Pick 1 (home team), X (draw), or 2 (away team). Result is based on regular playing time only - Extra time and Overtime don't count.",
+        "priority": 1,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "401732980",
+         "prices": [
+          {
+           "id": "1539299781",
+           "name": "1",
+           "typeId": "3744",
+           "odds": 2.61,
+           "displayName": "1",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.357431,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299782",
+           "name": "X",
+           "typeId": "3745",
+           "odds": 3.3,
+           "displayName": "X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.284733,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299783",
+           "name": "2",
+           "typeId": "3746",
+           "odds": 2.61,
+           "displayName": "2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.357829,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "4693",
+        "name": "Double Chance - FT",
+        "displayName": "Double Chance | Full Time",
+        "explainer": "One bet covering two results: 1X (home win or draw), X2 (draw or away win) or 12 (home or away win). Based on normal time only.",
+        "priority": 20,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "401732906",
+         "prices": [
+          {
+           "id": "1539299480",
+           "name": "1X",
+           "typeId": "4694",
+           "odds": 1.44,
+           "displayName": "1X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.643136,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299482",
+           "name": "X2",
+           "typeId": "4695",
+           "odds": 1.44,
+           "displayName": "X2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.643547,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299481",
+           "name": "12",
+           "typeId": "4696",
+           "odds": 1.32,
+           "displayName": "12",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.713317,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "3774",
+        "name": "Asian Handicap - FT",
+        "displayName": "2-Way Handicap | Full Time",
+        "explainer": "The handicap you pick is added to or taken off that team's score before the bet is settled. Pick 1 (home team) or 2 (away team) to be ahead on the adjusted score. Based on normal time only.",
+        "priority": 105,
+        "tabs": [
+         "all",
+         "specials"
+        ],
+        "handicapType": "ASIAN"
+       },
+       "row": [
+        {
+         "id": "401732979",
+         "handicap": -2,
+         "prices": [
+          {
+           "id": "1539299779",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 2.39,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.356453,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          },
+          {
+           "id": "1539299780",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.43,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.643547,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-0.5"
+         }
+        },
+        {
+         "id": "401732952",
+         "handicap": 2,
+         "prices": [
+          {
+           "id": "1539299647",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.43,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.643033432586078,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          },
+          {
+           "id": "1539299648",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 2.39,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.3569665710198141,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "0.5"
+         }
+        },
+        {
+         "id": "401732896",
+         "handicap": 6,
+         "prices": [
+          {
+           "id": "1539299405",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.12,
+           "handicap": "+1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.8437678185907466,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+1.5"
+           }
+          },
+          {
+           "id": "1539299406",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 4.4,
+           "handicap": "-1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.15623218409597064,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-1.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "1.5"
+         }
+        }
+       ],
+       "displayNameColumns": [
+        "1",
+        "2"
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      }
+     ],
+     "totalMarketCount": "71",
+     "category": {
+      "id": "2",
+      "name": "Football"
+     },
+     "region": {
+      "id": "288",
+      "name": "England"
+     },
+     "competition": {
+      "id": "12192",
+      "name": "League Two"
+     },
+     "version": "29"
+    },
+    {
+     "id": "37663363",
+     "name": "AFC Bournemouth - Brentford FC",
+     "participants": [
+      {
+       "id": "656697",
+       "name": "AFC Bournemouth",
+       "position": 1
+      },
+      {
+       "id": "656698",
+       "name": "Brentford FC",
+       "position": 2
+      }
+     ],
+     "startTime": "2026-09-12T14:00:00Z",
+     "markets": [
+      {
+       "marketType": {
+        "id": "3743",
+        "name": "1X2 - FT",
+        "displayName": "1X2 | Full Time",
+        "explainer": "Pick 1 (home team), X (draw), or 2 (away team). Result is based on regular playing time only - Extra time and Overtime don't count.",
+        "priority": 1,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "400279802",
+         "prices": [
+          {
+           "id": "1534277343",
+           "name": "1",
+           "typeId": "3744",
+           "odds": 2.48,
+           "displayName": "1",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.383519,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534277345",
+           "name": "X",
+           "typeId": "3745",
+           "odds": 3.59,
+           "displayName": "X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.265352,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534277346",
+           "name": "2",
+           "typeId": "3746",
+           "odds": 2.71,
+           "displayName": "2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.351133,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "4693",
+        "name": "Double Chance - FT",
+        "displayName": "Double Chance | Full Time",
+        "explainer": "One bet covering two results: 1X (home win or draw), X2 (draw or away win) or 12 (home or away win). Based on normal time only.",
+        "priority": 20,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "400279796",
+         "prices": [
+          {
+           "id": "1534277328",
+           "name": "1X",
+           "typeId": "4694",
+           "odds": 1.46,
+           "displayName": "1X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.6498090967027297,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534277330",
+           "name": "X2",
+           "typeId": "4695",
+           "odds": 1.53,
+           "displayName": "X2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.617445862889481,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534277329",
+           "name": "12",
+           "typeId": "4696",
+           "odds": 1.31,
+           "displayName": "12",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.7327451050874275,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "3774",
+        "name": "Asian Handicap - FT",
+        "displayName": "2-Way Handicap | Full Time",
+        "explainer": "The handicap you pick is added to or taken off that team's score before the bet is settled. Pick 1 (home team) or 2 (away team) to be ahead on the adjusted score. Based on normal time only.",
+        "priority": 105,
+        "tabs": [
+         "all",
+         "specials"
+        ],
+        "handicapType": "ASIAN"
+       },
+       "row": [
+        {
+         "id": "400306091",
+         "handicap": -6,
+         "prices": [
+          {
+           "id": "1534300477",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 4.28,
+           "handicap": "-1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.190393,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-1.5"
+           }
+          },
+          {
+           "id": "1534300478",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.18,
+           "handicap": "+1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.809607,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+1.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-1.5"
+         }
+        },
+        {
+         "id": "400306161",
+         "handicap": -2,
+         "prices": [
+          {
+           "id": "1534300763",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 2.36,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.382456,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          },
+          {
+           "id": "1534300764",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.52,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.617544,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-0.5"
+         }
+        },
+        {
+         "id": "400306127",
+         "handicap": 2,
+         "prices": [
+          {
+           "id": "1534300599",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.45,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.649894,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          },
+          {
+           "id": "1534300600",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 2.56,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.350106,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "0.5"
+         }
+        },
+        {
+         "id": "400306062",
+         "handicap": 6,
+         "prices": [
+          {
+           "id": "1534300332",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.15,
+           "handicap": "+1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.832572,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+1.5"
+           }
+          },
+          {
+           "id": "1534300333",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 4.73,
+           "handicap": "-1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.167428,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-1.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "1.5"
+         }
+        }
+       ],
+       "displayNameColumns": [
+        "1",
+        "2"
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      }
+     ],
+     "totalMarketCount": "137",
+     "category": {
+      "id": "2",
+      "name": "Football"
+     },
+     "region": {
+      "id": "288",
+      "name": "England"
+     },
+     "competition": {
+      "id": "11965",
+      "name": "Premier League"
+     },
+     "version": "106"
+    },
+    {
+     "id": "37632669",
+     "name": "Barnet FC - Accrington Stanley",
+     "participants": [
+      {
+       "id": "657609",
+       "name": "Barnet FC",
+       "position": 1
+      },
+      {
+       "id": "656501",
+       "name": "Accrington Stanley",
+       "position": 2
+      }
+     ],
+     "startTime": "2026-09-12T14:00:00Z",
+     "markets": [
+      {
+       "marketType": {
+        "id": "3743",
+        "name": "1X2 - FT",
+        "displayName": "1X2 | Full Time",
+        "explainer": "Pick 1 (home team), X (draw), or 2 (away team). Result is based on regular playing time only - Extra time and Overtime don't count.",
+        "priority": 1,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "401732930",
+         "prices": [
+          {
+           "id": "1539299570",
+           "name": "1",
+           "typeId": "3744",
+           "odds": 1.55,
+           "displayName": "1",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.609954,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299572",
+           "name": "X",
+           "typeId": "3745",
+           "odds": 4.22,
+           "displayName": "X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.21571,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299573",
+           "name": "2",
+           "typeId": "3746",
+           "odds": 5.3,
+           "displayName": "2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.17434,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "4693",
+        "name": "Double Chance - FT",
+        "displayName": "Double Chance | Full Time",
+        "explainer": "One bet covering two results: 1X (home win or draw), X2 (draw or away win) or 12 (home or away win). Based on normal time only.",
+        "priority": 20,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "401732929",
+         "prices": [
+          {
+           "id": "1539299563",
+           "name": "1X",
+           "typeId": "4694",
+           "odds": 1.16,
+           "displayName": "1X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.8259841378391951,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299567",
+           "name": "X2",
+           "typeId": "4695",
+           "odds": 2.17,
+           "displayName": "X2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.39173171309888033,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1539299565",
+           "name": "12",
+           "typeId": "4696",
+           "odds": 1.21,
+           "displayName": "12",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.7822879254569032,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "3774",
+        "name": "Asian Handicap - FT",
+        "displayName": "2-Way Handicap | Full Time",
+        "explainer": "The handicap you pick is added to or taken off that team's score before the bet is settled. Pick 1 (home team) or 2 (away team) to be ahead on the adjusted score. Based on normal time only.",
+        "priority": 105,
+        "tabs": [
+         "all",
+         "specials"
+        ],
+        "handicapType": "ASIAN"
+       },
+       "row": [
+        {
+         "id": "401753134",
+         "handicap": -6,
+         "prices": [
+          {
+           "id": "1539342422",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 2.29,
+           "handicap": "-1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.375417,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-1.5"
+           }
+          },
+          {
+           "id": "1539342423",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.46,
+           "handicap": "+1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.624583,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+1.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-1.5"
+         }
+        },
+        {
+         "id": "401753194",
+         "handicap": -2,
+         "prices": [
+          {
+           "id": "1539342669",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.5,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.608223,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          },
+          {
+           "id": "1539342670",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 2.21,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.391777,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-0.5"
+         }
+        },
+        {
+         "id": "401734165",
+         "handicap": 2,
+         "prices": [
+          {
+           "id": "1539365741",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.14,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.8263179867870365,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          },
+          {
+           "id": "1539365742",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 4.1,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.17368201361367155,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "0.5"
+         }
+        }
+       ],
+       "displayNameColumns": [
+        "1",
+        "2"
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      }
+     ],
+     "totalMarketCount": "71",
+     "category": {
+      "id": "2",
+      "name": "Football"
+     },
+     "region": {
+      "id": "288",
+      "name": "England"
+     },
+     "competition": {
+      "id": "12192",
+      "name": "League Two"
+     },
+     "version": "37"
+    },
+    {
+     "id": "37632368",
+     "name": "Liverpool FC - Fulham FC",
+     "participants": [
+      {
+       "id": "656121",
+       "name": "Liverpool FC",
+       "position": 1
+      },
+      {
+       "id": "656699",
+       "name": "Fulham FC",
+       "position": 2
+      }
+     ],
+     "startTime": "2026-09-12T14:00:00Z",
+     "markets": [
+      {
+       "marketType": {
+        "id": "3743",
+        "name": "1X2 - FT",
+        "displayName": "1X2 | Full Time",
+        "explainer": "Pick 1 (home team), X (draw), or 2 (away team). Result is based on regular playing time only - Extra time and Overtime don't count.",
+        "priority": 1,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "400304910",
+         "prices": [
+          {
+           "id": "1534295421",
+           "name": "1",
+           "typeId": "3744",
+           "odds": 1.42,
+           "displayName": "1",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.674903,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534295422",
+           "name": "X",
+           "typeId": "3745",
+           "odds": 5.31,
+           "displayName": "X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.178492,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534295423",
+           "name": "2",
+           "typeId": "3746",
+           "odds": 6.45,
+           "displayName": "2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.146612,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "4693",
+        "name": "Double Chance - FT",
+        "displayName": "Double Chance | Full Time",
+        "explainer": "One bet covering two results: 1X (home win or draw), X2 (draw or away win) or 12 (home or away win). Based on normal time only.",
+        "priority": 20,
+        "tabs": [
+         "all",
+         "popular"
+        ]
+       },
+       "row": [
+        {
+         "id": "400304907",
+         "prices": [
+          {
+           "id": "1534295412",
+           "name": "1X",
+           "typeId": "4694",
+           "odds": 1.14,
+           "displayName": "1X",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.8538115905876129,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534295414",
+           "name": "X2",
+           "typeId": "4695",
+           "odds": 2.67,
+           "displayName": "X2",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.3268454370830346,
+            "refund": 0.0
+           }
+          },
+          {
+           "id": "1534295413",
+           "name": "12",
+           "typeId": "4696",
+           "odds": 1.18,
+           "displayName": "12",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.8193429730361397,
+            "refund": 0.0
+           }
+          }
+         ]
+        }
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      },
+      {
+       "marketType": {
+        "id": "3774",
+        "name": "Asian Handicap - FT",
+        "displayName": "2-Way Handicap | Full Time",
+        "explainer": "The handicap you pick is added to or taken off that team's score before the bet is settled. Pick 1 (home team) or 2 (away team) to be ahead on the adjusted score. Based on normal time only.",
+        "priority": 105,
+        "tabs": [
+         "all",
+         "specials"
+        ],
+        "handicapType": "ASIAN"
+       },
+       "row": [
+        {
+         "id": "400306540",
+         "handicap": -10,
+         "prices": [
+          {
+           "id": "1534302377",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 3.37,
+           "handicap": "-2.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.253931,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-2.5"
+           }
+          },
+          {
+           "id": "1534302378",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.28,
+           "handicap": "+2.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.746069,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+2.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-2.5"
+         }
+        },
+        {
+         "id": "400306473",
+         "handicap": -6,
+         "prices": [
+          {
+           "id": "1534302087",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 2.03,
+           "handicap": "-1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.451138,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-1.5"
+           }
+          },
+          {
+           "id": "1534302089",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 1.7,
+           "handicap": "+1.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.548862,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+1.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-1.5"
+         }
+        },
+        {
+         "id": "400306543",
+         "handicap": -2,
+         "prices": [
+          {
+           "id": "1534302384",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.41,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.672942,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          },
+          {
+           "id": "1534302385",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 2.71,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.327058,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "-0.5"
+         }
+        },
+        {
+         "id": "400306508",
+         "handicap": 2,
+         "prices": [
+          {
+           "id": "1534302218",
+           "name": "1",
+           "typeId": "3775",
+           "odds": 1.12,
+           "handicap": "+0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.853815,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "+0.5"
+           }
+          },
+          {
+           "id": "1534302219",
+           "name": "2",
+           "typeId": "3776",
+           "odds": 5.24,
+           "handicap": "-0.5",
+           "displayName": "{formattedHandicap}",
+           "additionalInfo": {},
+           "probability": {
+            "win": 0.146185,
+            "refund": 0.0
+           },
+           "specifier": {
+            "hcp": "-0.5"
+           }
+          }
+         ],
+         "specifier": {
+          "hcp": "0.5"
+         }
+        }
+       ],
+       "displayNameColumns": [
+        "1",
+        "2"
+       ],
+       "additionalInfo": {
+        "cashoutable": true
+       }
+      }
+     ],
+     "totalMarketCount": "140",
+     "category": {
+      "id": "2",
+      "name": "Football"
+     },
+     "region": {
+      "id": "288",
+      "name": "England"
+     },
+     "competition": {
+      "id": "11965",
+      "name": "Premier League"
+     },
+     "version": "123"
+    }
+   ]
+  }
+ ]
+}
