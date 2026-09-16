@@ -607,10 +607,16 @@ server {
     root /srv/bvp/web/build;
     index index.html;
 
-    # adapter-static with fallback: 'index.html'. Without this, /book and
-    # /performance 404 on refresh -- the SPA routes do not exist as files.
+    # adapter-static with fallback: 'index.html'. The client routes are named
+    # and rewritten to the shell; any other non-file path is a real 404 whose
+    # body is still the shell (SEO_PLAN.md 1.2, 2026-09-16 -- it used to be a
+    # catch-all 200). A new route goes in the regex; tests/test_nginx_routes.py.
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ =404;
+        error_page 404 /index.html;
+    }
+    location ~ ^/(parlay|book|performance)/?$ {
+        rewrite ^ /index.html last;
     }
 
     # The trailing slash on proxy_pass is what strips /api. This is the exact
@@ -675,7 +681,9 @@ port-80 redirect itself.
 
 ```bash
 curl -sI  https://<domain>/                    # 200, text/html
-curl -sI  https://<domain>/book                # 200 (SPA fallback, not 404)
+curl -sI  https://<domain>/book                # 200 (a named client route)
+curl -sI  https://<domain>/does-not-exist      # 404, Cache-Control: no-cache
+curl -sI  https://<domain>/robots.txt          # 200, text/plain
 curl -s   https://<domain>/api/health          # {"status":"ok",...}
 curl -sI  https://<domain>/api/performance     # 401
 ```

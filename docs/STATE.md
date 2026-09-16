@@ -3,7 +3,7 @@
 **Read this first.** It says what ships, what is open with the owner, and what
 must never happen. `OUTSTANDING.md` is the journal behind it and stays the
 authority on *why*; when the two disagree, `OUTSTANDING.md` is right and this
-file is stale — fix this file. Updated **2026-09-08**.
+file is stale — fix this file. Updated **2026-09-16**.
 
 ---
 
@@ -15,7 +15,7 @@ on matchday, never revised, graded from football-data results.
 | piece | what | where |
 | --- | --- | --- |
 | head | ridge Poisson, `H400 / a0.1 / weekly / E0+E1+E2+E3+EC / sot0.3`, refrozen ≤ 7 days | `engine/serve/cycle.py` |
-| rule | `confidence-v3` (built 2026-08-19, **deploy pending** — the VM serves v2 until `V3_ADOPTION_PLAN.md` §6 runs): outright if p ≥ **0.55**, else likeliest of `1X`/`X2`/`12`/**underdog +1.5** ≤ **0.85**, else outright. Handicap tips carry NULL prices; honesty via the market-implied referee gap in the cycle | `engine/serve/tips.py` |
+| rule | `confidence-v3` (built 2026-08-19, **published** — confirmed by the owner 2026-09-16; ship date not recorded): outright if p ≥ **0.55**, else likeliest of `1X`/`X2`/`12`/**underdog +1.5** ≤ **0.85**, else outright. Handicap tips carry NULL prices; honesty via the market-implied referee gap in the cycle | `engine/serve/tips.py` |
 | cycle | sync → calendar → serve → tips → betpawa (off unless `BVP_BETPAWA=1`, B26) → results → grade; exit **0** clean / **2** look / **1** failed. `results` (BBC full-time scores, `BVP_BBC_RESULTS=1`) settles tips before football-data's file exists; `grade` reconciles once it does. Both football-data URLs use the bare `football-data.co.uk` since 2026-09-07 — `www` was serving 503 to everything (`OUTSTANDING.md` top). `results` also runs alone every two hours (`bvp-results.timer`, 2026-08-21) | `services/run_cycle.py` |
 | API | reads, plus the three account writes (B25, `/auth/google`, `/auth/logout`, `/me/phone` — `users`/`user_sessions` only, pinned by test); `/betpawa/links` (B26, signed-in only, the bookmaker links per live call for the account's phone country); `/tips`, `/tips/results`, `/tips/record` (no P&L on the wire; headline pools every rule version since 2026-08-21, `by_rule` splits it; results carry the scoreline the grader settled from — migration 006) | `api/main.py` |
 | site | one page: calls, last results, record; each call opens a drawer showing the next-likeliest markets behind it (B22, display only; the ranked-results reading was removed 2026-08-20); the settled list has its own league filter and last-12 ⇄ show-all toggle, and each settled card can show the score it was graded from plus the claimed probability — behind a "Scores & claims" toggle, off by default; signed in from a betPawa country, every call and every parlay leg carries a "Bet this on betPawa" button, the parlay slip a "Place this slip" link, and the tips list a "Place all N calls" link that loads the filtered list as one betslip, lineless and kicked-off calls left out and named (B26, 2026-09-08 — a link, never a price); the rule version and per-version table are owner-only via `/?owner=1` (`$lib/owner.js`, 2026-08-20); installable PWA — manifest linked, service worker precaches the shell and keeps `/tips` + `/fixtures` readable offline (2026-09-04); on phones the nav links sit in a fixed bottom bar (icon + label each), the header keeps two actions side by side — "Build a parlay" and Google sign-in; the "This week's calls" CTA was removed at the owner's request (2026-09-07); the front page opens on the pixel-video hero band (2026-09-08, `HeroVideo.svelte` — revert to the parallax hero: `web/src/lib/hero.js`, one flag) | `web/` |
@@ -46,14 +46,13 @@ The rule agrees with the same rule on the market's own probabilities in only
 
 | item | state | next |
 | --- | --- | --- |
+| **SEO** (`SEO_PLAN.md`) | reviewed 2026-09-16; site added to Search Console by the owner; **1.1 robots.txt + 1.2 real 404s built, deploy pending** (nginx template re-render on the VM) | deploy 1.1/1.2; then 1.3–1.8; decisions D1–D11 open (D1 decides Phase 2) |
 | **B19** sum/difference penalty | B17 (2026-08-16): totals over-spread in E1–E3, margins under-spread (§9.12) — one ridge cannot get both right | owner decision whether to scope a head-level gate (~4–8 configs); B18 (totals shrink) parked until B4 reopens |
 | **ops** | **backup timer enabled and restore-drilled 2026-09-04** (`pg_dump` daily 06:30 UTC, local only; **the dump holds personal data since B25**); no off-VM copy; no alerting; **TLS live on `babavanga.net`** (confirmed by the B25 deploy 2026-09-07) | set `BVP_BACKUP_CONTAINER`; dead-man's-switch ping from `run_cycle.sh` (owner supplies URL) |
 | **B25** Google sign-in + one-time phone | **LIVE on `https://babavanga.net` 2026-09-07** (`ad9995f`) — `AUTH_PLAN.md`: `002_users.sql`, `api/auth.py`, five account routes (the API's only writes, pinned), `tests/test_auth.py` 28, **702 pass**; GIS button, header state and the phone gate in `+layout.svelte`, **33 web tests**, 22-check click-through; nginx `limit_req` on the auth paths, client id as a systemd drop-in, backup counts the two tables; a real sign-in verified on the domain, backup run; **nothing gated** | next on `docs/notes`: the parlay gate (`AUTH_PLAN.md` §10, ~½ day); D5/D6/D12 shipped as recommended, owner may still reverse |
 | **Postgres move** (for sign-in) | **Live in production 2026-09-04** — Phases A–C done: copy verified identical on the VM, API byte-identical to the SQLite captures, timers back on, backup restored. Development store `bvp` on the owner's instance is this machine's ledger authority; **656 pass** | **check the 11:02 UTC results pull and tomorrow's 06:00 cycle**; frontend build with swap (deploy stalled 30 min without it); unit `Environment=` diff; Phase D documents — `POSTGRES_PLAN.md` §4 |
 | **B26 betPawa wager button** | **Built A–D 2026-09-08, deploy pending** (`BETPAWA_PLAN.md`): scrape + migration 003 + bridge (92/92) + cycle step off unless `BVP_BETPAWA=1`; `GET /betpawa/links` behind `require_user`, country from `phone_country`, 17 hosts (no South Sudan); the buttons on every call, per parlay leg and on the slip, signed-out sign-in state, no odds; 749 pass, 49 web, 30-check click-through; `PRODUCT.md` §6 | **owner runs the 8-step VM checklist** in `BETPAWA_PLAN.md` §4 Phase D: commit, the cycle drop-in, `deploy.sh` (migrate 003), one scrape by hand, a real sign-in from a served country |
 | **P6 criterion 2** | holdout still sealed; criterion 1 PASSED (PBO 0.000) | owner decides when to spend the one read; `DEFLATION.md` §8 |
-| **B21** dog +1.5 → `confidence-v3` | **BUILT 2026-08-19** (D1–D5 approved): rule, migration 005, margin-aware settlement on both feeds, referee gap in the cycle, API + site labels — all tested (`tests/test_v3_tips.py`). Measurement: gate row 110 (+5.37 ✱), referee probe row 111 | **deploy per `V3_ADOPTION_PLAN.md` §6** — between matchdays, checklist in the plan |
-| **B20** `12`-only window (ceiling or floor) | **overtaken by B21's adoption**: v3 displaces the content-free `12`s with the handicap (`12` falls to ~10% of output), which is what the floor was for | closes as scoped-not-spent (0 config) on v3 ship day (`V3_ADOPTION_PLAN.md` §7) |
 | B10 `12` vs `1X` | open, downgraded | — |
 | B15 half-life `H` | open, gated | — |
 | B1 agreement filter | open, deprioritised | — |
@@ -62,7 +61,7 @@ The rule agrees with the same rule on the market's own probabilities in only
 **Declined / closed:** B13 (calibrated probabilities in the rule — no), B14
 (corners channel — do not adopt), B16 (per-version record — shipped 2026-08-15, **reversed 2026-08-21: headline pools, `by_rule` splits**), **B7
 (v2 return measured — done 2026-08-16)**, **B11 (measured 2026-08-16)**, **B17 (measured 2026-08-16)**,
-**B4 (goal-line menu — measured, do not extend on this head, 2026-08-16)**, **B23 (Both Teams To Score — measured 2026-08-25: P(yes) null against a base rate, both sides over-claim, 51.7% as a call, cannot enter the rule; do not build — `BACKLOG.md` B23)**.
+**B4 (goal-line menu — measured, do not extend on this head, 2026-08-16)**, **B23 (Both Teams To Score — measured 2026-08-25: P(yes) null against a base rate, both sides over-claim, 51.7% as a call, cannot enter the rule; do not build — `BACKLOG.md` B23)**, **B21 (`confidence-v3` — published, owner-confirmed 2026-09-16)**, **B20 (overtaken by v3 — scoped, not spent, 0 configurations)**.
 
 ## Numbers that must be re-derived, not quoted
 

@@ -4,14 +4,19 @@
 - Additional Parlay options - select selection types (1x, straight wins, over/under) [x]
 - Development of sign in feature - Google? Native? Phone? [x] Google, live 2026-09-07 (AUTH_PLAN.md) [x]
 - mobile navigation bar in mobile view, tips, results, records, parlay, sign in [x]
-- prediction history, how well babavanga has predicted matchups between the these teams
-- Separate last time out/record, separate pages
+- Betpawa parlay sharing as link [x]
+
+
+- prediction history, how well babavanga has predicted matchups between the these teams [-]
+- Separate last time out/record, separate pages [-]
+
 - Parlay behind sign in
 - BV bet parlays - House picks
 - User selected parlay
+
 - Sharing of parlay in a community board. User likes and comments on a parlay
 - Tracking of parlay accuracy for community board - tricky
 
-- Betpawa parlay sharing as li
+
 - SMS verification
 - Whatsapp agent

@@ -133,17 +133,33 @@ server {
         add_header Cache-Control "public, immutable";
     }
 
-    # SvelteKit adapter-static with fallback: 'index.html'. /book and
-    # /performance are client-side routes with no file behind them; without
-    # this they 404 on refresh or on a pasted link.
+    # SvelteKit adapter-static with fallback: 'index.html'. /parlay, /book and
+    # /performance are client-side routes with no file behind them, so they
+    # are named in the regex below and rewritten to the shell; without it they
+    # 404 on refresh or on a pasted link. `rewrite ... last` re-enters
+    # `location = /index.html`, so the no-cache header still applies.
+    #
+    # Every OTHER path that is not a file is a real 404 (docs/SEO_PLAN.md
+    # 1.2). The body is still the shell, so a person sees SvelteKit's
+    # not-found page, but the status tells a crawler there is no page there
+    # -- the old catch-all answered 200 for /robots.txt, /sitemap.xml and any
+    # typo, which search engines count as soft 404s. A NEW CLIENT ROUTE MUST
+    # BE ADDED TO THE REGEX or it 404s; tests/test_nginx_routes.py fails
+    # until it is.
     #
     # index.html itself must never be cached, or a deploy ships new assets to
-    # browsers still holding the old entry point.
+    # browsers still holding the old entry point. `always`, because the 404
+    # above is served through this block too and add_header skips non-2xx/3xx
+    # responses without it.
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ =404;
+        error_page 404 /index.html;
+    }
+    location ~ ^/(parlay|book|performance)/?$ {
+        rewrite ^ /index.html last;
     }
     location = /index.html {
-        add_header Cache-Control "no-cache";
+        add_header Cache-Control "no-cache" always;
     }
 
     # The service worker must never be cached either: a browser holding a stale

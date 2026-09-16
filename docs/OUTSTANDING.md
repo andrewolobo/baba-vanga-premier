@@ -7,7 +7,56 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-08** (latest), after **the "place every call in the
+Last updated **2026-09-16** (latest): **SEO_PLAN 1.1 and 1.2 built,
+deploy pending** — owner instruction, after adding the site to Search
+Console. `web/static/robots.txt` (disallows `/book`, `/performance`; **not**
+`/api/`, no Sitemap line yet). `bvp.conf.template`: the catch-all
+`try_files … /index.html` became `=404` with `error_page 404 /index.html`
+inside `location /`, plus a regex location rewriting `/parlay`, `/book`,
+`/performance` to the shell; the `index.html` header gained `always` (without
+it the 404 shell went out with no `Cache-Control` — found by the test run, not
+predicted). `tests/test_nginx_routes.py` pins the regex against
+`web/src/routes/*/+page.svelte` (nested or parameterised routes fail it on
+purpose). **Verified under Ubuntu 24.04's own nginx 1.24.0 package**,
+extracted (not installed) in the owner's WSL, HEAD template vs working tree
+on high ports with a self-signed cert: `nginx -t` clean for both; every
+route, file, `/_app` asset, `/api/` proxy and the port-80 redirect
+unchanged; `/sitemap.xml`, `/does-not-exist`, `/parlay/extra` 200 → **404**
+with the shell and `no-cache`; Playwright showed `/` and `/parlay` rendering
+and SvelteKit's 404 page on unknown paths. WSL's apt index was refreshed to
+fetch the package; nothing installed, `/tmp` cleaned. `DEPLOY.md` §5.3
+excerpt and verify curls updated. **VM: commit → `deploy.sh` (robots.txt
+ships with the build) → re-render the template → `nginx -t` → reload →
+curls.** No rule, cycle, API or ledger change.
+Before that, same day, **SEO reviewed, nothing built** —
+owner request, incl. a "dynamic robots.txt from the games playing". Found
+live: every page's HTML is an empty shell (`ssr = false`), so link previews
+(WhatsApp etc.) and non-Google crawlers see no content; no Open Graph tags;
+`/robots.txt`, `/sitemap.xml` and every unknown path answer 200 with
+`index.html` (soft 404s); `https://www.babavanga.net` fails TLS (cert covers
+the apex only) while `http://www` redirects into it; `/parlay` has no title
+of its own; `/api/docs` is public; `favicon.svg` is 2.0 MB and the service
+worker precaches it plus two unreferenced `.fw.png` files (1.7 MB). Calls
+are ephemeral (published matchday 06:00 UTC, `PUBLISH_WITHIN_DAYS = 0`) and
+live under `/#tips`, so there are no durable per-match URLs for a sitemap
+to list. Advised: robots.txt is an exclusion list cached ~24 h, so the
+dynamic piece belongs in `sitemap.xml`, and only once per-match pages exist;
+robots.txt must **not** disallow `/api/` while the site is client-rendered
+(Google's renderer fetches it). Open with the owner: rendering approach for
+per-match pages (SSR recommended), what a match page says before its call
+lands, whether Search Console is set up. Same session, at the owner's
+request, the Phase 1 and Phase 2 tasks and decisions D1-D11 were written
+up for review in `SEO_PLAN.md`. No code change.
+Before that, same day, **`confidence-v3` is published** —
+owner-confirmed; the ship date was not recorded. `STATE.md` and `BACKLOG.md`
+B20/B21 moved to closed. Same session, **drift monitoring reviewed**: the
+only drift check is the cycle's referee gap (`tips.referee_gap`, ATTENTION
+outside `REFEREE_BAND`) — model claim vs market-implied probability on v3
+handicap tips at claim ≥ 0.70, pre-outcome, surfaced only in the cycle log
+(no alerting wired). Nothing compares live realised strike or claimed-vs-
+delivered against the measured 77.9% / claim calibration; `/tips/record`
+returns strike counts only. No code change, no ledger change.
+Before that, **2026-09-08**, after **the "place every call in the
 list on one slip" button was built** — owner took D13 (skip lineless calls
 and name them) and D14 (the count on the button, the multibet copy) as
 recommended. `daySlip` in `$lib/betpawa.js` (4 node tests, 53 web in all;
