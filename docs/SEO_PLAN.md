@@ -71,7 +71,7 @@ record is a genuine trust asset for that bar.
 | F5 | **Head tags carry no search terms and no previews.** | The title is "BabaVanga — we call it before kick-off". `/parlay` has no title of its own. No canonical, no Open Graph or Twitter tags, no JSON-LD. The `<h1>` is the brand line. | Weak relevance signals. Shared links show a bare title. |
 | F6 | **Page weight.** | `favicon.svg` is **2,043,245 B**, a RealFaviconGenerator SVG wrapping a raster. `bv-logo-update.fw.png` (1,532,058 B) and `bv-icon.fw.png` (175,959 B) are referenced nowhere but ship in `web/static/`. The service worker precaches every static file except the video. | Roughly 3.7 MB downloaded on a first visit for icons and unused sources, which hurts mobile speed scores. |
 | F7 | **`/api/docs` is public.** | `200`: FastAPI's Swagger page, listing every route including `/book` and `/performance`. | Not an SEO problem as such, but an indexable HTML page and an unnecessary map of the internals. |
-| F8 | **nginx `add_header` inheritance** (existing, noted for §4). | A location with any `add_header` drops the server-level ones. `location /_app/` already loses `X-Content-Type-Options` this way. | Any task below that adds a header inside a location must repeat the server-level headers. |
+| F8 | **nginx `add_header` inheritance** (existing, noted for §4). | A location with any `add_header` drops the server-level ones. **Measured 2026-09-16** under Ubuntu's nginx 1.24: `/`, `/parlay`, the 404 shell (all via `location = /index.html`), `/service-worker.js` and `/_app/` go out **without** `X-Content-Type-Options` and `Referrer-Policy`; only files served by `location /` (e.g. `/robots.txt`) and `/api/` carry them. | Any task below that adds a header inside a location must repeat the server-level headers. The pages missing both headers is a separate security-header issue, not SEO; open with the owner. |
 
 ## 3. Decisions for the owner
 
@@ -172,6 +172,16 @@ location = /index.html {
 - An installed PWA still opens offline.
 
 ### 1.3 Keep `/api/` out of the index; close the API docs (D6)
+
+**Built 2026-09-16, deploy pending.** As built, not as first written below:
+one `map $uri $bvp_robots_tag` (`~^/api/` → `noindex`, else empty, which
+sends no header) at the top of the template, and one server-level
+`add_header X-Robots-Tag $bvp_robots_tag always;`. No `/api/` location
+declares a header, so all of them — and any added later — keep nosniff and
+the referrer policy without repeating anything;
+`tests/test_nginx_routes.py` pins that no `/api/` location sets its own
+headers. The docs regex is anchored `(/|$)`, which also closes
+`/api/docs/oauth2-redirect`. D6 taken as recommended.
 
 - In each `/api/…` location of `bvp.conf.template`, add
   `add_header X-Robots-Tag "noindex" always;`. Because of F8, **repeat** the

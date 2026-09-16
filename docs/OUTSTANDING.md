@@ -7,7 +7,29 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-16** (latest): **SEO_PLAN 1.1 and 1.2 built,
+Last updated **2026-09-16** (latest): **SEO_PLAN 1.3 built, uncommitted** —
+owner instruction, after 1.1/1.2 were committed as `7b1e6b9`.
+`bvp.conf.template`: a `map $uri $bvp_robots_tag` (`~^/api/` → `noindex`,
+default empty = no header) above the servers and one server-level
+`add_header X-Robots-Tag $bvp_robots_tag always;` — chosen over the plan's
+per-location repetition because a location with any `add_header` drops the
+inherited ones; plus `location ~ ^/api/(docs|redoc|openapi\.json)(/|$)`
+→ 404 (D6 as recommended). `tests/test_nginx_routes.py` gained a test that
+no `/api/` location sets its own headers (negative case checked); 2 pass.
+Verified as before under Ubuntu 24.04's nginx 1.24.0, extracted in WSL,
+HEAD vs tree, with a stand-in API on :8000: `nginx -t` clean; the package's
+`nginx.conf` includes `sites-enabled` inside `http {}` (so a `map` in the
+site file is valid); every `/api/` response incl. 401/404 carries
+`noindex` + nosniff + referrer policy; **no non-API response carries
+`X-Robots-Tag`**; `/api/docs`, `/api/redoc`, `/api/openapi.json`,
+`/api/docs/oauth2-redirect` 200 → 404. **Found, pre-existing, not fixed:**
+`/`, `/parlay`, the 404 shell, `/service-worker.js` and `/_app/` go out
+without `X-Content-Type-Options` and `Referrer-Policy` (their locations set
+`Cache-Control`, which drops the inherited headers) — `SEO_PLAN.md` F8
+widened; a separate issue for the owner. `DEPLOY.md` §5.3 verify curls
+extended. **VM: commit → pull → re-render the template → `nginx -t` →
+reload → curls** (no build needed). No rule, cycle, API or ledger change.
+Before that, same day, **SEO_PLAN 1.1 and 1.2 built,
 deploy pending** — owner instruction, after adding the site to Search
 Console. `web/static/robots.txt` (disallows `/book`, `/performance`; **not**
 `/api/`, no Sitemap line yet). `bvp.conf.template`: the catch-all

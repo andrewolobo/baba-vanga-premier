@@ -684,6 +684,9 @@ curl -sI  https://<domain>/                    # 200, text/html
 curl -sI  https://<domain>/book                # 200 (a named client route)
 curl -sI  https://<domain>/does-not-exist      # 404, Cache-Control: no-cache
 curl -sI  https://<domain>/robots.txt          # 200, text/plain
+curl -sI  https://<domain>/api/tips            # X-Robots-Tag: noindex (and nosniff)
+curl -sI  https://<domain>/                    # NO X-Robots-Tag -- if present, the site is de-indexing itself
+curl -sI  https://<domain>/api/docs            # 404
 curl -s   https://<domain>/api/health          # {"status":"ok",...}
 curl -sI  https://<domain>/api/performance     # 401
 ```
