@@ -7,7 +7,28 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-16** (latest): **SEO_PLAN 1.4 template built,
+Last updated **2026-09-16** (latest): **SEO_PLAN 1.5 and 1.6 built,
+uncommitted** — owner instruction, after 1.4's template was committed as
+`f73d746`. Owner decisions, asked before building: D4 the plan's draft
+title and description verbatim; D5 interim — the square 512 px app icon as
+`og:image` with a `summary` card until the 1200×630 image (1.7); the parlay
+title "Accumulator Builder — Combine Today's Calls | BabaVanga"; D3 as
+recommended (`web/src/lib/site.js`: `ORIGIN`, `HOME_TITLE`). `app.html`:
+new title and description, Open Graph, `twitter:card`, JSON-LD
+`Organization` + `WebSite`, no canonical. `+page.svelte` and
+`parlay/+page.svelte`: `<svelte:head>` title + canonical — the front page
+needs its title too, or a client-side move back from `/parlay` keeps the
+parlay title. `web/src/lib/site.test.js` pins app.html's strings to
+`site.js`; **57 web tests** pass; build clean, 11 share/structured-data
+lines in `build/index.html`. Playwright on `vite dev`, 7 checks all ok:
+load `/`, `/?owner=1` (canonical `/`), click to `/parlay` and back, browser
+back, load `/parlay`, 390 px bottom nav — each with the right
+`document.title`, exactly one canonical, one description, one `og:title`,
+one JSON-LD block. A first run failed `/?owner=1` on a script race (the
+static title already matched before the page mounted its canonical) —
+script fixed, page unchanged. Ships with the next `deploy.sh`; no nginx
+change. No rule, cycle, API or ledger change.
+Before that, same day, **SEO_PLAN 1.4 template built,
 uncommitted; VM steps are the owner's** — owner instruction ("make the part A
 changes"), after 1.3 was committed as `5706458`; the owner had already added
 `www.${BVP_DOMAIN}` to the port-80 `server_name`. `bvp.conf.template`: the

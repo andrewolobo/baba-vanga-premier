@@ -226,6 +226,15 @@ In the template:
 
 ### 1.5 Head tags every crawler and previewer sees — `web/src/app.html`
 
+**Built 2026-09-16, uncommitted.** Owner took D3 (the constant, in
+`web/src/lib/site.js`: `ORIGIN`, `HOME_TITLE`), D4 (the draft copy below,
+verbatim) and, for D5 until 1.7 exists, **the square 512 px app icon as
+`og:image` with `twitter:card` `summary`** — 1.7 switches both to the
+1200×630 image and `summary_large_image`. `og:title` repeats the page
+title. `web/src/lib/site.test.js` (4 tests) pins app.html's title,
+`og:title` and every site URL to `site.js`, that app.html has no canonical,
+and that the JSON-LD parses.
+
 `app.html` is the only HTML that non-rendering bots receive, so the tags
 shared by every page go here. The draft copy below is for D4. It makes no
 return claim, in line with `PRODUCT.md`.
@@ -247,6 +256,12 @@ return claim, in line with `PRODUCT.md`.
   text beside it is a D4 conversation, not a default.
 
 ### 1.6 Per-route head — `<svelte:head>`
+
+**Built 2026-09-16, uncommitted.** Owner took "Accumulator Builder". As built,
+the front page sets its **title as well as** its canonical: without it a
+client-side move from `/parlay` back to `/` kept the parlay title, since the
+front page would never set one. `/book` and `/performance` set nothing (they
+are disallowed and unlinked), so a move to them keeps the previous title.
 
 - `+page.svelte`: `<link rel="canonical" href="https://babavanga.net/">`,
   from the D3 constant. This also merges `/?owner=1` into `/`.

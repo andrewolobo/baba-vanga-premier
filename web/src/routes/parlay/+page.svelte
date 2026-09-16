@@ -21,6 +21,7 @@
   import { availability, claimLabel } from '$lib/parlay.js';
   import { getContext } from 'svelte';
   import { wagerLink, wagerLabel, slipLink } from '$lib/betpawa.js';
+  import { ORIGIN } from '$lib/site.js';
 
   // The betPawa buttons (B26): one per leg as on the main list, and the
   // whole slip as one accumulator link when every leg has a line there.
@@ -90,6 +91,14 @@
     });
   };
 </script>
+
+<!-- docs/SEO_PLAN.md 1.6. Seen by Google, which renders the page; a shared
+     /parlay link still previews with app.html's homepage tags until pages
+     are server-rendered (SEO_PLAN.md D1). -->
+<svelte:head>
+  <title>Accumulator Builder — Combine Today's Calls | BabaVanga</title>
+  <link rel="canonical" href="{ORIGIN}/parlay" />
+</svelte:head>
 
 <section class="page">
   <div class="head">

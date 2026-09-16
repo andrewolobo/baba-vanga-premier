@@ -19,6 +19,7 @@
   import HeroVideo from './HeroVideo.svelte';
   import { VIDEO_HERO } from '$lib/hero.js';
   import { wagerLink, wagerLabel, daySlip } from '$lib/betpawa.js';
+  import { ORIGIN, HOME_TITLE } from '$lib/site.js';
 
   // The betPawa button (B26): state and links come from the layout, which
   // owns the session. A click on the button must not toggle the row's
@@ -145,6 +146,14 @@
     });
   };
 </script>
+
+<!-- Per route (docs/SEO_PLAN.md 1.6). The title repeats app.html's because a
+     client-side move back from /parlay would otherwise keep the parlay
+     title. The canonical ignores the query string, so /?owner=1 is /. -->
+<svelte:head>
+  <title>{HOME_TITLE}</title>
+  <link rel="canonical" href="{ORIGIN}/" />
+</svelte:head>
 
 <!-- The hero: the pixel-video band, or the parallax art it replaced:
      one flag in $lib/hero.js decides, and flipping it back is the whole

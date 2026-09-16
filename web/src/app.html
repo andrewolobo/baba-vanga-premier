@@ -22,11 +22,53 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0e0e11" />
-    <title>BabaVanga — we call it before kick-off</title>
+    <!-- Search and share tags (docs/SEO_PLAN.md 1.5). This file is the only
+         HTML a link previewer (WhatsApp, X, Facebook) or a non-rendering
+         crawler ever sees, so everything every page shares lives here. The
+         origin and title are repeated in $lib/site.js, which the pages use;
+         site.test.js fails if the two drift. NO canonical here: it would tell
+         Google /parlay is a copy of / -- each route sets its own. The image is
+         the square app icon, so the card is "summary", until the 1200x630
+         share image exists (1.7). -->
+    <title>Football Predictions &amp; Tips — EPL to League Two | BabaVanga</title>
     <meta
       name="description"
-      content="Every fixture across the English professional divisions, picked before kick-off and graded afterwards."
+      content="Predictions for every Premier League, Championship, League One and League Two match, published before kick-off and graded after."
     />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BabaVanga" />
+    <meta property="og:title" content="Football Predictions &amp; Tips — EPL to League Two | BabaVanga" />
+    <meta
+      property="og:description"
+      content="Predictions for every Premier League, Championship, League One and League Two match, published before kick-off and graded after."
+    />
+    <meta property="og:url" content="https://babavanga.net/" />
+    <meta property="og:image" content="https://babavanga.net/web-app-manifest-512x512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="BabaVanga" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://babavanga.net/#organization",
+            "name": "BabaVanga",
+            "url": "https://babavanga.net/",
+            "logo": "https://babavanga.net/web-app-manifest-512x512.png"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://babavanga.net/#website",
+            "name": "BabaVanga",
+            "url": "https://babavanga.net/",
+            "publisher": { "@id": "https://babavanga.net/#organization" }
+          }
+        ]
+      }
+    </script>
     <!-- The design is built on Barlow Condensed; every rule that uses it also
          names a narrow system fallback, so a blocked request degrades rather
          than breaks. -->
