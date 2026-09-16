@@ -7,7 +7,29 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-16** (latest): **SEO_PLAN 1.3 built, uncommitted** —
+Last updated **2026-09-16** (latest): **SEO_PLAN 1.4 template built,
+uncommitted; VM steps are the owner's** — owner instruction ("make the part A
+changes"), after 1.3 was committed as `5706458`; the owner had already added
+`www.${BVP_DOMAIN}` to the port-80 `server_name`. `bvp.conf.template`: the
+port-80 redirect goes to `https://${BVP_DOMAIN}$request_uri` (was `$host`),
+a redirect-only 443 server for `www.${BVP_DOMAIN}` on the same certificate,
+placed last so the site stays the default 443 server; the header's first-run
+certbot line names both hosts and carries `--deploy-hook "systemctl reload
+nginx"`. **Found while preparing it: nothing reloads nginx after a
+certificate renewal** (`certonly --webroot` doesn't, `deploy.sh` restarts
+only the API, no hook documented) — the renewed certificate would have sat
+on disk to expiry of the served one, around early December; the hook fixes
+it once the owner runs the expansion. DNS checked via DoH: `www` CNAME →
+apex A 4.222.217.185, no AAAA, no CAA. Verified under Ubuntu 24.04's nginx
+1.24.0 in WSL, HEAD vs tree, self-signed certificate naming both hosts:
+`nginx -t` clean; apex `/`, `/parlay`, `/api/tips` (+`noindex`) unchanged;
+`https://www` 200 (served the whole site) → **301 to the apex with path and
+query**; `http://www` two hops → **one**; the ACME challenge served for both
+names; an unnamed 443 request still gets the site. `tests/test_nginx_routes.py`
+2 pass. `DEPLOY.md` §5.3 gains the www verify curls and the certbot block
+(dry run → expand with hook → reload → `renew --dry-run`). No rule, cycle,
+API or ledger change.
+Before that, same day, **SEO_PLAN 1.3 built, uncommitted** —
 owner instruction, after 1.1/1.2 were committed as `7b1e6b9`.
 `bvp.conf.template`: a `map $uri $bvp_robots_tag` (`~^/api/` → `noindex`,
 default empty = no header) above the servers and one server-level

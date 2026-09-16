@@ -687,11 +687,32 @@ curl -sI  https://<domain>/robots.txt          # 200, text/plain
 curl -sI  https://<domain>/api/tips            # X-Robots-Tag: noindex (and nosniff)
 curl -sI  https://<domain>/                    # NO X-Robots-Tag -- if present, the site is de-indexing itself
 curl -sI  https://<domain>/api/docs            # 404
+curl -sI  https://www.<domain>/x               # 301 -> https://<domain>/x
+curl -sI  http://www.<domain>/x                # 301 -> https://<domain>/x (one hop)
 curl -s   https://<domain>/api/health          # {"status":"ok",...}
 curl -sI  https://<domain>/api/performance     # 401
 ```
 
 `/api/health` returning JSON is the one that proves §2.4 is right.
+
+**www (`SEO_PLAN.md` 1.4, 2026-09-16).** The template answers `www` on port
+80 and has a redirect-only `www` server on 443, so **the certificate must name
+both hosts** and nginx must be reloaded when it renews. Render the template
+first (the ACME location then serves `www` explicitly), then on the VM:
+
+```bash
+sudo certbot certificates                       # the existing name and domains
+sudo certbot certonly --webroot -w /var/www/certbot --cert-name <domain>   -d <domain> -d www.<domain> --dry-run          # staging only; must succeed first
+sudo certbot certonly --webroot -w /var/www/certbot --cert-name <domain>   -d <domain> -d www.<domain> --deploy-hook "systemctl reload nginx"
+sudo systemctl reload nginx
+sudo grep -i hook /etc/letsencrypt/renewal/<domain>.conf   # renew_hook = systemctl reload nginx
+sudo certbot renew --dry-run
+```
+
+Until 2026-09-16 nothing reloaded nginx after a renewal: `certonly --webroot`
+does not, `deploy.sh` restarts only the API, and no hook was recorded, so a
+renewed certificate would have sat on disk while nginx served the old one to
+expiry. `--deploy-hook` is saved into the renewal config.
 
 **Sign-in (B25, `AUTH_PLAN.md`), added 2026-09-07.** Two more things on the
 nginx side and one on the unit. The rate-limit zone is a plain file, not a

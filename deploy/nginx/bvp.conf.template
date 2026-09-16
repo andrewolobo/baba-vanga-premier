@@ -21,9 +21,14 @@
 # First run, before any certificate exists, the 443 block cannot load. Use
 # deploy/nginx/bvp-bootstrap.conf.template for long enough to issue the cert:
 #
-#     sudo certbot certonly --webroot -w /var/www/certbot -d ${BVP_DOMAIN}
+#     sudo certbot certonly --webroot -w /var/www/certbot \
+#       --cert-name ${BVP_DOMAIN} -d ${BVP_DOMAIN} -d www.${BVP_DOMAIN} \
+#       --deploy-hook "systemctl reload nginx"
 #
-# then render this file over it and reload.
+# then render this file over it and reload. Both names, because the last
+# server below answers www over TLS with this certificate. The deploy hook is
+# saved into the renewal config: without it a renewed certificate sits on
+# disk while nginx keeps serving the old one until it expires.
 
 # Keep the API out of search indexes (docs/SEO_PLAN.md 1.3): X-Robots-Tag on
 # every /api/ response, nothing anywhere else -- an empty value sends no
@@ -46,13 +51,16 @@ map $uri $bvp_robots_tag {
 server {
     listen 80;
     listen [::]:80;
-    server_name ${BVP_DOMAIN};
+    server_name ${BVP_DOMAIN} www.${BVP_DOMAIN};
 
     # ACME renewal must keep working over plain HTTP, so it is matched before
-    # the redirect rather than after it.
+    # the redirect rather than after it. It serves www too: the certificate
+    # covers both names, and renewal proves each one over port 80.
     location /.well-known/acme-challenge/ { root /var/www/certbot; }
 
-    location / { return 301 https://$host$request_uri; }
+    # To the apex whichever name was asked for, so http://www reaches the one
+    # canonical host in a single hop (docs/SEO_PLAN.md 1.4).
+    location / { return 301 https://${BVP_DOMAIN}$request_uri; }
 }
 
 server {
@@ -194,4 +202,22 @@ server {
     location = /service-worker.js {
         add_header Cache-Control "no-cache";
     }
+}
+
+# www, over TLS: redirect only, never the site (docs/SEO_PLAN.md 1.4). One
+# canonical host for search engines, and nothing served from www means no
+# second origin for Google sign-in or the session cookie. Needs the
+# certificate to name www.${BVP_DOMAIN} -- see the certbot line at the top.
+# Last in the file, so the site above stays the default server for 443.
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name www.${BVP_DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${BVP_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${BVP_DOMAIN}/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    return 301 https://${BVP_DOMAIN}$request_uri;
 }

@@ -198,6 +198,13 @@ headers. The docs regex is anchored `(/|$)`, which also closes
 
 ### 1.4 One host: www → apex (D2)
 
+**Template built 2026-09-16, uncommitted; VM steps pending** (`DEPLOY.md`
+§5.3 "www" block carries the order). As written below, plus: the www server
+sits last so the site stays the default server for 443, and the certbot
+command gains `--deploy-hook "systemctl reload nginx"` — nothing reloaded
+nginx after a renewal before this. Order on the VM: render the template,
+dry-run the expansion, expand, reload, verify, `certbot renew --dry-run`.
+
 On the VM:
 - Expand the certificate:
   `sudo certbot certonly --webroot -w /var/www/certbot --cert-name babavanga.net -d babavanga.net -d www.babavanga.net`.
