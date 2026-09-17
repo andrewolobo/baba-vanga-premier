@@ -6,7 +6,7 @@
 // link previewers and crawlers that never run the page. These read both.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { ORIGIN, HOME_TITLE } from './site.js';
 
 const html = readFileSync(new URL('../app.html', import.meta.url), 'utf8');
@@ -24,6 +24,16 @@ test('every absolute link to the site in app.html uses the canonical origin', ()
   assert.ok(urls.length >= 5);
   for (const url of urls) assert.ok(url.startsWith(`${ORIGIN}/`), url);
   assert.equal(meta('og:url'), `${ORIGIN}/`);
+});
+
+test('every site file app.html names exists in web/static', () => {
+  // A typo in og:image breaks every link preview and nothing on the page shows it.
+  const files = html.match(/https:\/\/babavanga\.net\/[^"#\s]+\.\w+(?=")/g);
+  assert.ok(files.includes(`${ORIGIN}/og-image.jpg`));
+  for (const url of files) {
+    const path = new URL(`../../static${url.slice(ORIGIN.length)}`, import.meta.url);
+    assert.ok(existsSync(path), url);
+  }
 });
 
 test('app.html carries no canonical: each route sets its own', () => {

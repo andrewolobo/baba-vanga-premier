@@ -17,8 +17,10 @@ const CACHE = `bvp-${version}`;
 // boots from — and is not listed in `build` or `files`.
 // The hero clip (~2.3MB) is left out: precaching would pull it into every
 // new version's cache on activate, and offline the video hero already
-// falls back to its animated noise, so nothing is lost without it.
-const PRECACHE = [...build, ...files.filter((f) => f !== '/header-video.mp4'), '/'];
+// falls back to its animated noise, so nothing is lost without it. The share
+// image (docs/SEO_PLAN.md 1.7) is for link previewers, never for a visitor.
+const NOT_PRECACHED = new Set(['/header-video.mp4', '/og-image.jpg']);
+const PRECACHE = [...build, ...files.filter((f) => !NOT_PRECACHED.has(f)), '/'];
 const PRECACHED = new Set(PRECACHE);
 
 // Cached per full URL, so each division's query string keeps its own entry.

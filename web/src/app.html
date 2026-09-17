@@ -16,7 +16,6 @@
          nothing else on the page notices. -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -27,9 +26,9 @@
          crawler ever sees, so everything every page shares lives here. The
          origin and title are repeated in $lib/site.js, which the pages use;
          site.test.js fails if the two drift. NO canonical here: it would tell
-         Google /parlay is a copy of / -- each route sets its own. The image is
-         the square app icon, so the card is "summary", until the 1200x630
-         share image exists (1.7). -->
+         Google /parlay is a copy of / -- each route sets its own. The share
+         image is 1200x630 for the large card (1.7); the structured-data logo
+         stays the square app icon. -->
     <title>Football Predictions &amp; Tips — EPL to League Two | BabaVanga</title>
     <meta
       name="description"
@@ -43,11 +42,14 @@
       content="Predictions for every Premier League, Championship, League One and League Two match, published before kick-off and graded after."
     />
     <meta property="og:url" content="https://babavanga.net/" />
-    <meta property="og:image" content="https://babavanga.net/web-app-manifest-512x512.png" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
-    <meta property="og:image:alt" content="BabaVanga" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="https://babavanga.net/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="A flaming football over a pixelated orange background, with the babavanga.net wordmark"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",

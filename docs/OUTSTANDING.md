@@ -7,7 +7,40 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-16** (latest): **SEO_PLAN 1.5 and 1.6 built,
+Last updated **2026-09-17** (latest): **SEO_PLAN 1.7 and 1.8 built,
+uncommitted; baseline recorded; CLS traced** — owner confirmed the certbot
+renewal hook on the VM, gave the PageSpeed mobile baseline (48, LCP 5.7 s,
+TBT 130 ms, CLS 0.337 — into `SEO_PLAN.md` §7; Search Console has no data
+yet) and added `web/static/og-image.jpg` (1200×630, 183,928 B). **1.7:**
+`og:image` → the JPEG with size and alt, `twitter:card`
+`summary_large_image`; service worker skips `/header-video.mp4` and
+`/og-image.jpg` from precache; `site.test.js` checks every site file
+`app.html` names exists. **1.8:** `favicon.svg` (2,043,245 B) link and file
+removed, the two `.fw.png` moved to `docs/ui/`; production static precache
+~4.18 MB → ~0.43 MB. **58 web tests**, build clean; Playwright on
+`vite preview` of the build: SW cache holds 10 static files, neither the
+image, video, SVG nor `.fw.png`; icon links PNG/ICO/apple-touch only.
+**CLS diagnosed** on the live site (read-only; Moto G4, 4× CPU, throttled):
+0.339 against PageSpeed's 0.337 — **0.267 from the header's actions
+wrapping to a second row at phone width when the Google sign-in button
+mounts**, 0.07 from its iframe resizing; LCP is the hero `<h1>`, rendered
+only after JS (F1). Written up as new task **1.10** (reserve the sign-in
+slot; header design, owner first); LCP left to Phase 2. `favi-old.rar` left
+in place (git-ignored, never on the VM). No rule, cycle, API or ledger
+change.
+Before that, same day, **SEO_PLAN 1.1–1.6 are live** —
+owner committed 1.5/1.6 as `123307f` and deployed; checked from outside,
+read-only: `/robots.txt` 200 text/plain; `/does-not-exist` 404;
+`/api/tips` carries `X-Robots-Tag: noindex` and `/` does not; `/api/docs`
+404; `https://www.babavanga.net/parlay` and `http://www…/parlay` each one
+301 to `https://babavanga.net/parlay` (so the certificate now names www);
+the new title and 9 `og:` tags in the served HTML. **Not verifiable from
+here:** whether the certbot `--deploy-hook` was recorded — owner to check
+the renewal config. `favicon.svg` still serves 2,043,245 B (1.8 not done).
+A PageSpeed baseline via the keyless PSI API failed (shared daily quota
+exceeded); the owner runs it in the browser instead. Remaining Phase 1:
+1.0 baseline, 1.8, 1.7 (owner's image), then the §7 table. No code change.
+Before that, **2026-09-16**, **SEO_PLAN 1.5 and 1.6 built,
 uncommitted** — owner instruction, after 1.4's template was committed as
 `f73d746`. Owner decisions, asked before building: D4 the plan's draft
 title and description verbatim; D5 interim — the square 512 px app icon as

@@ -280,6 +280,14 @@ and `/parlay`, `document.title` is as intended, there is exactly one
 
 ### 1.7 The share image (D5)
 
+**Built 2026-09-17, uncommitted.** Owner supplied `web/static/og-image.jpg`
+(JPEG, not PNG): 1200×630, 183,928 B. `og:image` points at it with width,
+height and alt text, `twitter:card` is `summary_large_image`, the JSON-LD
+logo stays the square icon. The service worker's precache now skips a set
+(`/header-video.mp4`, `/og-image.jpg`); a Playwright check of the built site
+confirmed neither is cached. `site.test.js` gained a test that every site
+file `app.html` names exists in `web/static`.
+
 - Owner supplies `web/static/og-image.png`.
 - Exclude it from the service worker precache, the same way as
   `header-video.mp4` (`web/src/service-worker.js`): visitors never need it.
@@ -291,6 +299,13 @@ and `/parlay`, `document.title` is as intended, there is exactly one
   a change.
 
 ### 1.8 Page weight (F6)
+
+**Built 2026-09-17, uncommitted.** `favicon.svg` link and file removed; the
+two `.fw.png` files moved to `docs/ui/`; `favi-old.rar` left alone — it is
+git-ignored, so the VM never has it. Static files precached in production
+~4.18 MB → ~0.43 MB (the build's own `/_app` assets unchanged). **Expect
+little change to the PageSpeed score from this**: the icons were never on
+the render path. The score is driven by 1.10.
 
 - `favicon.svg`: remove its `<link rel="icon" type="image/svg+xml">` line and
   the file. `favicon-96x96.png`, `favicon.ico` and `apple-touch-icon.png`
@@ -304,6 +319,30 @@ and `/parlay`, `document.title` is as intended, there is exactly one
 - `npm run build` output has no `.fw.png`.
 - `cd web && npm test` stays green.
 - Re-run PageSpeed Insights and record it in §7.
+
+### 1.10 Layout shift from the header's sign-in slot (found 2026-09-17)
+
+The baseline's **CLS 0.337** was reproduced on the live site (0.339, Moto G4
+emulation, 4× CPU, throttled network) and traced by `layout-shift` source:
+
+| when | shift | what moved |
+| --- | --- | --- |
+| ~3.1 s | **0.267** | at phone width the header's actions wrap to a second row when the Google sign-in button mounts (`authReady`), so the header grows 56 px and pushes the hero, stats and everything below |
+| ~3.6 s | 0.033 + 0.039 | Google's sign-in iframe resizes (host 40 → 64 → 40 px), moving the header's actions and the page under them again |
+
+CLS is 25% of the Lighthouse performance score and 0.337 is in the "poor"
+band (> 0.25). **Fix:** reserve the sign-in slot's final size from first
+paint — the `.gsi` host (and the signed-in `.who` state) at a fixed box, so
+the header's height at ≤ 820 px is the same before and after sign-in state
+resolves. A header design change, so the owner sees it first. **Verify:**
+the same layout-shift trace reads < 0.1 on the built site, at 360 and 390 px,
+signed out and signed in; PageSpeed mobile re-run.
+
+**LCP 5.7 s** is the hero `<h1>` (2.5 s in the throttled trace above;
+PageSpeed's simulation is slower), which exists only after the JavaScript
+bundle has loaded and run — client-side rendering (F1). Phase 1 cannot move
+it much; D1(a) or prerendering the static hero shell can, and belongs to
+Phase 2.
 
 ### 1.9 Docs and deploy
 
@@ -512,7 +551,7 @@ Record numbers here as they are taken; don't restate them in prose elsewhere.
 
 | when | PageSpeed mobile (score / LCP / INP / CLS) | Search Console: indexed pages | Search Console: soft 404s | impressions, last 28 days |
 | --- | --- | --- | --- | --- |
-| baseline (1.0) | | | | |
+| baseline (1.0), 2026-09-17, after 1.1–1.6 were live | **48** / LCP **5.7 s** / TBT 130 ms (lab, in place of INP) / CLS **0.337** | not yet reported | not yet reported | not yet reported |
 | Phase 1 + 4 weeks | | | | |
 | Phase 2 + 4 weeks | | | | |
 | Phase 2 + 12 weeks | | | | |
