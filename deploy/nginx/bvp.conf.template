@@ -32,9 +32,10 @@
 
 # Keep the API out of search indexes (docs/SEO_PLAN.md 1.3): X-Robots-Tag on
 # every /api/ response, nothing anywhere else -- an empty value sends no
-# header. Not robots.txt: the pages are client-rendered, so a crawler has to
-# be allowed to FETCH /api/tips to see a call; noindex only stops the JSON
-# being listed as a result of its own.
+# header. Not robots.txt: that was chosen while pages were client-rendered
+# and a crawler had to FETCH /api/tips to see a call. Since SEO_PLAN.md 2.1
+# the calls are in the HTML, so a Disallow would no longer blank a page, but
+# noindex already stops the JSON being listed as a result of its own.
 #
 # A map rather than an add_header in each /api/ location, because nginx drops
 # every inherited add_header in a location that declares one of its own: the
@@ -79,9 +80,10 @@ server {
     add_header Referrer-Policy strict-origin-when-cross-origin always;
     add_header X-Robots-Tag $bvp_robots_tag always;
 
-    # `npm run build` writes here. adapter-static, so these are plain files.
-    root /srv/bvp/web/build;
-    index index.html;
+    # `npm run build` writes the page server to web/build/ and its static
+    # files to web/build/client/. Only the latter is ever served as files:
+    # build/ itself holds the server's code (docs/SEO_PLAN.md 2.1).
+    root /srv/bvp/web/build/client;
 
     # ------------------------------------------------------------------ #
     # THE PROXY. This is docs/DEPLOY.md 2.4 -- the blocker this file exists
@@ -162,39 +164,34 @@ server {
         return 404;
     }
 
-    # Vite emits content-hashed filenames under /_app, so they are immutable.
-    location /_app/ {
+    # Vite emits content-hashed filenames under /_app/immutable, so they are
+    # immutable. Not the rest of /_app: version.json is how an open tab learns
+    # a deploy happened, and a year-long cache would hide it.
+    location /_app/immutable/ {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
 
-    # SvelteKit adapter-static with fallback: 'index.html'. /parlay, /book and
-    # /performance are client-side routes with no file behind them, so they
-    # are named in the regex below and rewritten to the shell; without it they
-    # 404 on refresh or on a pasted link. `rewrite ... last` re-enters
-    # `location = /index.html`, so the no-cache header still applies.
+    # THE PAGES. A static file is served from disk; every other path is a
+    # page, rendered by the Node service (deploy/systemd/bvp-web.service,
+    # docs/SEO_PLAN.md 2.1) with its content in the HTML. SvelteKit answers
+    # 404 itself for a path that is no route, so there is no route list here
+    # to keep in step with web/src/routes -- the 1.2 regex went with the
+    # client-rendered shell it rewrote to.
     #
-    # Every OTHER path that is not a file is a real 404 (docs/SEO_PLAN.md
-    # 1.2). The body is still the shell, so a person sees SvelteKit's
-    # not-found page, but the status tells a crawler there is no page there
-    # -- the old catch-all answered 200 for /robots.txt, /sitemap.xml and any
-    # typo, which search engines count as soft 404s. A NEW CLIENT ROUTE MUST
-    # BE ADDED TO THE REGEX or it 404s; tests/test_nginx_routes.py fails
-    # until it is.
-    #
-    # index.html itself must never be cached, or a deploy ships new assets to
-    # browsers still holding the old entry point. `always`, because the 404
-    # above is served through this block too and add_header skips non-2xx/3xx
-    # responses without it.
+    # No add_header in @web, so pages keep the server-level nosniff,
+    # referrer policy and (empty) X-Robots-Tag; tests/test_nginx_routes.py
+    # pins it. Pages set no Cache-Control and are rendered per request.
     location / {
-        try_files $uri $uri/ =404;
-        error_page 404 /index.html;
+        try_files $uri @web;
     }
-    location ~ ^/(parlay|book|performance)/?$ {
-        rewrite ^ /index.html last;
-    }
-    location = /index.html {
-        add_header Cache-Control "no-cache" always;
+    location @web {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
     }
 
     # The service worker must never be cached either: a browser holding a stale

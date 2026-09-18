@@ -1,0 +1,64 @@
+# The page server. docs/DEPLOY.md 5.5, docs/SEO_PLAN.md 2.1: SvelteKit's
+# adapter-node build, rendering every page with its content in the HTML for
+# crawlers and link previewers. It reads the API and nothing else.
+#
+#   sudo cp deploy/systemd/bvp-web.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now bvp-web
+#
+# Copied rather than symlinked, for the same reason as bvp-api.service: a
+# `git pull` must not change a running unit behind systemd's back.
+
+[Unit]
+Description=baba.vanga.premier page server (SvelteKit SSR; reads the API only)
+Documentation=file:/srv/bvp/docs/DEPLOY.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=bvp
+Group=bvp
+
+# `npm run build` (scripts/deploy.sh) writes web/build/; deploy.sh restarts
+# this unit straight after, so the process never runs code whose files the
+# build has replaced.
+WorkingDirectory=/srv/bvp/web
+ExecStart=/usr/bin/node build
+
+Restart=always
+RestartSec=5
+
+# Loopback only, like the API: nginx is the one client. That is also what
+# makes PROTOCOL_HEADER safe to trust -- nothing else can set it.
+Environment=HOST=127.0.0.1
+Environment=PORT=3000
+Environment=NODE_ENV=production
+
+# The public origin is read from nginx's request headers, not configured
+# here (owner decision 2026-09-18): Host is the name nginx answered on, and
+# this header carries the scheme. So nothing in this unit names the domain.
+Environment=PROTOCOL_HEADER=x-forwarded-proto
+
+# Where server rendering reads the API (web/src/lib/proxy.js). The default,
+# written out so `systemctl cat` shows it.
+Environment=BVP_API_URL=http://127.0.0.1:8000
+
+# --- hardening ----------------------------------------------------------- #
+# It reads its own build and opens TCP connections to the API; it writes
+# nothing. No MemoryDenyWriteExecute: V8's JIT needs writable-executable
+# memory and Node dies at start with it.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

@@ -19,26 +19,29 @@
   import { fixtureBadges } from '$lib/badge.js';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { availability, claimLabel } from '$lib/parlay.js';
-  import { getContext } from 'svelte';
+  import { getContext, onMount } from 'svelte';
   import { wagerLink, wagerLabel, slipLink } from '$lib/betpawa.js';
-  import { ORIGIN } from '$lib/site.js';
+  import PageHead from '$lib/PageHead.svelte';
+
+  // The opening slip and the control positions it was drawn with, from
+  // `+page.js` -- on the server for a first visit, so the slip is in the HTML.
+  let { data } = $props();
 
   // The betPawa buttons (B26): one per leg as on the main list, and the
   // whole slip as one accumulator link when every leg has a line there.
   const { store: betpawa, promptSignIn } = getContext('betpawa');
 
-  // Defaults are the recommendation (`PARLAY_PLAN.md` §1): every league,
-  // the Safer threshold, two legs.
-  let division = $state('');
-  let risk = $state('safer');
+  // Defaults are the recommendation (`PARLAY_PLAN.md` §1), set in `+page.js`.
+  let division = $state(data.launch.division);
+  let risk = $state(data.launch.risk);
   // D8 (amended): the type chips are toggles -- any mix of the three, never
   // none. All three on is the default and travels as 'any'.
   let sides = $state(SIDE_GROUPS.map(([key]) => key));
-  let legs = $state(LEGS.default);
+  let legs = $state(data.launch.legs);
 
-  let parlay = $state(null);
-  let error = $state(null);
-  let loading = $state(true);
+  let parlay = $state(data.parlay);
+  let error = $state(data.error);
+  let loading = $state(false);
 
   const minClaim = () => RISK_PRESETS.find(([key]) => key === risk)[2];
   const sidesParam = () =>
@@ -62,10 +65,17 @@
       loading = false;
     }
   }
-  // One fetch on mount and one per control change. The controls are read
-  // here, synchronously, which is what makes the effect track them.
+  // One fetch per control change; the opening slip came with the page, so
+  // the effect's first run (hydration) matches what is shown and is skipped.
+  // The controls are read here, synchronously, which is what makes the
+  // effect track them.
+  const settings = () => [division, legs, minClaim(), sidesParam()];
+  let shown = settings().join('|');
   $effect(() => {
-    load(division, legs, minClaim(), sidesParam());
+    const now = settings();
+    if (now.join('|') === shown) return;
+    shown = now.join('|');
+    load(...now);
   });
 
   const divisionName = (code) => DIVISIONS.find(([c]) => c === code)?.[1] ?? code;
@@ -79,9 +89,11 @@
   });
 
   // Kick-offs arrive as UK wall-clock and are shown in the viewer's zone
-  // (`$lib/kickoff.js`), as on the main list.
-  const zone = viewerZone();
-  const kick = (t) => localKickoff(t.match_date, t.kickoff_time, zone);
+  // (`$lib/kickoff.js`), as on the main list: UK time in the server's HTML,
+  // the viewer's own once mounted.
+  let zone = $state(null);
+  onMount(() => (zone = viewerZone()));
+  const kick = (t) => localKickoff(t.match_date, t.kickoff_time, zone ?? 'Europe/London');
   const shortDay = (iso) => {
     const [y, m, d] = iso.split('-').map(Number);
     return new Date(y, m - 1, d).toLocaleDateString('en-GB', {
@@ -92,13 +104,9 @@
   };
 </script>
 
-<!-- docs/SEO_PLAN.md 1.6. Seen by Google, which renders the page; a shared
-     /parlay link still previews with app.html's homepage tags until pages
-     are server-rendered (SEO_PLAN.md D1). -->
-<svelte:head>
-  <title>Accumulator Builder — Combine Today's Calls | BabaVanga</title>
-  <link rel="canonical" href="{ORIGIN}/parlay" />
-</svelte:head>
+<!-- docs/SEO_PLAN.md 1.6, 2.1: server-rendered, so a shared /parlay link
+     previews with this title and URL. The description is the site's. -->
+<PageHead title="Accumulator Builder — Combine Today's Calls | BabaVanga" path="/parlay" />
 
 <section class="page">
   <div class="head">
@@ -109,7 +117,9 @@
     <div class="mono summary">
       {#if parlay}
         {parlay.pool} game{parlay.pool === 1 ? '' : 's'} live
-        <span class="zone">· kick-offs in your local time ({zone})</span>
+        <span class="zone"
+          >· {zone ? `kick-offs in your local time (${zone})` : 'kick-offs in UK time'}</span
+        >
       {/if}
     </div>
   </div>

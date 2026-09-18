@@ -7,7 +7,58 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-17** (latest): **SEO_PLAN 1.7 and 1.8 built,
+Last updated **2026-09-18** (latest): **SEO Phase 2 reviewed; 1.10 and
+2.1 (server-side rendering) built, uncommitted; VM cutover is the
+owner's.** Owner request: review Phase 2, fold the findings into the plan,
+start 2.1, prompt for every decision. **Review** (`SEO_PLAN.md` §5, R1–R6):
+SSR alone puts no calls in the HTML (data fetched in `onMount`/`$effect`,
+and `api.js` used the global `fetch`); `app.html`'s title/description/
+`og:url` would ship before every page's own, collapsing shares onto `/`;
+team names are football-data abbreviations ("Nott'm Forest") — new **D12**,
+BBC full names from `reference/bbc_teams.csv` (all 92 covered);
+`fixtures.updated_at` moves on every price refresh, so it cannot be
+`lastmod`; `tips` can hold two rows per fixture across rule versions; 1.10
+is not fixed by SSR. Phase 2 ≈ 6 days. **Owner decisions:** D1(a) SSR;
+1.10 first; kick-off in UK time in the server's HTML, local after mount;
+two-row phone header kept, laid out from first paint; the page server
+reads its origin from nginx's headers (`PROTOCOL_HEADER`), not an `ORIGIN`
+drop-in. D7–D10 and D12 are still open. Also found: 1.7/1.8 were committed in `fd8a19f` and are
+live (`favicon.svg` 404, `og-image.jpg` served) — the entry below still
+calls them uncommitted. **1.10:** CSS only in `+layout.svelte` (actions on
+their own row from the start, 40 px, no wrap; long first name ellipsised;
+`.gsi` fixed height). CLS on a production build, 4× CPU: signed out
+0.283/0.308 → 0.003/0.002, signed in (long name) 0.647/0.259 → 0.001/0.001
+at 360/390 px; desktop geometry identical to live. **2.1:** `adapter-node`;
+`+page.js` for `/` and `/parlay` (hydration skips the effects' first run —
+the old front page read tips and results twice per load); `$lib/proxy.js`
++ `hooks.server.js` send server-side `/api/` GETs to uvicorn, prefix
+stripped, no cookie; `$lib/PageHead.svelte` owns the six per-page tags,
+`app.html` keeps the site-wide ones; service worker network-first for
+pages, `/` and `/parlay` kept offline; `deploy/systemd/bvp-web.service`
+(`node build`, 127.0.0.1:3000); nginx `root …/build/client`,
+`try_files $uri @web`, 1.2's route regex gone, the year cache narrowed to
+`/_app/immutable/`; `deploy.sh` restarts `bvp-web` straight after the build;
+`DEPLOY.md` §1, §2.4, §5.2 sudoers (four lines), §5.3, §5.5, §5.6.
+**Found by the click-through:** a comment in `app.html` naming SvelteKit's
+head placeholder captured the head (SvelteKit fills the first occurrence)
+and every tag rendered twice after hydration — fixed, pinned by a test.
+**Side effect:** pages now carry nosniff + referrer policy (F8 fixed for
+pages). **Verified:** 64 web tests; `tests/test_nginx_routes.py` rewritten
+(2, each failing on the old template; planted `add_header` in `@web`
+fails); full Python suite **751 pass** (5 min 12 s); the template under Ubuntu's nginx 1.24 in
+WSL in front of the real build (Node 24 tarball) and a stub API — `nginx -t`
+clean, pages 200 / unknown 404 from the page server, static from disk,
+`/api` noindex, `/api/docs` 404, www redirects unchanged; 39-check
+Playwright click-through on `vite preview` + `bvp_scratch` (SSR content and
+UK label, no re-read on load, zone switch, one of each head tag across
+client moves and back, single reads per control change, owner view, 404,
+sign-in, betPawa fetch, phone gate, no personal data in server HTML, 390 px,
+offline). Scratch DB dropped; WSL files removed. **Next: the owner's
+nine-step VM cutover in `SEO_PLAN.md` 2.1** (order matters: the first
+build breaks the old site until nginx is switched), then PageSpeed into §7;
+then D7–D10/D12 and 2.2 + 2.3 + 2.7. No rule, cycle, API, schema or ledger
+change (114 rows, `--check` clean at session start).
+Before that, **2026-09-17**: **SEO_PLAN 1.7 and 1.8 built,
 uncommitted; baseline recorded; CLS traced** — owner confirmed the certbot
 renewal hook on the VM, gave the PageSpeed mobile baseline (48, LCP 5.7 s,
 TBT 130 ms, CLS 0.337 — into `SEO_PLAN.md` §7; Search Console has no data

@@ -3,7 +3,6 @@
   import {
     getTips,
     getTipResults,
-    getTipRecord,
     callLabel,
     callCode,
     callMeans,
@@ -19,7 +18,12 @@
   import HeroVideo from './HeroVideo.svelte';
   import { VIDEO_HERO } from '$lib/hero.js';
   import { wagerLink, wagerLabel, daySlip } from '$lib/betpawa.js';
-  import { ORIGIN, HOME_TITLE } from '$lib/site.js';
+  import { HOME_TITLE } from '$lib/site.js';
+  import PageHead from '$lib/PageHead.svelte';
+
+  // The opening lists and record, read by `+page.js` -- on the server for a
+  // first visit, so they are in the HTML.
+  let { data } = $props();
 
   // The betPawa button (B26): state and links come from the layout, which
   // owns the session. A click on the button must not toggle the row's
@@ -51,29 +55,11 @@
       toggle(id);
     }
   };
-  let tips = $state([]);
-  let results = $state([]);
-  let record = $state(null);
-  let error = $state(null);
-  let loading = $state(true);
-  let loaded = $state(false);
-
-  async function load() {
-    loading = true;
-    error = null;
-    try {
-      [tips, results, record] = await Promise.all([
-        getTips(tipsDivision || null),
-        getTipResults(resultsDivision || null, resultsLimit()),
-        getTipRecord()
-      ]);
-    } catch (e) {
-      error = e.message;
-    } finally {
-      loading = false;
-      loaded = true;
-    }
-  }
+  let tips = $state(data.tips);
+  let results = $state(data.results);
+  const record = data.record;
+  let error = $state(data.error);
+  let loading = $state(false);
 
   async function loadTips() {
     loading = true;
@@ -101,16 +87,23 @@
 
   onMount(() => {
     owner = resolveOwner(window.location.search, window.localStorage);
-    load();
+    zone = viewerZone();
   });
+  // The opening lists came with the page; only a change of tab or toggle
+  // reads again. Each effect's first run is hydration, and is skipped by
+  // comparing with what is already shown.
+  let shownTips = tipsDivision;
   $effect(() => {
-    tipsDivision;
-    if (loaded) loadTips();
+    if (tipsDivision === shownTips) return;
+    shownTips = tipsDivision;
+    loadTips();
   });
+  let shownResults = `${resultsDivision}|${showAll}`;
   $effect(() => {
-    resultsDivision;
-    showAll;
-    if (loaded) loadResults();
+    const key = `${resultsDivision}|${showAll}`;
+    if (key === shownResults) return;
+    shownResults = key;
+    loadResults();
   });
 
   const byDay = $derived(
@@ -124,9 +117,11 @@
 
   // Kick-offs arrive as UK wall-clock and are shown in the viewer's zone
   // (`$lib/kickoff.js`). The list stays grouped by the UK match date, so a row
-  // whose local date differs says so with a +1 / −1.
-  const zone = viewerZone();
-  const kick = (t) => localKickoff(t.match_date, t.kickoff_time, zone);
+  // whose local date differs says so with a +1 / −1. The server cannot know
+  // the viewer's zone, so its HTML says UK time and the browser switches to
+  // local on mount (owner decision 2026-09-18, docs/SEO_PLAN.md 2.1).
+  let zone = $state(null);
+  const kick = (t) => localKickoff(t.match_date, t.kickoff_time, zone ?? 'Europe/London');
 
   // Built from the parts rather than parsed, so a date never shifts a day
   // across a timezone boundary — `new Date('2026-08-15')` is UTC midnight.
@@ -147,13 +142,9 @@
   };
 </script>
 
-<!-- Per route (docs/SEO_PLAN.md 1.6). The title repeats app.html's because a
-     client-side move back from /parlay would otherwise keep the parlay
-     title. The canonical ignores the query string, so /?owner=1 is /. -->
-<svelte:head>
-  <title>{HOME_TITLE}</title>
-  <link rel="canonical" href="{ORIGIN}/" />
-</svelte:head>
+<!-- docs/SEO_PLAN.md 1.6, 2.1. The canonical ignores the query string, so
+     /?owner=1 is /. -->
+<PageHead title={HOME_TITLE} path="/" />
 
 <!-- The hero: the pixel-video band, or the parallax art it replaced:
      one flag in $lib/hero.js decides, and flipping it back is the whole
@@ -203,7 +194,9 @@
     <div class="mono summary">
       {#if tips.length}
         {tips.length} call{tips.length === 1 ? '' : 's'} · {byDay.length} day{byDay.length === 1 ? '' : 's'}
-        <span class="zone">· kick-offs in your local time ({zone})</span>
+        <span class="zone"
+          >· {zone ? `kick-offs in your local time (${zone})` : 'kick-offs in UK time'}</span
+        >
       {/if}
     </div>
   </div>

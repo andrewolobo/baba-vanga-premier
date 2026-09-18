@@ -23,7 +23,7 @@ of the deployment.
 | -------------------- | ---------------------------------------------------------- | ----------------------------- |
 | `services.run_cycle` | a**batch job that exits** — sync → serve → tips → grade    | systemd**timer**, daily       |
 | `api.main:app`       | a FastAPI over what the cycle wrote; its only writes are the account rows (`AUTH_PLAN.md`) | systemd**service**, always up |
-| `web/build`          | a**static SPA** (SvelteKit `adapter-static`, `ssr: false`) | files served by nginx         |
+| `web/build`          | a**server-rendered site** (SvelteKit `adapter-node`, since `SEO_PLAN.md` 2.1) | systemd**service** `bvp-web` for pages; nginx serves `build/client` files |
 
 Nothing daemonises itself and nothing retries itself, by design
 (`services/run_cycle.py` docstring). The scheduler owns recurrence; the
@@ -188,6 +188,13 @@ nginx must reproduce that rewrite exactly (§5.3). If it is missed, the failure
 is the one `vite.config.js` already documents in a comment: every page reads as
 **an empty week rather than as a misconfiguration**. It will look like the feed
 is out of season.
+
+**Since `SEO_PLAN.md` 2.1 there is a third copy of the rewrite.** A page's
+`load` runs on the server for the first request and calls the same
+`/api/...` URL, which no proxy sits in front of there; `web/src/lib/proxy.js`
+(wired in `web/src/hooks.server.js`) points it at `BVP_API_URL`, default
+`http://127.0.0.1:8000`, prefix stripped, and carries no cookie of the
+visitor's. `web/src/lib/proxy.test.js` pins the strip.
 
 ### 2.5 All operational scripting is PowerShell — **RESOLVED 2026-08-08**
 
@@ -550,14 +557,17 @@ every path in this document assume it.
 
 **Not `adduser --system`, which is what this section said until 2026-08-08.**
 A system user gets `/usr/sbin/nologin` and is not in `sudo`, and
-`scripts/deploy.sh` runs _as_ `bvp` and needs exactly two privileged calls:
-restarting the API and reading its journal when the health check fails. The
-narrow grant, rather than putting `bvp` in the `sudo` group:
+`scripts/deploy.sh` runs _as_ `bvp` and needs exactly four privileged calls:
+restarting the API and the page server (`bvp-web`, since `SEO_PLAN.md` 2.1),
+and reading each one's journal when its health check fails. The narrow
+grant, rather than putting `bvp` in the `sudo` group:
 
 ```bash
 printf '%s\n' \
   'bvp ALL=(root) NOPASSWD: /usr/bin/systemctl restart bvp-api' \
   'bvp ALL=(root) NOPASSWD: /usr/bin/journalctl -u bvp-api *' \
+  'bvp ALL=(root) NOPASSWD: /usr/bin/systemctl restart bvp-web' \
+  'bvp ALL=(root) NOPASSWD: /usr/bin/journalctl -u bvp-web *' \
   | sudo tee /etc/sudoers.d/bvp
 sudo chmod 440 /etc/sudoers.d/bvp
 sudo visudo -c        # expect: /etc/sudoers.d/bvp: parsed OK
@@ -604,19 +614,21 @@ server {
     http2 on;
     server_name <domain>;
 
-    root /srv/bvp/web/build;
-    index index.html;
+    # build/client only: build/ itself holds the page server's code.
+    root /srv/bvp/web/build/client;
 
-    # adapter-static with fallback: 'index.html'. The client routes are named
-    # and rewritten to the shell; any other non-file path is a real 404 whose
-    # body is still the shell (SEO_PLAN.md 1.2, 2026-09-16 -- it used to be a
-    # catch-all 200). A new route goes in the regex; tests/test_nginx_routes.py.
+    # A file from disk, else a page from the page server (bvp-web, SEO_PLAN.md
+    # 2.1), which answers 404 itself for a path that is no route. Until
+    # 2026-09-18 this was adapter-static's shell with a regex of client routes
+    # (1.2); no route list is kept here now. No add_header in @web, or pages
+    # lose the server-level headers; tests/test_nginx_routes.py pins both.
     location / {
-        try_files $uri $uri/ =404;
-        error_page 404 /index.html;
+        try_files $uri @web;
     }
-    location ~ ^/(parlay|book|performance)/?$ {
-        rewrite ^ /index.html last;
+    location @web {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     # The trailing slash on proxy_pass is what strips /api. This is the exact
@@ -641,10 +653,16 @@ server {
         proxy_pass http://127.0.0.1:8000/performance;
     }
 
-    # Long-lived hashed assets; index.html must not be cached.
-    location /_app/ { expires 1y; add_header Cache-Control "public, immutable"; }
+    # Long-lived hashed assets; not /_app/version.json, which tells an open
+    # tab a deploy happened.
+    location /_app/immutable/ { expires 1y; add_header Cache-Control "public, immutable"; }
 }
 ```
+
+**The move to server rendering (2026-09-18) is a one-time cutover** with its
+own order — the unit and sudoers before the build, nginx straight after it —
+because the first build replaces the files the old site is served from:
+`SEO_PLAN.md` 2.1, "VM cutover".
 
 #### 5a ran 2026-08-08. The application was never the problem; the NSG was.
 
@@ -681,8 +699,9 @@ port-80 redirect itself.
 
 ```bash
 curl -sI  https://<domain>/                    # 200, text/html
-curl -sI  https://<domain>/book                # 200 (a named client route)
-curl -sI  https://<domain>/does-not-exist      # 404, Cache-Control: no-cache
+curl -sI  https://<domain>/book                # 200 (a page)
+curl -sI  https://<domain>/does-not-exist      # 404, from the page server
+curl -s   https://<domain>/ | grep -c 'property="og:url"'   # 1 -- the page's own tags are in the HTML
 curl -sI  https://<domain>/robots.txt          # 200, text/plain
 curl -sI  https://<domain>/api/tips            # X-Robots-Tag: noindex (and nosniff)
 curl -sI  https://<domain>/                    # NO X-Robots-Tag -- if present, the site is de-indexing itself
@@ -852,9 +871,12 @@ genuinely empty is the only cheap opportunity to confirm it.
 ### 5.5 systemd — _verify:_ API answers after a reboot; timer shows a next run
 
 **Committed at `deploy/systemd/`** — `bvp-api.service`, `bvp-cycle.service`,
-`bvp-cycle.timer`, and `bvp-results.{service,timer}` (2026-08-21: the
+`bvp-cycle.timer`, `bvp-results.{service,timer}` (2026-08-21: the
 cycle's `results` step on its own, every two hours at odd UTC hours, sharing
-the cycle's lock file). Each carries its reasoning inline; only the decisions are
+the cycle's lock file) and `bvp-web.service` (2026-09-18, `SEO_PLAN.md` 2.1:
+the page server, `node build` on `127.0.0.1:3000`, reading the public origin
+from nginx's `Host` and `X-Forwarded-Proto`, so the unit names no domain).
+Each carries its reasoning inline; only the decisions are
 repeated here, because a unit duplicated into prose is a unit that will
 disagree with itself, which is this project's recorded failure mode
 (`OUTSTANDING.md` §8).
@@ -862,7 +884,7 @@ disagree with itself, which is this project's recorded failure mode
 ```bash
 sudo cp deploy/systemd/bvp-*.{service,timer} /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now bvp-api bvp-cycle.timer bvp-results.timer   # the TIMERs, not the services
+sudo systemctl enable --now bvp-api bvp-web bvp-cycle.timer bvp-results.timer   # the TIMERs, not the services
 ```
 
 **Copied, not symlinked into the repo.** A `git pull` that changed a unit under
@@ -905,13 +927,15 @@ which is the exact failure the three-code design exists to prevent.
 ### 5.6 The deploy script — _verify:_ run it once with no changes to pull
 
 **Committed as `scripts/deploy.sh`.** Run it as the `bvp` user; it needs `sudo`
-for exactly one thing, restarting the API, and asks for nothing else.
+for exactly two things, restarting the page server and the API, and asks for
+nothing else.
 
 ```
 0. refuse if the working tree is dirty or the branch is not main
 1. git pull --ff-only
 2. pip install -e ".[serve,dev]" -c requirements.lock
-3. npm ci && npm run build
+3. npm ci && npm run build, then restart bvp-web and curl :3000
+                                 <-- at once: the old process names asset files the build deleted
 4. migrate                       <-- BEFORE the API restarts
 5. pytest -q                     <-- before the restart, so a failure changes nothing
 6. systemctl restart bvp-api
@@ -934,10 +958,12 @@ pull a conflict over SSH on a matchday. Catching it at deploy time is cheaper
 than catching it then.
 
 **Nothing user-visible changes until step 3.** A failure before it leaves the
-running site untouched. Step 3 itself writes into `web/build`, which nginx
-serves directly, so there is a ~2 s window mid-build where the site is
-incomplete; at this traffic level that is acceptable, and if it ever is not,
-build to a staging directory and swap a symlink that `root` points at.
+running site untouched. Step 3 itself writes into `web/build`, whose
+`client/` nginx serves directly and whose server the running `bvp-web` has
+loaded, so there is a window from the build's last write to the page
+server's restart (seconds) where the site is inconsistent; at this traffic
+level that is acceptable, and if it ever is not, build to a staging
+directory and swap a symlink.
 
 ---
 

@@ -7,11 +7,12 @@
 #   ./scripts/deploy.sh --skip-tests # skip the acceptance gate (say why)
 #
 # Run as the user that owns the repo and the services (bvp). It needs sudo for
-# exactly one thing -- restarting the API -- and asks for nothing else.
+# exactly two things -- restarting the page server and the API -- and asks for
+# nothing else.
 #
 # ORDER MATTERS, and not in the obvious way:
 #
-#   pull -> pip -> npm -> MIGRATE -> restart -> verify
+#   pull -> pip -> npm (+ restart pages) -> MIGRATE -> restart API -> verify
 #
 # api/main.py never migrates. `db.migrate` is called by services/run_cycle.py
 # and engine/ingest/build.py; get_conn calls db.connect alone. So after a pull
@@ -93,13 +94,30 @@ step "frontend build"
 # if the lock and the manifest disagree, which is the property that makes a
 # deploy reproducible.
 #
-# Vite empties web/build before writing it, and nginx serves that directory
+# Vite empties web/build before writing it, and nginx serves web/build/client
 # live, so there is a ~2s window where the site is incomplete. At this traffic
 # level that is acceptable; if it ever is not, build to a staging directory and
-# swap a symlink that nginx's root points at.
+# swap a symlink.
+#
+# The page server (bvp-web, docs/SEO_PLAN.md 2.1) restarts straight after,
+# not with the API below: until it does, the running process renders HTML
+# that names the old build's asset files, which the build has just deleted,
+# and it would load any page it had not yet imported from the new build.
 ( cd web && npm ci --silent && npm run build )
-echo "published root:"
-ls -la web/build | sed 's/^/  /'
+echo "static files:"
+ls -la web/build/client | sed 's/^/  /'
+sudo systemctl restart bvp-web
+for i in $(seq 1 10); do
+    if curl -fsS --max-time 5 -o /dev/null http://127.0.0.1:3000/; then
+        echo "page server answering after ${i}s"
+        break
+    fi
+    if [ "$i" -eq 10 ]; then
+        sudo journalctl -u bvp-web -n 40 --no-pager >&2 || true
+        die "page server did not answer on :3000 within 10s. The site is DOWN."
+    fi
+    sleep 1
+done
 
 # --- 4. migrate ----------------------------------------------------------- #
 step "database migrations"

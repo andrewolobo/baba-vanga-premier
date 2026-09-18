@@ -2,7 +2,8 @@
 // /service-worker.js; `$service-worker` injects the hashed build assets, the
 // static files and a per-build version string, so no plugin is involved.
 //
-// Offline policy: the app shell and static assets are precached; /api/tips and
+// Offline policy: the build's assets and static files are precached; pages
+// are network-first, the front page and /parlay kept for offline; /api/tips and
 // /api/fixtures fall back to the last successful response when the network is
 // away (the one case a reader benefits from — checking the published calls on
 // a poor signal). Every other /api endpoint is left alone: /api/book and
@@ -13,8 +14,9 @@ import { build, files, version } from '$service-worker';
 
 const CACHE = `bvp-${version}`;
 
-// '/' is the adapter-static fallback page — the shell every client-side route
-// boots from — and is not listed in `build` or `files`.
+// '/' is not listed in `build` or `files`: it is a server-rendered page
+// (docs/SEO_PLAN.md 2.1), precached so an offline first open still has
+// something to show. It is never served cache-first -- see `page` below.
 // The hero clip (~2.3MB) is left out: precaching would pull it into every
 // new version's cache on activate, and offline the video hero already
 // falls back to its animated noise, so nothing is lost without it. The share
@@ -25,6 +27,11 @@ const PRECACHED = new Set(PRECACHE);
 
 // Cached per full URL, so each division's query string keeps its own entry.
 const OFFLINE_API = new Set(['/api/tips', '/api/fixtures']);
+
+// The pages kept for offline, each under its own path. A bounded list rather
+// than every page visited: per-match pages will number in the thousands
+// (SEO_PLAN.md 2.3). Any other page, offline, gets the cached front page.
+const OFFLINE_PAGES = new Set(['/', '/parlay']);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -49,14 +56,31 @@ async function fromPrecache(request, pathname) {
   return (await cache.match(pathname)) ?? fetch(request);
 }
 
-async function networkFirst(request, cacheKey) {
+async function networkFirst(request) {
   const cache = await caches.open(CACHE);
   try {
     const response = await fetch(request);
-    if (response.ok) cache.put(cacheKey ?? request, response.clone());
+    if (response.ok) cache.put(request, response.clone());
     return response;
   } catch (err) {
-    const cached = await cache.match(cacheKey ?? request);
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    throw err;
+  }
+}
+
+// A page is the day's calls rendered into HTML, so it always comes from the
+// network when there is one: served cache-first, `/` would show the calls as
+// they stood when the worker installed, until the next deploy.
+async function page(request, pathname) {
+  const cache = await caches.open(CACHE);
+  const key = OFFLINE_PAGES.has(pathname) ? pathname : null;
+  try {
+    const response = await fetch(request);
+    if (key && response.ok) cache.put(key, response.clone());
+    return response;
+  } catch (err) {
+    const cached = (key && (await cache.match(key))) ?? (await cache.match('/'));
     if (cached) return cached;
     throw err;
   }
@@ -70,15 +94,15 @@ self.addEventListener('fetch', (event) => {
   // Cross-origin requests (fonts, gtag) pass through untouched.
   if (url.origin !== self.location.origin) return;
 
-  if (PRECACHED.has(url.pathname)) {
-    event.respondWith(fromPrecache(request, url.pathname));
+  // Before the precache check: '/' is in the precache, and must not be
+  // answered from it while the network is up.
+  if (request.mode === 'navigate') {
+    event.respondWith(page(request, url.pathname));
     return;
   }
 
-  // Client-side routes (/book, /performance, /parlay) all resolve to the
-  // shell; refresh it when online, serve the precached copy when not.
-  if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request, '/'));
+  if (PRECACHED.has(url.pathname)) {
+    event.respondWith(fromPrecache(request, url.pathname));
     return;
   }
 

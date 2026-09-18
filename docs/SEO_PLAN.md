@@ -24,7 +24,8 @@ actively hurting the site today:
 - the page title carries no search terms;
 - a 2 MB favicon.
 
-**Phase 2 (~5 days, rough)** is what could actually bring search traffic.
+**Phase 2 (~6 days, rough; ~5 before the 2026-09-18 review in §5)** is what
+could actually bring search traffic.
 Every fixture, league and team gets a permanent page whose HTML already
 contains its content, and the database generates a `sitemap.xml` listing
 those pages. Phase 2 hinges on one architectural decision (D1).
@@ -88,6 +89,7 @@ record is a genuine trust asset for that bar.
 | **D9** | URL shape. | **`/match/{fixture_id}-{home}-vs-{away}`**, `/team/{team_id}-{name}`, `/premier-league`, `/championship`, `/league-one`, `/league-two`. The id is authoritative and the words are decoration: a wrong or renamed slug 301s to the current one, so a team rename never breaks a link. | Words only, e.g. `/match/2026-09-15/middlesbrough-v-millwall`. Prettier, but it breaks on renames and reschedules. |
 | **D10** | Split `/results` and `/record` into real pages (the `docs/notes` item "Separate last time out/record, separate pages"). | **Yes for `/record`**, the trust asset. The nav links change from `/#record` to `/record`. | Keep the one-page layout; the record stays unindexable as a page. |
 | **D11** | Is Google Search Console already set up for the domain? | If not, it is task 1.0 and comes before everything else. | — |
+| **D12** | Which team names Phase 2 pages show (added 2026-09-18). `teams.canonical_name` is football-data's abbreviation: "Man United", "Nott'm Forest", "Sheffield Weds", "Peterboro", "Bristol Rvs", "Wolves". | **The BBC's full name** from `reference/bbc_teams.csv` (`bbc_name`, keyed on `canonical_name`; covers all 92 served clubs, checked 2026-09-18) in titles, headings, JSON-LD and slugs. "Man United vs Nott'm Forest Prediction" is not what anyone types. The front page's cards are a separate question. | Keep the canonical names: no new mapping, weaker titles and slugs such as `nott-m-forest`. |
 
 ## 4. Phase 1 — defects and quick wins (~1 day)
 
@@ -322,6 +324,29 @@ the render path. The score is driven by 1.10.
 
 ### 1.10 Layout shift from the header's sign-in slot (found 2026-09-17)
 
+**Built 2026-09-18, uncommitted.** The owner chose to keep the two-row phone
+header, laid out from first paint. `+layout.svelte` only, CSS only:
+- at ≤ 820 px the actions take their own row from the start (`flex-basis:
+  100%`), at least 40 px tall, and never wrap;
+- a long signed-in first name is ellipsised rather than wrapping the row,
+  which it did as the font swapped in (0.42 of the 0.65 signed-in CLS at
+  360 px);
+- `.gsi` has a fixed 40 px height where it had a minimum, so Google's
+  container growing to 64 px no longer moves the page.
+
+Measured on a production build under `vite preview`, 4× CPU, against a
+scratch database (the real sign-in button renders on `localhost:5173`):
+
+| | 360 px | 390 px |
+| --- | --- | --- |
+| signed out, before → after | 0.283 → **0.003** | 0.308 → **0.002** |
+| signed in, long name, before → after | 0.647 → **0.001** | 0.259 → **0.001** |
+| signed in, short name, after | **0.000** | **0.000** |
+
+The phone header is 123 px throughout. At 1280 px the header's geometry is
+identical to the live site's. 58 web tests pass. **Still to do:** re-run
+PageSpeed after deploy and record it in §7.
+
 The baseline's **CLS 0.337** was reproduced on the live site (0.339, Moto G4
 emulation, 4× CPU, throttled network) and traced by `layout-shift` source:
 
@@ -360,7 +385,35 @@ VM order:
 6. The 1.1–1.4 curls.
 7. In Search Console: URL Inspection on `/` and "Request indexing".
 
-## 5. Phase 2 — permanent pages and a generated sitemap (~5 days, rough)
+## 5. Phase 2 — permanent pages and a generated sitemap (~6 days, rough)
+
+**Reviewed against the code 2026-09-18**, before any of it was built. Six
+gaps were found and folded into the tasks below, each marked *(review)*:
+
+| # | gap | folded into |
+| --- | --- | --- |
+| R1 | SSR alone puts no calls in the HTML: the front page fetches in `onMount`, the parlay page in an `$effect`, and neither runs on the server. `$lib/api.js` calls the global `fetch('/api/…')`, which has no base URL in Node and bypasses `handleFetch`. 2.1's own verify step would fail. | 2.1 |
+| R2 | `app.html`'s title, description, `og:title` and `og:url` (`/`) sit before `%sveltekit.head%`. Under SSR a match page would ship two `<title>`s (the homepage's first) and an `og:url` naming `/`, so shares collapse onto the homepage — the per-page previews that justify D1(a). | 2.1 |
+| R3 | Team names are football-data abbreviations. | D12, 2.2, 2.3 |
+| R4 | `fixtures.updated_at` moves on every price refresh (`services/fixture_sync.py`), and no page shows a price, so a `lastmod` built on it changes daily with nothing visible changing. | 2.2, 2.7 |
+| R5 | `tips` is `UNIQUE (fixture_id, rule_version)`: a fixture re-tipped across versions has two tips. | 2.2 |
+| R6 | 1.10 (CLS) is not fixed by SSR: sign-in state still resolves in the browser, so the header still wraps after first paint. | 2.1 |
+
+Smaller points, also folded in: `adapter-node`'s static files live in
+`build/client/` (2.1); the service worker's per-URL cache is unbounded (2.1);
+measure VM memory before 2.1; a rescheduled fixture can 301 rather than 404
+(2.3). Together they add about a day, mostly R1 and R2.
+
+**Owner decisions, 2026-09-18:** **D1(a), server-side rendering**, taken as
+recommended. **1.10 lands first**, before 2.1. **Kick-off times:** the
+server's HTML shows UK time labelled "UK", and the browser switches it to
+the viewer's zone after load (2.1's server/browser audit, as written).
+
+**Order:** 2.1 ships alone, with no new page, and the B25/B26/PWA
+click-through repeats before anything is built on it — it is the one risky
+infrastructure change and the easiest to roll back on its own. Then 2.2,
+2.3 and 2.7 (match pages and the sitemap are the search value), then 2.4–2.6
+and 2.8.
 
 Written for **D1(a)**. Under D1(b):
 - skip 2.1;
@@ -373,12 +426,125 @@ the call, what it needs, the confidence bar, the kick-off, and after the
 match the score and outcome. No prices, no return, no new probability
 (§6).
 
-### 2.1 Server-side rendering (~1½ days)
+### 2.1 Server-side rendering (~2½ days)
+
+**Built 2026-09-18, uncommitted; VM cutover pending (below).** As written
+here, with these specifics:
+- `adapter-node` replaces `adapter-static`.
+- `+page.js` loads for `/` and `/parlay`; `/parlay`'s opening control
+  positions come from its load, so the server's slip and the controls
+  cannot disagree.
+- The in-page effects skip their hydration run, so a first visit makes no
+  browser read of tips, results, record or parlay. The old front page read
+  tips and results twice on every load.
+- `$lib/proxy.js` holds the `handleFetch` rewrite (4 node tests: the prefix
+  strip, a trailing slash, no cookie, and non-API or non-GET requests left
+  alone).
+- `$lib/PageHead.svelte` renders title, description, canonical, `og:title`,
+  `og:description` and `og:url`, once per public page.
+- The service worker answers navigations network-first, keeping `/` and
+  `/parlay` for offline.
+- `bvp-web.service` reads the origin from nginx's headers
+  (`PROTOCOL_HEADER=x-forwarded-proto`) — **owner decision, in place of the
+  `ORIGIN` drop-in below**.
+- nginx: `root …/build/client`, `try_files $uri @web`, the 1.2 regex and
+  `index.html` blocks gone, and the year-long cache narrowed to
+  `/_app/immutable/`, so `version.json` stays fresh.
+
+**Found while building:** `app.html`'s new comment named SvelteKit's head
+placeholder, and SvelteKit fills the *first* occurrence. The page's tags
+landed inside the comment, the hydration marker closed it early, and the
+browser rendered every tag twice. It was caught by the click-through; a
+`site.test.js` test now pins each placeholder to one occurrence.
+
+**Side effect:** pages proxied through `@web` carry nosniff and the referrer
+policy, so **F8 is fixed for pages**. `/_app/immutable/` and
+`/service-worker.js` still lack both, because their locations set their own
+headers.
+
+**Verified:**
+- **64 web tests** pass (58 before, plus 4 proxy and 2 head-tag tests).
+  `tests/test_nginx_routes.py` was rewritten: 2 tests, each failing on the
+  old template, and the header test fails on a planted `add_header` in
+  `@web`. The full Python suite: **751 pass**.
+- **Under Ubuntu 24.04's nginx 1.24**, extracted in WSL, in front of the
+  real build on Node 24 and a stub API replaying the scratch database:
+  - `nginx -t` clean; pages 200, unknown paths 404 from the page server;
+  - static files from disk, the hashed assets with the year-long cache;
+  - `/api` still `noindex`, `/api/docs` 404;
+  - both www redirects unchanged; the stub saw only prefix-stripped reads.
+- **Playwright click-through, 39 checks**, on `vite preview` of the build
+  against `bvp_scratch`:
+  - the calls and "UK time" in the server's HTML; no browser re-read on
+    load; the zone switching to Nairobi with 20:00 UK shown as 22:00;
+  - one of each head tag on `/`, `/?owner=1` and `/parlay`, before and
+    after client-side moves and browser back;
+  - a tab, toggle or risk change reads exactly once;
+  - owner view; 404 inside the layout;
+  - signed in: name, betPawa links fetched, no personal data in the
+    server's HTML; the phone gate for a phoneless account;
+  - 390 px bottom nav, no horizontal scroll; offline `/` and `/parlay`,
+    and an uncached page falls back to `/`.
+- CLS on the SSR build: 0.001–0.003 at 360 and 390 px, signed in and out.
+
+**VM cutover (one-time, between matchdays).** The first build replaces the
+files the old site is served from, so the order matters. The site is down
+from the end of step 4 until step 5 finishes, a few seconds if they are run
+back to back.
+1. Commit and push. On the VM: `free -m`, and write it down.
+2. `sudo -u bvp git -C /srv/bvp pull --ff-only`.
+3. Add the two `bvp-web` lines to `/etc/sudoers.d/bvp` (`DEPLOY.md` §5.2),
+   then `sudo visudo -c`. Then
+   `sudo cp /srv/bvp/deploy/systemd/bvp-web.service /etc/systemd/system/`,
+   `sudo systemctl daemon-reload` and `sudo systemctl enable bvp-web`.
+   Enable only, **not `--now`**: there is no server build to run yet.
+4. Build: `sudo -u bvp -H bash -c 'cd /srv/bvp/web && npm ci --silent && npm run build'`.
+5. At once: `sudo systemctl start bvp-web`, then
+   `curl -fsS -o /dev/null http://127.0.0.1:3000/`, then re-render the
+   template (`DEPLOY.md` §5.3), `sudo nginx -t` and
+   `sudo systemctl reload nginx`.
+6. `sudo -u bvp /srv/bvp/scripts/deploy.sh --no-pull`: the normal path from
+   now on. Expect "page server answering", then the suite and the API
+   restart.
+7. The `DEPLOY.md` §5.3 curls, including the new `og:url` count. Record
+   `free -m` and `systemctl show -p MemoryCurrent bvp-web` against step 1.
+8. On a phone: `/` shows today's calls, sign-in works, the betPawa button,
+   `/parlay`, and the installed app still opens offline.
+9. PageSpeed mobile into §7 (1.10 and 2.1 together). In Search Console,
+   URL-inspect `/`: the tested page's HTML should contain the calls.
+
+**Rollback:**
+- `git revert` the commit and push.
+- On the VM: pull, then `cd web && npm ci && npm run build` (the static
+  build again).
+- Re-render the old template and reload nginx.
+- `sudo systemctl disable --now bvp-web`.
+
+**Before starting:** `free -m` on the VM, to size the Node process against
+what Postgres, uvicorn and the build already use (843 MB RAM + 2 GB swap).
+**1.10 lands before or with this task** *(review R6)*: the header's sign-in
+slot still resolves in the browser under SSR, and a PageSpeed reading taken
+after 2.1 would otherwise mix the two changes.
 
 **Frontend:**
 - `@sveltejs/adapter-node` in `svelte.config.js`.
 - `+layout.js`: remove `ssr = false`, keep `prerender = false`, and rewrite
   its comment.
+- **Data loading moves into `load` functions** *(review R1)*. `/` gets a
+  `+page.js` that loads tips, results and the record; `/parlay` one that
+  loads the launch slip. `$lib/api.js`'s `get()` takes the load's `fetch`
+  as an optional argument (the browser's global stays the default), because
+  the global `fetch` has no base URL on the server and never passes through
+  `handleFetch`. The in-page reloads on a tab, filter or slider change stay
+  client-side, as now.
+- **Per-page head tags move out of `app.html`** *(review R2)*. Title,
+  description, `og:title`, `og:description` and `og:url` go into
+  `<svelte:head>`: a default in `+layout.svelte`, overridden per page.
+  `app.html` keeps only what is identical on every page — `og:type`,
+  `og:site_name`, the share image and its size and alt, `twitter:card`,
+  and the Organization/WebSite JSON-LD. `site.test.js` changes with it: it
+  pins that app.html carries none of the moved tags, and that the rendered
+  front page carries exactly one of each.
 - **Server/browser audit:** anything reading `window`, `localStorage` or the
   viewer's zone must run after mount.
   - `+page.svelte` has `const zone = viewerZone()` at the top level. Under
@@ -396,7 +562,10 @@ match the score and outcome. No prices, no return, no new probability
   cacheable.
 - **Service worker:** the navigation handler caches every route under the
   key `'/'`. With SSR each route is its own document: cache per URL, and fall
-  back to the cached `/` offline.
+  back to the cached `/` offline. **Bound it** *(review)*: once match pages
+  exist, one entry per page visited grows without limit, so cache only the
+  top-level routes (`/`, `/parlay`, later the league pages and `/record`) and
+  let the rest fall back to `/`.
 
 **Server:**
 - **systemd:** new `deploy/systemd/bvp-web.service`
@@ -405,6 +574,9 @@ match the score and outcome. No prices, no return, no new probability
   on the `bvp-api` client-id pattern.
 - **nginx:** `location /` proxies to `127.0.0.1:3000`.
   - Keep `/_app/immutable/` served from disk with the year-long cache.
+  - **`root` moves to `/srv/bvp/web/build/client`** *(review)*: that is
+    where `adapter-node` writes the static files, and `build/` itself now
+    holds the server bundle, which must never be served as files.
   - Remove the 1.2 route regex and `error_page`: SvelteKit returns real 404s.
   - The `/api/` locations are unchanged.
 - **`deploy.sh`:** restart `bvp-web` after the build. It currently "needs sudo
@@ -416,6 +588,9 @@ match the score and outcome. No prices, no return, no new probability
 **Verify:**
 - `curl -s https://babavanga.net/ | grep` finds a call's team names in the
   raw HTML on a matchday.
+- The raw HTML of `/` and of `/parlay` each carries exactly one `<title>`,
+  one meta description, one `og:title` and one `og:url`, naming that page
+  *(review R2)*.
 - `curl -I /does-not-exist` returns `404`.
 - Web tests green.
 - The click-through repeats the B25 and B26 checks: sign-in, phone gate,
@@ -425,18 +600,28 @@ match the score and outcome. No prices, no return, no new probability
 
 - **`GET /fixture/{fixture_id}`:**
   - teams, division, date, kick-off, and its tip if any (the `TIP_SELECT`
-    shape, settled or not, through `_with_handicap`);
+    shape, settled or not, through `_with_handicap`). **"Its tip" is the
+    latest `tip_id`** *(review R5)*: `tips` is unique per
+    `(fixture_id, rule_version)`, so a fixture re-tipped across versions has
+    two, and the page shows one call;
   - **no fixture prices**;
   - `404` if unknown.
 - **`GET /teams`:** served-division teams with `team_id`, name and slug.
 - **`GET /team/{team_id}/tips`:** published tips involving the team, newest
   first, with a limit.
-- **`GET /sitemap/entries`:** per D8, fixture ids, slugs and a `lastmod`
-  (the latest of `published_at`, `settled_at` and the fixture's
-  `updated_at`, all stored as UTC text).
-- **Slugs:** computed, not stored. Lowercase, accents folded, runs of
-  non-alphanumerics become `-`. A test pins that served-division slugs are
-  unique.
+- **`GET /sitemap/entries`:** per D8, fixture ids, slugs and a `lastmod`:
+  the latest of the tip's `published_at` and `settled_at`, or the fixture's
+  `first_seen_at` before a tip exists, all stored as UTC text. **Not
+  `fixtures.updated_at`** *(review R4)*: `fixture_sync` moves it on every
+  price refresh and no page shows a price, so it would change daily with
+  nothing visible changing, and Google stops trusting a site's `lastmod`
+  when it does.
+- **Display names** *(review R3, D12)*: every endpoint above also returns
+  each team's display name, read from `reference/bbc_teams.csv` (a test pins
+  that every served club has one).
+- **Slugs:** computed, not stored, **from the display name**. Lowercase,
+  accents folded, runs of non-alphanumerics become `-`. A test pins that
+  served-division slugs are unique.
 - **The write surface is unchanged.** The existing test pinning the three
   account writes must stay green.
 - Tests in `tests/test_api.py` style.
@@ -458,8 +643,12 @@ States:
 - **Why stale fixtures exist:** the `fixtures` unique key includes
   `match_date`, so a rescheduled match arrives as a *new* row and the old one
   stays behind.
+- **Optional** *(review)*: a stale fixture whose division, home and away
+  match a later fixture 301s to it instead of 404ing, so a shared or indexed
+  link survives a reschedule.
 - **Head:**
-  - title "{Home} vs {Away} Prediction, {15 Sep 2026} | BabaVanga";
+  - title "{Home} vs {Away} Prediction, {15 Sep 2026} | BabaVanga", with the
+    D12 display names;
   - a description written per state;
   - canonical;
   - Open Graph with the generic image.
@@ -502,7 +691,8 @@ States:
 
 - **Content:** from `/sitemap/entries`, the static pages, the four league
   pages, the team pages and the match pages per D8.
-- **Format:** `<loc>` absolute (D3); `<lastmod>` as ISO 8601 UTC; no
+- **Format:** `<loc>` absolute (D3); `<lastmod>` as ISO 8601 UTC, defined
+  in 2.2 (never the fixture's price-driven `updated_at`); no
   `<priority>` or `<changefreq>`; `Content-Type: application/xml`;
   `Cache-Control: max-age=3600`.
 - **Size:** about 2,000 fixtures a season across E0–E3, far under the

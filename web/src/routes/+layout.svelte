@@ -435,9 +435,11 @@
   .cta:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
 
   /* --- sign-in (AUTH_PLAN.md) --------------------------------------------- */
-  /* Google draws its own button into .gsi; the height keeps the header from
-     jumping while the script loads. */
-  .gsi { min-height: 40px; display: flex; align-items: center; }
+  /* Google draws its own button into .gsi. A fixed height, not a minimum:
+     while it lays out, Google's own container briefly grows to 64px, and a
+     minimum let that push the header -- and the page -- down and back
+     (docs/SEO_PLAN.md 1.10). */
+  .gsi { height: 40px; display: flex; align-items: center; }
   .who { display: flex; align-items: center; gap: 10px; }
   .avatar { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); }
   .name {
@@ -523,6 +525,21 @@
     header .bar { height: auto; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
     header nav { display: none; } /* moved to .bottom-nav */
     .cta { padding: 9px 16px; font-size: 13px; }
+
+    /* The actions take their own row from first paint (docs/SEO_PLAN.md
+       1.10, owner decision 2026-09-18: keep the two-row phone header). They
+       used to share the wordmark's row until the sign-in button mounted and
+       wrapped them, which pushed the whole page down 56px after it had
+       painted. The row is as tall as the Google button from the start and
+       never wraps: a long first name is ellipsised instead, since the swap
+       from the fallback font to Barlow Condensed changes its width. */
+    .actions {
+      flex-basis: 100%; justify-content: flex-start;
+      flex-wrap: nowrap; min-height: 40px;
+    }
+    .actions > .cta, .avatar, .who .link { flex-shrink: 0; }
+    .who { min-width: 0; }
+    .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .bottom-nav {
       display: flex; gap: 0;

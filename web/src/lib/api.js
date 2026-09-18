@@ -25,12 +25,16 @@ async function fail(response, url) {
   throw new ApiError(response.status, response.statusText, url, detail);
 }
 
-export async function get(path, params = {}) {
+// `f` is the fetch to use: a page's `load` passes its own, which is what lets
+// the same call run during server rendering (`hooks.server.js` points it at
+// the API) and hands its response to the browser with the HTML, so the page
+// does not fetch it twice. Anywhere else the browser's global is right.
+export async function get(path, params = {}, f = fetch) {
   const query = new URLSearchParams(
     Object.entries(params).filter(([, v]) => v !== null && v !== undefined && v !== '')
   );
   const url = `${BASE}${path}${query.toString() ? `?${query}` : ''}`;
-  const response = await fetch(url);
+  const response = await f(url);
   if (!response.ok) await fail(response, url);
   return response.json();
 }
@@ -55,11 +59,11 @@ export const getFixtures = (division) => get('/fixtures', { division });
 export const getPredictions = (division) => get('/predictions', { division });
 export const getBook = (settled) => get('/book', { settled });
 export const getPerformance = () => get('/performance');
-export const getTips = (division) => get('/tips', { division });
-export const getTipResults = (division, limit) => get('/tips/results', { division, limit });
-export const getTipRecord = () => get('/tips/record');
-export const getParlay = (division, legs, minClaim, sides) =>
-  get('/parlay', { division, legs, min_claim: minClaim, sides });
+export const getTips = (division, f) => get('/tips', { division }, f);
+export const getTipResults = (division, limit, f) => get('/tips/results', { division, limit }, f);
+export const getTipRecord = (f) => get('/tips/record', {}, f);
+export const getParlay = (division, legs, minClaim, sides, f) =>
+  get('/parlay', { division, legs, min_claim: minClaim, sides }, f);
 
 // The parlay page's controls (`docs/PARLAY_PLAN.md` D2, D8, D9). These mirror
 // `engine/serve/parlay.py` -- PRESETS, SIDE_GROUPS and MIN/MAX_LEGS -- and
