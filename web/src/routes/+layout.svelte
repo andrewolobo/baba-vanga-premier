@@ -1,6 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
+  import '$lib/fonts/fonts.css';
   import {
     getAuthConfig,
     getMe,

@@ -63,15 +63,10 @@
         ]
       }
     </script>
-    <!-- The design is built on Barlow Condensed; every rule that uses it also
-         names a narrow system fallback, so a blocked request degrades rather
-         than breaks. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
-      rel="stylesheet"
-    />
+    <!-- The design is built on Barlow Condensed, served from this site
+         ($lib/fonts, imported by the layout; no Google Fonts request since
+         2026-09-18). Every rule that uses it also names a narrow system
+         fallback. -->
     %sveltekit.head%
   </head>
   <body>

@@ -369,6 +369,53 @@ bundle has loaded and run — client-side rendering (F1). Phase 1 cannot move
 it much; D1(a) or prerendering the static hero shell can, and belongs to
 Phase 2.
 
+### 1.11 Self-hosted fonts (found and built 2026-09-18, uncommitted)
+
+After 2.1, PageSpeed read 69 with LCP 5.2 s. The hero `<h1>` was in the
+HTML by then, and two-thirds of the LCP was render delay behind **the Google
+Fonts stylesheet**, the page's one render-blocking resource (§7).
+
+Owner chose to fix it before Phase 2. The build:
+- `web/src/lib/fonts/` holds the ten latin woff2 files Google served that
+  day for the weights `app.html` asked for (209 KB), with their OFL
+  licences.
+- `fonts.css` is imported by the layout, so Vite bundles it into the
+  layout's stylesheet and emits the fonts as hashed files under
+  `/_app/immutable/`, cached for a year by the existing nginx rule.
+- `hooks.server.js` adds a preload for Barlow Condensed 800, the hero's and
+  the wordmark's face, alongside SvelteKit's default JS and CSS preloads. It
+  is sent as a `Link` header.
+- `app.html` loses the stylesheet link and both preconnects.
+- The service worker now precaches the fonts (they are in `build`), so the
+  installed app keeps its type offline; before, it fell back to system
+  fonts.
+- Characters outside latin (latin-ext, e.g. "Ł") use the system fallback.
+- `fonts.test.js` (4): each face's file exists and is woff2, no file is
+  orphaned, the families and weights, no Google Fonts reference, and the
+  preloaded name exists.
+
+**Measured A/B, same machine, same conditions** (Lighthouse 12 mobile, the
+`a711f6b` build against this one, both served by `node build` with no API,
+two runs each):
+
+| | score | FCP | LCP | Speed Index | render-blocking |
+| --- | --- | --- | --- | --- | --- |
+| live code, Google Fonts | 70, 68 | 3.9, 4.0 s | 4.0, 4.3 s | 4.8, 4.8 s | fonts.googleapis.com |
+| self-hosted | 76, 82 | 2.5, 2.5 s | 3.0, 3.0 s | 2.8, 2.7 s | none |
+
+Rendering is unchanged:
+- the same seven faces load, now all from our own origin;
+- a 390 px screenshot of each build, with the animated canvas hidden,
+  differs in **0 pixels**.
+
+68 web tests pass.
+
+**Deploy:** the normal `deploy.sh`; no nginx or unit change. **Verify:**
+- `curl -sI https://babavanga.net/ | grep -o 'barlow-condensed-800[^;]*'`
+  finds the preload;
+- `curl -s https://babavanga.net/ | grep -c fonts.googleapis` prints 0;
+- then re-run PageSpeed mobile into §7.
+
 ### 1.9 Docs and deploy
 
 - `DEPLOY.md`: the nginx template changes and the certbot line.
@@ -428,7 +475,7 @@ match the score and outcome. No prices, no return, no new probability
 
 ### 2.1 Server-side rendering (~2½ days)
 
-**Built 2026-09-18, uncommitted; VM cutover pending (below).** As written
+**Live 2026-09-18** (`a711f6b`, cut over 07:53–08:01 UTC; ~8 min of 403 on `/` from the step-5 fault noted below). As written
 here, with these specifics:
 - `adapter-node` replaces `adapter-static`.
 - `+page.js` loads for `/` and `/parlay`; `/parlay`'s opening control
@@ -499,10 +546,13 @@ back to back.
    `sudo systemctl daemon-reload` and `sudo systemctl enable bvp-web`.
    Enable only, **not `--now`**: there is no server build to run yet.
 4. Build: `sudo -u bvp -H bash -c 'cd /srv/bvp/web && npm ci --silent && npm run build'`.
-5. At once: `sudo systemctl start bvp-web`, then
-   `curl -fsS -o /dev/null http://127.0.0.1:3000/`, then re-render the
-   template (`DEPLOY.md` §5.3), `sudo nginx -t` and
-   `sudo systemctl reload nginx`.
+5. At once: `sudo systemctl start bvp-web`, then **wait for it**
+   (`until curl -fsS -o /dev/null http://127.0.0.1:3000/; do sleep 1; done`).
+   Then re-render the template (`DEPLOY.md` §5.3), `sudo nginx -t` and
+   `sudo systemctl reload nginx`. As first run on 2026-09-18, a single
+   `curl … && render …` chain failed: Node takes a second or two to bind,
+   the chain stopped before nginx, and the old config served 403 on `/`
+   (no `index.html` left in `web/build`) until the render was run by hand.
 6. `sudo -u bvp /srv/bvp/scripts/deploy.sh --no-pull`: the normal path from
    now on. Expect "page server answering", then the suite and the API
    restart.
@@ -742,9 +792,25 @@ Record numbers here as they are taken; don't restate them in prose elsewhere.
 | when | PageSpeed mobile (score / LCP / INP / CLS) | Search Console: indexed pages | Search Console: soft 404s | impressions, last 28 days |
 | --- | --- | --- | --- | --- |
 | baseline (1.0), 2026-09-17, after 1.1–1.6 were live | **48** / LCP **5.7 s** / TBT 130 ms (lab, in place of INP) / CLS **0.337** | not yet reported | not yet reported | not yet reported |
+| after 1.10 + 2.1, 2026-09-18 | **69** / LCP **5.2 s** / TBT 140 ms / CLS **0.002** (FCP 3.8 s, Speed Index 4.4 s) | — | — | — |
 | Phase 1 + 4 weeks | | | | |
 | Phase 2 + 4 weeks | | | | |
 | Phase 2 + 12 weeks | | | | |
+
+**What holds LCP up now (2026-09-18, a local Lighthouse run on the live
+site; its absolute numbers are this machine's, not PageSpeed's):**
+- **The LCP element is still the hero `<h1>`**, but it is now in the
+  server's HTML: load delay and load time are 0.
+- LCP is **TTFB (36%) plus render delay (64%)**.
+- The render delay is the **Google Fonts stylesheet**, the one
+  render-blocking resource (~1.3 s estimated). It is a cross-origin CSS
+  request that must finish before anything paints; the font files
+  themselves use `display=swap` and do not block.
+- The document took 710 ms from here, network included. How much of that
+  is rendering on the VM is not yet measured.
+- Also: 148 KiB of unused JavaScript, mostly Google Tag Manager (196 KB)
+  and Google sign-in (159 KB); only Tag Manager blocks the main thread
+  (84 ms).
 
 **Phase 1 worked if:**
 - Search Console's Pages report shows no soft-404 or "duplicate without

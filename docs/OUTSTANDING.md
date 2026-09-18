@@ -7,7 +7,38 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-18** (latest): **SEO Phase 2 reviewed; 1.10 and
+Last updated **2026-09-18** (latest): **1.11 self-hosted fonts built,
+uncommitted.** Owner's PageSpeed after 2.1: **69**, FCP 3.8 s, LCP 5.2 s,
+TBT 140 ms, CLS 0.002, SI 4.4 s (into `SEO_PLAN.md` §7; PSI's keyless API
+was over quota again, so the diagnosis used a local Lighthouse run on the
+live site): LCP element still the hero `<h1>`, now with zero load delay;
+64% render delay behind the Google Fonts stylesheet, the one
+render-blocking resource. Owner chose fonts before Phase 2. Built: the ten
+latin woff2 Google served (209 KB, OFL texts beside them) in
+`web/src/lib/fonts/`, `fonts.css` imported by the layout (hashed under
+`/_app/immutable/`), a preload for Barlow Condensed 800 in
+`hooks.server.js`, the Google link and preconnects gone from `app.html`,
+`fonts.test.js` (4). A/B under identical local conditions (Lighthouse 12,
+`a711f6b` vs this, two runs each): score 70/68 → 76/82, FCP 3.9/4.0 →
+2.5/2.5 s, LCP 4.0/4.3 → 3.0/3.0 s, SI 4.8 → 2.8/2.7 s, render-blocking
+none; same seven faces loaded, 0 differing pixels at 390 px. 68 web tests.
+Deploy is the normal `deploy.sh`. Next: deploy, PageSpeed again, then
+D7–D10/D12.
+Before that, same day: **1.10 and 2.1 are LIVE** — the
+owner committed them as `a711f6b` and ran the cutover 07:53–08:01 UTC.
+Step 5 as written chained `curl :3000 && render nginx`; Node had not bound
+yet, the curl failed, the chain stopped, and the old nginx config served
+**403 on `/`** (no `index.html` left in `web/build`) for ~8 minutes until
+the render was run by hand. Step 5 now waits for the port
+(`SEO_PLAN.md` 2.1). Then every `DEPLOY.md` §5.3 curl passed: `/` and
+`/parlay` 200 with nosniff + referrer policy and no X-Robots-Tag, a real
+404 from the page server, one `og:url` naming the page, the calls and
+"UK time" in the raw HTML, `robots.txt` text/plain, `/api` noindex
+(`-I` is a HEAD, so 405), `/api/docs` 404, www 301. `bvp-web` ~10 MB
+resident (70.6 MB peak); `deploy.sh` ran end to end (727 pass, 3 skipped
+on the VM). Open: the phone check, PageSpeed into §7, Search Console
+URL-inspect. Below, the build entry.
+Before that, same day: **SEO Phase 2 reviewed; 1.10 and
 2.1 (server-side rendering) built, uncommitted; VM cutover is the
 owner's.** Owner request: review Phase 2, fold the findings into the plan,
 start 2.1, prompt for every decision. **Review** (`SEO_PLAN.md` §5, R1–R6):
