@@ -1,11 +1,13 @@
-# docs/SEO_PLAN.md 1.1. A keep-out list for crawlers, not a list of content.
+# docs/SEO_PLAN.md 1.1, 2.7. A keep-out list for crawlers, not a list of
+# content: that is the sitemap below.
 #
-# /api/ is deliberately NOT disallowed. The pages are client-rendered, so a
-# crawler that renders them has to fetch /api/tips to see a single call;
-# blocking it would get an empty shell indexed. Keeping /api/ responses out
-# of the index is a response header's job (SEO_PLAN.md 1.3).
-#
-# No Sitemap line until a sitemap exists (SEO_PLAN.md 2.7).
+# /api/ is deliberately NOT disallowed. The rule was written while pages were
+# client-rendered and a crawler had to fetch /api/tips to see a call; since
+# SEO_PLAN.md 2.1 the calls are in the HTML, but a disallow still gains
+# nothing: keeping /api/ responses out of the index is a response header's
+# job (SEO_PLAN.md 1.3), and a crawler must be able to fetch a URL to read it.
 User-agent: *
 Disallow: /book
 Disallow: /performance
+
+Sitemap: https://babavanga.net/sitemap.xml

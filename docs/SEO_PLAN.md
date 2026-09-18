@@ -456,6 +456,36 @@ recommended. **1.10 lands first**, before 2.1. **Kick-off times:** the
 server's HTML shows UK time labelled "UK", and the browser switches it to
 the viewer's zone after load (2.1's server/browser audit, as written).
 
+**Owner decisions for 2.2, 2.3 and 2.7, 2026-09-18**, all as recommended:
+- **D7, content:** the call plus facts. A match page also carries the
+  venue, each side's last five results this season with our call on each
+  and whether it came in, and the last meetings between the two. It shows
+  no probability or price beyond what the front page already shows.
+- **D8, which fixtures:** every fixture with a published call, plus upcoming
+  fixtures in the feed before their call lands. A fixture whose date passed
+  with no call returns 404.
+- **D9 + D12, URLs and names:** `/match/{id}-{home}-vs-{away}` with BBC full
+  names in the slug, the title and the headings.
+- **Scope:** `GET /teams` and `GET /team/{id}/tips` move to 2.5. The minimal
+  internal links (2.8) were **not** taken into this batch, so match pages
+  are reachable through the sitemap only until 2.8.
+
+**Measured before deciding, on the live API:**
+- The fixtures feed runs **1–3 days ahead**, not the 7 the plan assumed: 45
+  upcoming fixtures across 18–20 Sep. A pre-call page therefore exists for
+  at most about three days.
+- **Every past fixture has a call**, 267 of 267, so no page 404s as stale
+  today, and the sitemap starts at about 312 URLs.
+- This season's scores exist for every played fixture, because every
+  fixture was called and graded with its score. `matches` holds the
+  2010-11 to 2025-26 seasons for head-to-heads.
+- Every served club has a venue in `reference/stadiums.csv`. Its `town`
+  field is an administrative district ("City Ground, Rushcliffe"), so the
+  page shows the venue name only.
+- Expect a new domain's match pages to be indexed after their games more
+  often than before them. The value builds with the number of pages over a
+  season.
+
 **Order:** 2.1 ships alone, with no new page, and the B25/B26/PWA
 click-through repeats before anything is built on it — it is the one risky
 infrastructure change and the easiest to roll back on its own. Then 2.2,
@@ -646,7 +676,54 @@ after 2.1 would otherwise mix the two changes.
 - The click-through repeats the B25 and B26 checks: sign-in, phone gate,
   betPawa buttons, 390 px width, PWA offline.
 
-### 2.2 Read-only API additions (~1 day) — `api/main.py`
+### 2.2 Read-only API additions (~1½ days) — `api/main.py`
+
+**Built 2026-09-18, uncommitted.** As specified below, plus the following.
+
+**What was built:**
+- `api/teams.py` (pure): `display_name`, `slug`, `fixture_slug` and
+  `venue`.
+- `GET /fixture/{id}`: the page's data, with `form` and `meetings`.
+- `GET /sitemap/entries`: `[{fixture_id, slug, lastmod}]`, newest first.
+- The API's write surface is unchanged.
+
+**Venues (owner decision, same day):** `reference/stadiums.csv` turned out
+unfit to print. Its Wikidata labels are stale even as Wikidata's "current"
+ground: Brentford at Griffin Park, which it left in 2020; Stoke at the
+Britannia Stadium, renamed in 2016. The labels also mix sponsor and
+generic names, and Wigan's is a bare item id. The owner chose a reviewed
+list:
+- `reference/venues.csv` has one row per served club (92): venue, `status`
+  and a note. The draft is **69 `ok`, 23 `check`**, the `check` rows being
+  mostly sponsor names that change.
+- **A `check` row prints no venue** until the owner confirms it by editing
+  the file (`status` → `ok`). Nothing else changes.
+- `stadiums.csv` is untouched, because its coordinates feed the travel
+  measurement.
+- fbref was tried as a source of current names and answered 403 with a
+  Cloudflare challenge. It was not pursued.
+
+**Tests:** `tests/test_match_api.py`, 24 tests. They use fixed dates for
+the season-boundary cases and dates relative to today for the
+upcoming/live/stale split. They cover:
+- names, slug, venue and call on a settled page;
+- no fixture prices;
+- form as this season's newest five before the match, W/D/L from the
+  side's own view, the later of two calls, last season excluded;
+- meetings as scores only, newest first, with a `matches` row that repeats
+  a called fixture listed once and a scoreless row left out;
+- 404 for a stale fixture, a National League fixture and an unknown id;
+- **the sitemap listing exactly the fixtures `/fixture` answers 200 for**;
+- `lastmod` for settled, live and upcoming fixtures;
+- every served club having a BBC name and one venue row;
+- unique slugs, the slug rules and the season start.
+
+Four planted bugs were each caught by the intended test: the sitemap
+listing stale fixtures; form using the earliest call; form ignoring the
+season; the page ignoring the stale rule.
+
+**Full suite 775 pass.** Read-only smoke test on the development store:
+119 sitemap entries in 68 ms; 40 `/fixture` calls, all 200, median 65 ms.
 
 - **`GET /fixture/{fixture_id}`:**
   - teams, division, date, kick-off, and its tip if any (the `TIP_SELECT`
@@ -655,10 +732,23 @@ after 2.1 would otherwise mix the two changes.
     `(fixture_id, rule_version)`, so a fixture re-tipped across versions has
     two, and the page shows one call;
   - **no fixture prices**;
-  - `404` if unknown.
-- **`GET /teams`:** served-division teams with `team_id`, name and slug.
-- **`GET /team/{team_id}/tips`:** published tips involving the team, newest
-  first, with a limit.
+  - `404` if unknown, outside the served divisions, or **stale** (date
+    passed, no tip; D8). The rule lives here, once, so the page and the
+    sitemap cannot disagree about which fixtures exist.
+  - **The D7 facts:**
+    - `venue`: `reference/stadiums.csv` `venue` for the home side;
+    - `form.home` and `form.away`: each side's last five settled fixtures
+      this season, before this one. Each gives the date, the opponent's
+      display name, home or away, the score, W/D/L from the side's own
+      view, our call's phrase and its outcome. They come from `tips` joined
+      to `fixtures`, which carry every played fixture's score since
+      2026-08-14;
+    - `meetings`: the last five meetings between the two sides, from
+      `matches` plus this season's settled fixtures, with date, season,
+      home side and score. Scores only, never a call: `matches` rows were
+      backtests and must not read as published calls (D8, §6).
+- **`GET /teams` and `GET /team/{team_id}/tips`** moved to 2.5 (owner,
+  2026-09-18): only the team pages use them.
 - **`GET /sitemap/entries`:** per D8, fixture ids, slugs and a `lastmod`:
   the latest of the tip's `published_at` and `settled_at`, or the fixture's
   `first_seen_at` before a tip exists, all stored as UTC text. **Not
@@ -678,6 +768,68 @@ after 2.1 would otherwise mix the two changes.
 
 ### 2.3 Match pages (~1 day) — `web/src/routes/match/[match]/`
 
+**Built 2026-09-18, uncommitted.** **Ship it with 2.7:** until the sitemap
+exists no crawler can find a match page, because nothing links to one yet
+(2.8 not taken).
+
+**What was built:**
+- `+page.js` loads `/fixture/{id}` through the load's `fetch`. A missing or
+  wrong slug 301s to `matchPath`, and an API 404 is a page 404.
+- `+page.svelte` has:
+  - the kicker and an `<h1>` "{Home} vs {Away}" with the badge crests;
+  - a meta line: day, kick-off (UK time in the server's HTML, the viewer's
+    after mount) and venue when confirmed;
+  - the call box: the matchday line before the call; the phrase, hedge
+    badge, "for this to come in…" and CONF bar with the call; the score and
+    "our call came in / did not" once settled;
+  - the betPawa button on a live call only;
+  - recent form, two columns (one below 820 px): W/D/L, the score from the
+    side's own view, "v/at" the opponent, and our call with ✓/✗, then
+    "Our calls: N of M came in";
+  - last meetings, scores only;
+  - a closing note that CONF is uncalibrated and not a price, linking to `/`.
+- `$lib/match.js` (pure, 7 node tests):
+  - dates written out rather than through `Intl`, so the server's and the
+    browser's text cannot differ;
+  - the path, the id parse and the state;
+  - the title and a description per state (below);
+  - the form line and the tally;
+  - the SportsEvent script, with `<` escaped and a UTC `startDate`;
+  - a venue only when confirmed.
+- `$lib/api.js` gains `getFixture`.
+- The page renders `PageHead` once plus its SportsEvent script, which Svelte
+  removes on a move away.
+
+**Descriptions (drafts; the owner's words decide, as D4):**
+- before the call: "{game}, {league}, {day date}. Our call is published on
+  matchday at 06:00 UTC, before kick-off. Recent form and past meetings are
+  here now."
+- with the call: "Our call for {game} ({league}, {date}): {call}. Published
+  before kick-off and graded after the match."
+- settled: "{Home} {h}–{a} {Away} ({league}, {date}). Our call, {call},
+  came in / did not come in."
+
+**Verified:**
+- 75 web tests; build clean, with no warning from the new files.
+- curl on `vite preview` of the build against `bvp_scratch`, seeded from
+  `tests/test_match_api.py`: id-only and wrong-word addresses 301 to the
+  canonical one; stale, unserved, unknown and non-numeric ids 404; the
+  server's HTML carries one of each head tag and one SportsEvent.
+- A **25-check Playwright click-through**:
+  - the call, score and form in the server's HTML;
+  - one of each head tag after hydration, and still after a client-side
+    move to `/` and back, with the SportsEvent gone on `/`;
+  - title, venue and UTC start in the structured data;
+  - form W/D/L and scores from the side's view; the empty-form line;
+    meetings newest first;
+  - the zone switch (15:00 UK → 17:00 Nairobi);
+  - no betPawa button on a settled call, the sign-in-to-bet button on a
+    live one; the pre-call state with no CONF bar;
+  - a stale fixture 404s inside the layout;
+  - 390 px with no horizontal scroll and the columns stacked;
+  - no page errors.
+- Scratch database dropped.
+
 Load via `+page.js` from `/fixture/{id}`. A slug that doesn't match
 redirects (301) to the current one.
 
@@ -686,9 +838,20 @@ States:
 | state | shows |
 | --- | --- |
 | upcoming, no call yet | teams, league, kick-off, "our call is published on matchday at 06:00 UTC" (D7) |
-| call published | the call phrase, `callMeans`, the confidence bar, kick-off |
+| call published | the call phrase, `callMeans`, the confidence bar, kick-off, the betPawa button |
 | settled | the call, the score it was graded from, won/lost |
 | **stale**: date passed, no tip, never settled | **404**, and excluded from the sitemap |
+
+In every state below the call (D7, owner 2026-09-18):
+- **the venue**;
+- **recent form**: each side's last five this season as W/D/L with scores,
+  and our calls on those games as a count ("our calls: 4 of 5 came in") —
+  a count, not a rate, as in 2.5;
+- **last meetings**: scores only.
+
+When a list is short or empty it says so plainly ("first meeting in our
+records"). The confidence bar is the one on the front page's cards; there
+is no other probability.
 
 - **Why stale fixtures exist:** the `fixtures` unique key includes
   `match_date`, so a rescheduled match arrives as a *new* row and the old one
@@ -724,6 +887,9 @@ States:
 
 ### 2.5 Team pages (~½ day) — `/team/[team]/`
 
+- **API** (moved here from 2.2, 2026-09-18): `GET /teams`, the served teams
+  with `team_id`, display name and slug; and `GET /team/{team_id}/tips`,
+  the published tips involving the team, newest first, with a limit.
 - **Content:**
   - the next fixture, if any;
   - the published calls involving the team, with outcomes;
@@ -739,8 +905,58 @@ States:
 
 ### 2.7 The dynamic sitemap (~½ day) — `web/src/routes/sitemap.xml/+server.js`
 
+**Built 2026-09-18, uncommitted.**
+- `$lib/sitemap.js` (pure, 5 node tests) builds the urlset:
+  - `/` and `/parlay` with **no `lastmod`**. Their content moves with every
+    call, and the API only knows match pages' visible changes. An
+    inaccurate date teaches Google to ignore the site's `lastmod`.
+  - then each match page at `matchPath` with the API's `lastmod`;
+  - XML-escaped; nothing internal; no `priority` or `changefreq`.
+- `+server.js` reads `/sitemap/entries` through the request's `fetch`
+  (`handleFetch` → uvicorn). It answers `application/xml`, cached for an
+  hour. **If the API fails it answers 503 with `Retry-After: 600`**, never
+  an empty list, which would read as every match page having gone.
+- `robots.txt` gains `Sitemap: https://babavanga.net/sitemap.xml`; a test
+  pins it to `ORIGIN`. Its `/api/` comment, stale since 2.1, is corrected.
+- nginx is unchanged: there is no `sitemap.xml` file in `build/client`, so
+  `try_files` hands the request to `@web`.
+
+**Verified:**
+- 80 web tests; build clean.
+- `node build` against a scratch API seeded from `tests/test_match_api.py`:
+  - 200, `application/xml; charset=utf-8`, `max-age=3600`;
+  - parses as XML: 13 URLs, `/`, `/parlay` and exactly the API's 11 match
+    pages, newest first, stale and unserved fixtures absent;
+  - **every listed URL answers 200 with no redirect**;
+  - with the API stopped, 503 with `Retry-After`.
+- Scratch database dropped.
+
+**Deploy (2.2 + 2.3 + 2.7 together):**
+1. Commit, then the normal `deploy.sh`. It restarts the API for the new
+   endpoints, rebuilds, and restarts `bvp-web`. No nginx, unit or schema
+   change.
+2. Verify:
+   - `curl -s https://babavanga.net/sitemap.xml | head -5` shows the
+     urlset;
+   - `curl -s https://babavanga.net/sitemap.xml | grep -c '<url>'` is the
+     number of match pages plus 2;
+   - `curl -sI https://babavanga.net/robots.txt` then
+     `curl -s https://babavanga.net/robots.txt | tail -1` shows the
+     `Sitemap:` line;
+   - take one `<loc>` from the sitemap, `curl -sI` it for 200, and open it
+     in a browser;
+   - `curl -sI https://babavanga.net/match/<id>` gives 301 to the full
+     address.
+3. Search Console:
+   - Sitemaps → add `https://babavanga.net/sitemap.xml`; expect "Success"
+     and discovered ≈ submitted within days.
+   - URL-inspect one match page: "Test live URL" then "View tested page";
+     the HTML should hold the call and the form.
+
 - **Content:** from `/sitemap/entries`, the static pages, the four league
-  pages, the team pages and the match pages per D8.
+  pages, the team pages and the match pages per D8. It lists only pages that
+  exist when it ships: in the 2.2/2.3/2.7 batch that is `/`, `/parlay` and
+  the match pages. League and team pages join it with 2.4 and 2.5.
 - **Format:** `<loc>` absolute (D3); `<lastmod>` as ISO 8601 UTC, defined
   in 2.2 (never the fixture's price-driven `updated_at`); no
   `<priority>` or `<changefreq>`; `Content-Type: application/xml`;
@@ -761,6 +977,8 @@ for Google to recrawl those pages.
 - The footer links to the four league pages and `/record`.
 - Crawlers find pages mainly by following links. The sitemap is a hint, not
   a substitute.
+- **Not in the 2.2/2.3/2.7 batch** (owner, 2026-09-18). Until this lands,
+  the sitemap is the only way to reach a match page.
 
 ### 2.9 Docs and deploy (~½ day)
 

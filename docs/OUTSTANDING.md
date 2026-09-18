@@ -7,7 +7,53 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-18** (latest): **1.11 self-hosted fonts built,
+Last updated **2026-09-18** (latest): **SEO 2.7 (sitemap) built,
+uncommitted — 2.2 + 2.3 + 2.7 are ready to ship together.**
+`web/src/routes/sitemap.xml/+server.js` over `/sitemap/entries`, built by
+`$lib/sitemap.js` (pure, 5 tests): `/` and `/parlay` without `lastmod` (no
+accurate one exists), each match page with the API's; `application/xml`,
+`max-age=3600`; **503 + `Retry-After` when the API fails**, never an empty
+list. `robots.txt` gains the `Sitemap:` line (pinned to `ORIGIN`) and its
+stale `/api/` comment is corrected. No nginx change. 80 web tests; `node
+build` against a seeded scratch API: valid XML, exactly the API's match
+pages plus 2, every URL 200 without redirect, 503 with the API down;
+scratch dropped. A uvicorn on :8000 not started by this session
+(12:17, `python -m uvicorn api.main:app --port 8000`) was left running; this
+session used :8001. **Deploy: commit → `deploy.sh` → the curls and Search
+Console steps in `SEO_PLAN.md` 2.7** (submit the sitemap, URL-inspect a
+match page). Owner still to confirm the 23 `check` venues. Next: 2.8 links
+(not yet taken), 2.4–2.6.
+Before that, same day: **SEO 2.3 (match pages) built,
+uncommitted.** `web/src/routes/match/[match]/` (`+page.js`: id-first, 301 to
+the canonical slug, API 404 → page 404; `+page.svelte`: kicker + h1, meta
+line with UK→local kick-off and a confirmed venue, the call box in its
+three states, betPawa button on live calls, recent form with our calls and
+a count, last meetings as scores), `$lib/match.js` (pure; dates written out
+so server and browser text cannot differ; titles, per-state descriptions
+— drafts for the owner — and a SportsEvent script with `<` escaped),
+`getFixture` in `$lib/api.js`. 75 web tests, build clean; curl on
+`vite preview` + `bvp_scratch` (301s, four kinds of 404, one of each head
+tag); **25-check Playwright click-through** all ok; scratch dropped.
+**Ship with 2.7**: nothing links to a match page yet (2.8 not taken), so
+without the sitemap no crawler finds one. Next: 2.7.
+Before that, same day: **SEO 2.2 (match-page API) built,
+uncommitted.** Owner decisions first, all as recommended: D7 call + facts
+(venue, each side's last five this season with our calls, last meetings),
+D8 called + upcoming fixtures, D9/D12 `/match/{id}-{bbc-names}`, team
+endpoints moved to 2.5; the minimal internal links (2.8) were not taken, so
+match pages are reachable through the sitemap only until 2.8. Measured on
+the live API before deciding: the fixtures feed runs 1–3 days ahead (not
+7), every past fixture has a call (267/267). Built: `api/teams.py`,
+`GET /fixture/{id}` and `GET /sitemap/entries` in `api/main.py`,
+`tests/test_match_api.py` (24; four planted bugs each caught). **Venue
+source replaced (owner):** `stadiums.csv`'s Wikidata labels are stale
+(Brentford at Griffin Park, Stoke at the Britannia) — `reference/venues.csv`
+drafted for the 92 served clubs, **69 `ok` / 23 `check`; a `check` row
+prints nothing until the owner confirms it**. fbref answered 403
+(Cloudflare), not pursued. Full suite **775 pass**; smoke test on the dev
+store: 119 sitemap entries, `/fixture` median 65 ms. Deploy: `deploy.sh`
+(API restart; no nginx change). Next: 2.3 match pages, then 2.7.
+Before that, same day: **1.11 self-hosted fonts built,
 uncommitted.** Owner's PageSpeed after 2.1: **69**, FCP 3.8 s, LCP 5.2 s,
 TBT 140 ms, CLS 0.002, SI 4.4 s (into `SEO_PLAN.md` §7; PSI's keyless API
 was over quota again, so the diagnosis used a local Lighthouse run on the

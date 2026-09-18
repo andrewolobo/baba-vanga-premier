@@ -702,6 +702,8 @@ curl -sI  https://<domain>/                    # 200, text/html
 curl -sI  https://<domain>/book                # 200 (a page)
 curl -sI  https://<domain>/does-not-exist      # 404, from the page server
 curl -s   https://<domain>/ | grep -c 'property="og:url"'   # 1 -- the page's own tags are in the HTML
+curl -sI  https://<domain>/sitemap.xml         # 200, application/xml (SEO_PLAN.md 2.7; 503 means the API is down)
+curl -sI  https://<domain>/match/<id>          # 301 to /match/<id>-<home>-vs-<away> (take an id from the sitemap)
 curl -sI  https://<domain>/robots.txt          # 200, text/plain
 curl -sI  https://<domain>/api/tips            # X-Robots-Tag: noindex (and nosniff)
 curl -sI  https://<domain>/                    # NO X-Robots-Tag -- if present, the site is de-indexing itself

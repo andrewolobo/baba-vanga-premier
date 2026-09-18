@@ -42,7 +42,7 @@ from fastapi import Body, Depends, FastAPI, HTTPException, Query, Request, Respo
 from fastapi.middleware.cors import CORSMiddleware
 from scipy import stats
 
-from api import auth, betpawa
+from api import auth, betpawa, teams
 from engine import config, db
 from engine.seasons import SERVED_DIVISIONS
 from engine.serve import parlay as parlay_rule
@@ -467,6 +467,205 @@ def tip_record(conn: db.Connection = Depends(get_conn)) -> dict:
         # return without ignoring a field it was handed.
         "return_supported": False,
     }
+
+
+# --- match pages (docs/SEO_PLAN.md 2.2, 2.3, 2.7) -------------------------- #
+#
+# A page per fixture, for search. It shows what the front page's cards show --
+# the call, what it needs, the claim, the outcome -- plus facts that carry no
+# probability: the venue, each side's recent results with our call on each,
+# and the last meetings (D7). No prices, no return (§6).
+#
+# Which fixtures have a page (D8): every fixture with a published call, and
+# upcoming ones before their call lands. A fixture whose date passed with no
+# call -- a reschedule arrives as a new row and leaves the old one behind --
+# has none. `/fixture` and `/sitemap/entries` state that rule separately, in
+# Python and in SQL; `tests/test_match_api.py` pins that they agree.
+
+
+def _season_start(match_date: str) -> str:
+    """1 July of the season `match_date` falls in: the English season runs
+    August to May, and July is the gap between two."""
+    year, month = int(match_date[:4]), int(match_date[5:7])
+    return f"{year if month >= 7 else year - 1}-07-01"
+
+
+#: One settled call per fixture, the latest (as for the page's own call,
+#: review R5), with the score it was graded from. Every played fixture since
+#: the product launched was called, so this is also the season's results.
+SETTLED_PER_FIXTURE = """
+    SELECT DISTINCT ON (f.fixture_id)
+           f.fixture_id, f.match_date, f.division, f.home_team_id,
+           h.canonical_name AS home_team, a.canonical_name AS away_team,
+           t.side, t.outcome, t.fthg, t.ftag
+    FROM tips t
+    JOIN fixtures f ON f.fixture_id = t.fixture_id
+    JOIN teams h ON h.team_id = f.home_team_id
+    JOIN teams a ON a.team_id = f.away_team_id
+    WHERE t.settled_at IS NOT NULL AND f.match_date < %s AND {where}
+    ORDER BY f.fixture_id, t.tip_id DESC
+"""
+
+
+def _form(conn, team_id: int, before: str) -> list[dict[str, Any]]:
+    """The side's last five settled fixtures this season before `before`,
+    newest first, with our call on each. W/D/L is from the side's own view."""
+    rows = _rows(
+        conn,
+        "SELECT * FROM (" + SETTLED_PER_FIXTURE.format(
+            where="f.match_date >= %s AND %s IN (f.home_team_id, f.away_team_id)")
+        + ") s ORDER BY match_date DESC, fixture_id DESC LIMIT 5",
+        (before, _season_start(before), team_id),
+    )
+    form = []
+    for r in rows:
+        at_home = r["home_team_id"] == team_id
+        scored, conceded = (r["fthg"], r["ftag"]) if at_home else (r["ftag"], r["fthg"])
+        form.append({
+            "fixture_id": r["fixture_id"],
+            "match_date": r["match_date"],
+            "home_name": teams.display_name(r["home_team"]),
+            "away_name": teams.display_name(r["away_team"]),
+            "at_home": at_home,
+            "fthg": r["fthg"],
+            "ftag": r["ftag"],
+            "result": (None if scored is None or conceded is None
+                       else "W" if scored > conceded else "D" if scored == conceded else "L"),
+            "side": r["side"],
+            "outcome": r["outcome"],
+        })
+    return form
+
+
+def _meetings(conn, home_id: int, away_id: int, before: str) -> list[dict[str, Any]]:
+    """The last five meetings before `before`, either way round, newest
+    first: scores only. The historical rows come from `matches`, which were
+    backtest inputs and never published calls, so no call rides with them
+    (D8, §6); the fixtures this product called carry their graded score."""
+    lo, hi = sorted((home_id, away_id))
+    pair = ("LEAST({t}.home_team_id, {t}.away_team_id) = %s"
+            " AND GREATEST({t}.home_team_id, {t}.away_team_id) = %s")
+    history = _rows(
+        conn,
+        "SELECT m.match_date, m.division, h.canonical_name AS home_team,"
+        " a.canonical_name AS away_team, m.fthg, m.ftag"
+        " FROM matches m"
+        " JOIN teams h ON h.team_id = m.home_team_id"
+        " JOIN teams a ON a.team_id = m.away_team_id"
+        f" WHERE {pair.format(t='m')} AND m.match_date < %s"
+        " AND m.fthg IS NOT NULL AND m.ftag IS NOT NULL"
+        " ORDER BY m.match_date DESC LIMIT 5",
+        (lo, hi, before),
+    )
+    called = _rows(
+        conn,
+        SETTLED_PER_FIXTURE.format(where=pair.format(t="f") + " AND t.fthg IS NOT NULL"),
+        (before, lo, hi),
+    )
+    # A match in both (were `matches` ever to take in a season this product
+    # called) is listed once.
+    unique = {}
+    for r in called + history:
+        unique.setdefault((r["match_date"], r["home_team"], r["away_team"]), r)
+    newest = sorted(unique.values(), key=lambda r: r["match_date"], reverse=True)[:5]
+    return [{
+        "match_date": r["match_date"],
+        "division": r["division"],
+        "home_name": teams.display_name(r["home_team"]),
+        "away_name": teams.display_name(r["away_team"]),
+        "fthg": int(r["fthg"]),
+        "ftag": int(r["ftag"]),
+    } for r in newest]
+
+
+@app.get("/fixture/{fixture_id}")
+def fixture(fixture_id: int, conn: db.Connection = Depends(get_conn)) -> dict:
+    """One fixture, for its match page.
+
+    `tip` is the fixture's call in the `/tips` shape, settled or not, or
+    null before it is published -- the latest `tip_id` where a fixture was
+    called under more than one rule version (review R5). `home_team` and
+    `away_team` are the canonical names every other endpoint uses;
+    `home_name` and `away_name` are the display names (D12) the page prints,
+    and `slug` is built from them. No fixture prices (§6).
+
+    404 for an unknown id, a division that is not served, and a fixture
+    whose date has passed with no call (D8).
+    """
+    row = conn.execute(
+        "SELECT f.fixture_id, f.division, f.match_date, f.kickoff_time,"
+        " f.home_team_id, f.away_team_id,"
+        " h.canonical_name AS home_team, a.canonical_name AS away_team"
+        " FROM fixtures f"
+        " JOIN teams h ON h.team_id = f.home_team_id"
+        " JOIN teams a ON a.team_id = f.away_team_id"
+        " WHERE f.fixture_id = %s",
+        (fixture_id,),
+    ).fetchone()
+    if row is None or row["division"] not in SERVED_DIVISIONS:
+        raise HTTPException(404, "unknown fixture")
+    tip = _with_handicap(_rows(
+        conn, TIP_SELECT + " WHERE t.fixture_id = %s ORDER BY t.tip_id DESC LIMIT 1",
+        (fixture_id,)))
+    if not tip and row["match_date"] < db.today():
+        raise HTTPException(404, "no call was published for this fixture")
+    home, away, played = row["home_team"], row["away_team"], row["match_date"]
+    return {
+        "fixture_id": row["fixture_id"],
+        "division": row["division"],
+        "match_date": played,
+        "kickoff_time": row["kickoff_time"],
+        "home_team": home,
+        "away_team": away,
+        "home_name": teams.display_name(home),
+        "away_name": teams.display_name(away),
+        "slug": teams.fixture_slug(home, away),
+        "venue": teams.venue(home),
+        "tip": tip[0] if tip else None,
+        "form": {
+            "home": _form(conn, row["home_team_id"], played),
+            "away": _form(conn, row["away_team_id"], played),
+        },
+        "meetings": _meetings(conn, row["home_team_id"], row["away_team_id"], played),
+    }
+
+
+def _iso_utc(text: str) -> str:
+    """`YYYY-MM-DD HH:MM:SS` (stored UTC) as ISO 8601 with its zone."""
+    return text.replace(" ", "T") + "Z"
+
+
+@app.get("/sitemap/entries")
+def sitemap_entries(conn: db.Connection = Depends(get_conn)) -> list[dict]:
+    """Every fixture that has a match page (D8), newest first, for
+    `sitemap.xml` (docs/SEO_PLAN.md 2.7).
+
+    `lastmod` is when the page last changed in a way a reader could see: the
+    latest of its calls' `published_at` and `settled_at`, or `first_seen_at`
+    before any call. **Not `fixtures.updated_at`**, which `fixture_sync`
+    moves on every price refresh although no page shows a price (review R4).
+    """
+    rows = _rows(
+        conn,
+        "SELECT f.fixture_id, f.first_seen_at,"
+        " h.canonical_name AS home_team, a.canonical_name AS away_team,"
+        " MAX(t.published_at) AS published_at, MAX(t.settled_at) AS settled_at"
+        " FROM fixtures f"
+        " JOIN teams h ON h.team_id = f.home_team_id"
+        " JOIN teams a ON a.team_id = f.away_team_id"
+        " LEFT JOIN tips t ON t.fixture_id = f.fixture_id"
+        " WHERE f.division = ANY(%s)"
+        " GROUP BY f.fixture_id, h.canonical_name, a.canonical_name"
+        " HAVING COUNT(t.tip_id) > 0 OR f.match_date >= %s"
+        " ORDER BY f.match_date DESC, f.fixture_id DESC",
+        (list(SERVED_DIVISIONS), db.today()),
+    )
+    return [{
+        "fixture_id": r["fixture_id"],
+        "slug": teams.fixture_slug(r["home_team"], r["away_team"]),
+        "lastmod": _iso_utc(max(filter(None, (r["published_at"], r["settled_at"])),
+                                default=r["first_seen_at"])),
+    } for r in rows]
 
 
 @app.get("/book")
