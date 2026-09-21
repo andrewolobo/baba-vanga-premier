@@ -220,6 +220,30 @@ def tips_client(make_database):
     app.dependency_overrides.clear()
 
 
+def test_next_fixtures_answers_when_there_is_football_again(tips_client):
+    """The front page's empty state has no tip to read a date off, so this is
+    where the date comes from. Both unplayed fixtures sit on the same day."""
+    assert tips_client.get("/fixtures/next").json() == {
+        "match_date": relative_date(5),
+        "fixtures": 2,
+    }
+    assert tips_client.get("/fixtures/next", params={"division": "E0"}).json() == {
+        "match_date": relative_date(5),
+        "fixtures": 1,
+    }
+
+
+def test_next_fixtures_is_null_rather_than_a_played_date(tips_client):
+    """Out of season the feed carries nothing ahead, and the endpoint must say
+    so. Falling back to the newest date in the table would advertise a match
+    that has already been played as the next one."""
+    assert tips_client.get("/fixtures/next", params={"division": "E3"}).json() == {
+        "match_date": None,
+        "fixtures": 0,
+    }
+    assert tips_client.get("/fixtures/next", params={"division": "E9"}).status_code == 400
+
+
 def test_tips_returns_only_unplayed_fixtures(tips_client):
     body = tips_client.get("/tips").json()
     assert {t["tip_id"] for t in body} == {1, 2}

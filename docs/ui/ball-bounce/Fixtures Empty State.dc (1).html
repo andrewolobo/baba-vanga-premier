@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Barlow:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: #0d0d0e; }
+  a { color: #f2701b; }
+  a:hover { color: #ff8a3d; }
+  @keyframes ballX {
+    0%   { transform: translateX(var(--bx, -300px)); animation-timing-function: cubic-bezier(.22,.62,.3,1); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes ballY {
+    0%   { transform: translateY(-300px); animation-timing-function: cubic-bezier(.45,0,.9,.55); }
+    24%  { transform: translateY(0); animation-timing-function: cubic-bezier(.12,.8,.4,1); }
+    43%  { transform: translateY(-120px); animation-timing-function: cubic-bezier(.45,0,.9,.55); }
+    60%  { transform: translateY(0); animation-timing-function: cubic-bezier(.12,.8,.4,1); }
+    72%  { transform: translateY(-48px); animation-timing-function: cubic-bezier(.45,0,.9,.55); }
+    82%  { transform: translateY(0); animation-timing-function: cubic-bezier(.12,.8,.4,1); }
+    89%  { transform: translateY(-16px); animation-timing-function: cubic-bezier(.45,0,.9,.55); }
+    94%  { transform: translateY(0); animation-timing-function: cubic-bezier(.12,.8,.4,1); }
+    97%  { transform: translateY(-5px); animation-timing-function: cubic-bezier(.45,0,.9,.55); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes ballSpin {
+    0%   { transform: rotate(-560deg); animation-timing-function: cubic-bezier(.22,.62,.3,1); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes ballShadow {
+    0%   { opacity: 0; transform: translateX(var(--bx, -300px)) scaleX(.4); animation-timing-function: cubic-bezier(.22,.62,.3,1); }
+    24%  { opacity: .55; }
+    100% { opacity: .5; transform: translateX(0) scaleX(1); }
+  }
+</style>
+</helmet>
+<div style="min-height:100%;background:#0d0d0e;padding:52px 52px 80px;font-family:Barlow,system-ui,sans-serif;box-sizing:border-box">
+  <div style="max-width:1900px;margin:0 auto">
+    <div style="font-family:Oswald,sans-serif;font-weight:500;font-size:14px;letter-spacing:.34em;color:#f2701b;text-transform:uppercase">The Published List</div>
+    <h1 style="font-family:Oswald,sans-serif;font-weight:700;font-size:72px;line-height:1;letter-spacing:.005em;color:#fff;margin:14px 0 30px;text-transform:uppercase">Fixtures &amp; Calls</h1>
+
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:34px">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+        <button type="button" onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+      </sc-for>
+    </div>
+
+    <div style="position:relative;border-radius:10px;background:#18181b;border-left:3px solid #f2701b;padding:34px 40px 38px">
+      <div style="position:relative;max-width:900px">
+        <div style="font-weight:600;font-size:19px;color:#fff;letter-spacing:.01em">No calls published for these fixtures yet.</div>
+        <div style="margin-top:14px;font-size:17px;line-height:1.75;color:#8b8b90;text-wrap:pretty">The list is rebuilt by the weekly serving cycle. Out of season, or before the fixtures feed carries the coming week, this is the correct and expected state — it is not an error.</div>
+
+      </div>
+
+      <sc-if value="{{ ballOn }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;inset:0;pointer-events:none;z-index:3">
+          <div style="{{ ballOrigin }}">
+            <div style="position:absolute;left:-4px;bottom:-9px;width:72px;height:13px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.8),rgba(0,0,0,0) 70%);animation:ballShadow 2.6s both"></div>
+            <div style="animation:ballX 2.6s both">
+              <div style="animation:ballY 2.6s both">
+                <img src="football.png" alt="" style="display:block;width:64px;height:64px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));animation:ballSpin 2.6s both" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#f2701b&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#f2701b&quot;,&quot;#3ddc84&quot;,&quot;#4c8dff&quot;,&quot;#e0e0e6&quot;]}}">
+class Component extends DCLogic {
+  state = { active: 0, ballOn: true, bx: -300 };
+
+  randomBx() {
+    const mag = 180 + Math.random() * 320;
+    return Math.random() < 0.5 ? -mag : mag;
+  }
+
+  play() {
+    this.setState({ ballOn: false }, () => {
+      clearTimeout(this._t);
+      this._t = setTimeout(() => this.setState({ ballOn: true, bx: this.randomBx() }), 40);
+    });
+  }
+
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  renderVals() {
+    const accent = this.props.accentColor ?? '#f2701b';
+    const labels = ['All', 'Premier League', 'Championship', 'League One', 'League Two'];
+    const base = {
+      fontFamily: 'Oswald, sans-serif', fontWeight: 500, fontSize: '17px',
+      letterSpacing: '.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', padding: '14px 26px',
+      borderRadius: '8px', cursor: 'pointer', transition: 'background .18s, color .18s'
+    };
+    return {
+      ballOn: this.state.ballOn,
+      ballOrigin: {
+        position: 'absolute', left: '50%', bottom: '10px', marginLeft: '-32px',
+        '--bx': this.state.bx + 'px'
+      },
+      filters: labels.map((label, i) => ({
+        label,
+        onClick: () => { this.setState({ active: i }); this.play(); },
+        style: i === this.state.active
+          ? { ...base, background: accent, color: '#161608', border: '1px solid ' + accent }
+          : { ...base, background: '#131316', color: '#d6d6da', border: '1px solid #2b2b31' }
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

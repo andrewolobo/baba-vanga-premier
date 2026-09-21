@@ -57,6 +57,10 @@ export async function post(path, body) {
 export const getHealth = () => get('/health');
 export const getFixtures = (division) => get('/fixtures', { division });
 export const getPredictions = (division) => get('/predictions', { division });
+// Only for the front page's empty state: when no calls are published there is
+// no date in the tip list to read, so the "when is there football again" line
+// comes from the fixture feed instead. Says `match_date: null` out of season.
+export const getNextFixtures = (division, f) => get('/fixtures/next', { division }, f);
 export const getBook = (settled) => get('/book', { settled });
 export const getPerformance = () => get('/performance');
 export const getTips = (division, f) => get('/tips', { division }, f);

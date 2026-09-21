@@ -2,6 +2,7 @@
   import { onMount, getContext } from 'svelte';
   import {
     getTips,
+    getNextFixtures,
     callLabel,
     callCode,
     callMeans,
@@ -50,11 +51,32 @@
   let error = $state(data.error);
   let loading = $state(false);
 
+  // When nothing is published, the empty state answers "when is there football
+  // again" from the fixture feed -- `tips` has no date in it to read. Null
+  // out of season, and null whenever there are calls to list instead.
+  let next = $state(data.next);
+
+  // The ball in the empty state. `key` rebuilds its nodes, which is what
+  // restarts a CSS animation; `from` is the horizontal run-up it arrives on.
+  // Both start fixed rather than random so the server's HTML and the first
+  // browser render agree -- the randomising happens on a tab change, which
+  // is browser-only.
+  let ballKey = $state(0);
+  let ballFrom = $state(-300);
+
   async function loadTips() {
     loading = true;
     error = null;
     try {
       tips = await getTips(tipsDivision || null);
+      // Per tab, not once per page: an empty Premier League tab and an empty
+      // League Two tab have different answers, and the feed often carries one
+      // without the other. A failed read leaves the box with its prose, which
+      // is already a complete explanation without a date.
+      next =
+        tips.length === 0
+          ? await getNextFixtures(tipsDivision || null).catch(() => null)
+          : null;
     } catch (e) {
       error = e.message;
     } finally {
@@ -70,6 +92,11 @@
   $effect(() => {
     if (tipsDivision === shownTips) return;
     shownTips = tipsDivision;
+    // Bounce again, off a fresh run-up. Without it a move from one empty tab
+    // to another empty tab changes nothing on screen, which reads as a dead
+    // button rather than as an answer.
+    ballFrom = (180 + Math.random() * 320) * (Math.random() < 0.5 ? -1 : 1);
+    ballKey += 1;
     loadTips();
   });
 
@@ -179,13 +206,43 @@
   {:else if error}
     <p class="state bad">{error}</p>
   {:else if tips.length === 0}
-    <div class="state box">
-      <strong>No calls published for these fixtures yet.</strong>
-      <p>
-        The list is rebuilt by the weekly serving cycle. Out of season, or before
-        the fixtures feed carries the coming week, this is the correct and
-        expected state — it is not an error.
-      </p>
+    <div class="state box empty">
+      <div class="says">
+        <strong>No calls published for these fixtures yet.</strong>
+        <p>
+          The list is rebuilt by the weekly serving cycle. Out of season, or before
+          the fixtures feed carries the coming week, this is the correct and
+          expected state — it is not an error.
+        </p>
+        <!-- The next date is read off the fixture feed, so it says when there
+             is football, NOT that a call will be published for it. Worded as
+             fixtures for that reason. Absent out of season, when the feed
+             carries nothing ahead and the prose above is the whole answer. -->
+        {#if next?.match_date}
+          <div class="next">
+            <span class="nextlabel">Next fixtures</span>
+            <span class="nextdate">{day(next.match_date)}</span>
+            <span class="nextcount"
+              >{next.fixtures} match{next.fixtures === 1 ? '' : 'es'}</span
+            >
+          </div>
+        {/if}
+      </div>
+
+      <!-- Decoration, and nothing else is said here, so it is hidden from a
+           screen reader. Keyed so a tab change rebuilds the nodes and the CSS
+           animations start over; `prefers-reduced-motion` rests it on the
+           floor instead (docs/ui/ball-bounce). -->
+      {#key ballKey}
+        <div class="arena" aria-hidden="true" style="--from: {ballFrom}px">
+          <div class="ballshadow"></div>
+          <div class="ballx">
+            <div class="bally">
+              <img class="ball" src="/football.png" alt="" width="208" height="208" />
+            </div>
+          </div>
+        </div>
+      {/key}
     </div>
   {:else}
     <div class="list">
@@ -671,6 +728,10 @@
   @media (prefers-reduced-motion: reduce) {
     .card { transition: border-color 0.2s, box-shadow 0.2s; }
     .card:hover { transform: none; }
+    /* A ball crossing the viewport is exactly what this setting is asking not
+       to happen. It still appears, at rest on the floor. */
+    .ballx, .bally, .ball, .ballshadow { animation: none; }
+    .ballshadow { opacity: 0.5; }
   }
 
   /* --- record summary ----------------------------------------------------- */
@@ -702,12 +763,89 @@
   .state.box strong { color: var(--text); display: block; margin-bottom: 8px; }
   .state.box p { margin: 0; max-width: 70ch; line-height: 1.6; }
 
+  /* --- nothing published: the ball (docs/ui/ball-bounce) ------------------- */
+  /* The box is the size its text needs and no larger: the ball rests to the
+     right of the prose rather than on a strip reserved below it, which is what
+     the bounding of `.says` keeps clear. `overflow` stays visible on purpose:
+     the run-up starts above the box and the ball drops in, which is the whole
+     effect. */
+  .state.box.empty { position: relative; padding-bottom: 30px; }
+  .says { max-width: 70ch; }
+
+  .next { margin-top: 20px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .nextlabel {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--dim);
+  }
+  .nextdate {
+    font-family: var(--display); font-weight: 700; font-size: 26px;
+    letter-spacing: 0.01em; color: var(--accent);
+  }
+  .nextcount { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* The origin the ball and its shadow share: the clear right of the box.
+     It paints over the page rather than behind it -- above the sticky header
+     and the bottom bar (both 40 in `+layout.svelte`) and below the phone veil
+     (50), which is a dialogue and must stay on top of everything. */
+  .arena {
+    position: absolute; right: 13%; bottom: 16px;
+    pointer-events: none; z-index: 45;
+  }
+  .ballshadow {
+    position: absolute; left: -4px; bottom: -9px; width: 72px; height: 13px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 70%);
+    animation: ballshadow 2.6s both;
+  }
+  .ballx { animation: ballx 2.6s both; }
+  .bally { animation: bally 2.6s both; }
+  .ball {
+    display: block; width: 64px; height: 64px;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.6));
+    animation: ballspin 2.6s both;
+  }
+
+  /* Split across three elements because the horizontal run-in, the bounce and
+     the spin have different easings and have to compose. The Y track's
+     per-keyframe easing is the bounce: fall fast, rebound soft, decaying. */
+  @keyframes ballx {
+    0% { transform: translateX(var(--from, -300px)); animation-timing-function: cubic-bezier(0.22, 0.62, 0.3, 1); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes bally {
+    0% { transform: translateY(-300px); animation-timing-function: cubic-bezier(0.45, 0, 0.9, 0.55); }
+    24% { transform: translateY(0); animation-timing-function: cubic-bezier(0.12, 0.8, 0.4, 1); }
+    43% { transform: translateY(-120px); animation-timing-function: cubic-bezier(0.45, 0, 0.9, 0.55); }
+    60% { transform: translateY(0); animation-timing-function: cubic-bezier(0.12, 0.8, 0.4, 1); }
+    72% { transform: translateY(-48px); animation-timing-function: cubic-bezier(0.45, 0, 0.9, 0.55); }
+    82% { transform: translateY(0); animation-timing-function: cubic-bezier(0.12, 0.8, 0.4, 1); }
+    89% { transform: translateY(-16px); animation-timing-function: cubic-bezier(0.45, 0, 0.9, 0.55); }
+    94% { transform: translateY(0); animation-timing-function: cubic-bezier(0.12, 0.8, 0.4, 1); }
+    97% { transform: translateY(-5px); animation-timing-function: cubic-bezier(0.45, 0, 0.9, 0.55); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes ballspin {
+    0% { transform: rotate(-560deg); animation-timing-function: cubic-bezier(0.22, 0.62, 0.3, 1); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes ballshadow {
+    0% { opacity: 0; transform: translateX(var(--from, -300px)) scaleX(0.4); animation-timing-function: cubic-bezier(0.22, 0.62, 0.3, 1); }
+    24% { opacity: 0.55; }
+    100% { opacity: 0.5; transform: translateX(0) scaleX(1); }
+  }
+
   @media (max-width: 940px) {
     .row { grid-template-columns: 1fr; gap: 14px; }
     /* Stacked, the call is no longer the right-hand column, so right-aligned
        text leaves the short label ragged over the long one. */
     .verdict { justify-content: space-between; }
     .call { text-align: left; }
+    /* Narrow, the prose fills the width and there is no clear right for the
+       ball to rest in, so it drops under the text on a reserved strip. Its
+       z-index drops with it: the bottom bar is fixed chrome the reader needs,
+       and a ball parked over it is a bug rather than an effect. */
+    .state.box.empty { padding-bottom: 88px; }
+    .arena { right: 50%; margin-right: -32px; bottom: 20px; z-index: 30; }
   }
   @media (max-width: 820px) {
     .page { padding: 48px 18px 0; }

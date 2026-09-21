@@ -129,6 +129,35 @@ def fixtures(
     )
 
 
+@app.get("/fixtures/next")
+def next_fixtures(
+    division: str | None = Query(None, description="E0 | E1 | E2 | E3"),
+    conn: db.Connection = Depends(get_conn),
+) -> dict:
+    """The soonest date the fixtures feed carries a match for, and how many.
+
+    This exists for the empty state on the front page: when `/tips` returns
+    nothing there is, by construction, no date in it to show, and the answer
+    the reader wants -- "when is there football again" -- lives in `fixtures`
+    rather than in `tips`.
+
+    It is a statement about the **fixture list, not about the call list**. A
+    date here does not promise a published call for it; the serving cycle
+    decides that, and out of season or ahead of the feed both come back empty
+    together. `match_date` is null when the feed carries nothing from today
+    on, which is the normal state between seasons and not an error.
+    """
+    _check_division(division)
+    clause = " AND division = %s" if division else ""
+    row = conn.execute(
+        "SELECT match_date, count(*) AS fixtures FROM fixtures"
+        f" WHERE match_date >= %s{clause}"
+        " GROUP BY match_date ORDER BY match_date LIMIT 1",
+        (db.today(),) + ((division,) if division else ()),
+    ).fetchone()
+    return {"match_date": None, "fixtures": 0} if row is None else dict(row)
+
+
 @app.get("/predictions")
 def predictions(
     division: str | None = Query(None),

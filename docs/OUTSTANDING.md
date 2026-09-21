@@ -7,7 +7,58 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-21** (latest): **`/results` and the front page's
+Last updated **2026-09-21** (latest): **the front page's empty state now
+bounces a football and names the next fixture date** (owner request, from the
+support files in `docs/ui/ball-bounce/`), **uncommitted**. One new endpoint,
+`GET /fixtures/next?division=`, returning `{match_date, fixtures}` — the
+earliest date from today on that the fixture feed carries, and how many matches
+sit on it, `{null, 0}` out of season. It exists because the empty state has
+**no tip to read a date off**: `/tips` is empty by construction there, so the
+answer to "when is there football again" has to come from `fixtures`. It is
+therefore a statement about the **fixture list, not the call list** — the line
+is worded "Next fixtures" for that reason, and a date there does not promise a
+published call for it.
+
+Read by `web/src/routes/+page.js` **only when `tips` came back empty**, after
+the fact rather than in the opening `Promise.all`, so the usual case pays
+nothing for a line it will not render; its failure is swallowed, because the
+box's prose is already a complete explanation without a date. Re-read per tab
+in `loadTips()`, since an empty Premier League tab and an empty League Two tab
+have different answers — **right now E0 and E1 carry nothing ahead at all, so
+those two tabs correctly show no date**, while All/E2/E3 show Saturday 26
+September. The ball is the reference animation verbatim (three composed
+tracks — horizontal run-in, bouncing Y with per-keyframe easing, spin — plus
+a contact shadow), keyed on `ballKey` so a tab change rebuilds the nodes and
+restarts it off a fresh random run-up; the randomising is browser-only and the
+initial values fixed, so SSR and hydration agree. `prefers-reduced-motion`
+rests the ball on the floor rather than flying it in.
+
+**The ball paints over the page, not behind it** (owner request, second pass):
+`z-index: 45` puts it above everything the page draws **and** above the sticky
+header and the mobile bottom bar, which are both 40 in `+layout.svelte` --
+and deliberately **below the phone veil at 50**, which is a dialogue and has to
+stay on top of everything. On narrow screens (≤940px) it drops to 30 instead:
+the bottom bar is fixed chrome the reader needs, and a ball parked over it is
+a bug rather than an effect.
+
+**The box is the size its text needs**, also owner request -- the first pass
+gave it a 250px floor and 104px of reserved bottom padding, which made it
+enormous. Now `padding-bottom: 30px` and no min-height: **128px on a tab with
+no date, 188px with one**, against ~116px for the old text-only box. What
+buys that back is where the ball rests: to the **right of the prose** rather
+than on a strip below it, with `.says` bounded to 70ch so that right stays
+clear. Narrow screens have no clear right, so ≤940px reserves 88px and centres
+the ball under the text instead.
+`web/static/football.png` is the supplied art re-saved losslessly, 118KB → 30KB,
+and only downloads when the empty state renders. Verified: 34 API tests and 89
+web tests pass, `svelte-check` clean at 0 errors, and the box rendered against
+the live store at 1360px and 390px, mid-bounce, on a tab with no date, and
+under reduced motion. Paint order was checked by **parking the ball over the
+prose and looking at it**, not by `elementFromPoint` -- the arena is
+`pointer-events: none`, so hit testing skips it and says nothing about what is
+drawn on top. The non-empty list branch is untouched. Deploy: commit →
+`deploy.sh`; no nginx, unit or schema change.
+Before that, same day: **`/results` and the front page's
 settled summary restyled, and the summary is now eight cards, not six** (owner
 request, from an attached Tailwind mock), **uncommitted**, presentation only:
 `web/src/routes/results/+page.svelte` and `web/src/routes/+page.svelte` are
