@@ -11,10 +11,14 @@
 
 import { matchPath } from './match.js';
 import { leaguePath } from './leagues.js';
+import { teamPath } from './teams.js';
 
-// The pages that are not matches. /book and /performance are internal and
+// The pages the store does not generate. /record and /results joined them
+// with 2.6. They carry no <lastmod> for the same reason as the front page:
+// their content moves with every call, and only match pages have a date the
+// API can state accurately. /book and /performance are internal and
 // disallowed in robots.txt, so never listed.
-export const STATIC_PATHS = ['/', '/parlay'];
+export const STATIC_PATHS = ['/', '/parlay', '/record', '/results'];
 
 const escapeXml = (s) =>
   s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
@@ -22,12 +26,14 @@ const escapeXml = (s) =>
 const url = (loc, lastmod) =>
   `<url><loc>${escapeXml(loc)}</loc>${lastmod ? `<lastmod>${escapeXml(lastmod)}</lastmod>` : ''}</url>`;
 
-// `entries` is the API's `/sitemap/entries`: `matches`, and `leagues` (2.4),
-// each league dated by the latest change among its own matches.
+// `entries` is the API's `/sitemap/entries`: `matches`, `leagues` (2.4) and
+// `teams` (2.5). A league or a team is dated by the latest change among its
+// own matches, which is the same rule and just as accurate.
 export function sitemapXml(entries, origin) {
   const urls = [
     ...STATIC_PATHS.map((path) => url(`${origin}${path}`)),
     ...entries.leagues.map((l) => url(`${origin}${leaguePath(l.division)}`, l.lastmod)),
+    ...entries.teams.map((t) => url(`${origin}${teamPath(t.team_id, t.slug)}`, t.lastmod)),
     ...entries.matches.map((e) => url(`${origin}${matchPath(e)}`, e.lastmod))
   ];
   return [

@@ -507,25 +507,38 @@ SETTLED_PER_FIXTURE = """
 """
 
 
-def _form(conn, team_id: int, before: str) -> list[dict[str, Any]]:
-    """The side's last five settled fixtures this season before `before`,
-    newest first, with our call on each. W/D/L is from the side's own view."""
-    rows = _rows(
-        conn,
-        "SELECT * FROM (" + SETTLED_PER_FIXTURE.format(
-            where="f.match_date >= %s AND %s IN (f.home_team_id, f.away_team_id)")
-        + ") s ORDER BY match_date DESC, fixture_id DESC LIMIT 5",
-        (before, _season_start(before), team_id),
-    )
-    form = []
-    for r in rows:
+#: An open upper bound for `SETTLED_PER_FIXTURE`, whose `before` is exclusive.
+#: The team page lists every settled call, one graded earlier today included;
+#: only the match page's form has a game it must stop short of.
+NO_BOUND = "9999-12-31"
+
+
+def _team_calls(conn, team_id: int, since: str, before: str = NO_BOUND,
+                limit: int | None = None) -> list[dict[str, Any]]:
+    """The team's settled fixtures from `since` up to `before` (exclusive),
+    newest first, each seen from its own side: the score, W/D/L, and our call
+    with how it went.
+
+    The match page's form is the last five of these (docs/SEO_PLAN.md 2.3);
+    the team page's list is the whole season's (2.5).
+    """
+    sql = ("SELECT * FROM (" + SETTLED_PER_FIXTURE.format(
+        where="f.match_date >= %s AND %s IN (f.home_team_id, f.away_team_id)")
+        + ") s ORDER BY match_date DESC, fixture_id DESC")
+    params: tuple = (before, since, team_id)
+    if limit is not None:
+        sql, params = sql + " LIMIT %s", params + (limit,)
+    calls = []
+    for r in _rows(conn, sql, params):
         at_home = r["home_team_id"] == team_id
         scored, conceded = (r["fthg"], r["ftag"]) if at_home else (r["ftag"], r["fthg"])
-        form.append({
+        calls.append({
             "fixture_id": r["fixture_id"],
+            "division": r["division"],
             "match_date": r["match_date"],
             "home_name": teams.display_name(r["home_team"]),
             "away_name": teams.display_name(r["away_team"]),
+            "slug": teams.fixture_slug(r["home_team"], r["away_team"]),
             "at_home": at_home,
             "fthg": r["fthg"],
             "ftag": r["ftag"],
@@ -534,7 +547,13 @@ def _form(conn, team_id: int, before: str) -> list[dict[str, Any]]:
             "side": r["side"],
             "outcome": r["outcome"],
         })
-    return form
+    return calls
+
+
+def _form(conn, team_id: int, before: str) -> list[dict[str, Any]]:
+    """The side's last five settled fixtures this season before `before`,
+    newest first, with our call on each. W/D/L is from the side's own view."""
+    return _team_calls(conn, team_id, _season_start(before), before, limit=5)
 
 
 def _meetings(conn, home_id: int, away_id: int, before: str) -> list[dict[str, Any]]:
@@ -617,8 +636,13 @@ def fixture(fixture_id: int, conn: db.Connection = Depends(get_conn)) -> dict:
         "kickoff_time": row["kickoff_time"],
         "home_team": home,
         "away_team": away,
+        "home_team_id": row["home_team_id"],
+        "away_team_id": row["away_team_id"],
         "home_name": teams.display_name(home),
         "away_name": teams.display_name(away),
+        # Each side's own page address (2.5, 2.8), so the names can link.
+        "home_slug": teams.team_slug(home),
+        "away_slug": teams.team_slug(away),
         "slug": teams.fixture_slug(home, away),
         "venue": teams.venue(home),
         "tip": tip[0] if tip else None,
@@ -639,18 +663,25 @@ def _iso_utc(text: str) -> str:
 def sitemap_entries(conn: db.Connection = Depends(get_conn)) -> dict:
     """Every page generated from the store, for `sitemap.xml`
     (docs/SEO_PLAN.md 2.7): `matches`, every fixture that has a match page
-    (D8), newest first; `leagues`, the served divisions that have one.
+    (D8), newest first; `leagues`, the served divisions that have one; and
+    `teams`, every club in one of those matches, by id.
 
     `lastmod` is when the page last changed in a way a reader could see. For
     a match: the latest of its calls' `published_at` and `settled_at`, or
     `first_seen_at` before any call. **Not `fixtures.updated_at`**, which
     `fixture_sync` moves on every price refresh although no page shows a
-    price (review R4). For a league: the latest of its matches', because
-    the league page is those fixtures, their calls and their results.
+    price (review R4). For a league or a team: the latest of its own
+    matches', because those pages are those fixtures, their calls and their
+    results.
+
+    Every team listed here has a page, because it has a served fixture; the
+    reverse does not hold -- a club whose only fixture is stale and uncalled
+    has a page and no entry -- so no URL here 404s.
     """
     rows = _rows(
         conn,
         "SELECT f.fixture_id, f.division, f.first_seen_at,"
+        " f.home_team_id, f.away_team_id,"
         " h.canonical_name AS home_team, a.canonical_name AS away_team,"
         " MAX(t.published_at) AS published_at, MAX(t.settled_at) AS settled_at"
         " FROM fixtures f"
@@ -671,10 +702,17 @@ def sitemap_entries(conn: db.Connection = Depends(get_conn)) -> dict:
                                 default=r["first_seen_at"])),
     } for r in rows]
     latest: dict[str, str] = {}
-    for m in matches:          # ISO UTC text sorts as time
+    by_team: dict[int, tuple[str, str]] = {}
+    for row, m in zip(rows, matches):          # ISO UTC text sorts as time
         latest[m["division"]] = max(latest.get(m["division"], ""), m["lastmod"])
+        for team_id, canonical in ((row["home_team_id"], row["home_team"]),
+                                   (row["away_team_id"], row["away_team"])):
+            _, when = by_team.get(team_id, (canonical, ""))
+            by_team[team_id] = (canonical, max(when, m["lastmod"]))
     leagues = [{"division": d, "lastmod": latest[d]} for d in SERVED_DIVISIONS if d in latest]
-    return {"matches": matches, "leagues": leagues}
+    team_pages = [{"team_id": t, "slug": teams.team_slug(canonical), "lastmod": when}
+                  for t, (canonical, when) in sorted(by_team.items())]
+    return {"matches": matches, "leagues": leagues, "teams": team_pages}
 
 
 #: The latest call per fixture, as a lateral join: what the league and team
@@ -756,6 +794,55 @@ def league(division: str, conn: db.Connection = Depends(get_conn)) -> dict:
         "record": record,
         "upcoming": [_listed(r) for r in upcoming],
         "results": [_listed(r) for r in results],
+    }
+
+
+@app.get("/team/{team_id}")
+def team(team_id: int, conn: db.Connection = Depends(get_conn)) -> dict:
+    """One club, for its team page (docs/SEO_PLAN.md 2.5).
+
+    `division` is where the club is playing now -- its latest served fixture
+    -- so a promoted or relegated side is filed under this season's league.
+    `upcoming` is in the league page's shape; `calls` is every fixture this
+    season whose call has settled, newest first, from the club's own side.
+
+    `tally` is counts, never a rate: a handful of calls cannot carry a strike
+    rate, and one printed on four games would claim a precision the sample
+    does not have. 404 for a club with no fixture in a served division.
+    """
+    served = list(SERVED_DIVISIONS)
+    row = conn.execute(
+        "SELECT t.canonical_name, f.division"
+        " FROM teams t"
+        " JOIN fixtures f ON %s IN (f.home_team_id, f.away_team_id)"
+        " WHERE t.team_id = %s AND f.division = ANY(%s)"
+        " ORDER BY f.match_date DESC, f.fixture_id DESC LIMIT 1",
+        (team_id, team_id, served),
+    ).fetchone()
+    if row is None:
+        raise HTTPException(404, "unknown team")
+    canonical = row["canonical_name"]
+    today = db.today()
+    upcoming = _rows(
+        conn,
+        LISTED + " WHERE %s IN (f.home_team_id, f.away_team_id)"
+        " AND f.division = ANY(%s) AND f.match_date >= %s AND c.settled_at IS NULL"
+        " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
+        (team_id, served, today),
+    )
+    calls = _team_calls(conn, team_id, _season_start(today))
+    return {
+        "team_id": team_id,
+        "name": teams.display_name(canonical),
+        "slug": teams.team_slug(canonical),
+        "division": row["division"],
+        "venue": teams.venue(canonical),
+        "upcoming": [_listed(r) for r in upcoming],
+        "calls": calls,
+        "tally": {
+            "graded": sum(1 for c in calls if c["outcome"] in ("win", "lose")),
+            "won": sum(1 for c in calls if c["outcome"] == "win"),
+        },
     }
 
 

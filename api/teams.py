@@ -61,6 +61,11 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", folded.lower()).strip("-")
 
 
+def team_slug(canonical: str) -> str:
+    """The words of a team page's URL, from a canonical name."""
+    return slug(display_name(canonical))
+
+
 def fixture_slug(home: str, away: str) -> str:
     """The words of a match page's URL, from two canonical names."""
-    return f"{slug(display_name(home))}-vs-{slug(display_name(away))}"
+    return f"{team_slug(home)}-vs-{team_slug(away)}"

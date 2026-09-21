@@ -46,7 +46,7 @@
     </p>
     <div class="actions">
       <a href="#tips" class="solid">See this week's calls</a>
-      <a href="#record" class="ghost">Check the record</a>
+      <a href="/record" class="ghost">Check the record</a>
     </div>
   </div>
 </section>

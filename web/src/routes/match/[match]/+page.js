@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import { ApiError, getFixture } from '$lib/api.js';
-import { matchPath, parseMatchParam } from '$lib/match.js';
+import { matchPath, parseIdParam } from '$lib/match.js';
 
 // One fixture's page (docs/SEO_PLAN.md 2.3). The id at the front of the
 // address decides which fixture; the words after it are decoration (D9), so
@@ -9,7 +9,7 @@ import { matchPath, parseMatchParam } from '$lib/match.js';
 //
 // The API decides which fixtures have a page (D8): 404 there is 404 here.
 export async function load({ params, fetch }) {
-  const id = parseMatchParam(params.match);
+  const id = parseIdParam(params.match);
   if (id === null) error(404, 'Not found');
   let fixture;
   try {

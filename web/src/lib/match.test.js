@@ -5,7 +5,7 @@ import {
   longDate,
   shortDay,
   matchPath,
-  parseMatchParam,
+  parseIdParam,
   matchState,
   pageTitle,
   pageDescription,
@@ -39,10 +39,10 @@ test('dates are written out, not left to the ICU build', () => {
 
 test('the address is id first, words second', () => {
   assert.equal(matchPath(base), '/match/268-manchester-united-vs-nottingham-forest');
-  assert.equal(parseMatchParam('268-manchester-united-vs-nottingham-forest'), 268);
-  assert.equal(parseMatchParam('268'), 268);
-  assert.equal(parseMatchParam('268-anything'), 268);
-  for (const bad of ['', 'manchester-united', '12x', '-268']) assert.equal(parseMatchParam(bad), null, bad);
+  assert.equal(parseIdParam('268-manchester-united-vs-nottingham-forest'), 268);
+  assert.equal(parseIdParam('268'), 268);
+  assert.equal(parseIdParam('268-anything'), 268);
+  for (const bad of ['', 'manchester-united', '12x', '-268']) assert.equal(parseIdParam(bad), null, bad);
 });
 
 test('three states, from the call', () => {

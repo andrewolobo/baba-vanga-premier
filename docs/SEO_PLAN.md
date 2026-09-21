@@ -989,6 +989,50 @@ league and match pages return 500 in that dev stack until it is restarted.
 
 ### 2.5 Team pages (~1 day) — `/team/[team]/`
 
+**Built 2026-09-21, uncommitted**, as specified below.
+
+**API:**
+- `GET /team/{team_id}`: display name, slug, `division` (from the club's
+  latest served fixture, so a promoted or relegated side is filed under the
+  league it plays in now), venue, `upcoming` in the league page's shape
+  (`LISTED`/`_listed`, shared with 2.4), `calls` and `tally`. 404 for a club
+  with no fixture in a served division.
+- `_form` (2.3) and the team page's `calls` are now one query,
+  **`_team_calls`**: the same row from the club's own side, the form being
+  its last five before the match it sits on. The team page passes no upper
+  bound (`NO_BOUND`), so a fixture played and graded earlier today is still
+  listed; only the match page has a game it must stop short of. Form rows
+  gained `division` and `slug` as a result — additive, and nothing reads
+  them yet.
+- `/fixture/{id}` gained `home_team_id`, `away_team_id`, `home_slug`,
+  `away_slug`, so the match page's names can link (2.8).
+- **`/sitemap/entries` is now `{matches, leagues, teams}`.** A team's
+  `lastmod` is the latest of its own matches'. It lists a club that appears
+  in a listed match, which is a subset of the clubs that have a page, so no
+  listed URL 404s — pinned by a test that fetches every one.
+- `api/teams.py` gained `team_slug`; `fixture_slug` is now two of them.
+- `tests/test_match_api.py` +11, **43 in all**.
+
+**Web:**
+- `$lib/teams.js`: `teamPath`, title, description and `tallySentence` —
+  counts, never a rate. `parseMatchParam` was renamed **`parseIdParam`**
+  (`$lib/match.js`), because the team address parses by the same id-first
+  rule (D9).
+- `routes/team/[team]/`: `+page.js` id-first with a 301 to the canonical
+  slug and the API's 404 as the page's; `+page.svelte` with the league
+  kicker, venue, the tally line, next fixtures with their call or "call on
+  matchday", and every settled call this season with its W/D/L, score and
+  outcome. Every fixture links to its match page.
+- The match page's two team names are now links to their team pages.
+- `sitemap.js` lists the team pages. `teams.test.js` (3) and the sitemap
+  tests cover it.
+- **Team pages are not kept for offline**: 92 of them is past what the
+  service worker's bounded list is for.
+
+**Content decision:** the page shows the tally as counts and links to
+`/record` for the rate, so no page carries a strike rate over a handful of
+games.
+
 - **Route:** `/team/{team_id}-{slug}` (D9). The id decides; other words
   301 to the current slug, as on match pages.
 - **API: `GET /team/{team_id}`** replaces the plan's `/teams` and
@@ -1024,9 +1068,76 @@ match pages.
 
 ### 2.6 `/record` (and `/results`) as pages (D10)
 
-- Move the sections out of `+page.svelte` into their own routes.
-- The header and bottom-nav links change from `/#record` to `/record`.
-- The front page keeps a short summary that links through.
+**Built 2026-09-21, uncommitted.**
+
+**Owner decisions, 2026-09-21:** **both** `/record` and `/results` become
+pages, not `/record` alone — the settled list is its own search target, and
+moving its controls off the front page takes their JavaScript with them. The
+front page **keeps a short summary of each that links through**, rather than
+a bare link card or a duplicate of the page.
+
+- `routes/record/` and `routes/results/`, each reading on the server so its
+  figures are in the HTML, each with its own error line rather than
+  SvelteKit's error page: an outage must never render as "nothing graded
+  yet".
+- `/record` is the front page's `#record` section moved unchanged — the
+  per-division table, the two honesty paragraphs, and, owner-only, the rule
+  line and the split by version. Its `<h2>` became the page's `<h1>`.
+- `/results` is the `#results` section moved unchanged: the cards, the
+  division filter, last-12 / show-all, and "Scores & claims" off by default.
+- **The front page keeps** the last six settled calls (no filter, no
+  toggles) and a one-sentence record summary, each linking through. The
+  `#results` and `#record` ids stay, so an old `/#record` link still lands
+  on the summary that replaced the section.
+- Nav: `sections` in `+layout.svelte` is now `[href, label, icon]`, Tips
+  still `/#tips`, Results and Record their routes; `activeSection` marks an
+  anchor current only on its own page. The hero's "Check the record" button
+  points at `/record`.
+- `STATIC_PATHS` in the sitemap gains both, with **no `lastmod`** for the
+  same reason as `/` and `/parlay`. The service worker keeps both offline.
+- **`?owner=1` moved with the detail it reveals**: `/record?owner=1`, not
+  `/?owner=1`. A browser already set stays set (localStorage).
+
+**Titles and descriptions (drafts, owner to edit — D4):**
+- `/record`: "Our Prediction Record — Every Call, Graded | BabaVanga";
+  description built from the live figure ("{won} of {graded} graded calls
+  came in, {rate}, over {n} matchweeks. Every one was published before
+  kick-off. A strike rate, not a return.").
+- `/results`: "Latest Results — How Our Calls Went | BabaVanga"; "How our
+  most recent calls went: the score each was graded from, whether it came
+  in, and the same for every division from the Premier League to League
+  Two."
+
+**Verified (2.5 and 2.6 together)**, on `node build` behind an nginx
+stand-in, against a scratch API seeded from `tests/test_match_api.py`:
+- **curl:** the new pages 200; `/team/1` and `/team/1-wrong-words` 301 to
+  the canonical slug; a club outside the served divisions, an unknown id and
+  a non-numeric id 404; head tags, `<h1>` and the lists in the server's HTML;
+  the sitemap is 22 URLs (4 static + 1 league + 6 teams + 11 matches) and
+  **every one answers 200 with no redirect**.
+- **A 39-check Playwright click-through:** the team page's tally, venue,
+  "call on matchday", the season's calls newest first with result, score and
+  outcome, the zone switch, team → match → team by client-side links with
+  the head following; `/record`'s table, totals and honesty prose, and the
+  owner flag on and off; `/results`' toggles and a division with nothing
+  graded; the front page's six-card summary, its record line, no controls
+  left on it, and both links through; the nav's routes and `aria-current`;
+  no horizontal scroll at 390 px. The only console errors are Google
+  sign-in refusing `127.0.0.1` as an origin.
+- **An 18-check regression pass** over what 2.5/2.6 touched but did not set
+  out to change: the front page's calls, drawer and tabs, the three old
+  anchors, the league page and its links, the match page's form, meetings
+  and structured data, `/parlay`, the footer.
+- Tests: API 43, web 89, full Python suite **794 pass**; build clean, no
+  warnings. Scratch database dropped.
+
+**Deploy:** commit, then the normal `deploy.sh`. It restarts the API for
+`/team/{id}`, rebuilds and restarts `bvp-web`. No nginx, unit or schema
+change. Then: `curl -sI https://babavanga.net/record` and `/results` for
+200; `curl -s https://babavanga.net/sitemap.xml | grep -c '<url>'` should
+rise by the number of clubs plus 2; `curl -sI` one `/team/{id}` for a 301
+to its slug; **re-submit nothing** — the sitemap address is unchanged, but
+URL-inspect one team page and `/record` in Search Console.
 
 ### 2.7 The dynamic sitemap (~½ day) — `web/src/routes/sitemap.xml/+server.js`
 
@@ -1107,6 +1218,12 @@ for Google to recrawl those pages.
 - **Partly taken with 2.4/2.5** (owner, 2026-09-18): the footer's league
   links, and links between match, league and team pages. The front page's
   call-drawer and settled-card links are still not taken.
+- **Built with 2.5** (2026-09-21): the match page's two team names link to
+  their team pages, and team pages link every fixture to its match page and
+  the club's league to its league page. The settled cards stayed unlinked,
+  on `/results` as on the front page, because that is the part of this task
+  the owner has not taken — so the only route into a match page from the
+  settled list is still the sitemap or a league page.
 
 ### 2.9 Docs and deploy (~½ day)
 

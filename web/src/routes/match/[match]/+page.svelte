@@ -13,6 +13,7 @@
   import { ORIGIN } from '$lib/site.js';
   import PageHead from '$lib/PageHead.svelte';
   import { leaguePath } from '$lib/leagues.js';
+  import { teamPath } from '$lib/teams.js';
   import {
     matchPath,
     matchState,
@@ -57,9 +58,9 @@
 <article class="page">
   <div class="kicker">Match prediction · <a href={leaguePath(fx.division)}>{divisionName(fx.division)}</a></div>
   <h1>
-    <span class="team"><span class="crest" style="background:{badge.home.colour}">{badge.home.code}</span>{fx.home_name}</span>
+    <a class="team" href={teamPath(fx.home_team_id, fx.home_slug)}><span class="crest" style="background:{badge.home.colour}">{badge.home.code}</span>{fx.home_name}</a>
     <span class="vs">vs</span>
-    <span class="team"><span class="crest" style="background:{badge.away.colour}">{badge.away.code}</span>{fx.away_name}</span>
+    <a class="team" href={teamPath(fx.away_team_id, fx.away_slug)}><span class="crest" style="background:{badge.away.colour}">{badge.away.code}</span>{fx.away_name}</a>
   </h1>
   <p class="meta">
     {shortDay(fx.match_date)}
@@ -178,7 +179,11 @@
     line-height: 1.05; text-transform: uppercase; color: #fff; margin: 12px 0 0;
     display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;
   }
-  .team { display: inline-flex; align-items: center; gap: 12px; }
+  /* Each name is the link to that club's page (2.5, 2.8); it carries the
+     heading's own colour, and says so on hover rather than by default. */
+  .team { display: inline-flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
+  .team:hover { color: var(--accent); }
+  .team:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .vs { font-size: 0.55em; color: var(--muted); }
   .crest {
     flex: none; width: 34px; height: 34px; border-radius: 50%;

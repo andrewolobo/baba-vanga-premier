@@ -1,5 +1,6 @@
-"""The match-page API (docs/SEO_PLAN.md 2.2): `/fixture/{id}`,
-`/sitemap/entries` and the names, slugs and venues behind them (`api/teams.py`).
+"""The public-page API (docs/SEO_PLAN.md 2.2, 2.4, 2.5): `/fixture/{id}`,
+`/league/{division}`, `/team/{id}`, `/sitemap/entries`, and the names, slugs
+and venues behind them (`api/teams.py`).
 
 The page and the sitemap each decide which fixtures have a page (D8) -- one
 in Python, one in SQL -- and a disagreement is silent: a sitemap URL that
@@ -258,6 +259,87 @@ def test_league_lists_carry_no_prices(match_client):
 @pytest.mark.parametrize("division", ["EC", "E9", "e0"])
 def test_no_league_page_outside_the_served_divisions(match_client, division):
     assert match_client.get(f"/league/{division}").status_code == 404
+
+
+# --- /team ------------------------------------------------------------------- #
+#
+# Manchester United (1) is the worked club: eight settled calls this season,
+# one last season that must not count, and one fixture still to come.
+
+
+def test_a_team_page_is_its_season_from_its_own_side(match_client):
+    body = match_client.get("/team/1").json()
+    assert (body["name"], body["slug"]) == ("Manchester United", "manchester-united")
+    assert body["venue"] == teams.venue("Man United") and body["venue"]
+    # Fixture 90 is last season's, so it is not in the list.
+    assert [c["fixture_id"] for c in body["calls"]] == [107, 100, 106, 105, 104, 103, 102, 101]
+    assert [c["result"] for c in body["calls"]] == ["W", "W", "D", "D", "W", "L", "D", "W"]
+    away = next(c for c in body["calls"] if c["fixture_id"] == 104)
+    assert (away["at_home"], away["fthg"], away["ftag"]) == (False, 0, 3)
+    # Fixture 103 was called twice; the later call is the one shown.
+    assert next(c for c in body["calls"] if c["fixture_id"] == 103)["side"] == "H+1.5"
+
+
+def test_a_team_page_lists_its_next_fixture_in_the_league_pages_shape(match_client):
+    upcoming = match_client.get("/team/1").json()["upcoming"]
+    assert [f["fixture_id"] for f in upcoming] == [200]
+    assert upcoming[0]["tip"] is None
+    assert upcoming[0]["slug"] == "manchester-united-vs-nottingham-forest"
+
+
+def test_team_tally_is_counts_never_a_rate(match_client):
+    body = match_client.get("/team/1").json()
+    assert body["tally"] == {"graded": 8, "won": 6}
+    assert "strike_rate" not in body["tally"]
+
+
+def test_team_division_is_where_it_plays_now(match_client):
+    """Wigan (4) played in E0 on 2026-09-15 and in E1 three days ago, so its
+    page is filed under E1."""
+    assert match_client.get("/team/4").json()["division"] == "E1"
+    assert match_client.get("/team/1").json()["division"] == "E0"
+
+
+def test_team_lists_carry_no_prices(match_client):
+    body = match_client.get("/team/1").json()
+    for f in body["upcoming"] + body["calls"]:
+        assert not [k for k in f if k.startswith(("avg_", "max_", "ah_"))]
+
+
+@pytest.mark.parametrize("team_id, why", [
+    (999, "no such team"),
+    (6, "plays only in EC, which is not served"),
+])
+def test_no_team_page(match_client, team_id, why):
+    assert match_client.get(f"/team/{team_id}").status_code == 404, why
+
+
+def test_a_match_page_carries_each_sides_team_page(match_client):
+    body = match_client.get("/fixture/100").json()
+    assert (body["home_team_id"], body["home_slug"]) == (1, "manchester-united")
+    assert (body["away_team_id"], body["away_slug"]) == (2, "nottingham-forest")
+
+
+def test_the_sitemap_lists_every_team_in_a_listed_match(match_client):
+    body = match_client.get("/sitemap/entries").json()
+    played = {t for m in body["matches"] for t in (FIXTURES[m["fixture_id"]][2],
+                                                   FIXTURES[m["fixture_id"]][3])}
+    assert [t["team_id"] for t in body["teams"]] == sorted(played)
+    assert next(t for t in body["teams"] if t["team_id"] == 1)["slug"] == "manchester-united"
+
+
+def test_every_team_in_the_sitemap_has_a_page(match_client):
+    """A listed URL that 404s is the one failure a sitemap cannot survive."""
+    for t in match_client.get("/sitemap/entries").json()["teams"]:
+        assert match_client.get(f"/team/{t['team_id']}").status_code == 200
+
+
+def test_a_teams_lastmod_is_its_latest_match_change(match_client):
+    body = match_client.get("/sitemap/entries").json()
+    for t in body["teams"]:
+        mine = [m["lastmod"] for m in body["matches"]
+                if t["team_id"] in FIXTURES[m["fixture_id"]][2:4]]
+        assert t["lastmod"] == max(mine)
 
 
 # --- names, slugs, venues --------------------------------------------------- #

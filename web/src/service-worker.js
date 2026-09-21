@@ -31,8 +31,15 @@ const OFFLINE_API = new Set(['/api/tips', '/api/fixtures']);
 
 // The pages kept for offline, each under its own path. A bounded list rather
 // than every page visited: per-match pages will number in the thousands
-// (SEO_PLAN.md 2.3). Any other page, offline, gets the cached front page.
-const OFFLINE_PAGES = new Set(['/', '/parlay', ...LEAGUES.map((l) => leaguePath(l.code))]);
+// (SEO_PLAN.md 2.3) and team pages in the dozens (2.5), so neither is kept.
+// Any other page, offline, gets the cached front page.
+const OFFLINE_PAGES = new Set([
+  '/',
+  '/parlay',
+  '/record',
+  '/results',
+  ...LEAGUES.map((l) => leaguePath(l.code))
+]);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

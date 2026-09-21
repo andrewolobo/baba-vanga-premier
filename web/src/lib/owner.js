@@ -5,8 +5,13 @@
 // which is keeping the rule's name out of testers' sight. If the wire ever has
 // to be clean too, that is a server-side change layered on top of this one.
 //
-//   /?owner=1   show, and remember it in this browser
-//   /?owner=0   hide, and forget
+// The detail it reveals lives on /record since docs/SEO_PLAN.md 2.6, so that
+// is the page that reads the flag:
+//
+//   /record?owner=1   show, and remember it in this browser
+//   /record?owner=0   hide, and forget
+//
+// The answer is kept in localStorage, so a browser already set stays set.
 //
 // Pure: the URL search string and a Storage-shaped object come in, so the
 // decision is testable without a browser.

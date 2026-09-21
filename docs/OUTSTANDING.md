@@ -7,7 +7,36 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-18** (latest): **SEO 2.4 (league pages) built,
+Last updated **2026-09-21** (latest): **SEO 2.5 (team pages) and 2.6
+(`/record`, `/results`) built, uncommitted** (2.4 committed as `8d7225d`).
+Owner took 2.6 as **both pages, not `/record` alone**, and **a short summary
+on the front page that links through**. Built: `GET /team/{team_id}` (display
+name, slug, division from the latest served fixture, venue, `upcoming` in the
+league page's shape, `calls` from the club's own side, `tally` as counts
+never a rate; 404 outside the served divisions); `_form` and the team page's
+calls folded into one `_team_calls` (the team page passes no upper bound, so
+a fixture graded earlier today still shows — form rows gained `division` and
+`slug`, additive); `/fixture` gained each side's `team_id` and slug;
+`/sitemap/entries` → `{matches, leagues, teams}`; `api/teams.team_slug`.
+Web: `$lib/teams.js`, `routes/team/[team]/` (id-first, 301 to the canonical
+slug), `routes/record/`, `routes/results/`, the front page cut to a six-card
+settled summary and a one-line record summary, `sections` in the layout now
+`[href, label, icon]` with Results and Record as routes, the hero's button to
+`/record`, `parseMatchParam` renamed **`parseIdParam`**, `?owner=1` moved to
+**`/record?owner=1`**, `STATIC_PATHS` + both pages, the service worker keeps
+them offline (team pages deliberately not: 92 is past what a bounded list is
+for). Tests: API 43, web 89, full suite **794 pass**; build clean, no
+warnings. Verified on `node build` behind an nginx stand-in against a scratch
+API: curl (301s, three kinds of 404, head tags, 22 sitemap URLs, **every one
+200 without redirect**), a **39-check click-through** and an **18-check
+regression pass** over the front page's calls/drawer/tabs, the old anchors,
+the league and match pages, `/parlay` and the footer. Scratch dropped.
+**Deploy: commit → `deploy.sh` → the curls in `SEO_PLAN.md` 2.6; no nginx,
+unit or schema change.** Still open: 2.8's front-page call-drawer and
+settled-card links (owner has not taken them), 2.9 docs
+(`DEPLOY.md`/`RUNBOOK.md`/`PRODUCT.md`/`BACKLOG.md`), the 23 `check` venues,
+and the Search Console steps.
+Before that, 2026-09-18: **SEO 2.4 (league pages) built,
 uncommitted** (2.2/2.3/2.7 committed as `11dc2c1`). Owner took all 2.4/2.5
 decisions as recommended and approved the four league intros verbatim;
 team pages (2.5) next. Built: `GET /league/{division}` (record from the

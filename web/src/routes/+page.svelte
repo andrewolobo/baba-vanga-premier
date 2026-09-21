@@ -2,7 +2,6 @@
   import { onMount, getContext } from 'svelte';
   import {
     getTips,
-    getTipResults,
     callLabel,
     callCode,
     callMeans,
@@ -12,7 +11,6 @@
   import { fixtureBadges } from '$lib/badge.js';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { nextLikeliest } from '$lib/view.js';
-  import { resolveOwner } from '$lib/owner.js';
   import { slide } from 'svelte/transition';
   import HeroClassic from './HeroClassic.svelte';
   import HeroVideo from './HeroVideo.svelte';
@@ -32,20 +30,6 @@
   const keep = (event) => event.stopPropagation();
 
   let tipsDivision = $state('');
-  // The settled section filters and sizes itself independently of the tips
-  // tabs. 500 is the server's own ceiling (api/main.py, limit le=500) — the
-  // API 400s above it, so "all" means "up to the server max".
-  let resultsDivision = $state('');
-  let showAll = $state(false);
-  let resultsLoading = $state(false);
-  let resultsError = $state(null);
-  const resultsLimit = () => (showAll ? 500 : 12);
-  // Scores and claimed probabilities on the settled cards are opt-in: the
-  // default card is the graded call and its outcome, nothing else.
-  let showDetail = $state(false);
-  // The rule's name and parameters are for the owner, not testers
-  // (`$lib/owner.js`: `/?owner=1` to show, `/?owner=0` to hide).
-  let owner = $state(false);
   // The drawer behind a call (B22): which fixture is open.
   let open = $state(null);
   const toggle = (id) => (open = open === id ? null : id);
@@ -56,7 +40,10 @@
     }
   };
   let tips = $state(data.tips);
-  let results = $state(data.results);
+  // The settled list and the record are summaries here, linking through to
+  // /results and /record (docs/SEO_PLAN.md 2.6): neither refetches, so both
+  // are plain values rather than state.
+  const recent = data.results.slice(0, 6);
   const record = data.record;
   let error = $state(data.error);
   let loading = $state(false);
@@ -73,22 +60,7 @@
     }
   }
 
-  async function loadResults() {
-    resultsLoading = true;
-    resultsError = null;
-    try {
-      results = await getTipResults(resultsDivision || null, resultsLimit());
-    } catch (e) {
-      resultsError = e.message;
-    } finally {
-      resultsLoading = false;
-    }
-  }
-
-  onMount(() => {
-    owner = resolveOwner(window.location.search, window.localStorage);
-    zone = viewerZone();
-  });
+  onMount(() => (zone = viewerZone()));
   // The opening lists came with the page; only a change of tab or toggle
   // reads again. Each effect's first run is hydration, and is skipped by
   // comparing with what is already shown.
@@ -97,13 +69,6 @@
     if (tipsDivision === shownTips) return;
     shownTips = tipsDivision;
     loadTips();
-  });
-  let shownResults = `${resultsDivision}|${showAll}`;
-  $effect(() => {
-    const key = `${resultsDivision}|${showAll}`;
-    if (key === shownResults) return;
-    shownResults = key;
-    loadResults();
   });
 
   const byDay = $derived(
@@ -383,68 +348,48 @@
   {/if}
 </section>
 
+<!-- The settled list and the record are pages of their own (docs/SEO_PLAN.md
+     2.6, D10). What stays here is a summary that links through: enough for a
+     first-time reader to see that calls are graded, little enough that the
+     pages it links to are not competing with a copy of themselves. The ids
+     are kept so an old /#results or /#record link still lands on the summary
+     that replaced the section. -->
 <section id="results" class="page">
   <div class="head">
     <div>
       <div class="kicker">Settled</div>
       <h2>Last time out</h2>
     </div>
-    <div class="controls">
-      <div class="switch" role="group" aria-label="How many settled calls">
-        <button class:on={!showAll} onclick={() => (showAll = false)}>Last 12</button>
-        <button class:on={showAll} onclick={() => (showAll = true)}>Show all</button>
-      </div>
-      <div class="switch">
-        <button class:on={showDetail} aria-pressed={showDetail}
-          onclick={() => (showDetail = !showDetail)}>Scores &amp; claims</button>
-      </div>
-    </div>
+    <a class="more" href="/results">All results →</a>
   </div>
 
-  <div class="tabs">
-    {#each DIVISIONS as [code, label]}
-      <button class:on={resultsDivision === code} onclick={() => (resultsDivision = code)}>{label}</button>
-    {/each}
-  </div>
-
-  <!-- `error` is checked as well as emptiness: a failed fetch also leaves the
+  <!-- `error` is checked as well as emptiness: a failed read also leaves the
        list empty, and reporting that as "nothing graded yet" would present an
-       outage as a record. `resultsError` is the same rule for this section's
-       own refetches (filter and show-all changes). -->
-  {#if resultsError || error}
-    <p class="state bad">{resultsError || error}</p>
-  {:else if resultsLoading}
-    <p class="state">Loading…</p>
-  {:else if !loading && results.length === 0}
+       outage as a record. -->
+  {#if error}
+    <p class="state bad">{error}</p>
+  {:else if recent.length === 0}
     <p class="state">Nothing graded yet.</p>
   {:else}
     <div class="cards">
-      {#each results as r}
+      {#each recent as r}
         <div class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}>
           <div class="cardtop">
-            <!-- The score is the one the grader settled from; a row graded
-                 before it was recorded (migration 006) falls back to "v"
-                 rather than showing an invented line. -->
-            <span class="cardfix">
-              {#if showDetail && r.fthg !== null && r.fthg !== undefined}
-                {r.home_team} <span class="score">{r.fthg}&ndash;{r.ftag}</span> {r.away_team}
-              {:else}
-                {r.home_team} v {r.away_team}
-              {/if}
-            </span>
+            <span class="cardfix">{r.home_team} v {r.away_team}</span>
             <span class="mark">{r.outcome === 'win' ? 'WON' : r.outcome === 'lose' ? 'LOST' : 'VOID'}</span>
           </div>
-          {#if !resultsDivision}
-            <div class="league">{divisionName(r.division)}</div>
-          {/if}
+          <div class="league">{divisionName(r.division)}</div>
           <div class="cardfoot">
-            <span>{callLabel(r.side, r.home_team, r.away_team)}{#if showDetail}
-                &middot; claimed {pct(r.model_prob, 0)}{/if}</span>
+            <span>{callLabel(r.side, r.home_team, r.away_team)}</span>
             <span class="when">{shortDay(r.match_date)}</span>
           </div>
         </div>
       {/each}
     </div>
+    <p class="fine">
+      The last six. <a href="/results">Every settled call</a> — by division, with the score each
+      was graded from.
+    </p>
   {/if}
 </section>
 
@@ -454,102 +399,27 @@
       <div class="kicker">Everything we have published</div>
       <h2>The record</h2>
     </div>
+    <a class="more" href="/record">The full record →</a>
   </div>
 
   {#if error}
     <p class="state bad">{error}</p>
   {:else if record}
-    <!-- Cells are nowrap, so on a narrow viewport the table is wider than the
-         screen. It scrolls inside this box; without it the whole page scrolled
-         sideways and every section inherited the overflow. -->
-    <div class="tablewrap">
-      <table class="record">
-      <thead>
-        <tr>
-          <th>Division</th>
-          <th class="num">Published</th>
-          <th class="num">Graded</th>
-          <th class="num">Right</th>
-          <th class="num">Strike rate</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each record.by_division as d}
-          <tr>
-            <td>{divisionName(d.division)}</td>
-            <td class="num">{d.published.toLocaleString()}</td>
-            <td class="num">{d.graded.toLocaleString()}</td>
-            <td class="num">{d.won.toLocaleString()}</td>
-            <td class="num strike">{d.strike_rate == null ? '—' : pct(d.strike_rate, 1)}</td>
-          </tr>
-        {/each}
-        <tr class="total">
-          <td>All divisions</td>
-          <td class="num">{record.published.toLocaleString()}</td>
-          <td class="num">{record.graded.toLocaleString()}</td>
-          <td class="num">{record.won.toLocaleString()}</td>
-          <td class="num strike">{record.strike_rate == null ? '—' : pct(record.strike_rate, 1)}</td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
-
-    <div class="honesty">
-      <h3>What this number is, and what it is not</h3>
-      <p>
-        <strong>It is honest about accuracy.</strong> Every call above was written
-        to the database before the match was played and settled from the result
-        afterwards. Nothing is added later, nothing is removed, and there is one
-        call per fixture — the database refuses a second one.
-      </p>
-      <p>
-        <strong>It is not a return.</strong> A high strike rate is mostly a
-        property of backing short prices, not of being better than the market.
-        Measured over eleven seasons at the prices a customer can actually get,
-        this rule does not make money to any degree we can demonstrate. We do not
-        publish a profit figure because we cannot support one.
-      </p>
-      {#if owner && record.rule}
-        <p class="mono prov">
-          rule {record.rule.rule_version} · floor {record.rule.floor}{record.rule
-            .ceiling
-            ? ` · ceiling ${record.rule.ceiling}`
-            : ''}
-        </p>
+    <p class="lede">
+      {#if record.graded}
+        <strong>{pct(record.strike_rate, 1)}</strong> of our graded calls came in —
+        {record.won.toLocaleString()} of {record.graded.toLocaleString()}, over
+        {record.matchweeks} matchweek{record.matchweeks === 1 ? '' : 's'}. Every one was written to
+        the database before its match was played and settled from the result afterwards.
+      {:else}
+        Nothing has been graded yet. Every call is written to the database before its match is
+        played and settled from the result afterwards.
       {/if}
-    </div>
-
-    <!-- The headline above pools every rule version (B16 reversed 2026-08-21).
-         This table is the split behind it, so the owner can see what each
-         rule contributed to the one public number. Hidden while only one
-         version exists, so nothing on the page changes until it has to -- and
-         owner-only, like the provenance line above. -->
-    {#if owner && record.by_rule && record.by_rule.length > 1}
-      <div class="tablewrap">
-        <table class="record versions">
-          <thead>
-            <tr>
-              <th>Rule version</th>
-              <th class="num">Published</th>
-              <th class="num">Graded</th>
-              <th class="num">Right</th>
-              <th class="num">Strike rate</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each record.by_rule as v}
-              <tr class:current={v.rule_version === record.rule?.rule_version}>
-                <td class="mono">{v.rule_version}</td>
-                <td class="num">{v.published.toLocaleString()}</td>
-                <td class="num">{v.graded.toLocaleString()}</td>
-                <td class="num">{v.won.toLocaleString()}</td>
-                <td class="num strike">{v.strike_rate == null ? '—' : pct(v.strike_rate, 1)}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    {/if}
+    </p>
+    <p class="fine">
+      <a href="/record">The record, division by division</a> — with what the number is, and what it
+      is not.
+    </p>
   {/if}
 </section>
 
@@ -698,16 +568,6 @@
     display: flex; justify-content: space-between; align-items: center;
     gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
   }
-  .controls { display: flex; gap: 12px; flex-wrap: wrap; }
-  .switch { display: flex; gap: 4px; }
-  .switch button {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
-    text-transform: uppercase; padding: 5px 10px; border-radius: 3px;
-    border: 1px solid var(--line); background: transparent; color: var(--muted);
-    cursor: pointer;
-  }
-  .switch button:hover { border-color: var(--muted); color: var(--body); }
-  .switch button.on { background: var(--bg); border-color: var(--accent); color: var(--accent); }
   .bars { list-style: none; margin: 0; padding: 0; max-width: 640px; }
   .bars li {
     display: grid; grid-template-columns: minmax(0, 1fr) 160px 44px;
@@ -743,7 +603,6 @@
   .card.lost { border-left-color: var(--bad); }
   .cardtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .cardfix { font-size: 14px; font-weight: 600; color: #e6e6ec; }
-  .score { font-family: var(--mono); font-weight: 700; color: #fff; padding: 0 1px; }
   .mark { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--muted); }
   .card.won .mark { color: var(--good); }
   .card.lost .mark { color: var(--bad); }
@@ -753,20 +612,18 @@
   }
   .when { color: #c9c9d2; }
 
-  /* --- record ------------------------------------------------------------- */
-  .tablewrap { overflow-x: auto; }
-  .record { margin-top: 24px; min-width: 460px; }
-  .record .strike { font-weight: 700; color: var(--accent); }
-  .record .total td { border-top: 1px solid var(--line); font-weight: 700; color: #fff; }
-  .versions .current td { color: #fff; }
-  .honesty { margin-top: 34px; max-width: 74ch; }
-  .honesty h3 {
-    font-family: var(--display); font-weight: 700; font-size: 24px;
-    text-transform: uppercase; color: #fff; margin: 0 0 12px;
+  /* --- record summary ----------------------------------------------------- */
+  .lede { margin: 22px 0 0; font-size: 16px; line-height: 1.7; color: var(--body); max-width: 78ch; }
+  .lede strong {
+    font-family: var(--display); font-weight: 800; font-size: 26px; color: var(--accent);
   }
-  .honesty p { font-size: 15px; line-height: 1.7; color: var(--body); margin: 0 0 14px; }
-  .honesty strong { color: #fff; }
-  .prov { font-size: 11px; color: var(--dim); }
+
+  /* The link out of a summary to the page it summarises (2.6). */
+  .more {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); white-space: nowrap;
+  }
+  .more:hover { color: var(--accent); }
 
   /* --- states ------------------------------------------------------------- */
   .state { margin-top: 26px; color: var(--muted); }

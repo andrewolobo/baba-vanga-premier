@@ -179,16 +179,25 @@
     }
   }
 
-  // The public site is one page with three sections, plus /parlay (B24). /book
-  // and /performance are the internal views that existed before it and are
-  // reached from the footer; they are named here rather than inferred from
-  // "not the front page", so a new public route does not inherit the
-  // uncalibrated-pmf banner and the narrow shell by default.
+  // The three things the nav offers, plus /parlay (B24). The calls are the
+  // front page; the settled list and the record are pages of their own since
+  // docs/SEO_PLAN.md 2.6, so two of the three are routes and one is still an
+  // anchor. /book and /performance are the internal views that existed before
+  // all of this and are reached from the footer; they are named below rather
+  // than inferred from "not the front page", so a new public route does not
+  // inherit the uncalibrated-pmf banner and the narrow shell by default.
   const sections = [
-    ['tips', 'Tips'],
-    ['results', 'Results'],
-    ['record', 'Record']
+    ['/#tips', 'Tips', 'tips'],
+    ['/results', 'Results', 'results'],
+    ['/record', 'Record', 'record']
   ];
+
+  // An anchor is current only on the page it is an anchor in; a route is
+  // current on itself.
+  const activeSection = (href, url) =>
+    href.startsWith('/#')
+      ? url.pathname === '/' && url.hash === href.slice(1)
+      : url.pathname === href;
 
   // Bottom-bar icons (owner request 2026-09-07): stroke paths on a 24px
   // grid, drawn inline so there is no icon dependency and `currentColor`
@@ -209,8 +218,8 @@
     <a href="/" class="wordmark"><span>Baba</span><span class="accent">Vanga</span></a>
 
     <nav>
-      {#each sections as [id, label]}
-        <a href="/#{id}">{label}</a>
+      {#each sections as [href, label]}
+        <a {href}>{label}</a>
       {/each}
     </nav>
 
@@ -301,12 +310,9 @@
      existing 820px breakpoint; the section links highlight on tap (hash),
      the parlay link by route, same as the header CTA. -->
 <nav class="bottom-nav" aria-label="Sections">
-  {#each sections as [id, label]}
-    <a
-      href="/#{id}"
-      aria-current={$page.url.pathname === '/' && $page.url.hash === `#${id}` ? 'page' : undefined}
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons[id]} /></svg>
+  {#each sections as [href, label, icon]}
+    <a {href} aria-current={activeSection(href, $page.url) ? 'page' : undefined}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icons[icon]} /></svg>
       <span>{label}</span>
     </a>
   {/each}

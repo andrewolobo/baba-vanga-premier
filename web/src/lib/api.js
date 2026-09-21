@@ -64,6 +64,7 @@ export const getTipResults = (division, limit, f) => get('/tips/results', { divi
 export const getTipRecord = (f) => get('/tips/record', {}, f);
 export const getFixture = (id, f) => get(`/fixture/${id}`, {}, f);
 export const getLeague = (division, f) => get(`/league/${division}`, {}, f);
+export const getTeam = (id, f) => get(`/team/${id}`, {}, f);
 export const getParlay = (division, legs, minClaim, sides, f) =>
   get('/parlay', { division, legs, min_claim: minClaim, sides }, f);
 

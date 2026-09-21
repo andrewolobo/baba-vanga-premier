@@ -33,7 +33,8 @@ export const divisionName = (code) => DIVISIONS.find(([c]) => c === code)?.[1] ?
 export const matchPath = (fx) => `/match/${fx.fixture_id}-${fx.slug}`;
 
 // The id at the front of the route parameter, or null when there is none.
-export function parseMatchParam(param) {
+// Both the match and the team address are id-first (D9), so both parse here.
+export function parseIdParam(param) {
   const m = /^(\d+)(?:-|$)/.exec(param ?? '');
   return m ? Number(m[1]) : null;
 }
