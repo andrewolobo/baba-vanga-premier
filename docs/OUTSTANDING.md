@@ -7,7 +7,16 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-21** (latest): **SEO 2.8 (internal links) built,
+Last updated **2026-09-21** (latest): **`/results` now defaults to 60
+settled calls, not 12** (owner request), with the switch reading "Last 60";
+`routes/results/limit.js` holds `DEFAULT_LIMIT`/`MAX_LIMIT` so the loader and
+the toggle cannot ask for different numbers and refetch on hydration. 60 is
+the API's own default for `/tips/results`. The front page's six-card summary
+is unchanged. Verified against the **dev store** (76 settled): 60 cards in
+the server's HTML, no refetch on hydration, show-all → 76 at `limit=500`,
+back to 60, the division filter still works, no horizontal scroll at 390 px;
+9/9. Uncommitted, on top of 2.8.
+Before that, same day: **SEO 2.8 (internal links) built,
 uncommitted** (2.5/2.6 committed as `9a3a04e`). `/tips` and `/tips/results`
 rows gained `slug` (`_with_page`), so the front page's links are canonical
 rather than a bare id every crawl would follow through a 301 — pinned

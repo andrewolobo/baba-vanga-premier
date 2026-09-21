@@ -1084,7 +1084,12 @@ a bare link card or a duplicate of the page.
   per-division table, the two honesty paragraphs, and, owner-only, the rule
   line and the split by version. Its `<h2>` became the page's `<h1>`.
 - `/results` is the `#results` section moved unchanged: the cards, the
-  division filter, last-12 / show-all, and "Scores & claims" off by default.
+  division filter, the size switch, and "Scores & claims" off by default.
+  **Its default is 60, not the front page's 12** (owner, 2026-09-21): a page
+  of its own is somewhere to read the record call by call, and twelve is a
+  summary's worth. 60 is also the API's own default for `/tips/results`.
+  `routes/results/limit.js` holds the two numbers, because the loader and the
+  toggle must ask for the same one or hydration refetches for nothing.
 - **The front page keeps** the last six settled calls (no filter, no
   toggles) and a one-sentence record summary, each linking through. The
   `#results` and `#record` ids stay, so an old `/#record` link still lands

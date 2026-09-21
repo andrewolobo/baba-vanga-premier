@@ -6,6 +6,7 @@
   import { getTipResults, callLabel, DIVISIONS, pct } from '$lib/api.js';
   import { matchPath } from '$lib/match.js';
   import { RESULTS_TITLE, RESULTS_DESCRIPTION } from '$lib/site.js';
+  import { DEFAULT_LIMIT, MAX_LIMIT } from './limit.js';
   import PageHead from '$lib/PageHead.svelte';
 
   let { data } = $props();
@@ -17,7 +18,7 @@
   let division = $state('');
   let showAll = $state(false);
   let loading = $state(false);
-  const limit = () => (showAll ? 500 : 12);
+  const limit = () => (showAll ? MAX_LIMIT : DEFAULT_LIMIT);
 
   // Scores and claimed probabilities are opt-in: the default card is the
   // graded call and its outcome, nothing else.
@@ -66,7 +67,7 @@
     </div>
     <div class="controls">
       <div class="switch" role="group" aria-label="How many settled calls">
-        <button class:on={!showAll} onclick={() => (showAll = false)}>Last 12</button>
+        <button class:on={!showAll} onclick={() => (showAll = false)}>Last {DEFAULT_LIMIT}</button>
         <button class:on={showAll} onclick={() => (showAll = true)}>Show all</button>
       </div>
       <div class="switch">
