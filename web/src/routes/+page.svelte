@@ -9,6 +9,7 @@
     pct
   } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
+  import Crest from '$lib/Crest.svelte';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { nextLikeliest } from '$lib/view.js';
   import { slide } from 'svelte/transition';
@@ -210,7 +211,7 @@
             <div class="fixture">
               <div class="side home">
                 <span class="club">{t.home_team}</span>
-                <span class="crest" style="background:{badge.home.colour}">{badge.home.code}</span>
+                <Crest name={t.home_team} badge={badge.home} />
               </div>
               <div class="kick" title={k ? `${t.kickoff_time} UK time` : undefined}>
                 {#if k}
@@ -218,7 +219,7 @@
                 {:else}—{/if}
               </div>
               <div class="side away">
-                <span class="crest" style="background:{badge.away.colour}">{badge.away.code}</span>
+                <Crest name={t.away_team} badge={badge.away} />
                 <span class="club">{t.away_team}</span>
               </div>
             </div>
@@ -498,12 +499,6 @@
   .side.home { justify-content: flex-end; }
   .side.home .club { text-align: right; }
   .club { font-size: 16px; font-weight: 600; color: #f2f2f5; }
-  .crest {
-    flex: none; width: 34px; height: 34px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--display); font-weight: 800; font-size: 13px;
-    letter-spacing: 0.03em; color: #fff;
-  }
   .kick {
     font-family: var(--display); font-weight: 700; font-size: 20px; color: #fff;
     background: var(--bg); border: 1px solid #2c2c34; border-radius: 3px; padding: 5px 12px;

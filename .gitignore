@@ -46,3 +46,6 @@ logs/
 # image's source archive and has no business being downloadable from the site.
 # Design SOURCE belongs in docs/ui/, which is never served.
 web/static/*.rar
+
+# Crest masters: 3000px source images, downscaled into web/static/crests/.
+data/crests/

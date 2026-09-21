@@ -1331,6 +1331,14 @@ be presented as them; the full club name renders beside every badge, which is
 what keeps an imperfect code cosmetic. Real colours, if ever acquired, belong in
 `reference/` keyed by canonical_name.
 
+**Superseded 2026-09-21, but only partly.** Real crests now ship, mapped in
+`reference/team_logos.csv` keyed by canonical_name exactly as this note
+anticipated, and `$lib/Crest.svelte` draws them on the front page, `/parlay`
+and a match page. `badge.js` stays and is still reached: five clubs have no
+crest published upstream, and a club promoted before the next
+`scripts/fetch_team_logos.py` run has none either. The paragraph above
+therefore still describes what those badges are and how they must be read.
+
 ## B22 — The drawer behind a call — **DONE 2026-08-19**
 
 Owner request: keep the one graded call, and let a reader open a fixture to

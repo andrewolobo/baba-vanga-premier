@@ -8,6 +8,7 @@
   import { onMount, getContext } from 'svelte';
   import { callLabel, callCode, callMeans, pct } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
+  import Crest from '$lib/Crest.svelte';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { wagerLink, wagerLabel } from '$lib/betpawa.js';
   import { ORIGIN } from '$lib/site.js';
@@ -58,9 +59,9 @@
 <article class="page">
   <div class="kicker">Match prediction · <a href={leaguePath(fx.division)}>{divisionName(fx.division)}</a></div>
   <h1>
-    <a class="team" href={teamPath(fx.home_team_id, fx.home_slug)}><span class="crest" style="background:{badge.home.colour}">{badge.home.code}</span>{fx.home_name}</a>
+    <a class="team" href={teamPath(fx.home_team_id, fx.home_slug)}><Crest name={fx.home_team} badge={badge.home} />{fx.home_name}</a>
     <span class="vs">vs</span>
-    <a class="team" href={teamPath(fx.away_team_id, fx.away_slug)}><span class="crest" style="background:{badge.away.colour}">{badge.away.code}</span>{fx.away_name}</a>
+    <a class="team" href={teamPath(fx.away_team_id, fx.away_slug)}><Crest name={fx.away_team} badge={badge.away} />{fx.away_name}</a>
   </h1>
   <p class="meta">
     {shortDay(fx.match_date)}
@@ -185,11 +186,6 @@
   .team:hover { color: var(--accent); }
   .team:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .vs { font-size: 0.55em; color: var(--muted); }
-  .crest {
-    flex: none; width: 34px; height: 34px; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-family: var(--display); font-weight: 800; font-size: 13px; color: #fff;
-  }
   .meta { margin: 14px 0 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
   .meta sup { font-size: 10px; margin-left: 2px; }
 

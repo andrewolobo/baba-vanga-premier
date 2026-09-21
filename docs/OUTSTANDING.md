@@ -7,7 +7,60 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-21** (latest): **`/results` now defaults to 60
+Last updated **2026-09-21** (latest): **real club crests now ship, and
+`badge.js` is the fallback it always said it would become** (owner request),
+**uncommitted**. 146 of the 151 canonical clubs have a crest under
+`web/static/crests/{64,128}/<team_slug>.png`, self-hosted from
+football-logos.cc; `$lib/Crest.svelte` draws one where the front page, `/parlay`
+and a match page drew initials-on-a-colour, and falls back to that badge when a
+club has no crest or the file 404s. **The badges are not gone and must not be
+deleted** — five clubs (Histon, North Ferriby, Nuneaton Town, Rushden & D,
+Weymouth) have no crest published anywhere upstream, and a club promoted before
+the next fetch run has none either.
+
+Two generated files, both from `scripts/build_team_logos.py`:
+`reference/team_logos.csv` (canonical_name → logo slug, `status` ok/absent) and
+`web/src/lib/crests.js` (canonical_name → crest basename), the latter because a
+fixture row carries `home_team` and no slug, and a crest file is named for the
+club's *display* name, which lives in `reference/bbc_teams.csv`. `--check`
+fails on either being stale. **The mapping is reviewed, not fuzzy at runtime**,
+as with the betPawa and BBC bridges: 136 clubs matched a known alias exactly,
+7 by a unique prefix extension (`hull` → `hull-city`, accepted only when
+exactly one slug extends the name, which is what keeps "Oxford" off
+`oxford-city` and "Plymouth" off `plymouth-parkway`), 3 by a hand table
+(`Dag and Red`, `Fylde`, `Newport County`), 5 declared absent. Nothing
+unresolved; the builder refuses to write if anything is.
+
+**Three things learned the hard way, all recorded in the scripts' docstrings.**
+The site's image sitemap advertises 700x700 and 1500x1500, but *every* 1500
+entry is a historical crest — there are **zero current crests at 1500**, so 700
+is the largest the sitemap reaches. The 3000px file exists on a second host
+(`images.football-logos.cc`, which needs a `Referer`) but costs a club-page
+read each to learn that size's hash, and **429s after about thirty clubs with a
+penalty outlasting a 240s backoff** — the first full run died there. 700px was
+then measured against it rather than assumed: downscaled to 256px the two
+differ by a mean of **0.5/255 per channel**. Also, Python has no Happy
+Eyeballs, so every fresh connection to these hosts **stalls ~43s on IPv6**
+before falling back; one pooled `requests.Session` turned a 3.6-hour run into
+four minutes.
+
+Masters cache in `data/crests/` (**gitignored**, 9.1MB) so changing `SIZES`
+costs no downloads; only 64px and 128px are served (5.1MB, 146 files each). A
+256px tier was cut before it shipped — nothing draws a crest above 34px, and it
+was 8MB for nothing. Verified: build clean at the same **13** pre-existing
+Svelte warnings (none from `Crest.svelte`), web **89**, **795 pass**; crests
+render on all three wired routes against a live dev server, including the
+mappings least likely to work (`West Brom`, `QPR`, `Sheffield Weds`,
+`Nott'm Forest`, `Man City`) — the front page and `/parlay` were driven with an
+intercepted API response, since the local store has no published tips.
+`reference/team_logos.csv` ↔ `crests.js` ↔ files on disk checked consistent:
+146/146 both sizes, no orphans, absent clubs excluded. **Not done, raised not
+changed:** a few crests are dark-on-dark against the page (Spurs' navy
+cockerel, Forest's tree) and may want the site's white-monochrome variants,
+which are a separate fetch; and nothing yet shows a crest on `/results`,
+`/record`, a league page or a team page. Deploy: commit → `deploy.sh`; the
+crests are static files, so no nginx, unit or schema change.
+Before that, same day: **`/results` now defaults to 60
 settled calls, not 12** (owner request), with the switch reading "Last 60";
 `routes/results/limit.js` holds `DEFAULT_LIMIT`/`MAX_LIMIT` so the loader and
 the toggle cannot ask for different numbers and refetch on hydration. 60 is
