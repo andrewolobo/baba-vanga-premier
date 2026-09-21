@@ -17,6 +17,7 @@
   import { VIDEO_HERO } from '$lib/hero.js';
   import { wagerLink, wagerLabel, daySlip } from '$lib/betpawa.js';
   import { HOME_TITLE } from '$lib/site.js';
+  import { matchPath } from '$lib/match.js';
   import PageHead from '$lib/PageHead.svelte';
 
   // The opening lists and record, read by `+page.js` -- on the server for a
@@ -43,7 +44,7 @@
   // The settled list and the record are summaries here, linking through to
   // /results and /record (docs/SEO_PLAN.md 2.6): neither refetches, so both
   // are plain values rather than state.
-  const recent = data.results.slice(0, 6);
+  const recent = $derived(data.results.slice(0, 6));
   const record = data.record;
   let error = $state(data.error);
   let loading = $state(false);
@@ -269,6 +270,10 @@
             <div class="drawer" id="view-{t.tip_id}" transition:slide={{ duration: 180 }}>
               <div class="drawerhead">
                 <span class="label">Next-likeliest markets</span>
+                <!-- The way into this fixture's page (docs/SEO_PLAN.md 2.8).
+                     It sits here rather than on the row, which is already the
+                     control that opens this drawer. -->
+                <a class="more" href={matchPath(t)}>Form, venue &amp; past meetings →</a>
               </div>
 
                 <ol class="bars">
@@ -373,7 +378,8 @@
   {:else}
     <div class="cards">
       {#each recent as r}
-        <div class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}>
+        <a class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}
+          href={matchPath(r)}>
           <div class="cardtop">
             <span class="cardfix">{r.home_team} v {r.away_team}</span>
             <span class="mark">{r.outcome === 'win' ? 'WON' : r.outcome === 'lose' ? 'LOST' : 'VOID'}</span>
@@ -383,7 +389,7 @@
             <span>{callLabel(r.side, r.home_team, r.away_team)}</span>
             <span class="when">{shortDay(r.match_date)}</span>
           </div>
-        </div>
+        </a>
       {/each}
     </div>
     <p class="fine">
@@ -618,12 +624,18 @@
     font-family: var(--display); font-weight: 800; font-size: 26px; color: var(--accent);
   }
 
-  /* The link out of a summary to the page it summarises (2.6). */
+  /* The link out of a summary to the page it summarises (2.6), and out of a
+     call's drawer to its match page (2.8). */
   .more {
     font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
     text-transform: uppercase; color: var(--muted); white-space: nowrap;
   }
   .more:hover { color: var(--accent); }
+
+  /* A settled card is a link to its match page (2.8). */
+  .card { display: block; color: inherit; text-decoration: none; }
+  .card:hover { background: var(--panel-2); color: inherit; }
+  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* --- states ------------------------------------------------------------- */
   .state { margin-top: 26px; color: var(--muted); }

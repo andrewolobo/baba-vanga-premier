@@ -342,6 +342,21 @@ def test_a_teams_lastmod_is_its_latest_match_change(match_client):
         assert t["lastmod"] == max(mine)
 
 
+# --- internal links (2.8) ---------------------------------------------------- #
+
+
+def test_the_tip_lists_carry_the_address_of_each_match_page(match_client):
+    """The front page links a call to its match page. Without the slug the
+    link would be an id, and every one of them would arrive as a redirect."""
+    live = match_client.get("/tips").json()
+    settled = match_client.get("/tips/results").json()
+    for row in live + settled:
+        page = match_client.get(f"/fixture/{row['fixture_id']}").json()
+        assert row["slug"] == page["slug"]
+    assert next(r for r in settled if r["fixture_id"] == 100)["slug"] == (
+        "manchester-united-vs-nottingham-forest")
+
+
 # --- names, slugs, venues --------------------------------------------------- #
 
 

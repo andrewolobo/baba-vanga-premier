@@ -7,7 +7,32 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-21** (latest): **SEO 2.5 (team pages) and 2.6
+Last updated **2026-09-21** (latest): **SEO 2.8 (internal links) built,
+uncommitted** (2.5/2.6 committed as `9a3a04e`). `/tips` and `/tips/results`
+rows gained `slug` (`_with_page`), so the front page's links are canonical
+rather than a bare id every crawl would follow through a 301 — pinned
+against `/fixture`'s slug for the same id. The call drawer carries "Form,
+venue & past meetings →" (in the drawer head, not on the row, which is
+already the drawer's control); every settled card on the front page and on
+`/results` is now an `<a>` to its match page; the footer lists the four
+leagues **and `/record`**. Also: `recent` on the front page became
+`$derived`, which was one of the build's "captures the initial value"
+warnings. Tests: API 44, web 89, **795 pass**; a 22-check click-through, the
+2.5/2.6 click-through re-run 39/39 and the 18-check regression pass; scratch
+dropped. **Two things raised, not changed:** the drawer's link is **not in
+the server's HTML** (the drawer renders only when open), so it is worth
+nothing for indexing — upcoming match pages are crawled through the league
+and team pages and the sitemap; and **`/tips/results` is one row per tip**,
+so a fixture called under two rule versions shows two settled cards, which
+can contradict each other, where the match and league pages take the latest
+(review R5). **Correction to the entry below: the build is not
+warning-free** — it emits 13 Svelte "reference only captures the initial
+value" warnings, 8 of them older than this work (`/parlay`, the front page);
+the earlier check grepped for "warn" and the message does not contain it.
+Deploy: commit → `deploy.sh`; no nginx, unit or schema change. Next: **2.9
+docs** (`DEPLOY.md`, `RUNBOOK.md`, `PRODUCT.md`, `BACKLOG.md`), the 23
+`check` venues, and the Search Console steps.
+Before that, same day: **SEO 2.5 (team pages) and 2.6
 (`/record`, `/results`) built, uncommitted** (2.4 committed as `8d7225d`).
 Owner took 2.6 as **both pages, not `/record` alone**, and **a short summary
 on the front page that links through**. Built: `GET /team/{team_id}` (display

@@ -200,6 +200,20 @@ TIP_SELECT = """
 MAX_GOALS = 15
 
 
+def _with_page(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Each tip with the words of its match page's address (docs/SEO_PLAN.md
+    2.8). The id already decides the page (D9); the slug is what makes the
+    link canonical, so the front page's links do not all arrive as redirects.
+
+    Built here rather than selected, because the display names behind it are
+    a file (`reference/bbc_teams.csv`), not a column. The cards themselves
+    keep the canonical names they have always shown.
+    """
+    for row in rows:
+        row["slug"] = teams.fixture_slug(row["home_team"], row["away_team"])
+    return rows
+
+
 def _with_handicap(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Add `p_h15` / `p_a15` -- P(home loses by at most 1) and P(away loses by
     at most 1) -- to each tip, from the stored lambdas.
@@ -271,12 +285,12 @@ def tips(
     if division:
         clause += " AND f.division = %s"
         params += (division,)
-    return _with_handicap(_rows(
+    return _with_page(_with_handicap(_rows(
         conn,
         TIP_SELECT + clause
         + " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
         params,
-    ))
+    )))
 
 
 @app.get("/tips/results")
@@ -299,11 +313,11 @@ def tip_results(
     if division:
         clause += " AND f.division = %s"
         params = (division,)
-    return _with_handicap(_rows(
+    return _with_page(_with_handicap(_rows(
         conn,
         TIP_SELECT + clause + " ORDER BY f.match_date DESC, t.tip_id DESC LIMIT %s",
         params + (limit,),
-    ))
+    )))
 
 
 def _london_now() -> datetime:

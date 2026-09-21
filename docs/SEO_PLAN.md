@@ -1208,6 +1208,45 @@ for Google to recrawl those pages.
 
 ### 2.8 Internal links
 
+**Built 2026-09-21, uncommitted** — the two links that were still not taken,
+plus `/record` in the footer.
+
+- **API:** `/tips` and `/tips/results` rows gained `slug` (`_with_page`), so
+  the front page's links are the canonical address rather than a bare id
+  that every crawl would follow through a 301. A test pins each row's slug
+  against `/fixture`'s for the same id.
+- **The call drawer** carries "Form, venue & past meetings →". It sits in
+  the drawer head, not on the row, because the row is already the control
+  that opens the drawer.
+- **Every settled card is now a link** to its match page — the front page's
+  six-card summary and `/results` alike. The card is the `<a>`, so the whole
+  tile is the target.
+- **The footer** lists the four leagues and now `/record`, so both are one
+  link from any page on the site.
+
+**Worth knowing, and not fixed here:**
+- **The drawer link is not in the server's HTML.** The drawer renders only
+  when it is open, so a crawler never sees that link and it is worth nothing
+  for indexing — it is a reader's convenience. Upcoming fixtures' match
+  pages are reached by a crawler through the league and team pages, which do
+  carry them in their HTML, and through the sitemap. If the front page
+  should feed them too, the link has to sit on the row itself; that is a
+  layout decision for the owner, not a bug.
+- **`/tips/results` is one row per tip, not per fixture.** A fixture called
+  under two rule versions has two settled cards, and they now both link to
+  the one match page. Harmless for search — but the list can show two
+  contradictory graded calls for one match, where the match and league pages
+  take the latest (review R5). Pre-existing; raised, not changed.
+
+**Verified:** a **22-check Playwright click-through** (the drawer link
+appears only with the drawer, is canonical, opens the match page without a
+redirect, and the row still toggles; every settled card on both pages is a
+link to a canonical address; the toggles still work now the card is an
+anchor; the footer's `/record` from five different pages; no horizontal
+scroll at 390 px), plus the 2.5/2.6 click-through re-run 39/39 and the
+18-check regression pass. API 44, web 89, full suite **795 pass**.
+
+Originally, and now built:
 - The call drawer on the front page links to the match page.
 - Settled cards link to their match page.
 - The footer links to the four league pages and `/record`.

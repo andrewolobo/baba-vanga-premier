@@ -331,12 +331,14 @@
         rate is how often the call is right — it is not a return, and we do not
         publish one.</strong>
       </p>
-      <!-- The league pages (docs/SEO_PLAN.md 2.4, 2.8): a crawler's path to
-           them, and through them to every match page, from any page. -->
-      <nav class="links" aria-label="Leagues">
+      <!-- The league pages and the record (docs/SEO_PLAN.md 2.4, 2.8): a
+           crawler's path to them, and through the leagues to every match
+           page, from any page on the site. -->
+      <nav class="links" aria-label="Leagues and the record">
         {#each LEAGUES as league (league.code)}
           <a href={leaguePath(league.code)}>{league.name}</a>
         {/each}
+        <a href="/record">The record</a>
       </nav>
     </div>
     <div class="small">

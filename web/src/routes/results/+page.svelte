@@ -2,11 +2,9 @@
   // /results (docs/SEO_PLAN.md 2.6). Moved from the front page's #results
   // section unchanged: the settled cards, the division filter, the last-12 /
   // show-all switch, and the "Scores & claims" toggle that is off by default.
-  //
-  // The cards do not link to their match pages: that link is the part of 2.8
-  // the owner has not taken (SEO_PLAN.md 2.8), so it stays off here as it is
-  // on the front page.
+  // Every card links to its match page (2.8).
   import { getTipResults, callLabel, DIVISIONS, pct } from '$lib/api.js';
+  import { matchPath } from '$lib/match.js';
   import { RESULTS_TITLE, RESULTS_DESCRIPTION } from '$lib/site.js';
   import PageHead from '$lib/PageHead.svelte';
 
@@ -102,7 +100,8 @@
   {:else}
     <div class="cards">
       {#each results as r}
-        <div class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}>
+        <a class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}
+          href={matchPath(r)}>
           <div class="cardtop">
             <!-- The score is the one the grader settled from; a row graded
                  before it was recorded (migration 006) falls back to "v"
@@ -124,15 +123,15 @@
                 &middot; claimed {pct(r.model_prob, 0)}{/if}</span>
             <span class="when">{shortDay(r.match_date)}</span>
           </div>
-        </div>
+        </a>
       {/each}
     </div>
   {/if}
 
   <p class="fine">
     The card names the call as it was published. A team name on it is not a claim that the team
-    won: most calls are double chance or a +1.5 handicap, and each one is listed with what it
-    needed on its league page. <a href="/">Today's calls</a>.
+    won: most calls are double chance or a +1.5 handicap, and each card's match page says
+    exactly what its call needed. <a href="/">Today's calls</a>.
   </p>
 </article>
 
@@ -178,9 +177,12 @@
     gap: 12px; margin-top: 24px;
   }
   .card {
-    background: var(--panel); border: 1px solid var(--line);
+    display: block; background: var(--panel); border: 1px solid var(--line);
     border-left: 4px solid var(--muted); border-radius: 5px; padding: 14px 16px;
+    color: inherit; text-decoration: none;
   }
+  .card:hover { background: var(--panel-2); color: inherit; }
+  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .card.won { border-left-color: var(--good); }
   .card.lost { border-left-color: var(--bad); }
   .cardtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
