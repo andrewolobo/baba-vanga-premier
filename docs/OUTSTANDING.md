@@ -7,7 +7,24 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-21** (latest): **the front page's empty state now
+Last updated **2026-09-21** (latest): **the ball bounce is behind a build
+flag** (owner request), **uncommitted**. `web/src/lib/ball.js` exports
+`BALL_BOUNCE`, on the `$lib/hero.js` pattern already in the tree -- flip the
+one line, rebuild, deploy. Off, the `{#if}` drops the ball's markup, the box
+loses the `withball` class and with it the room reserved for the ball to rest
+in (**176px rather than 188px on desktop, 250px rather than 320px narrow**),
+and `football.png` is **never requested** -- verified by watching the network,
+not just the DOM. The message and the next-fixture date are untouched either
+way. The flag is a decision about the site and has no part in
+`prefers-reduced-motion`, which is the reader's own and still rests the ball
+rather than removing it.
+
+**The box's flag class is `withball`, not `ball`, and must stay that way**:
+`.ball` already belongs to the football image (`width/height: 64px` plus the
+spin), so putting it on the box collapsed the box to a 64px square. Caught in
+the browser; nothing in `svelte-check` sees a collision like that.
+
+Before that, same day: **the front page's empty state
 bounces a football and names the next fixture date** (owner request, from the
 support files in `docs/ui/ball-bounce/`), **uncommitted**. One new endpoint,
 `GET /fixtures/next?division=`, returning `{match_date, fixtures}` — the

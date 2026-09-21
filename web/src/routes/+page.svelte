@@ -17,6 +17,7 @@
   import HeroClassic from './HeroClassic.svelte';
   import HeroVideo from './HeroVideo.svelte';
   import { VIDEO_HERO } from '$lib/hero.js';
+  import { BALL_BOUNCE } from '$lib/ball.js';
   import { wagerLink, wagerLabel, daySlip } from '$lib/betpawa.js';
   import { HOME_TITLE } from '$lib/site.js';
   import { matchPath } from '$lib/match.js';
@@ -206,7 +207,7 @@
   {:else if error}
     <p class="state bad">{error}</p>
   {:else if tips.length === 0}
-    <div class="state box empty">
+    <div class="state box empty" class:withball={BALL_BOUNCE}>
       <div class="says">
         <strong>No calls published for these fixtures yet.</strong>
         <p>
@@ -233,16 +234,18 @@
            screen reader. Keyed so a tab change rebuilds the nodes and the CSS
            animations start over; `prefers-reduced-motion` rests it on the
            floor instead (docs/ui/ball-bounce). -->
-      {#key ballKey}
-        <div class="arena" aria-hidden="true" style="--from: {ballFrom}px">
-          <div class="ballshadow"></div>
-          <div class="ballx">
-            <div class="bally">
-              <img class="ball" src="/football.png" alt="" width="208" height="208" />
+      {#if BALL_BOUNCE}
+        {#key ballKey}
+          <div class="arena" aria-hidden="true" style="--from: {ballFrom}px">
+            <div class="ballshadow"></div>
+            <div class="ballx">
+              <div class="bally">
+                <img class="ball" src="/football.png" alt="" width="208" height="208" />
+              </div>
             </div>
           </div>
-        </div>
-      {/key}
+        {/key}
+      {/if}
     </div>
   {:else}
     <div class="list">
@@ -769,7 +772,10 @@
      the bounding of `.says` keeps clear. `overflow` stays visible on purpose:
      the run-up starts above the box and the ball drops in, which is the whole
      effect. */
-  .state.box.empty { position: relative; padding-bottom: 30px; }
+  /* Everything the ball costs the box hangs off `.withball`, so with the
+     flag off (`$lib/ball.js`) the box is the plain one again. Not `.ball` --
+     that name already belongs to the football itself, below. */
+  .state.box.empty.withball { position: relative; padding-bottom: 30px; }
   .says { max-width: 70ch; }
 
   .next { margin-top: 20px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -844,7 +850,7 @@
        ball to rest in, so it drops under the text on a reserved strip. Its
        z-index drops with it: the bottom bar is fixed chrome the reader needs,
        and a ball parked over it is a bug rather than an effect. */
-    .state.box.empty { padding-bottom: 88px; }
+    .state.box.empty.withball { padding-bottom: 88px; }
     .arena { right: 50%; margin-right: -32px; bottom: 20px; z-index: 30; }
   }
   @media (max-width: 820px) {

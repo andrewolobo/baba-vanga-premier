@@ -215,7 +215,7 @@
 
 <header>
   <div class="bar">
-    <a href="/" class="wordmark"><span>Baba</span><span class="accent">Vanga</span></a>
+    <a href="/" class="wordmark"><img src="/sample-logo.fw.png" alt="BabaVanga" width="265" height="54" /></a>
 
     <nav>
       {#each sections as [href, label]}
@@ -427,6 +427,7 @@
     letter-spacing: 0.04em; text-transform: uppercase; color: var(--text);
   }
   .wordmark .accent { color: var(--accent); }
+  header .wordmark img { display: block; height: 40px; width: auto; }
 
   nav { display: flex; align-items: center; gap: 30px; }
   nav a {
