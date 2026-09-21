@@ -45,7 +45,7 @@
   // The settled list and the record are summaries here, linking through to
   // /results and /record (docs/SEO_PLAN.md 2.6): neither refetches, so both
   // are plain values rather than state.
-  const recent = $derived(data.results.slice(0, 6));
+  const recent = $derived(data.results.slice(0, 8));
   const record = data.record;
   let error = $state(data.error);
   let loading = $state(false);
@@ -381,20 +381,35 @@
       {#each recent as r}
         <a class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}
           href={matchPath(r)}>
-          <div class="cardtop">
-            <span class="cardfix">{r.home_team} v {r.away_team}</span>
-            <span class="mark">{r.outcome === 'win' ? 'WON' : r.outcome === 'lose' ? 'LOST' : 'VOID'}</span>
+          <div class="cardbody">
+            <div class="cardtop">
+              <span class="cardfix">{r.home_team} <span class="vs">v</span> {r.away_team}</span>
+              <span class="mark">
+                {#if r.outcome === 'win'}
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.75l6 6 9-13.5" /></svg>
+                  WON
+                {:else if r.outcome === 'lose'}
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18L18 6M6 6l12 12" /></svg>
+                  LOST
+                {:else}
+                  VOID
+                {/if}
+              </span>
+            </div>
+            <div class="league">{divisionName(r.division)}</div>
           </div>
-          <div class="league">{divisionName(r.division)}</div>
           <div class="cardfoot">
-            <span>{callLabel(r.side, r.home_team, r.away_team)}</span>
-            <span class="when">{shortDay(r.match_date)}</span>
+            <span class="pick">
+              <span class="picklabel">Pick</span>
+              <span class="pickcall">{callLabel(r.side, r.home_team, r.away_team)}</span>
+            </span>
+            <time class="when" datetime={r.match_date}>{shortDay(r.match_date)}</time>
           </div>
         </a>
       {/each}
     </div>
     <p class="fine">
-      The last six. <a href="/results">Every settled call</a> — by division, with the score each
+      The last eight. <a href="/results">Every settled call</a> — by division, with the score each
       was graded from.
     </p>
   {/if}
@@ -593,25 +608,70 @@
 
   /* --- results cards ------------------------------------------------------ */
   .cards {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 12px; margin-top: 24px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 14px; margin-top: 24px;
   }
+  /* The stripe is a pseudo-element rather than a left border so the footer
+     band can run the full width of the card behind it. */
   .card {
-    background: var(--panel); border: 1px solid var(--line);
-    border-left: 4px solid var(--muted); border-radius: 5px; padding: 14px 16px;
+    position: relative; display: flex; flex-direction: column; justify-content: space-between;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, box-shadow 0.2s;
   }
-  .card.won { border-left-color: var(--good); }
-  .card.lost { border-left-color: var(--bad); }
-  .cardtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .cardfix { font-size: 14px; font-weight: 600; color: #e6e6ec; }
-  .mark { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--muted); }
-  .card.won .mark { color: var(--good); }
-  .card.lost .mark { color: var(--bad); }
+  .card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--muted);
+  }
+  .card.won::before { background: var(--good); }
+  .card.lost::before { background: var(--bad); }
+  .card:hover { transform: translateY(-2px); }
+  .card.won:hover {
+    border-color: rgba(47, 181, 107, 0.45);
+    box-shadow: 0 10px 26px -12px rgba(47, 181, 107, 0.45);
+  }
+  .card.lost:hover {
+    border-color: rgba(228, 56, 79, 0.45);
+    box-shadow: 0 10px 26px -12px rgba(228, 56, 79, 0.45);
+  }
+  .cardbody { padding: 14px 15px 12px 18px; }
+  .cardtop { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .cardfix { font-size: 14.5px; font-weight: 600; line-height: 1.35; color: #e6e6ec; }
+  .vs { font-weight: 400; color: var(--muted); }
+  .mark {
+    display: inline-flex; align-items: center; gap: 4px; flex: none;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em;
+    padding: 2px 7px; border-radius: 4px; background: var(--panel-2);
+    border: 1px solid var(--line); color: var(--muted);
+  }
+  .mark svg {
+    width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .card.won .mark {
+    color: var(--good); background: rgba(47, 181, 107, 0.1); border-color: rgba(47, 181, 107, 0.35);
+  }
+  .card.lost .mark {
+    color: var(--bad); background: rgba(228, 56, 79, 0.1); border-color: rgba(228, 56, 79, 0.35);
+  }
+  .card .league { margin-top: 7px; }
   .cardfoot {
-    display: flex; justify-content: space-between; gap: 10px; margin-top: 9px;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 9px 15px 9px 18px; border-top: 1px solid var(--line-2); background: var(--bg);
     font-family: var(--mono); font-size: 11px; color: var(--muted);
   }
-  .when { color: #c9c9d2; }
+  .pick { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+  .picklabel { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+  .pickcall {
+    color: var(--body); font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .when { color: #c9c9d2; white-space: nowrap; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { transition: border-color 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: none; }
+  }
 
   /* --- record summary ----------------------------------------------------- */
   .lede { margin: 22px 0 0; font-size: 16px; line-height: 1.7; color: var(--body); max-width: 78ch; }
@@ -628,8 +688,8 @@
   .more:hover { color: var(--accent); }
 
   /* A settled card is a link to its match page (2.8). */
-  .card { display: block; color: inherit; text-decoration: none; }
-  .card:hover { background: var(--panel-2); color: inherit; }
+  .card { color: inherit; text-decoration: none; }
+  .card:hover { color: inherit; }
   .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* --- states ------------------------------------------------------------- */

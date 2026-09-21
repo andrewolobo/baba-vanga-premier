@@ -7,7 +7,43 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-21** (latest): **real club crests now ship, and
+Last updated **2026-09-21** (latest): **`/results` and the front page's
+settled summary restyled, and the summary is now eight cards, not six** (owner
+request, from an attached Tailwind mock), **uncommitted**, presentation only:
+`web/src/routes/results/+page.svelte` and `web/src/routes/+page.svelte` are
+the files touched, and no route, loader or schema changed. The summary's
+eighth card is free — `+page.js` has always read 12 and `recent` sliced 6, so
+the slice moved to 8 and nothing fetches more; the copy under it now reads
+"The last eight". The kicker became a pill with a pulsing dot, the title
+sits over a rule with the two switches on the row above it, and a settled card
+became two parts — a body carrying the fixture and a WON/LOST pill (tick or
+cross glyph), and a footer band labelled "Pick" — with a 3px outcome stripe
+down the left edge and a lift-and-glow on hover, suppressed under
+`prefers-reduced-motion`. The claimed probability moved off the footer line
+onto the league row, so the call no longer shares a line with it and can
+ellipsis on its own. **The mock's palette and fonts were not taken** (emerald,
+rose, Oswald, JetBrains): the tokens in `+layout.svelte` are, so the page still
+reads as the same site. **Two pieces of the mock were left out on purpose:**
+its filter tabs (the owner said to ignore them — the page keeps its own
+division tabs and switches) and its **strike-rate chip**, which computed over
+a truncated list of 60 would read as a headline figure; the pooled one is on
+`/record`, which the intro already links. Verified: build clean at the same
+**13** pre-existing Svelte warnings, none new and none from the CSS; rendered
+against an intercepted `/tips/results` at 1440px and 430px, with both toggles
+and a void row. The same card ships on the front page: the two
+sections were already separate copies of the same markup, and they stay
+separate copies — the front page's own `.head`, `.kicker`, `.more` and `.fine`
+are **shared with the calls list and the record summary above it**, so the
+header pill and the full-width closing rule are `/results` only; taking them
+across would have restyled two sections nobody asked about. `.league` is
+shared with the calls list the same way, so only its spacing inside a card
+moved (`.card .league`). Verified against the **dev store** on a live dev
+server: 8 cards in the front page's server-rendered HTML (2 rows of 4 at
+1440px, stacked at 430px), 60 on `/results`, the "Last eight" copy present.
+`STATE.md`'s site row now says eight; `SEO_PLAN.md` 2.6 still says six and was
+left as written — it is the plan, not the state. Deploy: commit →
+`deploy.sh`; no nginx, unit or schema change.
+Before that, same day: **real club crests now ship, and
 `badge.js` is the fallback it always said it would become** (owner request),
 **uncommitted**. 146 of the 151 canonical clubs have a crest under
 `web/static/crests/{64,128}/<team_slug>.png`, self-hosted from

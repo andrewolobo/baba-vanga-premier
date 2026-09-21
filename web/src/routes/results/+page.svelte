@@ -61,20 +61,20 @@
 
 <article class="page">
   <div class="head">
-    <div>
-      <div class="kicker">Settled</div>
-      <h1>Last time out</h1>
-    </div>
-    <div class="controls">
-      <div class="switch" role="group" aria-label="How many settled calls">
-        <button class:on={!showAll} onclick={() => (showAll = false)}>Last {DEFAULT_LIMIT}</button>
-        <button class:on={showAll} onclick={() => (showAll = true)}>Show all</button>
+    <div class="headtop">
+      <div class="kicker"><span class="dot" aria-hidden="true"></span>Settled</div>
+      <div class="controls">
+        <div class="switch" role="group" aria-label="How many settled calls">
+          <button class:on={!showAll} onclick={() => (showAll = false)}>Last {DEFAULT_LIMIT}</button>
+          <button class:on={showAll} onclick={() => (showAll = true)}>Show all</button>
+        </div>
+        <div class="switch">
+          <button class:on={showDetail} aria-pressed={showDetail}
+            onclick={() => (showDetail = !showDetail)}>Scores &amp; claims</button>
+        </div>
       </div>
-      <div class="switch">
-        <button class:on={showDetail} aria-pressed={showDetail}
-          onclick={() => (showDetail = !showDetail)}>Scores &amp; claims</button>
-      </div>
     </div>
+    <h1>Last time out</h1>
   </div>
 
   <p class="intro">
@@ -103,52 +103,80 @@
       {#each results as r}
         <a class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}
           href={matchPath(r)}>
-          <div class="cardtop">
-            <!-- The score is the one the grader settled from; a row graded
-                 before it was recorded (migration 006) falls back to "v"
-                 rather than showing an invented line. -->
-            <span class="cardfix">
-              {#if showDetail && r.fthg !== null && r.fthg !== undefined}
-                {r.home_team} <span class="score">{r.fthg}&ndash;{r.ftag}</span> {r.away_team}
-              {:else}
-                {r.home_team} v {r.away_team}
-              {/if}
-            </span>
-            <span class="mark">{r.outcome === 'win' ? 'WON' : r.outcome === 'lose' ? 'LOST' : 'VOID'}</span>
+          <div class="cardbody">
+            <div class="cardtop">
+              <!-- The score is the one the grader settled from; a row graded
+                   before it was recorded (migration 006) falls back to "v"
+                   rather than showing an invented line. -->
+              <span class="cardfix">
+                {#if showDetail && r.fthg !== null && r.fthg !== undefined}
+                  {r.home_team} <span class="score">{r.fthg}&ndash;{r.ftag}</span> {r.away_team}
+                {:else}
+                  {r.home_team} <span class="vs">v</span> {r.away_team}
+                {/if}
+              </span>
+              <span class="mark">
+                {#if r.outcome === 'win'}
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.75l6 6 9-13.5" /></svg>
+                  WON
+                {:else if r.outcome === 'lose'}
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18L18 6M6 6l12 12" /></svg>
+                  LOST
+                {:else}
+                  VOID
+                {/if}
+              </span>
+            </div>
+            {#if !division || showDetail}
+              <div class="cardmeta">
+                {#if !division}<span class="league">{divisionName(r.division)}</span>{/if}
+                {#if showDetail}<span class="claimed">claimed {pct(r.model_prob, 0)}</span>{/if}
+              </div>
+            {/if}
           </div>
-          {#if !division}
-            <div class="league">{divisionName(r.division)}</div>
-          {/if}
           <div class="cardfoot">
-            <span>{callLabel(r.side, r.home_team, r.away_team)}{#if showDetail}
-                &middot; claimed {pct(r.model_prob, 0)}{/if}</span>
-            <span class="when">{shortDay(r.match_date)}</span>
+            <span class="pick">
+              <span class="picklabel">Pick</span>
+              <span class="pickcall">{callLabel(r.side, r.home_team, r.away_team)}</span>
+            </span>
+            <time class="when" datetime={r.match_date}>{shortDay(r.match_date)}</time>
           </div>
         </a>
       {/each}
     </div>
   {/if}
 
-  <p class="fine">
-    The card names the call as it was published. A team name on it is not a claim that the team
-    won: most calls are double chance or a +1.5 handicap, and each card's match page says
-    exactly what its call needed. <a href="/">Today's calls</a>.
-  </p>
+  <footer class="fine">
+    <p>
+      The card names the call as it was published. A team name on it is not a claim that the team
+      won: most calls are double chance or a +1.5 handicap, and each card's match page says
+      exactly what its call needed. <a href="/">Today's calls</a>.
+    </p>
+  </footer>
 </article>
 
 <style>
   .page { max-width: var(--page); margin: 0 auto; padding: 64px 32px 0; }
-  .head {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    flex-wrap: wrap; gap: 16px;
+  .head { border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+  .headtop {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
   }
   .kicker {
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.22em;
     text-transform: uppercase; color: var(--accent);
+    background: rgba(255, 107, 26, 0.08); border: 1px solid rgba(255, 107, 26, 0.3);
+    border-radius: 999px; padding: 4px 12px 4px 10px;
   }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
   h1 {
     font-family: var(--display); font-weight: 800; font-size: clamp(32px, 4vw, 52px);
-    line-height: 1; text-transform: uppercase; color: #fff; margin: 10px 0 0;
+    line-height: 1; text-transform: uppercase; color: #fff; margin: 14px 0 0;
   }
   .intro { margin: 16px 0 0; font-size: 15px; line-height: 1.65; color: var(--body); max-width: 70ch; }
   .controls { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -174,34 +202,85 @@
   .tabs button.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
   .cards {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 12px; margin-top: 24px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 14px; margin-top: 24px;
   }
+  /* The stripe is a pseudo-element rather than a left border so the footer
+     band can run the full width of the card behind it. */
   .card {
-    display: block; background: var(--panel); border: 1px solid var(--line);
-    border-left: 4px solid var(--muted); border-radius: 5px; padding: 14px 16px;
-    color: inherit; text-decoration: none;
+    position: relative; display: flex; flex-direction: column; justify-content: space-between;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden; color: inherit; text-decoration: none;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, box-shadow 0.2s;
   }
-  .card:hover { background: var(--panel-2); color: inherit; }
+  .card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--muted);
+  }
+  .card.won::before { background: var(--good); }
+  .card.lost::before { background: var(--bad); }
+  .card:hover { transform: translateY(-2px); color: inherit; }
+  .card.won:hover {
+    border-color: rgba(47, 181, 107, 0.45);
+    box-shadow: 0 10px 26px -12px rgba(47, 181, 107, 0.45);
+  }
+  .card.lost:hover {
+    border-color: rgba(228, 56, 79, 0.45);
+    box-shadow: 0 10px 26px -12px rgba(228, 56, 79, 0.45);
+  }
   .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .card.won { border-left-color: var(--good); }
-  .card.lost { border-left-color: var(--bad); }
-  .cardtop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .cardfix { font-size: 14px; font-weight: 600; color: #e6e6ec; }
+
+  .cardbody { padding: 14px 15px 12px 18px; }
+  .cardtop { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .cardfix { font-size: 14.5px; font-weight: 600; line-height: 1.35; color: #e6e6ec; }
+  .vs { font-weight: 400; color: var(--muted); }
   .score { font-family: var(--mono); font-weight: 700; color: #fff; padding: 0 1px; }
-  .mark { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--muted); }
-  .card.won .mark { color: var(--good); }
-  .card.lost .mark { color: var(--bad); }
-  .league { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .cardfoot {
-    display: flex; justify-content: space-between; gap: 10px; margin-top: 9px;
+  .mark {
+    display: inline-flex; align-items: center; gap: 4px; flex: none;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em;
+    padding: 2px 7px; border-radius: 4px; background: var(--panel-2);
+    border: 1px solid var(--line); color: var(--muted);
+  }
+  .mark svg {
+    width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .card.won .mark {
+    color: var(--good); background: rgba(47, 181, 107, 0.1); border-color: rgba(47, 181, 107, 0.35);
+  }
+  .card.lost .mark {
+    color: var(--bad); background: rgba(228, 56, 79, 0.1); border-color: rgba(228, 56, 79, 0.35);
+  }
+  .cardmeta {
+    display: flex; align-items: baseline; gap: 10px; margin-top: 7px;
     font-family: var(--mono); font-size: 11px; color: var(--muted);
   }
-  .when { color: #c9c9d2; }
+  .claimed { margin-left: auto; white-space: nowrap; }
+  .cardfoot {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 9px 15px 9px 18px; border-top: 1px solid var(--line-2); background: var(--bg);
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+  }
+  .pick { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+  .picklabel { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+  .pickcall {
+    color: var(--body); font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .when { color: #c9c9d2; white-space: nowrap; }
 
   .state { margin-top: 26px; color: var(--muted); }
   .state.bad { color: var(--bad); }
-  .fine { margin: 34px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); max-width: 72ch; }
+  .fine { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .fine p {
+    margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); max-width: 72ch;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot { animation: none; }
+    .card { transition: border-color 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: none; }
+  }
 
   @media (max-width: 820px) {
     .page { padding: 48px 18px 0; }
