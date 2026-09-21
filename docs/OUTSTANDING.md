@@ -7,7 +7,23 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-18** (latest): **SEO 2.7 (sitemap) built,
+Last updated **2026-09-18** (latest): **SEO 2.4 (league pages) built,
+uncommitted** (2.2/2.3/2.7 committed as `11dc2c1`). Owner took all 2.4/2.5
+decisions as recommended and approved the four league intros verbatim;
+team pages (2.5) next. Built: `GET /league/{division}` (record from the
+same `RECORD` query as `/tips/record` by_division, pinned equal; upcoming
+called + uncalled; last 12 results; latest call by lateral join);
+`/sitemap/entries` → `{matches, leagues}`; `$lib/leagues.js`, the
+`[league=league]` route with a param matcher, league pages in the sitemap,
+footer league links, the match page's league link, league pages kept
+offline by the service worker. Tests: API 32, web 85, full suite **783
+pass**; curl + 12-check click-through on the build, and the 2.3
+click-through re-run 25/25; scratch dropped. **Found: a Vite dev server
+(`[::1]:5173`) and uvicorn (`:8000`) started 12:17, not by this session,
+serve the working tree; that uvicorn predates `/fixture` and `/league`, so
+those pages 500 in that dev stack until it restarts** — checks moved to
+127.0.0.1. Deploy: `deploy.sh`, no nginx change. Next: 2.5 team pages.
+Before that, same day: **SEO 2.7 (sitemap) built,
 uncommitted — 2.2 + 2.3 + 2.7 are ready to ship together.**
 `web/src/routes/sitemap.xml/+server.js` over `/sitemap/entries`, built by
 `$lib/sitemap.js` (pure, 5 tests): `/` and `/parlay` without `lastmod` (no

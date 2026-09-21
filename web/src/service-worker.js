@@ -11,6 +11,7 @@
 // calls (/api/me, /api/auth/*) must never be answered from a cache -- they
 // are not in the set below, and POSTs never reach the worker at all.
 import { build, files, version } from '$service-worker';
+import { LEAGUES, leaguePath } from '$lib/leagues.js';
 
 const CACHE = `bvp-${version}`;
 
@@ -31,7 +32,7 @@ const OFFLINE_API = new Set(['/api/tips', '/api/fixtures']);
 // The pages kept for offline, each under its own path. A bounded list rather
 // than every page visited: per-match pages will number in the thousands
 // (SEO_PLAN.md 2.3). Any other page, offline, gets the cached front page.
-const OFFLINE_PAGES = new Set(['/', '/parlay']);
+const OFFLINE_PAGES = new Set(['/', '/parlay', ...LEAGUES.map((l) => leaguePath(l.code))]);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

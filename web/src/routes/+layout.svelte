@@ -2,6 +2,7 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import '$lib/fonts/fonts.css';
+  import { LEAGUES, leaguePath } from '$lib/leagues.js';
   import {
     getAuthConfig,
     getMe,
@@ -324,6 +325,13 @@
         rate is how often the call is right — it is not a return, and we do not
         publish one.</strong>
       </p>
+      <!-- The league pages (docs/SEO_PLAN.md 2.4, 2.8): a crawler's path to
+           them, and through them to every match page, from any page. -->
+      <nav class="links" aria-label="Leagues">
+        {#each LEAGUES as league (league.code)}
+          <a href={leaguePath(league.code)}>{league.name}</a>
+        {/each}
+      </nav>
     </div>
     <div class="small">
       <p>18+. Predictions are opinion, not certainty. Please gamble responsibly —
@@ -503,7 +511,12 @@
   .claim strong { color: var(--body); font-weight: 600; }
   .small { font-family: var(--mono); font-size: 11px; color: #6c6c76; max-width: 44ch; }
   .small p { margin: 0 0 10px; }
+  .links {
+    display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 0;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em;
+  }
   .links a { color: var(--muted); }
+  .links a:hover { color: var(--accent-soft); }
 
   /* Internal views keep the narrower measure they were designed for. */
   .shell { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1.25rem 2rem; }

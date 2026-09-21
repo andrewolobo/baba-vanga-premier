@@ -636,18 +636,21 @@ def _iso_utc(text: str) -> str:
 
 
 @app.get("/sitemap/entries")
-def sitemap_entries(conn: db.Connection = Depends(get_conn)) -> list[dict]:
-    """Every fixture that has a match page (D8), newest first, for
-    `sitemap.xml` (docs/SEO_PLAN.md 2.7).
+def sitemap_entries(conn: db.Connection = Depends(get_conn)) -> dict:
+    """Every page generated from the store, for `sitemap.xml`
+    (docs/SEO_PLAN.md 2.7): `matches`, every fixture that has a match page
+    (D8), newest first; `leagues`, the served divisions that have one.
 
-    `lastmod` is when the page last changed in a way a reader could see: the
-    latest of its calls' `published_at` and `settled_at`, or `first_seen_at`
-    before any call. **Not `fixtures.updated_at`**, which `fixture_sync`
-    moves on every price refresh although no page shows a price (review R4).
+    `lastmod` is when the page last changed in a way a reader could see. For
+    a match: the latest of its calls' `published_at` and `settled_at`, or
+    `first_seen_at` before any call. **Not `fixtures.updated_at`**, which
+    `fixture_sync` moves on every price refresh although no page shows a
+    price (review R4). For a league: the latest of its matches', because
+    the league page is those fixtures, their calls and their results.
     """
     rows = _rows(
         conn,
-        "SELECT f.fixture_id, f.first_seen_at,"
+        "SELECT f.fixture_id, f.division, f.first_seen_at,"
         " h.canonical_name AS home_team, a.canonical_name AS away_team,"
         " MAX(t.published_at) AS published_at, MAX(t.settled_at) AS settled_at"
         " FROM fixtures f"
@@ -660,12 +663,100 @@ def sitemap_entries(conn: db.Connection = Depends(get_conn)) -> list[dict]:
         " ORDER BY f.match_date DESC, f.fixture_id DESC",
         (list(SERVED_DIVISIONS), db.today()),
     )
-    return [{
+    matches = [{
         "fixture_id": r["fixture_id"],
+        "division": r["division"],
         "slug": teams.fixture_slug(r["home_team"], r["away_team"]),
         "lastmod": _iso_utc(max(filter(None, (r["published_at"], r["settled_at"])),
                                 default=r["first_seen_at"])),
     } for r in rows]
+    latest: dict[str, str] = {}
+    for m in matches:          # ISO UTC text sorts as time
+        latest[m["division"]] = max(latest.get(m["division"], ""), m["lastmod"])
+    leagues = [{"division": d, "lastmod": latest[d]} for d in SERVED_DIVISIONS if d in latest]
+    return {"matches": matches, "leagues": leagues}
+
+
+#: The latest call per fixture, as a lateral join: what the league and team
+#: pages list beside each fixture (review R5, as on the match page).
+LATEST_CALL = """
+    LEFT JOIN LATERAL (
+        SELECT t.side, t.model_prob, t.outcome, t.settled_at, t.fthg, t.ftag
+        FROM tips t WHERE t.fixture_id = f.fixture_id
+        ORDER BY t.tip_id DESC LIMIT 1
+    ) c ON TRUE
+"""
+
+LISTED = """
+    SELECT f.fixture_id, f.division, f.match_date, f.kickoff_time,
+           f.home_team_id, f.away_team_id,
+           h.canonical_name AS home_team, a.canonical_name AS away_team,
+           c.side, c.model_prob, c.outcome, c.settled_at, c.fthg, c.ftag
+    FROM fixtures f
+    JOIN teams h ON h.team_id = f.home_team_id
+    JOIN teams a ON a.team_id = f.away_team_id
+""" + LATEST_CALL
+
+
+def _listed(row) -> dict[str, Any]:
+    """A fixture as the league and team pages list it: who and when, the
+    names and slug for its link, and its call if published. No prices."""
+    call = None if row["side"] is None else {
+        "side": row["side"],
+        "model_prob": row["model_prob"],
+        "outcome": row["outcome"],
+        "settled_at": row["settled_at"],
+        "fthg": row["fthg"],
+        "ftag": row["ftag"],
+    }
+    return {
+        "fixture_id": row["fixture_id"],
+        "division": row["division"],
+        "match_date": row["match_date"],
+        "kickoff_time": row["kickoff_time"],
+        "home_team": row["home_team"],
+        "away_team": row["away_team"],
+        "home_name": teams.display_name(row["home_team"]),
+        "away_name": teams.display_name(row["away_team"]),
+        "slug": teams.fixture_slug(row["home_team"], row["away_team"]),
+        "tip": call,
+    }
+
+
+@app.get("/league/{division}")
+def league(division: str, conn: db.Connection = Depends(get_conn)) -> dict:
+    """One division, for its league page (docs/SEO_PLAN.md 2.4).
+
+    `record` is the division's row of `/tips/record` `by_division`, from the
+    same query, so the two cannot disagree. `upcoming` is every unsettled
+    fixture dated today or later, called or not, soonest first -- a page on
+    a quiet Friday still lists the weekend. `results` is the last twelve
+    settled, newest first. 404 for a division that is not served.
+    """
+    if division not in SERVED_DIVISIONS:
+        raise HTTPException(404, "unknown league")
+    today = db.today()
+    record = dict(conn.execute(
+        RECORD.format(group="", where="WHERE f.division = %s"), (today, division)).fetchone())
+    record["matchweeks"] = _matchweeks(conn, "f.division").get(division, 0)
+    upcoming = _rows(
+        conn,
+        LISTED + " WHERE f.division = %s AND f.match_date >= %s AND c.settled_at IS NULL"
+        " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
+        (division, today),
+    )
+    results = _rows(
+        conn,
+        LISTED + " WHERE f.division = %s AND c.settled_at IS NOT NULL"
+        " ORDER BY f.match_date DESC, f.fixture_id DESC LIMIT 12",
+        (division,),
+    )
+    return {
+        "division": division,
+        "record": record,
+        "upcoming": [_listed(r) for r in upcoming],
+        "results": [_listed(r) for r in results],
+    }
 
 
 @app.get("/book")

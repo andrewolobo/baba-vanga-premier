@@ -182,8 +182,12 @@ def test_no_page(match_client, fixture_id, why):
 # --- /sitemap/entries ------------------------------------------------------ #
 
 
+def _matches(client):
+    return client.get("/sitemap/entries").json()["matches"]
+
+
 def test_the_sitemap_lists_exactly_the_fixtures_that_have_a_page(match_client):
-    listed = {e["fixture_id"] for e in match_client.get("/sitemap/entries").json()}
+    listed = {e["fixture_id"] for e in _matches(match_client)}
     have_a_page = {fid for fid in FIXTURES
                    if match_client.get(f"/fixture/{fid}").status_code == 200}
     assert listed == have_a_page
@@ -191,7 +195,7 @@ def test_the_sitemap_lists_exactly_the_fixtures_that_have_a_page(match_client):
 
 
 def test_sitemap_lastmod_is_the_last_visible_change(match_client):
-    entries = {e["fixture_id"]: e for e in match_client.get("/sitemap/entries").json()}
+    entries = {e["fixture_id"]: e for e in _matches(match_client)}
     assert entries[100]["lastmod"] == "2026-09-12T19:00:00Z"      # settled after publishing
     assert entries[201]["lastmod"] == "2026-09-18T06:05:00Z"      # published, not settled
     assert entries[200]["lastmod"] == "2026-09-16T06:00:00Z"      # no call yet: first seen
@@ -199,9 +203,61 @@ def test_sitemap_lastmod_is_the_last_visible_change(match_client):
 
 
 def test_sitemap_is_newest_first(match_client):
-    ids = [e["fixture_id"] for e in match_client.get("/sitemap/entries").json()]
+    ids = [e["fixture_id"] for e in _matches(match_client)]
     dates = [FIXTURES[i][1] for i in ids]
     assert dates == sorted(dates, reverse=True)
+
+
+def test_sitemap_lists_each_league_with_a_page_at_its_latest_match_change(match_client):
+    body = match_client.get("/sitemap/entries").json()
+    by_division: dict[str, str] = {}
+    for m in body["matches"]:
+        by_division[m["division"]] = max(by_division.get(m["division"], ""), m["lastmod"])
+    # E1's only fixture is stale and EC is not served, so only E0 has a page.
+    assert body["leagues"] == [{"division": "E0", "lastmod": by_division["E0"]}]
+    assert by_division["E0"] == "2026-09-18T06:05:00Z"      # fixture 201's call
+
+
+# --- /league ----------------------------------------------------------------- #
+
+
+def test_league_record_is_the_division_row_of_the_record(match_client):
+    """One query behind both, so the league page and the front page's
+    per-division table cannot disagree."""
+    row = next(d for d in match_client.get("/tips/record").json()["by_division"]
+               if d["division"] == "E0")
+    body = match_client.get("/league/E0").json()
+    assert {**body["record"], "division": body["division"]} == row
+
+
+def test_league_upcoming_lists_called_and_uncalled_fixtures_soonest_first(match_client):
+    upcoming = match_client.get("/league/E0").json()["upcoming"]
+    assert [f["fixture_id"] for f in upcoming] == [201, 200]
+    live, pending = upcoming
+    assert (live["tip"]["side"], live["tip"]["settled_at"]) == ("1X", None)
+    assert pending["tip"] is None
+    assert (pending["home_name"], pending["slug"]) == (
+        "Manchester United", "manchester-united-vs-nottingham-forest")
+
+
+def test_league_results_are_settled_newest_first_with_the_latest_call(match_client):
+    results = match_client.get("/league/E0").json()["results"]
+    assert [f["fixture_id"] for f in results] == [107, 100, 106, 105, 104, 103, 102, 101, 90]
+    f103 = next(f for f in results if f["fixture_id"] == 103)
+    assert (f103["tip"]["side"], f103["tip"]["outcome"], f103["tip"]["fthg"]) == ("H+1.5", "win", 0)
+
+
+def test_league_lists_carry_no_prices(match_client):
+    body = match_client.get("/league/E0").json()
+    for f in body["upcoming"] + body["results"]:
+        assert not [k for k in f if k.startswith(("avg_", "max_", "ah_"))]
+        assert f["tip"] is None or set(f["tip"]) == {
+            "side", "model_prob", "outcome", "settled_at", "fthg", "ftag"}
+
+
+@pytest.mark.parametrize("division", ["EC", "E9", "e0"])
+def test_no_league_page_outside_the_served_divisions(match_client, division):
+    assert match_client.get(f"/league/{division}").status_code == 404
 
 
 # --- names, slugs, venues --------------------------------------------------- #

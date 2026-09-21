@@ -12,6 +12,7 @@
   import { wagerLink, wagerLabel } from '$lib/betpawa.js';
   import { ORIGIN } from '$lib/site.js';
   import PageHead from '$lib/PageHead.svelte';
+  import { leaguePath } from '$lib/leagues.js';
   import {
     matchPath,
     matchState,
@@ -54,7 +55,7 @@
 </svelte:head>
 
 <article class="page">
-  <div class="kicker">Match prediction · {divisionName(fx.division)}</div>
+  <div class="kicker">Match prediction · <a href={leaguePath(fx.division)}>{divisionName(fx.division)}</a></div>
   <h1>
     <span class="team"><span class="crest" style="background:{badge.home.colour}">{badge.home.code}</span>{fx.home_name}</span>
     <span class="vs">vs</span>
@@ -170,6 +171,8 @@
     font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em;
     text-transform: uppercase; color: var(--accent);
   }
+  .kicker a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .kicker a:hover { color: var(--accent-soft); }
   h1 {
     font-family: var(--display); font-weight: 800; font-size: clamp(30px, 5vw, 48px);
     line-height: 1.05; text-transform: uppercase; color: #fff; margin: 12px 0 0;

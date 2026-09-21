@@ -874,28 +874,153 @@ is no other probability.
   `docs/notes` "prediction history" item). This will be empty for most
   fixtures until more seasons have been published.
 
-### 2.4 League pages (~½ day) — `/premier-league`, `/championship`, `/league-one`, `/league-two`
+**Owner decisions for 2.4 and 2.5, 2026-09-18**, all as recommended:
+- **League intros:** drafted here, owner edits (below).
+- **League page content:** live calls, plus upcoming fixtures still waiting
+  for their call, plus recent results with our calls, plus the record line.
+- **Team pages:** build now, for all 92 clubs.
+- **Links:** cross-link the new pages and put the four leagues in the site
+  footer (part of 2.8). The front page's cards are unchanged, and the 2.8
+  call-drawer links remain not taken.
 
-- **Content:**
-  - the division's live calls (`/tips?division=`);
-  - recent results (`/tips/results?division=`);
-  - the division's line from `/tips/record` `by_division`;
-  - links to each match page.
-- **Title:** "Premier League Predictions Today | BabaVanga", and so on.
-- **Each needs a short intro in the owner's words.** Four identical
-  templates with no unique text read as thin, duplicate content.
+**Measured on the live API that day:**
+- 40–83 graded calls per league over 5–6 matchweeks, at 70% (E0), 85.5%
+  (E1), 72% (E2) and 81% (E3). The front page already shows these.
+- 10–12 upcoming fixtures per league in the feed, but only 2 live calls on
+  a Friday.
+- All 92 clubs have calls, **4–8 each** (median 6).
 
-### 2.5 Team pages (~½ day) — `/team/[team]/`
+### 2.4 League pages (~1 day) — `/premier-league`, `/championship`, `/league-one`, `/league-two`
 
-- **API** (moved here from 2.2, 2026-09-18): `GET /teams`, the served teams
-  with `team_id`, display name and slug; and `GET /team/{team_id}/tips`,
-  the published tips involving the team, newest first, with a limit.
-- **Content:**
-  - the next fixture, if any;
-  - the published calls involving the team, with outcomes;
-  - counts, shown as counts ("8 calls, 6 came in"), not as a strike rate that
-    implies skill on a handful of games.
-- **Title:** "{Team} Predictions & Record | BabaVanga".
+**Built 2026-09-18, uncommitted**, as specified below, with the owner's
+intros verbatim.
+
+**API:**
+- `GET /league/{division}`. `record` comes from the same `RECORD` query as
+  `/tips/record` `by_division`, and a test pins that they are equal.
+  `upcoming` lists unsettled fixtures from today on, called or not.
+  `results` lists the last 12 settled. Each fixture gets the latest call by
+  a lateral join, and the list shape is shared by `LISTED` and `_listed`,
+  which 2.5 reuses.
+- **`/sitemap/entries` is now `{matches, leagues}`**. A league's `lastmod`
+  is the latest of its matches'.
+- `tests/test_match_api.py` +8, **32 in all**.
+
+**Web:**
+- `$lib/leagues.js`: slugs, intros, names from `DIVISIONS`, title and
+  description.
+- The param matcher `src/params/league.js`.
+- `routes/[league=league]/`: intro, record line ("60.0% of graded Premier
+  League calls came in: 6 of 10, over N matchweeks. Strike rate, not a
+  return."), calls and upcoming fixtures by day, recent results. Every row
+  links to its match page, and each section has an empty-state line.
+- `sitemap.js` lists the league pages.
+- The footer lists the four leagues, using the layout's previously unused
+  `.links` rule (so that build warning is gone). The match page's league
+  name links to its league page.
+- The service worker keeps the four league pages for offline, as 2.1
+  planned.
+- `leagues.test.js` (4) pins the four codes, names and slugs; distinct
+  intros; that no other path is a league; that no slug shadows a real
+  route; and the title and description. `sitemap.test.js` covers leagues.
+  85 web tests.
+
+**Verified** on `vite preview` of the build, against a scratch API seeded
+from `tests/test_match_api.py`:
+- **curl:** all four leagues 200; a trailing slash 308; `/Premier-League`,
+  `/national-league` and `/foo` 404; one of each head tag; all 11 match
+  pages linked; the sitemap lists the league with its `lastmod`; the empty
+  leagues show their empty-state lines.
+- **A 12-check Playwright click-through:**
+  - the intro, record and lists in the server's HTML;
+  - the head tags;
+  - the record line matching the API;
+  - the upcoming order, and "call on matchday" for an uncalled fixture;
+  - the zone switch;
+  - results newest first, marked;
+  - league → match → league by client-side links, with head tags
+    following;
+  - the footer's four links, footer → League Two with its empty states;
+  - no page errors; no horizontal scroll at 390 px.
+- The **2.3 click-through re-ran, 25/25**.
+- Full Python suite **783 pass**. Scratch database dropped.
+
+**Found while testing:** a Vite **dev** server on `[::1]:5173` and a uvicorn
+on `:8000`, both started at 12:17 and not by this session, serve the
+working tree. `localhost` resolves to the dev server first, so the checks
+moved to `127.0.0.1`. **That uvicorn predates `/league` and `/fixture`**:
+league and match pages return 500 in that dev stack until it is restarted.
+
+- **Route:** one `routes/[league=league]/` with a param matcher
+  (`src/params/league.js`) that accepts the four slugs only, so every other
+  top-level path still 404s. The slugs, names and intros live in
+  `$lib/leagues.js`.
+- **API: `GET /league/{division}`**, one read per page:
+  - `record`: the division's row from `/tips/record` `by_division`;
+  - `upcoming`: fixtures dated today or later, each with its call if
+    published;
+  - `results`: the last 12 settled, with score, call and outcome.
+  Every fixture carries `fixture_id`, `slug`, the display names and the
+  date. No prices. 404 for a division that is not served.
+- **Content:** intro, record line, then "Calls and upcoming fixtures"
+  (called fixtures show the call; the rest show "call on matchday"), then
+  "Recent results". Every fixture links to its match page.
+- **Title:** "{League} Predictions & Tips | BabaVanga" (the plan's
+  "…Predictions Today" is untrue on days with no calls).
+- **Description:** "{League} predictions: one call for every match,
+  published on matchday before kick-off and graded after. {graded} calls
+  graded so far."
+- **Intros (drafts, owner to edit).** They carry no figure that goes stale;
+  the live counts are in the record line.
+  - **Premier League:** "Our call for every Premier League match, published
+    on matchday morning before kick-off and graded once the final whistle
+    goes. Twenty clubs, 380 matches a season: each gets a single call, and
+    every one counts toward the record below."
+  - **Championship:** "The busiest division we cover: 24 clubs and 552
+    league matches, midweek rounds included. Every fixture gets one call on
+    matchday, published before kick-off, graded after, and never revised."
+  - **League One:** "Every League One fixture, one call each: published on
+    matchday before kick-off, graded once the result is in. Calls here, as
+    everywhere on the site, are judged on how often they come in, not on
+    any return."
+  - **League Two:** "League Two's 24 clubs and 552 matches, each with a
+    single call published before kick-off. Graded calls feed the record
+    below, and each fixture's page carries recent form and past meetings."
+
+### 2.5 Team pages (~1 day) — `/team/[team]/`
+
+- **Route:** `/team/{team_id}-{slug}` (D9). The id decides; other words
+  301 to the current slug, as on match pages.
+- **API: `GET /team/{team_id}`** replaces the plan's `/teams` and
+  `/team/{id}/tips`, one read per page. It returns:
+  - the display name, slug and current division (from its latest fixture);
+  - the venue, when confirmed;
+  - `upcoming`, in the league page's shape;
+  - `calls`: every fixture involving the team this season with a settled
+    call, newest first, with score, W/D/L from the team's side, our call
+    and outcome;
+  - `tally`: graded and won.
+  404 for a team with no fixture in a served division.
+- **Content:** next fixtures with their calls or "call on matchday"; "Our
+  calls on {Team} this season: N graded, M came in", **as counts, never a
+  rate** on so few; then each call with score and outcome. Every fixture
+  links to its match page.
+- **Title:** "{Team} Predictions & Record | BabaVanga". **Description:**
+  "Our calls on {Team} this season: {graded} graded, {won} came in.
+  Next: {Home} vs {Away}, {date}."
+- Expect thin pages early in the season (4–8 calls today). They fill
+  themselves every matchweek.
+
+**Sitemap (extends 2.7):** `/sitemap/entries` becomes `{matches, leagues,
+teams}`. The `lastmod` of a league or team page is the latest visible
+change among its own fixtures, which is accurate by the same rule as the
+match pages.
+
+**Links (the part of 2.8 taken):**
+- match pages link each team name to its team page and the league to its
+  league page (so `/fixture` gains each team's id and slug);
+- league and team pages link every fixture to its match page;
+- the site footer lists the four leagues.
 
 ### 2.6 `/record` (and `/results`) as pages (D10)
 
@@ -979,6 +1104,9 @@ for Google to recrawl those pages.
   a substitute.
 - **Not in the 2.2/2.3/2.7 batch** (owner, 2026-09-18). Until this lands,
   the sitemap is the only way to reach a match page.
+- **Partly taken with 2.4/2.5** (owner, 2026-09-18): the footer's league
+  links, and links between match, league and team pages. The front page's
+  call-drawer and settled-card links are still not taken.
 
 ### 2.9 Docs and deploy (~½ day)
 

@@ -10,6 +10,7 @@
 // No <priority> or <changefreq>; Google reads neither.
 
 import { matchPath } from './match.js';
+import { leaguePath } from './leagues.js';
 
 // The pages that are not matches. /book and /performance are internal and
 // disallowed in robots.txt, so never listed.
@@ -21,10 +22,13 @@ const escapeXml = (s) =>
 const url = (loc, lastmod) =>
   `<url><loc>${escapeXml(loc)}</loc>${lastmod ? `<lastmod>${escapeXml(lastmod)}</lastmod>` : ''}</url>`;
 
+// `entries` is the API's `/sitemap/entries`: `matches`, and `leagues` (2.4),
+// each league dated by the latest change among its own matches.
 export function sitemapXml(entries, origin) {
   const urls = [
     ...STATIC_PATHS.map((path) => url(`${origin}${path}`)),
-    ...entries.map((e) => url(`${origin}${matchPath(e)}`, e.lastmod))
+    ...entries.leagues.map((l) => url(`${origin}${leaguePath(l.division)}`, l.lastmod)),
+    ...entries.matches.map((e) => url(`${origin}${matchPath(e)}`, e.lastmod))
   ];
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
