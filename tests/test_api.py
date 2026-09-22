@@ -538,6 +538,21 @@ def test_parlay_never_pads_below_the_threshold(tips_client):
 def test_parlay_filters_by_division_and_call_type(tips_client):
     body = tips_client.get("/parlay", params={"division": "E2", "min_claim": 0.5}).json()
     assert [t["tip_id"] for t in body["legs"]] == [2] and body["division"] == "E2"
+    # D15: the league picker is multi-select, on `sides`' pattern -- a mix
+    # narrows the pool before the ranking, echoed in the served order.
+    mix = tips_client.get("/parlay", params={"division": "E2,E0", "min_claim": 0.5}).json()
+    assert [t["tip_id"] for t in mix["legs"]] == [1, 2] and mix["division"] == "E0,E2"
+    assert mix["pool"] == 2
+    empty = tips_client.get("/parlay", params={"division": "E1,E3", "min_claim": 0.5}).json()
+    assert empty["legs"] == [] and empty["pool"] == 0 and empty["division"] == "E1,E3"
+    # Naming every served league is the same request as naming none, and a
+    # code repeated is the same as a code named once.
+    every = tips_client.get("/parlay", params={"division": "E0,E1,E2,E3", "min_claim": 0.5}).json()
+    assert every["division"] is None
+    assert [t["tip_id"] for t in every["legs"]] \
+        == [t["tip_id"] for t in tips_client.get("/parlay", params={"min_claim": 0.5}).json()["legs"]]
+    twice = tips_client.get("/parlay", params={"division": "E2,E2", "min_claim": 0.5}).json()
+    assert [t["tip_id"] for t in twice["legs"]] == [2] and twice["division"] == "E2"
     # D12: a narrowed type derives the other game's leg instead of dropping
     # it -- the fixture whose call is a `12` contributes its favourite when
     # straight wins are chosen, marked as not the published call.
@@ -576,6 +591,10 @@ def test_parlay_rejects_bad_sizes_thresholds_types_and_divisions(tips_client):
     assert tips_client.get("/parlay", params={"sides": "win,ou25"}).status_code == 400
     assert tips_client.get("/parlay", params={"sides": ""}).status_code == 400
     assert tips_client.get("/parlay", params={"division": "EC"}).status_code == 400
+    assert tips_client.get("/parlay", params={"division": "E0,EC"}).status_code == 400
+    # An empty selection is not an error here, unlike `sides`: no league named
+    # is how "every league" has always travelled.
+    assert tips_client.get("/parlay", params={"division": ""}).status_code == 200
 
 
 def test_parlay_drops_fixtures_whose_kickoff_has_passed(tips_client, monkeypatch):

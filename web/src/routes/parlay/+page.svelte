@@ -33,7 +33,11 @@
   const { store: betpawa, promptSignIn } = getContext('betpawa');
 
   // Defaults are the recommendation (`PARLAY_PLAN.md` §1), set in `+page.js`.
-  let division = $state(data.launch.division);
+  // D15: the league picker is multi-select, on the type chips' pattern below
+  // -- any mix of the four, never none. All four on is the default and
+  // travels as no league param at all.
+  const LEAGUES = DIVISIONS.filter(([code]) => code);
+  let leagues = $state(LEAGUES.map(([code]) => code));
   let risk = $state(data.launch.risk);
   // D8 (amended): the type chips are toggles -- any mix of the three, never
   // none. All three on is the default and travels as 'any'.
@@ -45,6 +49,22 @@
   let loading = $state(false);
 
   const minClaim = () => RISK_PRESETS.find(([key]) => key === risk)[2];
+  // All four leagues is every league, which is what an empty list sends.
+  // Canonical order, so toggling one off and on again is the same request
+  // and does not refetch.
+  const allLeagues = $derived(leagues.length === LEAGUES.length);
+  const leaguesParam = () =>
+    allLeagues ? [] : LEAGUES.map(([code]) => code).filter((code) => leagues.includes(code));
+  const toggleLeague = (code) => {
+    // From All -- every league on, which is where the page opens -- a click
+    // narrows to that league rather than turning it off: "everywhere except
+    // the Premier League" is not what a first click means. After that the
+    // chips toggle, and the last league on refuses to turn off, because a
+    // parlay drawn from no league is nothing.
+    if (allLeagues) leagues = [code];
+    else if (!leagues.includes(code)) leagues = [...leagues, code];
+    else if (leagues.length > 1) leagues = leagues.filter((c) => c !== code);
+  };
   const sidesParam = () =>
     sides.length === SIDE_GROUPS.length
       ? 'any'
@@ -55,11 +75,11 @@
     // The last chip stays on: a parlay drawn from no call types is nothing.
   };
 
-  async function load(div, size, min, type) {
+  async function load(picked, size, min, type) {
     loading = true;
     error = null;
     try {
-      parlay = await getParlay(div || null, size, min, type);
+      parlay = await getParlay(picked, size, min, type);
     } catch (e) {
       error = e.message;
     } finally {
@@ -70,7 +90,7 @@
   // the effect's first run (hydration) matches what is shown and is skipped.
   // The controls are read here, synchronously, which is what makes the
   // effect track them.
-  const settings = () => [division, legs, minClaim(), sidesParam()];
+  const settings = () => [leaguesParam(), legs, minClaim(), sidesParam()];
   let shown = settings().join('|');
   $effect(() => {
     const now = settings();
@@ -126,15 +146,24 @@
   </div>
 
   <p class="intro">
-    Pick a league, your markets, how safe each leg must be, and how many legs.
+    Pick your leagues, your markets, how safe each leg must be, and how many legs.
     Where our published call matches a chosen market, it is the leg. Pick a
     different market and we show the model's view of it for that game instead —
     marked, because only our published calls are graded.
   </p>
 
-  <div class="tabs">
-    {#each DIVISIONS as [code, label]}
-      <button class:on={division === code} onclick={() => (division = code)}>{label}</button>
+  <div class="tabs" role="group" aria-label="Leagues">
+    <!-- All turns every league on and reads as on when they all are; it is
+         a shortcut, not a fifth league, so clicking it again is a no-op. -->
+    <button
+      class:on={allLeagues}
+      aria-pressed={allLeagues}
+      onclick={() => (leagues = LEAGUES.map(([code]) => code))}>All</button>
+    {#each LEAGUES as [code, label]}
+      <button
+        class:on={leagues.includes(code)}
+        aria-pressed={leagues.includes(code)}
+        onclick={() => toggleLeague(code)}>{label}</button>
     {/each}
   </div>
 
@@ -160,7 +189,7 @@
         {/each}
       </div>
     </div>
-    <div class="control grow">
+    <div class="control">
       <span class="label">Legs · {legs}{#if parlay && parlay.pool > 0}&nbsp;· {parlay.pool} available{/if}</span>
       <input
         type="range"
@@ -351,33 +380,41 @@
   .intro { margin: 18px 0 0; font-size: 15px; line-height: 1.7; color: var(--body); max-width: 70ch; }
 
   /* --- controls ----------------------------------------------------------- */
-  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
+  /* Owner request 2026-09-22: every control row fills the container and the
+     buttons in a row are the same width. One column per button, so a preset
+     added anywhere keeps the row even without a number to change here. */
+  .tabs {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    gap: 8px; margin-top: 30px;
+  }
   .tabs button {
     font-family: var(--display); font-weight: 700; font-size: 16px;
-    letter-spacing: 0.09em; text-transform: uppercase; white-space: nowrap;
-    line-height: 1.2; padding: 12px 22px; border-radius: 3px;
+    letter-spacing: 0.09em; text-transform: uppercase;
+    line-height: 1.2; padding: 12px 10px; border-radius: 3px;
     border: 1px solid #33333c; background: transparent; color: var(--body);
     cursor: pointer;
   }
   .tabs button:hover { border-color: var(--muted); }
   .tabs button.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
 
-  .controls { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 18px; }
+  .controls { display: flex; flex-direction: column; gap: 18px; margin-top: 18px; }
   .control { display: flex; flex-direction: column; gap: 8px; }
   .label {
     font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
     text-transform: uppercase; color: var(--dim);
   }
-  .switch { display: flex; gap: 4px; flex-wrap: wrap; }
+  .switch {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
   .switch button {
     font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em;
-    text-transform: uppercase; padding: 7px 12px; border-radius: 3px;
+    text-transform: uppercase; padding: 7px 10px; border-radius: 3px;
     border: 1px solid var(--line); background: transparent; color: var(--muted);
-    cursor: pointer; min-width: 40px;
+    cursor: pointer;
   }
   .switch button:hover { border-color: var(--muted); color: var(--body); }
   .switch button.on { background: var(--bg); border-color: var(--accent); color: var(--accent); }
-  .control.grow { flex: 1 1 260px; max-width: 340px; }
   .control input[type='range'] { width: 100%; accent-color: var(--accent); margin: 8px 0 0; }
   .control input[type='range']:disabled { opacity: 0.4; }
   .switch button:focus-visible, .tabs button:focus-visible {
@@ -490,5 +527,12 @@
     .page { padding: 48px 18px 0; }
     .fixture { grid-template-columns: 1fr auto 1fr; gap: 10px; }
     .club { font-size: 14px; }
+    /* Five across cannot hold "Championship" on a phone. Two columns keeps
+       the rows full-width and the leagues even; All spans both, which is
+       what it means. */
+    .tabs { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tabs button { font-size: 14px; padding: 11px 8px; }
+    .tabs button:first-child { grid-column: 1 / -1; }
+    .switch button { font-size: 11px; padding: 7px 4px; }
   }
 </style>

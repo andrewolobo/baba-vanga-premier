@@ -7,7 +7,142 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-21** (latest): **the ball bounce is behind a build
+Last updated **2026-09-22** (latest): **`/results` is a date-grouped row list
+rather than a card grid** (owner request, from the mockup in
+`docs/ui/list-items/Predictions List.dc.html`), **uncommitted**. One row per
+settled call — outcome bar, league, both clubs with their crests, the
+scoreline, the published call, the outcome word — grouped under the day it was
+played with a `2/3 won · 1 void` summary per day. Colour is reserved for the
+outcome and nothing else carries it. The league filter, the last-60 / show-all
+switch and the per-row link to the match page are unchanged.
+
+**Three of the mockup's conventions were dropped on purpose.** It bolds the
+"our pick" team, which does not survive the real market vocabulary: only four
+of the eight `side` codes name one team, `12` and `D` name none, and this
+page's own fine print exists to say that a team name is *not* a claim the team
+won. The owner confirmed dropping it, so the PICK column is the only statement
+of what was published. The mockup also carries **Push** and **Pending** lanes:
+`tips.outcome` is `'win' | 'lose' | 'void'` (migration 001 — there is no
+push), and `/results` is settled-only, so a pending row cannot appear here at
+all. That lane belongs to the landing page if the view is ever carried over.
+
+**The "Scores & claims" toggle is gone** (owner request): the score now always
+shows, which is the point of a layout built around the scoreline. The claimed
+probability shared that toggle and has no column in the mockup, so it now
+lives on the match page alone — the one thing this change takes off the page.
+
+**The layout is written narrow-first, and that is the deliberate divergence
+from the mockup.** The mockup is a `min-width: 915px` grid inside
+`overflow-x: auto` — a sideways scroll on every phone. Here the row is a
+stacked scoreboard by default (league + outcome, then a line per club carrying
+its own score, then the call) and becomes the mockup's single-line grid at
+**761px**. One DOM, two `grid-template-areas`, so nothing is rendered twice.
+The wide pick column is **244px** because that fits the longest call the rule
+publishes ("AFC Wimbledon Away +1.5") without an ellipsis.
+
+The page now takes `shortDay` and `divisionName` from `$lib/match.js` instead
+of keeping local copies. This matters beyond tidiness: the local `shortDay`
+used `toLocaleDateString`, which `match.js` deliberately avoids — the page is
+server-rendered, two ICU builds can disagree ("Sep" or "Sept"), and a text
+mismatch is not repaired on hydration, so the server's spelling would simply
+stay.
+
+Verified: **797 pass**, 89 web tests, build clean, `svelte-check` 0 errors,
+**54-check click-through** at 1280 and 390px on a seeded `bvp_scratch` (9
+settled tips over 3 days and four leagues, including a void, a NULL-score row
+and a club with no crest file), dropped after. No schema, rule, cycle or
+ledger change (114 / 71 / 202).
+
+**Watch out when click-through testing.** A preview server from a parallel
+session was listening on `[::1]:5173` while this one held `127.0.0.1:5173`.
+`localhost` resolves to `::1` first on Windows, so Playwright browsed the
+*other* session's app against the real database, and every data-shaped check
+failed for a reason nothing in the page could show. Drive
+`http://127.0.0.1:<port>`, and read `netstat -ano` for a second listener
+before believing a red result.
+
+**Then, same day**: **the front page's league row is /parlay's tiles**
+(owner request) — a CSS grid that fills the section, one column per button, and
+at ≤820px `All` spanning the row above an even 2×2. This closes the
+divergence the parlay entry below left open ("if they should look alike that is
+a separate decision"): they now look alike.
+
+**Only the look is shared, and that was the explicit instruction.** The front
+page's picker stays **single-select** — one division or `All`, `tipsDivision`
+unchanged, no `aria-pressed`, no narrowing-then-toggling rule. `/parlay`'s row
+is a multi-select whose buttons each carry `aria-pressed`, and it was not
+touched. The whole change is the `.tabs` block in
+`web/src/routes/+page.svelte`: no markup, no handler, no state. `DIVISIONS`
+already led with `All`, so the row was the right shape before the CSS moved.
+
+Verified: 89 web tests, build clean, `svelte-check` 0 errors, **30-check
+click-through** at 1280 and 390px. It pins both halves of the request: the row
+matches the section's width to the pixel (1176/1176 desktop, 354/354 narrow)
+with five equal columns, and a click still selects exactly one tab and
+replaces rather than adds — with `/parlay` re-checked in the same run to prove
+its multi-select still selects two at once.
+
+**Then, same day**: **the row list is `$lib/ResultList.svelte`, and the front
+page's settled summary is the last six in it** (owner request), replacing the
+eight-card grid under "Last time out". The component holds the legend, the
+day groups and the rows; the heading, the link out, the error and empty
+states and the fine print differ between the two pages and stayed with them.
+`+page.js` still reads 12 — the slice is 6 and the extra rows cost nothing —
+and the front page's local `shortDay` went with the cards that used it.
+
+**The one thing the build decided that the request did not**: the per-day
+tally (`2/3 won · 1 void`) is **off on the front page**, behind
+`summary={false}`. Six rows cuts the oldest day in half, and a tally over the
+rows that survived the cut is not that day's record — the seeded Wed 16 Sep
+went 2/3 and the truncated group would have published it as "1/2 won". Only
+the caller knows whether it truncated, so the caller decides; `/results`
+shows every day whole and keeps its tallies. If the tally is wanted on the
+front page, the honest version is to cut at a day boundary instead of at six,
+which is a different request.
+
+Verified: 89 web tests, build clean, `svelte-check` 0 errors (15 files),
+**73-check click-through** at 1280 and 390px over `/results` *and* `/`, on the
+same seeded `bvp_scratch` plus two unplayed fixtures so the front page renders
+its calls list rather than the ball. The landing six are pinned against the
+head of `/results`, so a change that reordered one page and not the other goes
+red. Python suite untouched by this step (797 pass as of the entry above).
+
+Before that, **2026-09-22**: **the parlay page's league picker is
+multi-select, and its four control rows each fill the container** (owner
+request, `PARLAY_PLAN.md` §10), **uncommitted**. The only part of this that
+reaches the API is the picker: selection, ranking and the product are the
+server's, so two leagues are **one narrowed pool, never two responses
+merged**. `division` on `GET /parlay` now takes a comma-separated mix
+(`_parse_divisions` in `api/main.py`); `_check_division` is untouched and
+still serves the other five endpoints, which stay single-league. **Naming
+every served league is the same request as naming none** — it echoes
+`division: null` — exactly as `parse_sides` normalises to `"any"`, and a
+single code is unchanged on the wire and in the echo, so no existing caller
+moved.
+
+**The one thing the build decided that the plan did not**: from the opening
+all-on state, clicking a league **narrows to that league** instead of
+toggling it off. Pure toggling would have made the owner's own example
+("Premier League and Championship") start by producing *everywhere except
+the Premier League*. After that first click the chips toggle additively, and
+the last league on refuses to turn off — the type chips' rule. `All` turns
+every league back on. If that reads wrong in use, it is the three-line
+`toggleLeague` in `web/src/routes/parlay/+page.svelte` and nothing else.
+
+Layout: all three button rows are CSS grids with `grid-auto-flow: column`,
+so the buttons in a row are one width whatever their number, and risk, call
+types and legs are three stacked full-width rows. At ≤820px five league
+columns cannot hold "Championship", so `All` spans the row and the four
+leagues sit in an even 2×2. **This diverges from the front page's league
+tabs**, which are a scoped copy of the same CSS and still hug their content
+— the two pickers now do different jobs (multi vs. single), but if they
+should look alike that is a separate decision.
+
+Verified: **797 pass**, 89 web tests, build clean, `svelte-check` 0 errors,
+**28-check click-through** on a seeded `bvp_scratch` at 1280 and 390px,
+dropped after. No schema, rule, cycle or ledger change (114 / 71 / 202).
+
+Before that, **2026-09-21**: **the ball bounce is behind a build
 flag** (owner request), **uncommitted**. `web/src/lib/ball.js` exports
 `BALL_BOUNCE`, on the `$lib/hero.js` pattern already in the tree -- flip the
 one line, rebuild, deploy. Off, the `{#if}` drops the ball's markup, the box

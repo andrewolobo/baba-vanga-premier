@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #0a0b0a; }
+  a { color: #ff5a1f; text-decoration: none; }
+  a:hover { color: #ff7a47; }
+</style>
+</helmet>
+<div style="background:#0a0b0a; color:#e8ebe8; font-family:Archivo, system-ui, sans-serif; padding:40px 32px 56px; min-height:100%;">
+  <div style="max-width:1180px; margin:0 auto;">
+
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:8px;">
+      <h1 style="font-family:Anton, Archivo, sans-serif; font-weight:400; font-size:52px; line-height:0.92; letter-spacing:0.01em; margin:0; text-transform:uppercase; color:#ffffff;">Predictions</h1>
+      <a href="#" style="font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase;">All results →</a>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.12em; text-transform:uppercase; color:#8d938d; border-bottom:1px solid #1c201c; padding:14px 0 16px; margin-bottom:4px;">
+      <span style="display:flex; align-items:center; gap:8px;"><span style="width:3px; height:13px; background:#35d07f; display:inline-block;"></span>Won</span>
+      <span style="display:flex; align-items:center; gap:8px;"><span style="width:3px; height:13px; background:#e5484d; display:inline-block;"></span>Lost</span>
+      <span style="display:flex; align-items:center; gap:8px;"><span style="width:3px; height:13px; background:#8a6a2f; display:inline-block;"></span>Push</span>
+      <span style="display:flex; align-items:center; gap:8px;"><span style="width:3px; height:13px; background:#3a403a; display:inline-block;"></span>Pending</span>
+      <span style="margin-left:auto; color:#8d938d;">Bold team = our pick</span>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <div style="min-width:915px;">
+        <sc-for list="{{ groups }}" as="group" hint-placeholder-count="2">
+          <div style="margin-top:34px;">
+            <div style="display:flex; align-items:baseline; gap:14px; padding-bottom:10px;">
+              <div style="font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#b9bfb9;">{{ group.date }}</div>
+              <div style="flex:1; height:1px; background:#171a17;"></div>
+              <div style="font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#8d938d;">{{ group.summary }}</div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:3px;">
+              <sc-for list="{{ group.rows }}" as="row" hint-placeholder-count="4">
+                <div style="display:grid; grid-template-columns:3px 136px minmax(0,1fr) 146px minmax(0,1fr) 232px 74px; align-items:center; background:#101210; transition:background 140ms ease;" style-hover="background:#161916">
+                  <div style="align-self:stretch; background: {{ row.bar }};"></div>
+
+                  <div style="font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.13em; text-transform:uppercase; color:#8d938d; padding:0 0 0 16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ row.league }}</div>
+
+                  <div style="display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:16px 0;">
+                    <div style="font-size:16px; font-weight: {{ row.homeWeight }}; color: {{ row.homeColor }}; text-align:right;">{{ row.home }}</div>
+                    <div style="width:24px; height:24px; border-radius:50%; background:#1b1e1b; border:1px solid #262a26; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:0.02em; color:#767c76; flex:none;">{{ row.homeTag }}</div>
+                  </div>
+
+                  <div style="display:flex; align-items:center; justify-content:center; gap:10px; font-family:'IBM Plex Mono', monospace; font-variant-numeric:tabular-nums;">
+                    <span style="font-size:19px; font-weight:600; color: {{ row.homeScoreColor }};">{{ row.homeScore }}</span>
+                    <span style="font-size:13px; color:#3f453f;">{{ row.sep }}</span>
+                    <span style="font-size:19px; font-weight:600; color: {{ row.awayScoreColor }};">{{ row.awayScore }}</span>
+                  </div>
+
+                  <div style="display:flex; align-items:center; gap:12px; padding:16px 0;">
+                    <div style="width:24px; height:24px; border-radius:50%; background:#1b1e1b; border:1px solid #262a26; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:0.02em; color:#767c76; flex:none;">{{ row.awayTag }}</div>
+                    <div style="font-size:16px; font-weight: {{ row.awayWeight }}; color: {{ row.awayColor }};">{{ row.away }}</div>
+                  </div>
+
+                  <div style="display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono', monospace; font-size:12px; color:#9aa19a; padding:0 8px; white-space:nowrap; overflow:hidden;">
+                    <span style="font-size:9.5px; letter-spacing:0.16em; color:#8d938d;">PICK</span>
+                    <span style="overflow:hidden; text-overflow:ellipsis;">{{ row.pick }}</span>
+                  </div>
+
+                  <div style="display:flex; justify-content:flex-end; padding:0 16px 0 0;">
+                    <span style="font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color: {{ row.bar }};">{{ row.status }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <p style="font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.06em; color:#8d938d; margin:34px 0 0;">Colour is reserved for outcome. Everything else stays neutral so the scoreline reads first.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:900}}">
+const WIN = '#35d07f', LOSS = '#e5484d', PUSH = '#8a6a2f', PEND = '#3a403a';
+
+class Component extends DCLogic {
+  build(r) {
+    const settled = r.status !== 'pending';
+    const bar = r.status === 'won' ? WIN : r.status === 'lost' ? LOSS : r.status === 'push' ? PUSH : PEND;
+    const picked = r.picked;
+    const mk = (side, name, score) => ({
+      weight: picked === side ? 700 : 400,
+      color: picked === side ? '#ffffff' : '#9ba29b',
+      scoreColor: !settled ? '#c8cec8' : score === Math.max(r.hs, r.as) ? '#ffffff' : '#636963'
+    });
+    const h = mk('home', r.home, r.hs), a = mk('away', r.away, r.as);
+    return {
+      league: r.league, home: r.home, away: r.away,
+      homeTag: r.home.slice(0, 3).toUpperCase(), awayTag: r.away.slice(0, 3).toUpperCase(),
+      homeWeight: h.weight, awayWeight: a.weight,
+      homeColor: h.color, awayColor: a.color,
+      homeScore: settled ? String(r.hs) : r.time, awayScore: settled ? String(r.as) : '',
+      sep: settled ? '–' : '', 
+      homeScoreColor: h.scoreColor, awayScoreColor: a.scoreColor,
+      pick: r.pick, status: r.status === 'pending' ? 'Pending' : r.status,
+      bar
+    };
+  }
+
+  renderVals() {
+    const data = [
+      {
+        date: 'Tue 22 Sept · Today',
+        rows: [
+          { league: 'Championship', home: 'Millwall', away: 'Coventry', time: '19:45', status: 'pending', picked: 'away', pick: 'Coventry Away +1.5' },
+          { league: 'Championship', home: 'Stoke City', away: 'Leeds', time: '19:45', status: 'pending', picked: 'away', pick: 'Leeds Away +1.5' },
+          { league: 'Premier League', home: 'Everton', away: 'Newcastle', time: '20:00', status: 'pending', picked: 'home', pick: 'Everton Home +1.5' }
+        ]
+      },
+      {
+        date: 'Thu 18 Sept',
+        rows: [
+          { league: 'Championship', home: 'Bristol City', away: 'Watford', hs: 0, as: 2, status: 'won', picked: 'away', pick: 'Watford Away +1.5' },
+          { league: 'Premier League', home: 'Brentford', away: 'Chelsea', hs: 3, as: 0, status: 'lost', picked: 'away', pick: 'Chelsea Away +1.5' },
+          { league: 'Championship', home: 'Hull City', away: 'Swansea', hs: 1, as: 1, status: 'push', picked: 'away', pick: 'Swansea Away +0.5' }
+        ]
+      },
+      {
+        date: 'Tue 9 Sept',
+        rows: [
+          { league: 'Championship', home: 'Charlton', away: 'QPR', hs: 1, as: 2, status: 'won', picked: 'away', pick: 'QPR Away +1.5' },
+          { league: 'Championship', home: 'Norwich', away: 'Birmingham', hs: 1, as: 1, status: 'won', picked: 'away', pick: 'Birmingham Away +1.5' },
+          { league: 'Championship', home: 'Derby', away: 'West Brom', hs: 0, as: 1, status: 'won', picked: 'away', pick: 'West Brom Away +1.5' }
+        ]
+      },
+      {
+        date: 'Mon 8 Sept',
+        rows: [
+          { league: 'Championship', home: 'Bolton', away: 'West Ham', hs: 0, as: 3, status: 'won', picked: 'away', pick: 'West Ham win' },
+          { league: 'Championship', home: 'Wrexham', away: 'Burnley', hs: 2, as: 1, status: 'won', picked: 'home', pick: 'Wrexham Home +1.5' },
+          { league: 'Championship', home: 'Watford', away: 'Preston', hs: 1, as: 2, status: 'won', picked: 'away', pick: 'Preston Away +1.5' }
+        ]
+      }
+    ];
+
+    const groups = data.map(g => {
+      const rows = g.rows.map(r => this.build(r));
+      const won = g.rows.filter(r => r.status === 'won').length;
+      const settled = g.rows.filter(r => r.status !== 'pending').length;
+      return {
+        date: g.date,
+        summary: settled ? won + '/' + settled + ' won' : g.rows.length + ' to come',
+        rows
+      };
+    });
+
+    return { groups };
+  }
+}
+</script>
+</body>
+</html>

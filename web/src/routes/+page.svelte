@@ -21,6 +21,7 @@
   import { wagerLink, wagerLabel, daySlip } from '$lib/betpawa.js';
   import { HOME_TITLE } from '$lib/site.js';
   import { matchPath } from '$lib/match.js';
+  import ResultList from '$lib/ResultList.svelte';
   import PageHead from '$lib/PageHead.svelte';
 
   // The opening lists and record, read by `+page.js` -- on the server for a
@@ -47,7 +48,7 @@
   // The settled list and the record are summaries here, linking through to
   // /results and /record (docs/SEO_PLAN.md 2.6): neither refetches, so both
   // are plain values rather than state.
-  const recent = $derived(data.results.slice(0, 8));
+  const recent = $derived(data.results.slice(0, 6));
   const record = data.record;
   let error = $state(data.error);
   let loading = $state(false);
@@ -126,13 +127,6 @@
       weekday: 'long',
       day: 'numeric',
       month: 'long'
-    });
-  };
-  const shortDay = (iso) => {
-    const [y, m, d] = iso.split('-').map(Number);
-    return new Date(y, m - 1, d).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'short'
     });
   };
 </script>
@@ -437,40 +431,13 @@
   {:else if recent.length === 0}
     <p class="state">Nothing graded yet.</p>
   {:else}
-    <div class="cards">
-      {#each recent as r}
-        <a class="card" class:won={r.outcome === 'win'} class:lost={r.outcome === 'lose'}
-          href={matchPath(r)}>
-          <div class="cardbody">
-            <div class="cardtop">
-              <span class="cardfix">{r.home_team} <span class="vs">v</span> {r.away_team}</span>
-              <span class="mark">
-                {#if r.outcome === 'win'}
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.75l6 6 9-13.5" /></svg>
-                  WON
-                {:else if r.outcome === 'lose'}
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18L18 6M6 6l12 12" /></svg>
-                  LOST
-                {:else}
-                  VOID
-                {/if}
-              </span>
-            </div>
-            <div class="league">{divisionName(r.division)}</div>
-          </div>
-          <div class="cardfoot">
-            <span class="pick">
-              <span class="picklabel">Pick</span>
-              <span class="pickcall">{callLabel(r.side, r.home_team, r.away_team)}</span>
-            </span>
-            <time class="when" datetime={r.match_date}>{shortDay(r.match_date)}</time>
-          </div>
-        </a>
-      {/each}
-    </div>
+    <!-- No per-day tally here: six rows cuts the oldest day in half, and a
+         tally over what survived the cut would misstate that day. The whole
+         day, with its tally, is on /results. -->
+    <ResultList results={recent} summary={false} />
     <p class="fine">
-      The last eight. <a href="/results">Every settled call</a> — by division, with the score each
-      was graded from.
+      The last six. <a href="/results">Every settled call</a> — by division, and with the same
+      score each was graded from.
     </p>
   {/if}
 </section>
@@ -544,11 +511,18 @@
   .zone { display: block; }
 
   /* --- division tabs ------------------------------------------------------ */
-  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
+  /* Owner request 2026-09-22: the tiles of /parlay's league row, which fill
+     the section and share one width whatever their number. Only the look is
+     shared — this picker stays single-select (one division, or All), where
+     /parlay's is a multi-select whose buttons carry `aria-pressed`. */
+  .tabs {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    gap: 8px; margin-top: 30px;
+  }
   .tabs button {
     font-family: var(--display); font-weight: 700; font-size: 16px;
-    letter-spacing: 0.09em; text-transform: uppercase; white-space: nowrap;
-    line-height: 1.2; padding: 12px 22px; border-radius: 3px;
+    letter-spacing: 0.09em; text-transform: uppercase;
+    line-height: 1.2; padding: 12px 10px; border-radius: 3px;
     border: 1px solid #33333c; background: transparent; color: var(--body);
     cursor: pointer;
   }
@@ -666,71 +640,7 @@
     max-width: 90ch;
   }
 
-  /* --- results cards ------------------------------------------------------ */
-  .cards {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 14px; margin-top: 24px;
-  }
-  /* The stripe is a pseudo-element rather than a left border so the footer
-     band can run the full width of the card behind it. */
-  .card {
-    position: relative; display: flex; flex-direction: column; justify-content: space-between;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, box-shadow 0.2s;
-  }
-  .card::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-    background: var(--muted);
-  }
-  .card.won::before { background: var(--good); }
-  .card.lost::before { background: var(--bad); }
-  .card:hover { transform: translateY(-2px); }
-  .card.won:hover {
-    border-color: rgba(47, 181, 107, 0.45);
-    box-shadow: 0 10px 26px -12px rgba(47, 181, 107, 0.45);
-  }
-  .card.lost:hover {
-    border-color: rgba(228, 56, 79, 0.45);
-    box-shadow: 0 10px 26px -12px rgba(228, 56, 79, 0.45);
-  }
-  .cardbody { padding: 14px 15px 12px 18px; }
-  .cardtop { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .cardfix { font-size: 14.5px; font-weight: 600; line-height: 1.35; color: #e6e6ec; }
-  .vs { font-weight: 400; color: var(--muted); }
-  .mark {
-    display: inline-flex; align-items: center; gap: 4px; flex: none;
-    font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em;
-    padding: 2px 7px; border-radius: 4px; background: var(--panel-2);
-    border: 1px solid var(--line); color: var(--muted);
-  }
-  .mark svg {
-    width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3;
-    stroke-linecap: round; stroke-linejoin: round;
-  }
-  .card.won .mark {
-    color: var(--good); background: rgba(47, 181, 107, 0.1); border-color: rgba(47, 181, 107, 0.35);
-  }
-  .card.lost .mark {
-    color: var(--bad); background: rgba(228, 56, 79, 0.1); border-color: rgba(228, 56, 79, 0.35);
-  }
-  .card .league { margin-top: 7px; }
-  .cardfoot {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    padding: 9px 15px 9px 18px; border-top: 1px solid var(--line-2); background: var(--bg);
-    font-family: var(--mono); font-size: 11px; color: var(--muted);
-  }
-  .pick { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
-  .picklabel { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
-  .pickcall {
-    color: var(--body); font-weight: 600;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .when { color: #c9c9d2; white-space: nowrap; }
-
   @media (prefers-reduced-motion: reduce) {
-    .card { transition: border-color 0.2s, box-shadow 0.2s; }
-    .card:hover { transform: none; }
     /* A ball crossing the viewport is exactly what this setting is asking not
        to happen. It still appears, at rest on the floor. */
     .ballx, .bally, .ball, .ballshadow { animation: none; }
@@ -750,11 +660,6 @@
     text-transform: uppercase; color: var(--muted); white-space: nowrap;
   }
   .more:hover { color: var(--accent); }
-
-  /* A settled card is a link to its match page (2.8). */
-  .card { color: inherit; text-decoration: none; }
-  .card:hover { color: inherit; }
-  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* --- states ------------------------------------------------------------- */
   .state { margin-top: 26px; color: var(--muted); }
@@ -860,5 +765,11 @@
     .stats .inner, .disclaimer { padding-left: 18px; padding-right: 18px; }
     .fixture { grid-template-columns: 1fr auto 1fr; gap: 10px; }
     .club { font-size: 14px; }
+    /* Five across cannot hold "Championship" on a phone. Two columns keeps
+       the rows full-width and the leagues even; All spans both, which is
+       what it means. Same fallback as /parlay's row. */
+    .tabs { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tabs button { font-size: 14px; padding: 11px 8px; }
+    .tabs button:first-child { grid-column: 1 / -1; }
   }
 </style>

@@ -540,3 +540,68 @@ list exactly — the default view is unchanged, pinned by test. Verified:
 **673 pass** (full suite), 25 web tests, build clean, 22-check Playwright
 click-through on a seeded `bvp_scratch` (a ten-favourite slip reads
 "about 1 in 3,840", nine marks, no game dropped; dropped after).
+
+
+---
+
+## 10. Fourth assessment — 2026-09-22: a multi-select league picker, and controls that fill the row
+
+Owner request: the league picker should take **any mix of leagues**
+(Premier League *and* Championship), with **All** selecting every one; the
+selection buttons should be **one width and fill the container**; and
+**risk, call types and legs** should sit on **three separate rows**, each
+filling the container.
+
+Three of the four are layout. The league picker is the one that reaches the
+API, and it cannot be done in the browser: the selection, the ranking and the
+product are the server's (§2), so two leagues are one narrowed pool, never
+two responses merged. `sides` had already solved this shape, so the league
+picker is that idiom applied to leagues rather than a second one.
+
+**It adds no claim.** The filter narrows the row set *before* the existing
+ranking; nothing about the leg rule, the product, or the independence
+assumption moves. Rows 113 and 114 stand as measured, and nothing here
+needed a probe.
+
+### Decisions (D15–D17) — taken as recommended 2026-09-22
+
+- **D15** — the picker is multi-select, on D8's amended pattern: any mix of
+  the four, never none; the last league on refuses to turn off. **All** turns
+  every league on and reads as on when they all are. One amendment the build
+  found: **from the all-on state a league click narrows to that league**
+  rather than removing it — "everywhere except the Premier League" is not
+  what a first click means — and after that the chips toggle additively. So
+  the owner's example is two clicks: Premier League, then Championship.
+- **D16** — one width and full width applies to **all three button rows**
+  (leagues, risk, call types), not the league row alone, and the slider
+  fills its row.
+- **D17** — narrow screens: five equal league columns cannot hold
+  "Championship" on a phone, so at ≤820px **All spans the row and the four
+  leagues sit in an even 2×2**. Every row still covers the container.
+
+### Built 2026-09-22
+
+`division` on `GET /parlay` accepts a comma-separated mix (`_parse_divisions`
+in `api/main.py`, beside `_check_division`, which the other five endpoints
+keep): empty segments ignored, duplicates collapsed, canonical served order,
+`f.division = ANY(%s)`. **Naming every served league is the same request as
+naming none** and echoes `division: null`, exactly as `parse_sides`
+normalises to `"any"`; a single code is unchanged on the wire and in the echo,
+so nothing that already called this endpoint moved. An unknown code in a mix
+is still a 400.
+
+On the page, `leagues` is a `$state` list initialised to all four,
+`leaguesParam()` sends `[]` for all-on (which `get` drops from the query),
+and `toggleLeague` carries the D15 narrow-then-toggle rule. The rows are CSS
+grids with `grid-auto-flow: column`, so a preset added later keeps the row
+even without a number to change. The intro reads "Pick your leagues".
+
+Verified: **797 pass** (full suite), 89 web tests, build clean,
+`svelte-check` 0 errors, and a **28-check Playwright click-through** on a
+seeded `bvp_scratch` (eight live games, two per league) at 1280 and 390px —
+equal widths and full-width spans on all four rows, the narrow-on-first-click
+rule, `division=E0`, `division=E0,E1` and all-leagues-as-no-param on the
+wire, the pool and slider ceiling following the selection, the last-league
+guard, the 2×2 phone grid with no horizontal scroll, and the opening slip
+still in the server's HTML. `bvp_scratch` dropped after. No schema, rule,
+cycle or ledger change.

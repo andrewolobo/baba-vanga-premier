@@ -69,8 +69,12 @@ export const getTipRecord = (f) => get('/tips/record', {}, f);
 export const getFixture = (id, f) => get(`/fixture/${id}`, {}, f);
 export const getLeague = (division, f) => get(`/league/${division}`, {}, f);
 export const getTeam = (id, f) => get(`/team/${id}`, {}, f);
-export const getParlay = (division, legs, minClaim, sides, f) =>
-  get('/parlay', { division, legs, min_claim: minClaim, sides }, f);
+// `divisions` is the parlay page's multi-select league picker (D15): a list
+// of codes, or an empty list for every league -- which travels as no param
+// at all, because `get` drops the empty string. Every other read here takes
+// the one division its page has a tab for.
+export const getParlay = (divisions, legs, minClaim, sides, f) =>
+  get('/parlay', { division: divisions.join(','), legs, min_claim: minClaim, sides }, f);
 
 // The parlay page's controls (`docs/PARLAY_PLAN.md` D2, D8, D9). These mirror
 // `engine/serve/parlay.py` -- PRESETS, SIDE_GROUPS and MIN/MAX_LEGS -- and

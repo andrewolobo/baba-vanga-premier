@@ -277,6 +277,26 @@ def _check_division(division: str | None) -> None:
         raise HTTPException(400, f"unknown division {division!r}")
 
 
+def _parse_divisions(divisions: str | None) -> tuple[str, ...]:
+    """Normalise a multi-league `division` value to canonical order.
+
+    The parlay's league picker is multi-select (D15), so `division` there is
+    "E0,E1" as well as "E0"; this is `parse_sides`' rule for leagues -- empty
+    segments ignored, duplicates collapsed, order the served order, so
+    "E1,E0" and "E0,E1" are the same request. An empty or absent value, and a
+    value naming every served league, both mean **all leagues** and come back
+    as `()`: the filter clause is then omitted, which is what the endpoint
+    did before a league could be named more than once.
+    """
+    chosen = {d for d in (divisions or "").split(",") if d}
+    for code in sorted(chosen):
+        if code not in SERVED_DIVISIONS:
+            raise HTTPException(400, f"unknown division {code!r}")
+    if chosen == set(SERVED_DIVISIONS):
+        return ()
+    return tuple(d for d in SERVED_DIVISIONS if d in chosen)
+
+
 @app.get("/tips")
 def tips(
     division: str | None = Query(None, description="E0 | E1 | E2 | E3"),
@@ -357,7 +377,8 @@ def _london_now() -> datetime:
 
 @app.get("/parlay")
 def parlay(
-    division: str | None = Query(None, description="E0 | E1 | E2 | E3"),
+    division: str | None = Query(None, description="E0 | E1 | E2 | E3, or a"
+                                                   " comma-separated mix"),
     legs: int = Query(parlay_rule.DEFAULT_LEGS,
                       description=f"{parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}"),
     min_claim: float = Query(parlay_rule.DEFAULT_MIN_CLAIM,
@@ -380,13 +401,19 @@ def parlay(
     is padded: fewer calls clearing the threshold than `legs` asked for come
     back as they are, with `available` saying how many cleared.
 
+    `division` is multi-select here alone (D15), on `sides`' pattern: one
+    code, a comma-separated mix, or nothing for every league. The selection
+    narrows the pool *before* the ranking, so a two-league parlay is the top
+    legs of those two leagues, never two parlays merged -- which is also why
+    the page cannot do this with two calls of its own.
+
     The selection is `engine.serve.parlay.select_legs`, computed here rather
     than in the browser because the frontend never forms a probability
     (`web/src/lib/api.js`). Sizes and presets live there too; the page
     mirrors them. No price on the parlay and no return: most legs are
     unpriceable handicaps, and a parlay compounds whatever the singles return.
     """
-    _check_division(division)
+    chosen = _parse_divisions(division)
     if not parlay_rule.MIN_LEGS <= legs <= parlay_rule.MAX_LEGS:
         raise HTTPException(
             400, f"legs must be {parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}")
@@ -398,9 +425,9 @@ def parlay(
         raise HTTPException(400, str(error)) from error
     clause = " WHERE t.settled_at IS NULL AND f.match_date >= %s"
     params: tuple = (db.today(),)
-    if division:
-        clause += " AND f.division = %s"
-        params += (division,)
+    if chosen:
+        clause += " AND f.division = ANY(%s)"
+        params += (list(chosen),)
     rows = _with_handicap(_rows(
         conn,
         TIP_SELECT + clause
@@ -409,7 +436,7 @@ def parlay(
     ))
     selected = parlay_rule.select_legs(rows, legs=legs, min_claim=min_claim,
                                        sides=sides, now=_london_now())
-    return {**selected, "division": division}
+    return {**selected, "division": ",".join(chosen) or None}
 
 
 #: Strike rate and volume. **No P&L column appears here by design** -- see the
