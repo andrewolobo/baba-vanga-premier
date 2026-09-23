@@ -69,15 +69,75 @@ export function pageDescription(fx) {
   return `${score} (${when}). Our call, ${callPhrase(fx)}, ${outcomeWords(t.outcome)}.`;
 }
 
-// A side's recent game from its own point of view.
+// A side's recent game from its own point of view. `opponentTeam` is the
+// canonical name, which keys the crest.
 export function formGame(g) {
   const scored = g.at_home ? g.fthg : g.ftag;
   const conceded = g.at_home ? g.ftag : g.fthg;
   return {
     opponent: g.at_home ? g.away_name : g.home_name,
+    opponentTeam: g.at_home ? g.away_team : g.home_team,
     where: g.at_home ? 'v' : 'at',
     score: scored == null ? '–' : `${scored}–${conceded}`
   };
+}
+
+// "W2 D1 L2" over a side's games. A game with no recorded score is none.
+export function formRecord(games) {
+  const n = (r) => games.filter((g) => g.result === r).length;
+  return `W${n('W')} D${n('D')} L${n('L')}`;
+}
+
+// Which full-time goal margins each call comes in on, read from one side: the
+// team the call names, or the home side for the two that name neither (D,
+// 12). Display only: the page colours the full-time mark by the graded
+// outcome, not by this table, so the two can never tell different stories.
+const COMES_IN_ON = {
+  H: ['home', (m) => m >= 1],
+  A: ['away', (m) => m >= 1],
+  D: ['home', (m) => m === 0],
+  '1X': ['home', (m) => m >= 0],
+  X2: ['away', (m) => m >= 0],
+  12: ['home', (m) => m !== 0],
+  'H+1.5': ['home', (m) => m >= -1],
+  'A+1.5': ['away', (m) => m >= -1]
+};
+
+const marginLabel = (m) =>
+  m <= -3 ? '≤−3' : m >= 3 ? '≥+3' : m > 0 ? `+${m}` : m < 0 ? `−${-m}` : '0';
+
+// The goal-margin scale under a call: seven cells, −3 to +3 from `team`'s
+// side, each saying whether the call comes in on that margin, and `ended` on
+// the one the match finished on. The end cells stand for three or more, so a
+// 5–0 still lands; every rule above reads the same across both ends, which is
+// what makes folding them safe. Null for a code with no rule.
+export function marginScale(side, fthg, ftag) {
+  const rule = COMES_IN_ON[side];
+  if (!rule) return null;
+  const [team, comesIn] = rule;
+  const scored = fthg != null && ftag != null;
+  const margin = scored ? (team === 'home' ? fthg - ftag : ftag - fthg) : null;
+  const ended = margin == null ? null : Math.max(-3, Math.min(3, margin));
+  return {
+    team,
+    cells: [-3, -2, -1, 0, 1, 2, 3].map((m) => ({
+      label: marginLabel(m),
+      comesIn: comesIn(m),
+      ended: m === ended
+    }))
+  };
+}
+
+// The last meetings as wins for each club and draws, whichever way round each
+// was played. `home` is this fixture's home side, by display name.
+export function meetingTally(meetings, home) {
+  const tally = { home: 0, draw: 0, away: 0 };
+  for (const m of meetings) {
+    if (m.fthg === m.ftag) tally.draw++;
+    else if (m.fthg > m.ftag === (m.home_name === home)) tally.home++;
+    else tally.away++;
+  }
+  return tally;
 }
 
 // Our calls on those games, as counts (2.5: a rate on five games would imply

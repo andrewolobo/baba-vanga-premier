@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0e0e10;color:#ececef;font-family:Barlow,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#ff6a1a;text-decoration:none}a:hover{color:#ff8a4a;text-decoration:underline}
+</style>
+</helmet>
+<div style="max-width:880px;margin:0 auto;padding:32px 24px 48px;display:flex;flex-direction:column;gap:40px">
+
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;color:#ff6a1a">MATCH PREDICTION · <span style="text-decoration:underline;text-underline-offset:4px">CHAMPIONSHIP</span></div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(34px,7vw,52px);line-height:1;text-transform:uppercase">
+      <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:50%;background:#c8102e;display:grid;place-items:center;font-size:15px;font-family:'JetBrains Mono',monospace;font-weight:600">BC</div>Bristol City</div>
+      <span style="color:#6b6b75;font-size:.5em">VS</span>
+      <div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:50%;background:#f5d20a;color:#111;display:grid;place-items:center;font-size:15px;font-family:'JetBrains Mono',monospace;font-weight:600">WA</div>Watford</div>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8b8b95">Fri 18 Sep · 22:00 your time (Africa/Kampala) · Ashton Gate</div>
+  </header>
+
+  <section style="background:#16161a;border:1px solid #26262c;border-radius:10px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 22px;background:rgba(47,191,113,.1);border-bottom:1px solid rgba(47,191,113,.25)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:22px;height:22px;border-radius:50%;background:#2fbf71;color:#0e0e10;display:grid;place-items:center;font-weight:700;font-size:13px">✓</div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.12em;color:#2fbf71;font-weight:600">OUR CALL CAME IN</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#8b8b95;font-weight:400">FT</span>
+        <span>Bristol City</span><span style="font-size:28px">1–0</span><span>Watford</span>
+      </div>
+    </div>
+
+    <div style="padding:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8b8b95">OUR CALL</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:#b8b8c0;background:#23232a;padding:3px 7px;border-radius:3px">HANDICAP | FULLTIME</span>
+        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:36px;line-height:1;color:#ff6a1a;text-transform:uppercase">Watford Away +1.5</div>
+        <div style="font-size:15px;color:#b8b8c0;text-wrap:pretty">For this to come in, Watford must not lose by 2 or more goals.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;justify-content:flex-end">
+        <div style="display:flex;align-items:baseline;justify-content:space-between">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8b8b95">MODEL CONFIDENCE</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:40px;line-height:1">77<span style="font-size:22px;color:#8b8b95">%</span></span>
+        </div>
+        <div style="position:relative;height:10px;background:#26262c;border-radius:5px">
+          <div style="width:77%;height:100%;background:#ff6a1a;border-radius:5px"></div>
+          <div style="position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:#6b6b75"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b6b75"><span>0</span><span>50</span><span>100</span></div>
+      </div>
+    </div>
+
+    <sc-if value="{{ showScale }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:0 22px 22px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8b8b95">
+          <span>WATFORD GOAL MARGIN</span>
+          <span><span style="color:#2fbf71">■</span> CALL WINS  <span style="color:#e5484d">■</span> CALL LOSES</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+          <sc-for list="{{ scale }}" as="c" hint-placeholder-count="7">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+              <sc-if value="{{ c.actual }}">
+                <div style="width:100%;height:34px;border-radius:4px;background:#2fbf71;color:#0e0e10;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600">FT</div>
+              </sc-if>
+              <sc-if value="{{ c.winZone }}">
+                <div style="width:100%;height:34px;border-radius:4px;background:rgba(47,191,113,.16);border:1px solid rgba(47,191,113,.35);box-sizing:border-box"></div>
+              </sc-if>
+              <sc-if value="{{ c.loseZone }}">
+                <div style="width:100%;height:34px;border-radius:4px;background:rgba(229,72,77,.14);border:1px solid rgba(229,72,77,.3);box-sizing:border-box"></div>
+              </sc-if>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#b8b8c0">{{ c.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:30px;text-transform:uppercase">Recent form</h2>
+      <div style="font-size:14px;color:#8b8b95">Last 5 league games, oldest to latest. Bottom row shows whether our call on each came in.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+      <sc-for list="{{ teams }}" as="t" hint-placeholder-count="2">
+        <div style="background:#16161a;border:1px solid #26262c;border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;text-transform:uppercase">{{ t.name }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8b8b95">{{ t.record }}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 10px;align-items:start">
+            <div style="display:flex;flex-direction:column;gap:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b6b75">
+              <sc-if value="{{ isWave }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:4px"><span style="height:16px;line-height:16px">W</span><span style="height:16px;line-height:16px">D</span><span style="height:16px;line-height:16px">L</span></div>
+              </sc-if>
+              <sc-if value="{{ isRow }}"><span style="height:16px;line-height:16px">RESULT</span></sc-if>
+              <span style="height:18px;line-height:18px;margin-top:8px">CALL</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px">
+              <sc-for list="{{ t.games }}" as="g" hint-placeholder-count="5">
+                <div title="{{ g.tip }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:default">
+                  <sc-if value="{{ isWave }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                    <div style="height:16px;display:grid;place-items:center"><sc-if value="{{ g.isW }}"><div style="width:16px;height:16px;border-radius:3px;background:#2fbf71"></div></sc-if></div>
+                    <div style="height:16px;display:grid;place-items:center"><sc-if value="{{ g.isD }}"><div style="width:16px;height:7px;border-radius:2px;background:#7a7a84"></div></sc-if></div>
+                    <div style="height:16px;display:grid;place-items:center"><sc-if value="{{ g.isL }}"><div style="width:16px;height:16px;border-radius:3px;background:#e5484d"></div></sc-if></div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ isRow }}">
+                    <div style="height:16px;display:grid;place-items:center">
+                      <sc-if value="{{ g.isW }}"><div style="width:16px;height:16px;border-radius:3px;background:#2fbf71"></div></sc-if>
+                      <sc-if value="{{ g.isD }}"><div style="width:16px;height:7px;border-radius:2px;background:#7a7a84"></div></sc-if>
+                      <sc-if value="{{ g.isL }}"><div style="width:16px;height:16px;border-radius:3px;background:#e5484d"></div></sc-if>
+                    </div>
+                  </sc-if>
+                  <div style="margin-top:8px;height:18px;display:grid;place-items:center">
+                    <sc-if value="{{ g.hit }}"><div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #2fbf71;color:#2fbf71;box-sizing:border-box;display:grid;place-items:center;font-size:10px;font-weight:700">✓</div></sc-if>
+                    <sc-if value="{{ g.miss }}"><div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #e5484d;color:#e5484d;box-sizing:border-box;display:grid;place-items:center;font-size:10px;font-weight:700">✕</div></sc-if>
+                  </div>
+                  <div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#ececef">{{ g.score }}</div>
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b6b75">{{ g.short }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;border-top:1px solid #26262c;padding-top:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px">
+              <span style="color:#b8b8c0">Our calls: <span style="color:#ececef;font-weight:600">{{ t.hits }} of 5</span> came in</span>
+              <button onClick="{{ t.toggle }}" style="background:none;border:1px solid #33333a;color:#b8b8c0;font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 9px;border-radius:4px;cursor:pointer;white-space:nowrap" style-hover="border-color:#ff6a1a;color:#ff6a1a">{{ t.toggleLabel }}</button>
+            </div>
+            <div style="display:flex;gap:3px;height:4px">
+              <sc-for list="{{ t.games }}" as="g" hint-placeholder-count="5">
+                <sc-if value="{{ g.hit }}"><div style="flex:1;background:#2fbf71;border-radius:2px"></div></sc-if>
+                <sc-if value="{{ g.miss }}"><div style="flex:1;background:#3a2226;border-radius:2px"></div></sc-if>
+              </sc-for>
+            </div>
+          </div>
+          <sc-if value="{{ t.open }}">
+            <div style="display:flex;flex-direction:column">
+              <sc-for list="{{ t.latestFirst }}" as="g">
+                <div style="display:grid;grid-template-columns:22px 34px minmax(0,1fr);gap:10px;align-items:start;padding:9px 0;border-bottom:1px solid #222228">
+                  <sc-if value="{{ g.isW }}"><span style="background:#2fbf71;color:#0e0e10;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;text-align:center;line-height:20px">W</span></sc-if>
+                  <sc-if value="{{ g.isD }}"><span style="background:#7a7a84;color:#0e0e10;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;text-align:center;line-height:20px">D</span></sc-if>
+                  <sc-if value="{{ g.isL }}"><span style="background:#e5484d;color:#0e0e10;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;text-align:center;line-height:20px">L</span></sc-if>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:13px;line-height:20px">{{ g.score }}</span>
+                  <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                    <span style="font-size:14px;line-height:20px">{{ g.venue }} {{ g.opp }}</span>
+                    <sc-if value="{{ g.hit }}"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2fbf71">{{ g.call }} ✓</span></sc-if>
+                    <sc-if value="{{ g.miss }}"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#e5484d">{{ g.call }} ✕</span></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:18px">
+    <h2 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:30px;text-transform:uppercase">Last meetings</h2>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;height:28px;gap:3px;border-radius:4px;overflow:hidden;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600">
+        <div style="flex:1;background:#c8102e;display:grid;place-items:center">1</div>
+        <div style="flex:2;background:#3a3a42;display:grid;place-items:center">2</div>
+        <div style="flex:2;background:#f5d20a;color:#111;display:grid;place-items:center">2</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b8b95;letter-spacing:.06em">
+        <span>BRISTOL CITY WINS</span><span>DRAWS</span><span>WATFORD WINS</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ meetings }}" as="m" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:110px minmax(0,1fr) 10px;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #222228">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8b8b95">{{ m.date }}</span>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 52px minmax(0,1fr);gap:10px;align-items:center;font-size:15px">
+            <span style="text-align:right;color:{{ m.homeColor }};font-weight:{{ m.homeWeight }}">{{ m.home }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-weight:600;text-align:center;background:#1c1c21;border-radius:3px;padding:2px 0">{{ m.score }}</span>
+            <span style="color:{{ m.awayColor }};font-weight:{{ m.awayWeight }}">{{ m.away }}</span>
+          </div>
+          <div style="width:10px;height:10px;border-radius:50%;background:{{ m.dot }}"></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <footer style="font-size:13px;color:#8b8b95;max-width:520px;text-wrap:pretty;line-height:1.5">Confidence is the probability the model gave the call when it was published. It is uncalibrated and it is not a price. Strike rate, the share of graded calls that came in, is the whole claim: <a href="#">today's calls and the record</a>.</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;formStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;wave&quot;,&quot;row&quot;],&quot;default&quot;:&quot;wave&quot;,&quot;tsType&quot;:&quot;'wave'|'row'&quot;},&quot;showScale&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { open: {} };
+  data = [
+    { id: 'bc', name: 'Bristol City', games: [
+      { res: 'W', score: '2–0', opp: 'Hull City', short: 'HUL', venue: 'v', call: 'Bristol City to win', hit: true },
+      { res: 'D', score: '1–1', opp: 'Luton Town', short: 'LUT', venue: 'at', call: 'Under 2.5 goals', hit: true },
+      { res: 'L', score: '0–1', opp: 'Coventry City', short: 'COV', venue: 'v', call: 'Bristol City −0.5', hit: false },
+      { res: 'L', score: '0–2', opp: 'Millwall', short: 'MIL', venue: 'v', call: 'Either team to win', hit: true },
+      { res: 'W', score: '3–1', opp: 'Preston North End', short: 'PNE', venue: 'at', call: 'Bristol City Away +1.5', hit: true }
+    ]},
+    { id: 'wa', name: 'Watford', games: [
+      { res: 'W', score: '1–0', opp: 'QPR', short: 'QPR', venue: 'v', call: 'Watford to win', hit: true },
+      { res: 'L', score: '1–3', opp: 'Norwich City', short: 'NOR', venue: 'at', call: 'Watford Away +1.5', hit: false },
+      { res: 'D', score: '0–0', opp: 'Derby County', short: 'DER', venue: 'v', call: 'Under 2.5 goals', hit: true },
+      { res: 'L', score: '0–2', opp: 'Swansea City', short: 'SWA', venue: 'at', call: 'Watford Away +1.5', hit: false },
+      { res: 'W', score: '2–1', opp: 'Preston North End', short: 'PNE', venue: 'v', call: 'Preston North End Away +1.5', hit: true }
+    ]}
+  ];
+  meetings = [
+    ['27 Feb 2026', 'Bristol City', 1, 2, 'Watford'],
+    ['7 Nov 2025', 'Watford', 1, 1, 'Bristol City'],
+    ['5 Apr 2025', 'Bristol City', 2, 1, 'Watford'],
+    ['26 Nov 2024', 'Watford', 1, 0, 'Bristol City'],
+    ['20 Jan 2024', 'Bristol City', 1, 1, 'Watford']
+  ];
+  renderVals() {
+    const style = this.props.formStyle ?? 'wave';
+    const teams = this.data.map(t => {
+      const games = t.games.map(g => ({ ...g, isW: g.res === 'W', isD: g.res === 'D', isL: g.res === 'L', miss: !g.hit, tip: `${g.venue} ${g.opp} ${g.score} · ${g.call} ${g.hit ? '✓' : '✕'}` }));
+      const c = r => games.filter(g => g.res === r).length;
+      const open = !!this.state.open[t.id];
+      return { name: t.name, games, latestFirst: [...games].reverse(), record: `W${c('W')} D${c('D')} L${c('L')}`, hits: games.filter(g => g.hit).length, open,
+        toggleLabel: open ? 'Hide matches' : 'Show matches',
+        toggle: () => this.setState(s => ({ open: { ...s.open, [t.id]: !s.open[t.id] } })) };
+    });
+    const col = { 'Bristol City': '#c8102e', 'Watford': '#f5d20a' };
+    const meetings = this.meetings.map(([date, home, h, a, away]) => {
+      const hw = h > a, aw = a > h;
+      return { date, home, away, score: `${h}–${a}`,
+        homeColor: aw ? '#8b8b95' : '#ececef', awayColor: hw ? '#8b8b95' : '#ececef',
+        homeWeight: hw ? 600 : 400, awayWeight: aw ? 600 : 400,
+        dot: hw ? col[home] : aw ? col[away] : '#5a5a62' };
+    });
+    const actual = -1, line = -1.5;
+    const scale = [-3, -2, -1, 0, 1, 2, 3].map(v => ({ label: v > 0 ? `+${v}` : v === 0 ? '0' : `−${-v}`, actual: v === actual, winZone: v !== actual && v > line, loseZone: v !== actual && v < line }));
+    return { teams, meetings, scale, isWave: style === 'wave', isRow: style === 'row', showScale: this.props.showScale ?? true };
+  }
+}
+</script>
+</body>
+</html>

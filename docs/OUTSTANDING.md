@@ -7,7 +7,61 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-22** (latest): **`/results` is a date-grouped row list
+Last updated **2026-09-23** (latest): **the match and team pages are
+restyled from the mockup in `docs/ui/team-page/Match Prediction.dc.html`**
+(owner request; the "wave" form style is the owner's pick), **uncommitted**.
+- **Match page.** Once settled the call box opens on a verdict banner (✓/✕/–,
+  the words, the FT score; colour follows the graded outcome and nothing
+  else), then the call with its market badge and "for this to come in…", and
+  a large **model confidence** figure over a full-width bar. Under it, a
+  **goal-margin scale** from −3 to +3 for every call code
+  (`$lib/match.js:marginScale`), shown before the result too, without the FT
+  mark. The win/lose zones are display only: the FT mark takes the *graded*
+  outcome's colour, so the scale cannot contradict the record. Recent form
+  is `$lib/FormCard.svelte`: W/D/L as a wave, oldest to latest, a ✓/✕ call
+  row, and a score and opponent crest per column. Each column links to its
+  match page and carries its words as `aria-label`. Under the wave, "Our
+  calls: N of M came in" and a hit strip; the text list sits behind a
+  `<details>`, so it stays in the server's HTML. Last meetings gain a
+  head-to-head bar and bold winners.
+- **Team page.** Crest in the heading, the same form card for the last five
+  (without the list, since the season's list follows), crests beside every
+  club in both lists, and the match page's result chips.
+- **Departures from the mockup, owner-approved:** no club colours (the schema
+  has none; `badge.js` says so); no 50% mark on the confidence bar (the
+  number is uncalibrated); crests instead of generated three-letter codes;
+  `<details>` instead of a script toggle (SEO); the scale for every call
+  rather than the handicap only.
+- **API, additive:** `_team_calls` rows carry the canonical `home_team` /
+  `away_team` (the crest keys), and `/team` carries `canonical_name`.
+  `Crest.svelte` serves the 128px file above 32px and scales the fallback
+  initials with the crest. `badge.js` gains `clubBadge`.
+- **Found, not fixed:** the crests of **Derby County and Telford United are
+  black on transparent**, and Spurs' and Swansea's are near it. They vanish or
+  go faint on the dark theme on every page that shows them, the front page
+  and `/results` included. Fix in `scripts/build_team_logos.py` (a light
+  variant) or with a backdrop in `Crest.svelte`; the owner's call.
+- The match page's confidence bar no longer matches the front-page card's,
+  which SEO_PLAN 2.3 asked for. Same number, different drawing.
+
+Verified: web **93** tests, `test_match_api.py` 44, full suite
+**797 pass**; build clean and `svelte-check` 0 errors (its 13 warnings
+are the existing ones on `/`, `/parlay` and `/results`); a **99-check
+Playwright click-through** of the built app at 1280 and 390px on a scratch
+database. It covered settled won, lost and void; live with sign-in-to-bet;
+upcoming; early-season empty slots; the fold at ≥+3; the crest fallback; the
+list in the server's HTML; no sideways scroll; no page errors. Scratch
+database dropped.
+
+Before that, earlier **2026-09-23**: **`/results`'s league row is the front
+page's tiles** (owner request, visual only), **uncommitted**. The `.tabs` CSS
+in `web/src/routes/results/+page.svelte` is now the grid from `+page.svelte`
+— full width, five equal columns, and at ≤820px `All` spanning a 2×2. No
+markup, handler or state touched. Verified: build clean; measured in the
+built app at 1280 and 390px, the row matches its container on both pages
+(1176/1176, 354/354) with no sideways scroll.
+
+Before that, **2026-09-22**: **`/results` is a date-grouped row list
 rather than a card grid** (owner request, from the mockup in
 `docs/ui/list-items/Predictions List.dc.html`), **uncommitted**. One row per
 settled call — outcome bar, league, both clubs with their crests, the

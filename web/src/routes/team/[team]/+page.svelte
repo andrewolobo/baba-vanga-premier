@@ -7,11 +7,18 @@
   // The tally is counts, never a rate ($lib/teams.js). Shows only what the
   // front page already shows -- no prices, no return, no new probability
   // (§6).
+  //
+  // Drawn in the match page's language (`docs/ui/team-page/`): the crest in
+  // the heading, the same form guide for the last five, crests beside every
+  // club in the lists.
   import { onMount } from 'svelte';
   import { callLabel, pct } from '$lib/api.js';
+  import { clubBadge, fixtureBadges } from '$lib/badge.js';
+  import Crest from '$lib/Crest.svelte';
+  import FormCard from '$lib/FormCard.svelte';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { leaguePath } from '$lib/leagues.js';
-  import { matchPath, shortDay, divisionName, outcomeWords } from '$lib/match.js';
+  import { matchPath, shortDay, divisionName, outcomeWords, formGame } from '$lib/match.js';
   import { teamPath, teamTitle, teamDescription, tallySentence } from '$lib/teams.js';
   import PageHead from '$lib/PageHead.svelte';
 
@@ -22,14 +29,6 @@
   let zone = $state(null);
   onMount(() => (zone = viewerZone()));
   const kick = (f) => localKickoff(f.match_date, f.kickoff_time, zone ?? 'Europe/London');
-
-  // A settled call from this club's side: who it played, where, and the score
-  // the grader settled from, read the club's way round.
-  const seen = (c) => ({
-    opponent: c.at_home ? c.away_name : c.home_name,
-    where: c.at_home ? 'v' : 'at',
-    score: c.fthg == null ? '–' : c.at_home ? `${c.fthg}–${c.ftag}` : `${c.ftag}–${c.fthg}`
-  });
 </script>
 
 <PageHead
@@ -42,7 +41,7 @@
   <div class="kicker">
     Team predictions · <a href={leaguePath(team.division)}>{divisionName(team.division)}</a>
   </div>
-  <h1>{team.name} predictions</h1>
+  <h1><Crest name={team.canonical_name} badge={clubBadge(team.canonical_name)} size={40} /><span>{team.name} predictions</span></h1>
   {#if team.venue}
     <p class="meta">{team.venue}</p>
   {/if}
@@ -52,6 +51,16 @@
     <span class="note">Counts, not a strike rate — too few games for one. Strike rate, not a
       return: <a href="/record">the record</a>.</span>
   </p>
+
+  {#if team.calls.length}
+    <section class="block">
+      <h2>Recent form</h2>
+      <p class="sub">The last five league games this season, oldest to latest, with our call on each.</p>
+      <div class="form">
+        <FormCard title="Last five" games={team.calls.slice(0, 5)} list={false} />
+      </div>
+    </section>
+  {/if}
 
   <section class="block">
     <h2>Next fixtures</h2>
@@ -68,11 +77,16 @@
       <ul class="list">
         {#each team.upcoming as f (f.fixture_id)}
           {@const k = kick(f)}
+          {@const b = fixtureBadges(f.home_team, f.away_team)}
           <li>
             <a href={matchPath(f)}>
               <span class="time">{shortDay(f.match_date)}
                 {#if k}· {k.time}{#if k.dayShift}<sup>{k.dayShift > 0 ? '+1' : '−1'}</sup>{/if}{/if}</span>
-              <span class="game">{f.home_name} <span class="vs">vs</span> {f.away_name}</span>
+              <span class="game clubs">
+                <span class="club"><Crest name={f.home_team} badge={b.home} size={18} />{f.home_name}</span>
+                <span class="vs">vs</span>
+                <span class="club"><Crest name={f.away_team} badge={b.away} size={18} />{f.away_name}</span>
+              </span>
               {#if f.tip}
                 <span class="call">{callLabel(f.tip.side, f.home_name, f.away_name)}
                   <span class="conf">{pct(f.tip.model_prob, 0)}</span></span>
@@ -93,14 +107,16 @@
     {:else}
       <ul class="list calls">
         {#each team.calls as c (c.fixture_id)}
-          {@const view = seen(c)}
+          {@const view = formGame(c)}
           <li>
             <a href={matchPath(c)}>
               <span class="time date">{shortDay(c.match_date)}</span>
               <span class="game">
                 <span class="res {c.result ?? ''}">{c.result ?? '–'}</span>
                 <b>{view.score}</b>
-                <span class="opp">{view.where} {view.opponent}</span>
+                <span class="opp">{view.where}
+                  <Crest name={view.opponentTeam} badge={clubBadge(view.opponentTeam)} size={18} />
+                  {view.opponent}</span>
               </span>
               <span class="call" class:won={c.outcome === 'win'} class:lost={c.outcome === 'lose'}
                 title="Our call {outcomeWords(c.outcome)}"
@@ -132,6 +148,7 @@
   h1 {
     font-family: var(--display); font-weight: 800; font-size: clamp(34px, 5vw, 52px);
     line-height: 1; text-transform: uppercase; color: #fff; margin: 10px 0 0;
+    display: flex; align-items: center; gap: 14px;
   }
   .meta { margin: 14px 0 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
   .record {
@@ -148,6 +165,8 @@
     text-transform: uppercase; color: #fff; margin: 0;
   }
   .sub { margin: 4px 0 0; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  /* One card, at the width it has beside its opponent's on a match page. */
+  .form { margin-top: 14px; max-width: 432px; }
   .list { list-style: none; margin: 14px 0 0; padding: 0; }
   .list li { border-bottom: 1px solid var(--line-2); }
   .list a {
@@ -162,13 +181,19 @@
   .game { font-size: 15px; min-width: 0; }
   .game b { font-family: var(--mono); color: #fff; }
   .opp { color: var(--muted); }
+  .clubs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+  .club, .opp { display: inline-flex; align-items: center; gap: 7px; }
+  .opp { vertical-align: middle; }
   .vs { color: var(--muted); font-size: 13px; }
+  /* The result chips of the match page's form list. */
   .res {
-    display: inline-block; width: 18px; text-align: center; margin-right: 6px;
-    font-family: var(--display); font-weight: 800; font-size: 12px; color: var(--muted);
+    display: inline-block; width: 20px; text-align: center; margin-right: 8px;
+    font-family: var(--mono); font-weight: 600; font-size: 11px; line-height: 18px;
+    border-radius: 3px; background: var(--panel-2); color: var(--muted);
   }
-  .res.W { color: var(--good); }
-  .res.L { color: var(--bad); }
+  .res.W { background: var(--good); color: var(--bg); }
+  .res.D { background: var(--dim); color: var(--bg); }
+  .res.L { background: var(--bad); color: #fff; }
   .call {
     font-family: var(--display); font-weight: 700; font-size: 14px; text-transform: uppercase;
     color: var(--accent); text-align: right;

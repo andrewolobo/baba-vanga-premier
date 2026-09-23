@@ -60,6 +60,9 @@ export const abbr = (name) => forms(name)[0].toUpperCase();
 
 export const colour = (name) => PALETTE[hash(name ?? '') % PALETTE.length];
 
+/** One club's badge, where no opponent is drawn beside it to tell apart from. */
+export const clubBadge = (name) => ({ code: abbr(name), colour: colour(name) });
+
 /** Badges for both sides of one fixture, guaranteed to differ from each other. */
 export function fixtureBadges(home, away) {
   const [homeCode, homeAlt] = forms(home).map((f) => f.toUpperCase());

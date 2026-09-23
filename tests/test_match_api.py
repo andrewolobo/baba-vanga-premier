@@ -146,6 +146,8 @@ def test_form_is_this_seasons_last_five_before_the_match_with_the_latest_call(ma
     g103 = home[3]
     assert (g103["side"], g103["outcome"]) == ("H+1.5", "win")
     assert (g103["home_name"], g103["away_name"]) == ("Manchester United", "Brighton & Hove Albion")
+    # The canonical names too, which key the crests.
+    assert (g103["home_team"], g103["away_team"]) == ("Man United", "Brighton")
     # Forest's only game in the table is last season's.
     assert form["away"] == []
 
@@ -270,6 +272,7 @@ def test_no_league_page_outside_the_served_divisions(match_client, division):
 def test_a_team_page_is_its_season_from_its_own_side(match_client):
     body = match_client.get("/team/1").json()
     assert (body["name"], body["slug"]) == ("Manchester United", "manchester-united")
+    assert body["canonical_name"] == "Man United"
     assert body["venue"] == teams.venue("Man United") and body["venue"]
     # Fixture 90 is last season's, so it is not in the list.
     assert [c["fixture_id"] for c in body["calls"]] == [107, 100, 106, 105, 104, 103, 102, 101]

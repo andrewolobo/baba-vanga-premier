@@ -131,11 +131,16 @@
   .switch button:hover { border-color: var(--muted); color: var(--body); }
   .switch button.on { background: var(--bg); border-color: var(--accent); color: var(--accent); }
 
-  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+  /* The front page's division tiles: they fill the section and share one
+     width whatever their number. */
+  .tabs {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+    gap: 8px; margin-top: 26px;
+  }
   .tabs button {
     font-family: var(--display); font-weight: 700; font-size: 16px;
-    letter-spacing: 0.09em; text-transform: uppercase; white-space: nowrap;
-    line-height: 1.2; padding: 12px 22px; border-radius: 3px;
+    letter-spacing: 0.09em; text-transform: uppercase;
+    line-height: 1.2; padding: 12px 10px; border-radius: 3px;
     border: 1px solid #33333c; background: transparent; color: var(--body);
     cursor: pointer;
   }
@@ -151,6 +156,10 @@
 
   @media (max-width: 820px) {
     .page { padding: 48px 18px 0; }
+    /* Two columns on a phone, All spanning both — as on the front page. */
+    .tabs { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tabs button { font-size: 14px; padding: 11px 8px; }
+    .tabs button:first-child { grid-column: 1 / -1; }
   }
 
   @media (prefers-reduced-motion: reduce) {

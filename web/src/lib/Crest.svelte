@@ -22,11 +22,11 @@
 </script>
 
 {#if file && !broken}
-  <!-- The 64px file at 34px is the retina size; 256px is for anywhere a
-       crest is ever drawn larger than 128. -->
+  <!-- Twice the drawn size or more, for retina: the 64px file up to 32px,
+       the 128px one above (the 40px page headings). -->
   <img
     class="crest"
-    src="/crests/64/{file}.png"
+    src="/crests/{size > 32 ? 128 : 64}/{file}.png"
     alt=""
     width={size}
     height={size}
@@ -55,7 +55,9 @@
     justify-content: center;
     font-family: var(--display);
     font-weight: 800;
-    font-size: 13px;
+    /* 13px at the default 34, and scaled with it so three letters still fit
+       the 18px crests in a form guide. */
+    font-size: calc(var(--crest-size) * 0.38);
     letter-spacing: 0.03em;
     color: #fff;
   }

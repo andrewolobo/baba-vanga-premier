@@ -606,6 +606,9 @@ def _team_calls(conn, team_id: int, since: str, before: str = NO_BOUND,
             "fixture_id": r["fixture_id"],
             "division": r["division"],
             "match_date": r["match_date"],
+            # Canonical, for the crests; the page prints the display names.
+            "home_team": r["home_team"],
+            "away_team": r["away_team"],
             "home_name": teams.display_name(r["home_team"]),
             "away_name": teams.display_name(r["away_team"]),
             "slug": teams.fixture_slug(r["home_team"], r["away_team"]),
@@ -903,6 +906,7 @@ def team(team_id: int, conn: db.Connection = Depends(get_conn)) -> dict:
     calls = _team_calls(conn, team_id, _season_start(today))
     return {
         "team_id": team_id,
+        "canonical_name": canonical,           # for the crest
         "name": teams.display_name(canonical),
         "slug": teams.team_slug(canonical),
         "division": row["division"],

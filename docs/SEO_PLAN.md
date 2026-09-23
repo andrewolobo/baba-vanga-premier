@@ -772,6 +772,15 @@ season; the page ignoring the stale rule.
 exists no crawler can find a match page, because nothing links to one yet
 (2.8 not taken).
 
+**Restyled 2026-09-23** from `docs/ui/team-page/Match Prediction.dc.html`
+(`OUTSTANDING.md` top): verdict banner, large confidence figure, a
+goal-margin scale, form as a wave (`$lib/FormCard.svelte`, shared with the
+team page), a head-to-head bar. Nothing below changes in substance. The
+form's text list is now inside a `<details>`, still in the server's HTML,
+and each form column links to its match page. The confidence bar is no
+longer drawn as the front-page card's (see "States" below): same number, no
+other probability.
+
 **What was built:**
 - `+page.js` loads `/fixture/{id}` through the load's `fetch`. A missing or
   wrong slug 301s to `matchPath`, and an API 404 is a page 404.
