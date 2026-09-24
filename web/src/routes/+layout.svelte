@@ -1,5 +1,6 @@
 <script>
   import { page } from '$app/stores';
+  import { afterNavigate } from '$app/navigation';
   import { onMount } from 'svelte';
   import '$lib/fonts/fonts.css';
   import { LEAGUES, leaguePath } from '$lib/leagues.js';
@@ -14,6 +15,7 @@
     plausiblePhone
   } from '$lib/session.js';
   import { detectCountry } from '$lib/country.js';
+  import { recordView, markShown, NUDGE_DELAY_MS } from '$lib/nudge.js';
   import { getBetpawaLinks, indexLinks } from '$lib/betpawa.js';
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
@@ -30,6 +32,7 @@
   let cfg = $state(null);
   let authError = $state(null);
   let buttonHost = $state(null);
+  let gsiReady = $state(false); // Google's script has loaded and been initialised
 
   // The betPawa buttons (docs/BETPAWA_PLAN.md, B26) hang off the session, so
   // the layout fetches the links once `me` is known and hands the pages a
@@ -131,6 +134,7 @@
           ux_mode: 'popup'
         });
         gsi.renderButton(host, { theme: 'filled_black', size: 'medium', shape: 'pill', text: 'signin_with' });
+        gsiReady = true;
       } else if (tries++ < 50) {
         setTimeout(tick, 100);
       }
@@ -145,6 +149,7 @@
     authError = null;
     try {
       me = await signInWithGoogle(credential);
+      nudgeOpen = false;
     } catch {
       authError = 'Sign-in did not go through. Try again.';
     }
@@ -178,6 +183,58 @@
       saving = false;
     }
   }
+
+  // The sign-up nudge ($lib/nudge.js): a card at the foot of the screen, a
+  // few seconds into a signed-out visitor's second page view, once a session.
+  // Its button is a second Google button, drawn once the header's has
+  // initialised Google's script -- a button in the site's own style could only
+  // call One Tap, which fails for anyone not already signed into Google
+  // (AUTH_PLAN.md §11.5). No script, no button, no card.
+  let nudgeOpen = $state(false);
+  let nudgeEl = $state(null);
+  let nudgeHost = $state(null);
+  let nudgeTimer = null;
+  let nudgeReturn = null;
+  const session = () => window.sessionStorage;
+
+  // A page is a new path: a hash or query change on the same page is not.
+  afterNavigate(({ from, to }) => {
+    if (from && from.url.pathname === to?.url.pathname) return;
+    if (!recordView(session) || nudgeTimer) return;
+    nudgeTimer = setTimeout(openNudge, NUDGE_DELAY_MS);
+  });
+
+  // Checked when the delay runs out, not when it starts: the visitor may have
+  // signed in or moved to an internal page meanwhile. Declining leaves the
+  // card due, so the next page view tries again.
+  function openNudge() {
+    nudgeTimer = null;
+    if (!gsiReady || me || authError || internal) return;
+    markShown(session);
+    nudgeReturn = document.activeElement;
+    nudgeOpen = true;
+  }
+
+  function closeNudge() {
+    nudgeOpen = false;
+    nudgeReturn?.focus?.();
+  }
+
+  $effect(() => {
+    nudgeEl?.focus();
+  });
+
+  $effect(() => {
+    const host = nudgeHost;
+    if (!host || !gsiReady) return;
+    window.google.accounts.id.renderButton(host, {
+      theme: 'outline',
+      size: 'large',
+      shape: 'pill',
+      text: 'signup_with',
+      width: Math.min(400, host.clientWidth)
+    });
+  });
 
   // The three things the nav offers, plus /parlay (B24). The calls are the
   // front page; the settled list and the record are pages of their own since
@@ -288,6 +345,27 @@
         <button type="button" class="link" onclick={doSignOut}>Sign out instead</button>
       </div>
     </form>
+  </div>
+{/if}
+
+<svelte:window onkeydown={(e) => nudgeOpen && e.key === 'Escape' && closeNudge()} />
+
+<!-- The sign-up nudge. One button, Google's; the × , the dimmed page and Esc
+     all close it. -->
+{#if nudgeOpen}
+  <div class="scrim" aria-hidden="true" onclick={closeNudge}></div>
+  <div class="nudge" role="dialog" aria-modal="true" aria-labelledby="nudge-title" tabindex="-1" bind:this={nudgeEl}>
+    <button type="button" class="close" aria-label="Close" onclick={closeNudge}>×</button>
+    <p class="eyebrow">Free account</p>
+    <h2 id="nudge-title">Join BabaVanga</h2>
+    <p class="copy">
+      Sign up with your Google account. We ask for your mobile number once,
+      straight after, and show it nowhere on the site.
+    </p>
+    <div class="gsi-nudge" bind:this={nudgeHost}></div>
+    {#if authError}
+      <p class="bad">{authError}</p>
+    {/if}
   </div>
 {/if}
 
@@ -490,7 +568,7 @@
     font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em;
     text-transform: uppercase; color: var(--dim); margin: 0 0 6px;
   }
-  .phone h2 {
+  .phone h2, .nudge h2 {
     font-family: var(--display); font-weight: 700; font-size: 28px;
     text-transform: uppercase; color: #fff; margin: 0 0 10px;
   }
@@ -512,6 +590,41 @@
   .bad { color: var(--bad); font-size: 14px; margin: -4px 0 12px; }
   .row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 6px; }
   .phone .cta { border: 0; cursor: pointer; }
+
+  /* --- sign-up nudge ------------------------------------------------------ */
+  /* A card, not a page cover: Google's search guidance accepts a banner that
+     takes a small part of the screen. Above the header and the bottom bar
+     (z 40), under the phone gate (z 50), which it can never meet anyway --
+     the nudge is for signed-out visitors, the gate for signed-in ones. */
+  .scrim {
+    position: fixed; inset: 0; z-index: 45;
+    background: rgba(14, 14, 17, 0.6);
+    animation: nudge-fade 0.2s ease-out;
+  }
+  .nudge {
+    position: fixed; left: 0; right: 0; bottom: 24px; z-index: 46;
+    width: min(460px, calc(100% - 36px)); margin: 0 auto;
+    background: var(--panel); border: 1px solid var(--line);
+    border-top: 3px solid var(--accent); border-radius: 5px; padding: 24px 28px 26px;
+    animation: nudge-up 0.25s ease-out;
+  }
+  .nudge:focus { outline: none; }
+  .nudge .copy { margin-bottom: 16px; }
+  /* The height Google's large button settles at, fixed so its brief growth
+     while it lays out cannot move the card (docs/SEO_PLAN.md 1.10). */
+  .gsi-nudge { height: 44px; }
+  .close {
+    position: absolute; top: 8px; right: 8px; width: 36px; height: 36px;
+    background: none; border: 0; border-radius: 3px; cursor: pointer;
+    color: var(--muted); font-size: 24px; line-height: 1;
+  }
+  .close:hover { color: var(--text); }
+  .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @keyframes nudge-fade { from { opacity: 0; } }
+  @keyframes nudge-up { from { opacity: 0; transform: translateY(24px); } }
+  @media (prefers-reduced-motion: reduce) {
+    .scrim, .nudge { animation: none; }
+  }
 
   footer { border-top: 1px solid var(--line); background: #0b0b0e; margin-top: 90px; }
   footer .bar { padding: 40px 32px; align-items: flex-start; flex-wrap: wrap; }
@@ -563,6 +676,12 @@
     .actions > .cta, .avatar, .who .link { flex-shrink: 0; }
     .who { min-width: 0; }
     .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* The nudge becomes a sheet on the bottom edge, over the bottom bar. */
+    .nudge {
+      width: 100%; bottom: 0; border-radius: 10px 10px 0 0; border-bottom: 0;
+      padding: 22px 18px calc(24px + env(safe-area-inset-bottom));
+    }
 
     .bottom-nav {
       display: flex; gap: 0;

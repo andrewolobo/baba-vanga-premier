@@ -7,9 +7,61 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-23** (latest): **the match and team pages are
+Last updated **2026-09-24** (latest): **a sign-up nudge for signed-out
+visitors** (owner request), **uncommitted**. A card at the foot of the screen
+holding one button — a second Google button, `text: 'signup_with'` — shown
+**5 s into the visitor's second page view**, once per session, and never on
+the page they landed on.
+- **Rule** in `$lib/nudge.js` (+ `nudge.test.js`, 5 tests): sessionStorage
+  counts page views and records "shown"; blocked storage never shows it. A
+  page is a new *path*; a hash move (`/#tips`) is not; a reload is. The
+  timer runs in `+layout.svelte` from `afterNavigate`, and when it runs out
+  the card opens only if Google's script initialised (`gsiReady`, set by the
+  header's existing effect — no card when the script is blocked), nobody
+  signed in meanwhile, there is no auth error and the page is not `/book` or
+  `/performance`. Declining leaves it due for the next page view.
+- **Why these choices, owner-approved from the assessment:** Google's own
+  button because a site-styled one could only call One Tap (AUTH_PLAN.md
+  §11.5); a **small card rather than half the screen, and not on the landing
+  page**, because Google's search guidance names a pop-up over the content on
+  arrival from search as intrusive. "Session" is **per tab**: a new tab may
+  show it again.
+- **Look:** 460px card centred 24px above the bottom on desktop; below 820px
+  a full-width sheet on the bottom edge, over the bottom bar (z 45/46; the
+  phone gate stays z 50 and can never co-occur). A dimmed page, the × and
+  Esc close it; focus moves in and returns. Slide-in off under
+  `prefers-reduced-motion`. A failed sign-in shows its message in the card.
+  **The copy is a placeholder for the owner** ("Join BabaVanga" / "Sign up
+  with your Google account. We ask for your mobile number once, straight
+  after, and show it nowhere on the site.") — it promises nothing, because
+  signing in unlocks nothing outside betPawa's countries.
+- **Not built (optional, from the assessment):** the signed-out betPawa
+  buttons still scroll to the header's button (`promptSignIn`); they could
+  open this card instead.
+- **Found, not fixed — pre-existing:** on an **empty store** `/tips/record`
+  returns `graded: null`, and `record.graded.toLocaleString()`
+  (`routes/+page.svelte:159`, and the same pattern in `record/+page.svelte`)
+  throws: a **500 on a server render of `/record`** and a page error on a
+  client move to `/` or `/record`. Production has graded tips, so it bites
+  only a fresh or scratch database.
+
+Verified: web **98** tests, `svelte-check` 0 errors (the same 13
+warnings), build clean; a **61-check Playwright click-through** of the built
+app at 1280 and 390px on a scratch database with Google's script stubbed
+(landing never, second page after the delay, once per session through more
+pages and a reload, signed-in never, hash moves not counted, a third page
+inside the delay does not restart it, an internal page defers it, blocked
+script never, reduced motion, the three ways to close, a failed sign-in, the
+sheet over the bottom bar, no sideways scroll) — 59 pass, the 2 failures
+being the empty-store page error above. Plus the **real Google button** in
+the card on `localhost:5173` at both widths, inside the card and its 44px
+host, no page errors. Scratch database dropped. No API, schema or rule
+change.
+
+Before that, **2026-09-23**: **the match and team pages are
 restyled from the mockup in `docs/ui/team-page/Match Prediction.dc.html`**
-(owner request; the "wave" form style is the owner's pick), **uncommitted**.
+(owner request; the "wave" form style is the owner's pick), committed in
+`90bbe6c` (this entry said uncommitted when it was written).
 - **Match page.** Once settled the call box opens on a verdict banner (✓/✕/–,
   the words, the FT score; colour follows the graded outcome and nothing
   else), then the call with its market badge and "for this to come in…", and
