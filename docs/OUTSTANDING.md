@@ -7,7 +7,122 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-24** (latest): **a sign-up nudge for signed-out
+Last updated **2026-09-26** (latest): **B28 — a substitute bet when
+betPawa has no line for a +1.5 call** (owner request: "default to the next
+most probable prediction"), **uncommitted**. Assessed first
+(`BETPAWA_PLAN.md` §7), then built on the assessment's recommendation, which
+is *not* the literal request:
+- The gap is only ever the +1.5, and only the market favourite's (1X2 and
+  double chance are on every event): 1 of 9 matched calls on 2026-09-08,
+  2 of 14 on 2026-09-26.
+- The next most probable market is `12` for nearly every +1.5 call (9 of 9
+  on 2026-09-26), which loses on the draw the call wins on — a draw would
+  read WIN on the record and LOSE on the reader's slip. Built instead: the
+  same team's double chance (`H+1.5`→`1X`, `A+1.5`→`X2`), which wins only
+  when the +1.5 does and parts from it on a one-goal defeat. Named on the
+  button ("Closest on betPawa: Wrexham or draw"), muted, with that sentence
+  under it, on the front page, the match page and each parlay leg. The
+  parlay slip was left refusing a lineless leg — reversed the same day,
+  below.
+- **Extended the same day (owner): the "Place all N calls" slip**
+  (`BETPAWA_PLAN.md` §8) carries the same substitutes, counted in N and
+  named in the fine print, and is **always present while the list has
+  calls** — a disabled button with the reason when nothing can load
+  (every call kicked off, or none on betPawa). Owner chose to keep it
+  hidden for unserved countries, as every betPawa button is; it is also
+  not drawn while the links load or after they fail (no country known).
+  103 web tests; 40-check click-through + a 9-check all-kicked-off run.
+- **Then the parlay slip (owner, on seeing "Not available as one slip on
+  betPawa — no line there for Bristol Rvs v Exeter, Fleetwood Town v
+  Rochdale")** (`BETPAWA_PLAN.md` §9): "Place this slip" loads every
+  leg's own side or its substitute, leaves out and names a leg with
+  neither, and says the slip can then lose where the legs shown win (the
+  claimed figure is for exactly those legs; no new figure is computed).
+  Always present while the slip has legs, disabled with the reason when
+  nothing can load. `slipLink` and `daySlip` share one picker. 17 + 7
+  parlay checks; the 40 still pass. **Not on the live site until the next
+  commit and frontend deploy** — the message quoted is the old code.
+- Handicap 1X2 "+2" is an exact equivalent of Asian +1.5 and filled 9 of the
+  19 missing sides in the 2026-09-26 pull, but neither of the two our calls
+  needed; not built.
+- `$lib/betpawa.js` and the three pages only — no API, schema, cycle or rule
+  change; **102 web tests** (103 after the extension), a 36-check click-through and a five-leg parlay
+  check on a dropped `bvp_nearest`. `PRODUCT.md` §6 and `BETPAWA_PLAN.md`
+  D11 amended; `BACKLOG.md` B28.
+- **Found:** `STATE.md`'s B26 row said "deploy pending", but
+  `https://babavanga.net/api/betpawa/links` answers 401 — the route is live.
+  Row annotated; whether the rest of the Phase D checklist ran is not
+  recorded here.
+- Two read-only outside requests during the assessment: one betPawa list
+  query (markets 3774 + 4724) and `GET /api/tips` on the live site.
+
+Before that, same day, **B27 — a Form & H2H button on every
+call and every parlay leg** (owner request), **uncommitted**. A click opens
+that fixture's recent form (each side's last five league games this season,
+with our call on each) and last meetings in a sheet over the page: a panel
+760px wide down the right edge on desktop, the whole screen below 820px.
+Assessed first; the owner took every recommendation.
+- **No new data.** It is the match page's content, from the same
+  `GET /fixture/{id}`, read on the first click and kept for the life of the
+  page (a failed read is not kept; the sheet offers "Try again"). The match
+  page's two sections moved into **`$lib/MatchFacts.svelte`** and the page
+  now uses it: its server HTML is identical after stripping Svelte's scoped
+  class hashes and hydration comments, and screenshots of four fixtures at
+  1280 and 390px are pixel-identical before and after.
+- **The button is a link** (`$lib/FactsButton.svelte`) to the match page. So
+  the front page's server HTML now carries a link to every live fixture's
+  page (the drawer's link never was, SEO_PLAN 2.8), and a modified click
+  opens the page in a new tab. A plain click is intercepted instead and
+  **pushes a history entry** (`pushState`, `facts` in `page.state`).
+  **`$lib/FixtureSheet.svelte`** renders while that state exists, so every
+  way of closing (×, the dimmed page, Esc, a phone's back button) is one
+  step back. That is why `/parlay` keeps its slip and controls: nothing
+  reloads. The state is picked fields (`match.js:factsState`), because a row
+  out of a page's `$state` list is a proxy that `pushState` cannot clone.
+- **A native modal `<dialog>`**: the top layer, so there is no z-index
+  contest with the header, bottom bar or nudge, and the page behind is inert,
+  which is the focus trap. The page's scroll is locked with
+  `html:has(dialog.sheet[open])`. **Do not add `scrollbar-gutter: stable`
+  there**: tried, and a reserved gutter narrows the box the dialog is laid out
+  in, leaving a 15px strip of page down the sheet's right edge wherever
+  scrollbars take space.
+- **API, additive:** `/parlay` legs carry `slug` (`_with_page`, as `/tips`
+  has since 2.8). Derived legs keep it. Pinned by
+  `test_the_parlay_legs_carry_the_address_of_each_match_page`, with the
+  clock fixed, since the fixture's 15:00 kick-off drops it from the pool
+  after 3 pm.
+- **The nudge** (`+layout.svelte`) does not open while a `dialog` is open.
+  Its page would be inert under the sheet. It stays due for the next page
+  view.
+- **Choices the owner left to the recommendation:** the ✓/✕ call record on
+  each form game stays, as on the match page; the drawer's own "Form, venue &
+  past meetings →" link stays; the sheet heading uses the row's names
+  ("Man United") and the cards the display names ("Manchester United"), as
+  the front page and the match page already do.
+
+Verified: **798 pass** (+1), web **100** tests (+2: `plainClick`,
+`factsState`), `svelte-check` 0 errors (the same 13 warnings), build clean. A **100-check Playwright
+click-through** of the built app at 1280 and 390px on a seeded scratch
+database: links in both pages' server HTML and no sheet there; open by
+click and by Enter, neither touching the row's drawer; close by ×, Esc,
+backdrop and back, with focus returned and scroll unlocked; one read per
+fixture; no-games, no-meetings, short-form and crestless cases; a 500 then
+Try again; the full-page link; `/parlay`'s legs, slider and risk unchanged
+and no refetch after the sheet; a derived leg; reduced motion; the nudge
+held off while the sheet is open and shown on the next page view; no
+sideways scroll; no page errors. The two Ctrl+click checks failed first
+because the script read the new tab's URL before it navigated
+(`about:blank`); rechecked with a wait, both open the match page. Scratch
+database dropped. No schema, rule, cycle or ledger change.
+
+**Found, not fixed:** `/parlay`'s local `shortDay` uses
+`toLocaleDateString` and renders "Mon 28 Sept" here, where `$lib/match.js`
+writes "Sep". That is the server/browser ICU mismatch `/results` was moved
+off on 2026-09-22. The front page's `day()` uses the same API, though its
+long month names are less exposed. Both pages
+also keep a local `divisionName` that `match.js` exports.
+
+Before that, **2026-09-24**: **a sign-up nudge for signed-out
 visitors** (owner request), **uncommitted**. A card at the foot of the screen
 holding one button — a second Google button, `text: 'signup_with'` — shown
 **5 s into the visitor's second page view**, once per session, and never on

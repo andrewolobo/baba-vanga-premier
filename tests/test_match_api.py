@@ -15,11 +15,13 @@ relative to today, because that split is what the rule keys on.
 from __future__ import annotations
 
 import csv
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pytest
 from fastapi.testclient import TestClient
 
-from api import teams
+from api import main, teams
 from api.main import _season_start, app, get_conn
 from engine import config, db
 from tests.conftest import relative_date
@@ -358,6 +360,20 @@ def test_the_tip_lists_carry_the_address_of_each_match_page(match_client):
         assert row["slug"] == page["slug"]
     assert next(r for r in settled if r["fixture_id"] == 100)["slug"] == (
         "manchester-united-vs-nottingham-forest")
+
+
+def test_the_parlay_legs_carry_the_address_of_each_match_page(match_client, monkeypatch):
+    """Each parlay leg links to its match page (B27). A derived leg is the
+    same fixture with another side, so it keeps the fixture's slug. The clock
+    is pinned before the day's 15:00 kick-off, which would otherwise take the
+    one live call out of the pool after 3 pm."""
+    monkeypatch.setattr(main, "_london_now", lambda: datetime.fromisoformat(
+        f"{relative_date(0)} 00:01").replace(tzinfo=ZoneInfo("Europe/London")))
+    for sides in ("any", "win"):
+        legs = match_client.get("/parlay", params={"min_claim": 0, "sides": sides}).json()["legs"]
+        assert [leg["fixture_id"] for leg in legs] == [201]
+        assert legs[0]["slug"] == match_client.get("/fixture/201").json()["slug"]
+    assert legs[0]["derived"]
 
 
 # --- names, slugs, venues --------------------------------------------------- #

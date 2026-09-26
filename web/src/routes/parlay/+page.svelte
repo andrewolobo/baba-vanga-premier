@@ -21,8 +21,10 @@
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { availability, claimLabel } from '$lib/parlay.js';
   import { getContext, onMount } from 'svelte';
-  import { wagerLink, wagerLabel, slipLink } from '$lib/betpawa.js';
+  import { wagerLink, wagerLabel, nearestNote, slipLink } from '$lib/betpawa.js';
   import PageHead from '$lib/PageHead.svelte';
+  import FactsButton from '$lib/FactsButton.svelte';
+  import FixtureSheet from '$lib/FixtureSheet.svelte';
 
   // The opening slip and the control positions it was drawn with, from
   // `+page.js` -- on the server for a first visit, so the slip is in the HTML.
@@ -267,13 +269,23 @@
                     Not our call · ours: {callLabel(t.published_side, t.home_team, t.away_team)}
                   </div>
                 {/if}
-                {#if $betpawa.status === 'ready'}
-                  {@const bet = wagerLink($betpawa.byFixture, t.fixture_id, t.side)}
-                  {#if bet}
-                    <a class="bet" class:event={bet.kind === 'event'} href={bet.url} target="_blank"
-                      rel="noopener noreferrer">{wagerLabel(bet.kind)} ↗</a>
+                <div class="actions">
+                  <!-- Form and last meetings, in a sheet over this page (B27):
+                       the slip and its controls are still here when it closes. -->
+                  <FactsButton row={t} />
+                  {#if $betpawa.status === 'ready'}
+                    {@const bet = wagerLink($betpawa.byFixture, t.fixture_id, t.side)}
+                    {#if bet}
+                      <!-- Muted unless it is this leg itself (BETPAWA_PLAN.md §7);
+                           the slip below carries the same substitute (§9). -->
+                      <a class="bet" class:event={bet.kind !== 'wager'} href={bet.url} target="_blank"
+                        rel="noopener noreferrer">{wagerLabel(bet, t.home_team, t.away_team)} ↗</a>
+                      {#if bet.kind === 'nearest'}
+                        <span class="near">{nearestNote(t.side, t.home_team, t.away_team)}</span>
+                      {/if}
+                    {/if}
                   {/if}
-                {/if}
+                </div>
               </div>
               <div class="conf">
                 <div class="confhead"><span>CLAIMED</span><span class="v">{pct(t.model_prob, 0)}</span></div>
@@ -295,8 +307,12 @@
           </p>
         </div>
 
-        <!-- The slip on betPawa (B26): every leg's selection in one prefill
-             link, or nothing -- a slip missing a leg is a different bet. -->
+        <!-- The slip on betPawa (B26; BETPAWA_PLAN.md §9): every leg's
+             selection in one prefill link. A +1.5 with no line loads as the
+             same team's double chance and a leg with neither is left out, both
+             named, and the copy says the slip is then not exactly the legs
+             above. Always here while the slip has legs (owner, 2026-09-26):
+             when nothing can load, it stays, disabled, and says why. -->
         {#if $betpawa.status === 'anonymous'}
           <div class="place">
             <button type="button" class="bet ghost" onclick={promptSignIn}>Sign in to place this on betPawa</button>
@@ -307,16 +323,21 @@
             {#if slip.url}
               <a class="bet big" href={slip.url} target="_blank" rel="noopener noreferrer"
                 >Place this slip on betPawa ↗</a>
-              <p class="fine">
-                Opens a betPawa betslip with these {parlay.legs.length} legs. The odds
-                and any payout there are the bookmaker's, not ours.
-              </p>
-            {:else if slip.missing.length}
-              <p class="fine">
-                Not available as one slip on betPawa — no line there for
-                {slip.missing.join(', ')}.
-              </p>
+            {:else}
+              <button type="button" class="bet big" disabled>Place this slip on betPawa</button>
             {/if}
+            <p class="fine">
+              {#if slip.url}Opens a betPawa betslip with {slip.loaded === parlay.legs.length
+                ? `these ${slip.loaded} legs` : `${slip.loaded} of these ${parlay.legs.length} legs`}. The odds
+              and any payout there are the bookmaker's, not ours.
+              {:else}Nothing to load on betPawa right now.{/if}
+              {#if slip.substituted.length}In place of a +1.5 betPawa has no line for, the slip
+              carries the closest bet it lists: {slip.substituted.join(', ')}.
+              {slip.substituted.length === 1 ? 'It loses' : 'Each loses'} on a one-goal defeat the
+              +1.5 would survive, so the slip can lose where the legs above win.{/if}
+              {#if slip.missing.length}No line on betPawa for {slip.missing.join(', ')}, so
+              {slip.missing.length === 1 ? 'it is' : 'they are'} left out of the slip.{/if}
+            </p>
           </div>
         {/if}
       </div>
@@ -350,13 +371,18 @@
       </p>
       <p>
         <strong>The betPawa button is a link, not advice to stake.</strong> It
-        loads these legs into a betslip on betPawa's site for your country; the
+        loads these legs into a betslip on betPawa's site for your country —
+        or, for a +1.5 betPawa has no line for, the closest bet it lists, named
+        beside the button; the
         odds, the payout and the terms there are the bookmaker's. This site shows
         no odds and takes no stake.
       </p>
     </div>
   {/if}
 </section>
+
+<!-- Opened by a leg's Form & H2H button; renders nothing until then. -->
+<FixtureSheet />
 
 <style>
   .page { max-width: var(--page); margin: 0 auto; padding: 64px 32px 0; }
@@ -455,6 +481,8 @@
   }
   .league { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
   .notours { font-family: var(--mono); font-size: 10.5px; color: var(--accent-soft); margin-top: 3px; }
+  /* The leg's buttons, as on the front page's calls. */
+  .actions { display: flex; flex-wrap: wrap; column-gap: 6px; justify-content: flex-end; }
   .code {
     font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--body);
     background: var(--panel-2); border: 1px solid var(--line);
@@ -475,6 +503,13 @@
   .bet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .bet.big { font-size: 12px; padding: 10px 18px; margin-top: 0; background: var(--accent); color: var(--bg); }
   .bet.big:hover { background: var(--accent-soft); }
+  /* The slip when nothing can load: still there, plainly inert. */
+  .bet:disabled, .bet:disabled:hover {
+    background: transparent; border-color: var(--line); color: var(--muted); cursor: default;
+  }
+  /* A substitute's label names a team, so it may wrap rather than overflow. */
+  .bet.event { white-space: normal; }
+  .near { flex-basis: 100%; margin-top: 4px; font-size: 11.5px; line-height: 1.4; color: var(--muted); }
   .place {
     display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
     padding: 16px 22px; border-top: 1px solid var(--line-2);
@@ -522,6 +557,7 @@
     .leg { grid-template-columns: 1fr; gap: 14px; }
     .verdict { justify-content: space-between; }
     .call { text-align: left; }
+    .actions { justify-content: flex-start; }
   }
   @media (max-width: 820px) {
     .page { padding: 48px 18px 0; }

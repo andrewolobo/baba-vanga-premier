@@ -10,13 +10,15 @@
   // departures: the meetings carry no club colours (the schema has none, and
   // $lib/badge.js must not be read as them), and the confidence bar has no
   // 50% mark (the number is uncalibrated, so a coin-flip line misleads).
+  // The form and meetings are `$lib/MatchFacts.svelte`, shared with the
+  // sheet the front page and /parlay open in place (B27).
   import { onMount, getContext } from 'svelte';
   import { callLabel, callCode, callMeans } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
   import Crest from '$lib/Crest.svelte';
-  import FormCard from '$lib/FormCard.svelte';
+  import MatchFacts from '$lib/MatchFacts.svelte';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
-  import { wagerLink, wagerLabel } from '$lib/betpawa.js';
+  import { wagerLink, wagerLabel, nearestNote } from '$lib/betpawa.js';
   import { ORIGIN } from '$lib/site.js';
   import PageHead from '$lib/PageHead.svelte';
   import { leaguePath } from '$lib/leagues.js';
@@ -26,12 +28,10 @@
     matchState,
     pageTitle,
     pageDescription,
-    longDate,
     shortDay,
     divisionName,
     outcomeWords,
     marginScale,
-    meetingTally,
     sportsEventScript
   } from '$lib/match.js';
 
@@ -50,12 +50,6 @@
   let zone = $state(null);
   onMount(() => (zone = viewerZone()));
   const kick = $derived(localKickoff(fx.match_date, fx.kickoff_time, zone ?? 'Europe/London'));
-
-  const sides = $derived([
-    { name: fx.home_name, games: fx.form.home },
-    { name: fx.away_name, games: fx.form.away }
-  ]);
-  const h2h = $derived(meetingTally(fx.meetings, fx.home_name));
 
   const mark = (outcome) => (outcome === 'win' ? '✓' : outcome === 'lose' ? '✕' : '–');
 </script>
@@ -149,8 +143,12 @@
           {:else if $betpawa.status === 'ready'}
             {@const bet = wagerLink($betpawa.byFixture, fx.fixture_id, t.side)}
             {#if bet}
-              <a class="bet" class:event={bet.kind === 'event'} href={bet.url} target="_blank"
-                rel="noopener noreferrer">{wagerLabel(bet.kind)} ↗</a>
+              <!-- Muted unless it is the call itself (BETPAWA_PLAN.md §7). -->
+              <a class="bet" class:event={bet.kind !== 'wager'} href={bet.url} target="_blank"
+                rel="noopener noreferrer">{wagerLabel(bet, fx.home_name, fx.away_name)} ↗</a>
+              {#if bet.kind === 'nearest'}
+                <p class="near">{nearestNote(t.side, fx.home_name, fx.away_name)}</p>
+              {/if}
             {/if}
           {/if}
         {/if}
@@ -158,47 +156,7 @@
     {/if}
   </section>
 
-  <section class="block">
-    <h2>Recent form</h2>
-    <p class="sub">Each side's last five league games this season, oldest to latest, with our call on each.</p>
-    <div class="cols">
-      {#each sides as side}
-        <FormCard title={side.name} games={side.games} />
-      {/each}
-    </div>
-  </section>
-
-  <section class="block">
-    <h2>Last meetings</h2>
-    {#if fx.meetings.length === 0}
-      <p class="empty">No earlier meeting in our records.</p>
-    {:else}
-      <div class="h2h">
-        <div class="bar" aria-hidden="true">
-          {#if h2h.home}<span class="home" style="flex:{h2h.home}">{h2h.home}</span>{/if}
-          {#if h2h.draw}<span class="draw" style="flex:{h2h.draw}">{h2h.draw}</span>{/if}
-          {#if h2h.away}<span class="away" style="flex:{h2h.away}">{h2h.away}</span>{/if}
-        </div>
-        <div class="barkey">
-          <span><Crest name={fx.home_team} badge={badge.home} size={18} />{fx.home_name} wins {h2h.home}</span>
-          <span>Draws {h2h.draw}</span>
-          <span>{fx.away_name} wins {h2h.away}<Crest name={fx.away_team} badge={badge.away} size={18} /></span>
-        </div>
-      </div>
-      <ol class="meetings">
-        {#each fx.meetings as m}
-          <li>
-            <span class="date">{longDate(m.match_date)}</span>
-            <span class="line">
-              <span class="mh" class:won={m.fthg > m.ftag} class:beaten={m.fthg < m.ftag}>{m.home_name}</span>
-              <b>{m.fthg}–{m.ftag}</b>
-              <span class="ma" class:won={m.ftag > m.fthg} class:beaten={m.ftag < m.fthg}>{m.away_name}</span>
-            </span>
-          </li>
-        {/each}
-      </ol>
-    {/if}
-  </section>
+  <MatchFacts {fx} />
 
   <p class="fine">
     Confidence is the probability the model gave the call when it was
@@ -334,53 +292,10 @@
   .bet.ghost { border-style: dashed; border-color: var(--line); color: var(--muted); }
   .bet.ghost:hover { background: transparent; border-color: var(--accent); color: var(--accent); }
   .bet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* A substitute's label names a team, so it may wrap rather than overflow. */
+  .bet.event { white-space: normal; }
+  .near { margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
 
-  .block { margin-top: 44px; }
-  h2 {
-    font-family: var(--display); font-weight: 800; font-size: 28px;
-    text-transform: uppercase; color: #fff; margin: 0;
-  }
-  .sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
-  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 18px; }
-
-  /* Head to head: two neutral tones and a darker one for draws. Club colours
-     would need data the schema does not have. */
-  .h2h { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; }
-  .bar {
-    display: flex; height: 28px; gap: 3px; border-radius: 4px; overflow: hidden;
-    font-family: var(--mono); font-size: 12px; font-weight: 600;
-  }
-  .bar span { display: grid; place-items: center; min-width: 22px; }
-  .bar .home { background: var(--body); color: var(--bg); }
-  .bar .draw { background: var(--panel-2); color: var(--muted); }
-  .bar .away { background: #4a4a54; color: #fff; }
-  /* Three columns, so on a phone each label wraps under its own end of the
-     bar instead of the last one dropping to a line of its own. */
-  .barkey {
-    display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 14px;
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
-    text-transform: uppercase; color: var(--muted);
-  }
-  .barkey span { display: inline-flex; align-items: center; gap: 7px; }
-  .barkey span:last-child { justify-content: flex-end; text-align: right; }
-  .meetings { list-style: none; margin: 10px 0 0; padding: 0; }
-  .meetings li {
-    display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 4px 12px; align-items: center;
-    padding: 11px 0; border-bottom: 1px solid var(--line-2);
-  }
-  .meetings .date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-  .meetings .line {
-    display: grid; grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr); gap: 10px;
-    align-items: center; font-size: 15px; color: var(--body);
-  }
-  .meetings .mh { text-align: right; }
-  .meetings .won { color: #fff; font-weight: 600; }
-  .meetings .beaten { color: var(--muted); }
-  .meetings b {
-    font-family: var(--mono); font-weight: 600; color: #fff; text-align: center;
-    background: var(--panel-2); border-radius: 3px; padding: 2px 0;
-  }
-  .empty { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
   .fine { margin: 44px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); max-width: 72ch; }
 
   @media (max-width: 820px) {
@@ -388,9 +303,5 @@
     .body { padding: 18px; }
     .banner { padding: 12px 18px; }
     .phrase { font-size: 28px; }
-  }
-  @media (max-width: 560px) {
-    .meetings li { grid-template-columns: minmax(0, 1fr); }
-    .meetings .line { font-size: 14px; }
   }
 </style>

@@ -1245,7 +1245,10 @@ plus `/record` in the footer.
   pages are reached by a crawler through the league and team pages, which do
   carry them in their HTML, and through the sitemap. If the front page
   should feed them too, the link has to sit on the row itself; that is a
-  layout decision for the owner, not a bug.
+  layout decision for the owner, not a bug. **Closed by B27 (2026-09-26):**
+  every call's Form & H2H button is a link to its match page on the row, in
+  the server's HTML, and so is every `/parlay` leg's. A plain click opens a
+  sheet in place; the `href` is what a crawler follows.
 - **`/tips/results` is one row per tip, not per fixture.** A fixture called
   under two rule versions has two settled cards, and they now both link to
   the one match page. Harmless for search — but the list can show two

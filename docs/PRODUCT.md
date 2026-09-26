@@ -225,14 +225,24 @@ about the product, and what it does not:
   decision D9). The site's position — strike rate is honest, a return is not
   (§5) — would be undercut by the first price on it, and a morning's odds are
   stale by kick-off anyway.
-- **The wager is the call, exactly.** Each side the rule publishes maps to one
-  betPawa market with identical settlement: 1X2 outrights, the three double
-  chances, and the +1.5 handicap as betPawa's Asian half-line (no push; wins
-  unless the side loses by two or more, which is what the call means). Where
-  the book has no line for our side — the +1.5 ladder is one-sided, so the
-  *model's* underdog can lack one when the market disagrees — the button
-  drops to "See on betPawa", the event page, rather than offer a different
-  bet.
+- **The wager is the call, or says it is not.** Each side the rule publishes
+  maps to one betPawa market with identical settlement: 1X2 outrights, the
+  three double chances, and the +1.5 handicap as betPawa's Asian half-line
+  (no push; wins unless the side loses by two or more, which is what the
+  call means). Where the book has no line for a +1.5 call — the ladder is
+  one-sided, so the *model's* underdog can lack one when the market
+  disagrees — the button offers **the same team's double chance**, named as
+  a substitute ("Closest on betPawa: Wrexham or draw") with the one result
+  on which it parts from the call: a one-goal defeat, which the +1.5
+  survives and the double chance does not. Whenever that bet wins, the call
+  has won. It is not the next-likeliest market — that is `12`, which loses
+  on the draw the call wins on (`BETPAWA_PLAN.md` §7, 2026-09-26). Any other
+  gap drops to "See on betPawa", the event page. The "Place all N calls"
+  slip carries the same substitutes and names them, and stays on the page
+  whenever there are calls — disabled, with the reason, when nothing can
+  load (`BETPAWA_PLAN.md` §8). So does the parlay page's "Place this slip",
+  which also says that a substitute or a left-out leg makes the betPawa
+  slip something other than the legs whose claimed figure it shows (§9).
 - **It is gated.** Sign-in first (the signed-out button offers it); then the
   country the account's phone number was validated under must be one of the
   seventeen betPawa serves. Anyone else sees no button at all. A paid tier

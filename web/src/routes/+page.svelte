@@ -18,11 +18,13 @@
   import HeroVideo from './HeroVideo.svelte';
   import { VIDEO_HERO } from '$lib/hero.js';
   import { BALL_BOUNCE } from '$lib/ball.js';
-  import { wagerLink, wagerLabel, daySlip } from '$lib/betpawa.js';
+  import { wagerLink, wagerLabel, nearestNote, daySlip } from '$lib/betpawa.js';
   import { HOME_TITLE } from '$lib/site.js';
   import { matchPath } from '$lib/match.js';
   import ResultList from '$lib/ResultList.svelte';
   import PageHead from '$lib/PageHead.svelte';
+  import FactsButton from '$lib/FactsButton.svelte';
+  import FixtureSheet from '$lib/FixtureSheet.svelte';
 
   // The opening lists and record, read by `+page.js` -- on the server for a
   // first visit, so they are in the HTML.
@@ -293,20 +295,30 @@
                   {/if}
                 </div>
                 <div class="league">{divisionName(t.division)}</div>
-                <!-- The wager button (BETPAWA_PLAN.md D8, D11): sign-in when
-                     anonymous; the wager when the book carries this side; the
-                     event page when it does not; nothing when the account's
-                     country is not served or the scrape never saw the game. -->
-                {#if $betpawa.status === 'anonymous'}
-                  <button type="button" class="bet ghost" onclick={(e) => { keep(e); promptSignIn(); }} onkeydown={keep}
-                    >Sign in to bet on betPawa</button>
-                {:else if $betpawa.status === 'ready'}
-                  {@const bet = wagerLink($betpawa.byFixture, t.fixture_id, t.side)}
-                  {#if bet}
-                    <a class="bet" class:event={bet.kind === 'event'} href={bet.url} target="_blank"
-                      rel="noopener noreferrer" onclick={keep} onkeydown={keep}>{wagerLabel(bet.kind)} ↗</a>
+                <div class="actions">
+                  <!-- Form and last meetings, in a sheet over this page (B27). -->
+                  <FactsButton row={t} />
+                  <!-- The wager button (BETPAWA_PLAN.md D8, D11, §7): sign-in when
+                       anonymous; the wager when the book carries this side; for a
+                       +1.5 it does not, the same team's double chance, named and
+                       muted, with the one result where it parts from the call;
+                       else the event page; nothing when the account's country is
+                       not served or the scrape never saw the game. -->
+                  {#if $betpawa.status === 'anonymous'}
+                    <button type="button" class="bet ghost" onclick={(e) => { keep(e); promptSignIn(); }} onkeydown={keep}
+                      >Sign in to bet on betPawa</button>
+                  {:else if $betpawa.status === 'ready'}
+                    {@const bet = wagerLink($betpawa.byFixture, t.fixture_id, t.side)}
+                    {#if bet}
+                      <a class="bet" class:event={bet.kind !== 'wager'} href={bet.url} target="_blank"
+                        rel="noopener noreferrer" onclick={keep} onkeydown={keep}
+                        >{wagerLabel(bet, t.home_team, t.away_team)} ↗</a>
+                      {#if bet.kind === 'nearest'}
+                        <span class="near">{nearestNote(t.side, t.home_team, t.away_team)}</span>
+                      {/if}
+                    {/if}
                   {/if}
-                {/if}
+                </div>
               </div>
               <div class="conf">
                 <div class="confhead"><span>CONF</span><span class="v">{pct(t.model_prob, 0)}</span></div>
@@ -363,29 +375,39 @@
         {/each}
       {/each}
 
-      <!-- Every call in the list as one betslip (BETPAWA_PLAN.md 6). A basket,
-           not a parlay: lineless calls are left out and named (D13), kicked-off
-           calls left out and counted, and the copy says what a single multibet
-           of this size is (D14). The count on the button is what loads. -->
+      <!-- Every call in the list as one betslip (BETPAWA_PLAN.md 6, §8). A
+           basket, not a parlay: a +1.5 with no line loads as the same team's
+           double chance and is named, a call with neither is left out and
+           named (D13), kicked-off calls left out and counted, and the copy says
+           what a single multibet of this size is (D14). The count on the button
+           is what loads. Present whenever the list has calls (owner,
+           2026-09-26): when nothing can load, it stays, disabled, and says why. -->
       {#if $betpawa.status === 'anonymous'}
         <div class="place">
           <button type="button" class="bet ghost" onclick={promptSignIn}>Sign in to place these on betPawa</button>
         </div>
       {:else if $betpawa.status === 'ready'}
         {@const slip = daySlip($betpawa.host, tips, $betpawa.byFixture, new Date())}
-        {#if slip.url}
-          <div class="place">
+        <div class="place">
+          {#if slip.url}
             <a class="bet big" href={slip.url} target="_blank" rel="noopener noreferrer"
               >{slip.loaded === 1 ? 'Place this call' : `Place all ${slip.loaded} calls`} on betPawa ↗</a>
-            <p class="fine">
-              Loads {slip.loaded} selection{slip.loaded === 1 ? '' : 's'} into one betPawa betslip.
-              {#if slip.loaded > 1}As a single multibet it will almost never win — remove legs
-              there, or see what a slip claims on the <a href="/parlay">parlay page</a>.{/if}
-              {#if slip.skipped.length}No line on betPawa for {slip.skipped.join(', ')}.{/if}
-              {#if slip.kickedOff}{slip.kickedOff} already kicked off and left out.{/if}
-            </p>
-          </div>
-        {/if}
+          {:else}
+            <button type="button" class="bet big" disabled>Place all calls on betPawa</button>
+          {/if}
+          <p class="fine">
+            {#if slip.url}Loads {slip.loaded} selection{slip.loaded === 1 ? '' : 's'} into one betPawa betslip.
+            {:else}Nothing to load on betPawa right now.{/if}
+            {#if slip.loaded > 1}As a single multibet it will almost never win — remove legs
+            there, or see what a slip claims on the <a href="/parlay">parlay page</a>.{/if}
+            {#if slip.substituted.length}In place of a +1.5 betPawa has no line for, the slip
+            carries the closest bet it lists: {slip.substituted.join(', ')}.
+            {slip.substituted.length === 1 ? 'It loses' : 'Each loses'} on a one-goal defeat
+            the +1.5 would survive.{/if}
+            {#if slip.skipped.length}No line on betPawa for {slip.skipped.join(', ')}.{/if}
+            {#if slip.kickedOff}{slip.kickedOff} already kicked off and left out.{/if}
+          </p>
+        </div>
       {/if}
     </div>
 
@@ -401,12 +423,18 @@
       see what the model thought of each result; only the call is graded.
       Signed in from a country betPawa serves, a call also carries a
       <span class="code">Bet this on betPawa</span> button: it opens that
-      wager in a betslip on betPawa's site for your country. It is a link,
+      wager in a betslip on betPawa's site for your country. Where betPawa
+      lists no line for a <span class="code">+1.5</span> call, the button
+      offers the closest bet it does list — that team or draw — and says so:
+      it loses on a one-goal defeat the call survives. It is a link,
       not a stake, and the odds there are the bookmaker's — this site shows
       none.
     </p>
   {/if}
 </section>
+
+<!-- Opened by a call's Form & H2H button; renders nothing until then. -->
+<FixtureSheet />
 
 <!-- The settled list and the record are pages of their own (docs/SEO_PLAN.md
      2.6, D10). What stays here is a summary that links through: enough for a
@@ -564,6 +592,9 @@
     text-transform: uppercase; color: var(--accent); line-height: 1.15;
   }
   .league { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+  /* The row's buttons: each keeps its own top margin, so a wrapped second
+     line sits as far below the first as the first does below the league. */
+  .actions { display: flex; flex-wrap: wrap; column-gap: 6px; justify-content: flex-end; }
   .code {
     font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--body);
     background: var(--panel-2); border: 1px solid var(--line);
@@ -585,6 +616,13 @@
   .bet:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .bet.big { font-size: 12px; padding: 10px 18px; margin-top: 0; background: var(--accent); color: var(--bg); }
   .bet.big:hover { background: var(--accent-soft); }
+  /* The day slip when nothing can load: still there, plainly inert. */
+  .bet:disabled, .bet:disabled:hover {
+    background: transparent; border-color: var(--line); color: var(--muted); cursor: default;
+  }
+  /* A substitute's label names a team, so it may wrap rather than overflow. */
+  .bet.event { white-space: normal; }
+  .near { flex-basis: 100%; margin-top: 4px; font-size: 11.5px; line-height: 1.4; color: var(--muted); }
   .place {
     display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
     padding: 16px 22px; background: var(--panel-2); border-top: 1px solid var(--line-2);
@@ -751,6 +789,7 @@
        text leaves the short label ragged over the long one. */
     .verdict { justify-content: space-between; }
     .call { text-align: left; }
+    .actions { justify-content: flex-start; }
     /* Narrow, the prose fills the width and there is no clear right for the
        ball to rest in, so it drops under the text on a reserved strip. Its
        z-index drops with it: the bottom bar is fixed chrome the reader needs,

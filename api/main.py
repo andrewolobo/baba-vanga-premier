@@ -233,6 +233,7 @@ def _with_page(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Each tip with the words of its match page's address (docs/SEO_PLAN.md
     2.8). The id already decides the page (D9); the slug is what makes the
     link canonical, so the front page's links do not all arrive as redirects.
+    `/parlay`'s legs carry it too, for the form and meetings button (B27).
 
     Built here rather than selected, because the display names behind it are
     a file (`reference/bbc_teams.csv`), not a column. The cards themselves
@@ -428,12 +429,12 @@ def parlay(
     if chosen:
         clause += " AND f.division = ANY(%s)"
         params += (list(chosen),)
-    rows = _with_handicap(_rows(
+    rows = _with_page(_with_handicap(_rows(
         conn,
         TIP_SELECT + clause
         + " ORDER BY f.match_date, f.kickoff_time, f.fixture_id",
         params,
-    ))
+    )))
     selected = parlay_rule.select_legs(rows, legs=legs, min_claim=min_claim,
                                        sides=sides, now=_london_now())
     return {**selected, "division": ",".join(chosen) or None}

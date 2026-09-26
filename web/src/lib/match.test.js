@@ -14,7 +14,9 @@ import {
   formRecord,
   marginScale,
   meetingTally,
-  sportsEventScript
+  sportsEventScript,
+  plainClick,
+  factsState
 } from './match.js';
 
 const base = {
@@ -153,4 +155,20 @@ test('the structured data is a SportsEvent that cannot close its script early', 
   assert.equal(event.homeTeam.name, 'A</script><b>');
   const noVenue = JSON.parse(sportsEventScript({ ...base, venue: null }, 'x').replace(/^<script[^>]*>/, '').replace(/<\/script>$/, ''));
   assert.equal(noVenue.location, undefined);
+});
+
+test('only a plain main-button click opens the sheet; anything else is the link', () => {
+  const click = (extra = {}) => ({ button: 0, metaKey: false, ctrlKey: false, shiftKey: false, altKey: false, ...extra });
+  assert.equal(plainClick(click()), true);
+  for (const extra of [{ ctrlKey: true }, { metaKey: true }, { shiftKey: true }, { altKey: true }, { button: 1 }]) {
+    assert.equal(plainClick(click(extra)), false, JSON.stringify(extra));
+  }
+});
+
+test('the sheet state is the heading fields alone, and survives a structured clone', () => {
+  const row = { ...base, tip_id: 9, side: 'H', model_prob: 0.8, home_team: 'Man United', away_team: "Nott'm Forest", extra: () => 1 };
+  const state = factsState(row);
+  assert.deepEqual(Object.keys(state).sort(), ['away_team', 'division', 'fixture_id', 'home_team', 'kickoff_time', 'match_date', 'slug']);
+  assert.deepEqual(structuredClone(state), state);
+  assert.equal(matchPath(state), '/match/268-manchester-united-vs-nottingham-forest');
 });

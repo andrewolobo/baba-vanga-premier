@@ -205,11 +205,14 @@
   });
 
   // Checked when the delay runs out, not when it starts: the visitor may have
-  // signed in or moved to an internal page meanwhile. Declining leaves the
-  // card due, so the next page view tries again.
+  // signed in or moved to an internal page meanwhile, or be reading a
+  // fixture's form sheet (B27) -- a modal dialog, whose inert page would
+  // swallow the card. Declining leaves the card due, so the next page view
+  // tries again.
   function openNudge() {
     nudgeTimer = null;
     if (!gsiReady || me || authError || internal) return;
+    if (document.querySelector('dialog[open]')) return;
     markShown(session);
     nudgeReturn = document.activeElement;
     nudgeOpen = true;

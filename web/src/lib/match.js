@@ -32,6 +32,27 @@ export const divisionName = (code) => DIVISIONS.find(([c]) => c === code)?.[1] ?
 // fixture; the words are the API's `slug` (D9), and any other words redirect.
 export const matchPath = (fx) => `/match/${fx.fixture_id}-${fx.slug}`;
 
+// The form & meetings button (B27) is a link to the match page that opens
+// the sheet in place on a plain click. Any modifier, or a button other than
+// the main one, is the reader asking for the page itself -- a new tab, a new
+// window -- and the browser is left to do it.
+export const plainClick = (e) =>
+  e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+// What the sheet needs from the row it was opened on, to draw its heading
+// before the fixture arrives. Picked rather than passed: it rides in the
+// history entry (`pushState`), which takes only cloneable values, and a row
+// out of a page's `$state` list is a proxy that is not.
+export const factsState = (row) => ({
+  fixture_id: row.fixture_id,
+  slug: row.slug,
+  division: row.division,
+  match_date: row.match_date,
+  kickoff_time: row.kickoff_time,
+  home_team: row.home_team,
+  away_team: row.away_team
+});
+
 // The id at the front of the route parameter, or null when there is none.
 // Both the match and the team address are id-first (D9), so both parse here.
 export function parseIdParam(param) {

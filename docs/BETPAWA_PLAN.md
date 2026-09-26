@@ -239,7 +239,7 @@ Each with the recommendation the build in §4 assumes.
 | **D8** | What a signed-out or ineligible visitor sees | Signed-out: the button renders as **"Sign in to bet on betPawa"** and opens Google's button (the paid-feature hook); signed-in but not in a served country: **no button** | The signed-out state is the funnel; the ineligible state has nothing to offer and a disabled button would need copy that explains betPawa's map |
 | **D9** | Show betPawa's odds on the button | **No, in v1** | The site publishes no prices by design; a price scraped at 06:00 is stale by kick-off and would be the first number on the page the site cannot stand behind |
 | **D10** | Partner / affiliate agreement | **Owner, 2026-09-08: there is none.** D4 stands as written | Unknown from here; betPawa's bundle carries `/external-prefill` and `/external-page`, both built for third parties to link in, so a partner form likely exists |
-| **D11** | Fixture with no selection for our side (the +1.5 line absent, §1.2) | Button falls back to **"See on betPawa"** → `/event/{id}` with no selection | Says what is true; a wager button that opens an empty slip would read as a bug |
+| **D11** | Fixture with no selection for our side (the +1.5 line absent, §1.2) | Button falls back to **"See on betPawa"** → `/event/{id}` with no selection. **Amended 2026-09-26 (§7):** for a +1.5 call, the same team's double chance first, named as a substitute; the event page when that is missing too | Says what is true; a wager button that opens an empty slip would read as a bug |
 | **D12** | Terms and change risk | Accept: the endpoint is undocumented and protobuf-first; one GET a day; the parse is pinned by the saved capture so a shape change fails the step loudly and hides the buttons, nothing else | The feature degrades to "no button", never to a wrong wager |
 
 ## 4. Build
@@ -476,7 +476,7 @@ the largest matchday in the corpus is 46.
    names the leg — right for a chosen parlay, whose claimed figure is the
    product of exactly those legs. Applied to "every call today" it would
    make the button unusable on most Saturdays (1 of 65 events lacked our
-   side's line this week; 40 games a Saturday). **D13:** for this button,
+   side's line this week; 40 games a Saturday). **D13** (*amended 2026-09-26, §8: a lineless +1.5 loads as its team's double chance, named*)**:** for this button,
    *skip the lineless calls and say so* — "38 of 40 calls loaded; no line
    on betPawa for X, Y" — leaving the parlay page's refusal as it is.
 2. **Kicked-off games.** `/tips` keeps a 15:00 game listed at 17:00 (harmless
@@ -519,3 +519,146 @@ present, no odds, new tab + noopener; an empty league tab has no block and
 the Championship tab rebuilds it; GB sees nothing; 390 px fits with no
 horizontal scroll. `bvp_scratch` dropped after. No backend change; nothing
 on the VM until the next frontend build.
+
+---
+
+## 7. Third assessment — 2026-09-26: a bet for the call betPawa has no line for
+
+Owner request: when a tip is not available on betPawa, default to the next
+most probable prediction. Assessed, then built — as the **nearest** bet,
+not the next most probable, on the assessment's recommendation; the owner
+asked for "this change" to be implemented.
+
+**What "not available" is.** 1X2 and double chance are on every event; only
+the +1.5 goes missing, and only the **market favourite's** (priced around
+1.05, which the book does not list). So the gap opens when the rule's +1.5
+side — the model's underdog — is the market's favourite: **1 of 9** matched
+calls on 2026-09-08 (Wrexham), **2 of 14** on 2026-09-26 (Bristol Rovers,
+Fleetwood). A fixture the scrape never matched has no link at all, and no
+fallback can change that.
+
+**An exact equivalent exists and does not help.** Handicap 1X2 (4724) "+2"
+settles identically to Asian +1.5 — the prices agree (1.28 / 1.29, 1.54 /
+1.51 in the 2026-09-26 pull) — and that ladder is two-sided more often: of
+46 events, 19 lacked a +1.5 side on 3774 and 10 lacked it on both markets.
+But neither of the two calls that needed one was among the 9 it filled. Not
+built; worth re-reading if the gap grows.
+
+**Why not the next most probable.** On the B22 menu the runner-up to a +1.5
+call is `12` — **9 of 9** handicap calls on 2026-09-26. "Bristol Rovers
++1.5" (83.8%) would become "either team to win" (72.7%): a bet that loses on
+the draw the call wins on (about 27% by the model), and whose next
+alternative, `X2`, backs the other team. The record grades only the call, so
+a draw would read WIN on the site and LOSE on the reader's slip.
+
+**What was built: the same team's double chance** (`H+1.5` → `1X`, `A+1.5`
+→ `X2`). It wins on a strict subset of the handicap's outcomes — whenever it
+wins, the +1.5 has won — and parts from it on one result only, a one-goal
+defeat. It is **less** likely than the call (about 63% against 84% on
+2026-09-26's two), which is why it is named as a substitute and never
+presented as the call.
+
+- `$lib/betpawa.js`: `wagerLink` returns `{kind: 'nearest', side, url}`
+  between the exact wager and the event page; `wagerLabel(bet, home, away)`
+  reads "Closest on betPawa: Wrexham or draw"; `nearestNote` reads "No
+  Wrexham +1.5 on betPawa. This loses if Wrexham lose by one goal; the +1.5
+  would not." — "the +1.5", not "our call", because a derived parlay leg is
+  not the call. Never the other team's double chance; any other missing
+  side still falls to the event page.
+- Front page, match page and each parlay leg: the substitute is muted like
+  the event fallback, its label may wrap, the note sits under it; the front
+  page's note gains one sentence.
+- **Unchanged on purpose** (*both parts reversed the same day: the day slip §8, the parlay slip §9*):
+  the day slip ("Place all N calls") still leaves
+  a lineless call out and names it — its count means calls; the parlay slip
+  still refuses a lineless leg — its claimed figure is the product of
+  exactly those legs. No API, schema, cycle or rule change; no odds (D9);
+  0 configurations.
+- Verified: **102 web tests** (+2); build clean; a **36-check Playwright
+  click-through** at 1280 and 390 px on a scratch `bvp_nearest` (five calls:
+  two substitutes, `1X` and `X2`; an exact +1.5; a `1X`; a +1.5 with
+  neither line → the event page; the day slip loads the two with lines and
+  names three; clicking the substitute leaves the drawer shut; no
+  horizontal scroll; anonymous unchanged) and a five-leg parlay showing
+  both substitutes with their notes and the slip refusing three legs by
+  name. `bvp_nearest` dropped after.
+
+---
+
+## 8. Fourth request — 2026-09-26: substitutes in the day slip, and the button always there
+
+Owner request, the same day as §7: the "Place all N calls" button should
+carry the same substitutes as the per-call buttons, and should always be
+present while the list has calls. Built; this **reverses §7's "unchanged on
+purpose"** for the day slip and amends D13.
+
+- **Substitutes load.** A +1.5 call betPawa has no line for goes into the
+  slip as the same team's double chance (`NEAREST`, the per-call rule) and
+  counts toward N. The fine print names them — "In place of a +1.5 betPawa
+  has no line for, the slip carries the closest bet it lists: Wrexham or
+  draw, Walsall or draw. Each loses on a one-goal defeat the +1.5 would
+  survive." A call with neither its own line nor a substitute is still left
+  out and named (D13); a kicked-off call is still left out and counted.
+  `daySlip` returns `substituted` (the labels) beside `skipped`.
+- **Always there while the list has calls**, for everyone who can use it:
+  signed-out visitors keep "Sign in to place these on betPawa"; a signed-in
+  account in a served country always gets the button. When nothing can load
+  — every call kicked off, or betPawa lists none of them — it stays as a
+  **disabled** "Place all calls on betPawa" with the reason ("Nothing to
+  load on betPawa right now. 5 already kicked off and left out."), rather
+  than vanishing.
+- **Still hidden** (owner, asked 2026-09-26): accounts whose phone country
+  betPawa does not serve, as every betPawa button is (D8). Also not shown
+  while the links are loading or after the links request fails — no country
+  is known then, so a placeholder would flash for accounts that must not
+  see it.
+- **Unchanged** (*the parlay part reversed the same day, §9*): the parlay slip still refuses a lineless leg — its claimed
+  figure is the product of exactly those legs. No API, schema, cycle or rule
+  change; no odds; 0 configurations.
+- Verified: **103 web tests**; build clean; the §7 click-through re-run with
+  the day slip's checks rewritten — **40 of 40** at 1280 and 390 px (four
+  calls load: two own lines and two substitutes; the substitutes and the one
+  lineless call named; League Two alone reads "Place this call" with "It
+  loses"); then every scratch kick-off moved to 00:01, **9 of 9**: a disabled
+  `<button>` with no link, the kicked-off reason, no horizontal scroll at
+  390 px, no page errors. `bvp_nearest` dropped after.
+
+---
+
+## 9. Fifth request — 2026-09-26: the parlay slip takes the substitutes too
+
+Owner, the same day as §8, on seeing "Not available as one slip on betPawa —
+no line there for Bristol Rvs v Exeter, Fleetwood Town v Rochdale" under a
+parlay: the slip button should be there, with the substitutes. Built; this
+**reverses the refusal** Phase C step 7 built and §7/§8 kept.
+
+- **What loads.** Every leg its own side (a derived leg's side is the
+  derived one); a +1.5 leg betPawa has no line for, the same team's double
+  chance, named; a leg with neither — in practice a game betPawa does not
+  list at all, since double chance is on every event — left out and named.
+  `slipLink` and `daySlip` now share one picker (`selectionFor`), so the
+  per-call button, the day slip and the parlay slip cannot disagree about
+  what a lineless +1.5 becomes. `slipLink` returns `{url, loaded,
+  substituted, missing}`.
+- **What the copy says**, because the claimed figure above the button is
+  for exactly the legs shown: "Opens a betPawa betslip with 4 of these 5
+  legs" when one is left out; "…the slip carries the closest bet it lists:
+  Walsall or draw, Wrexham or draw. Each loses on a one-goal defeat the +1.5
+  would survive, so the slip can lose where the legs above win"; "No line on
+  betPawa for Bristol Rvs v Exeter, so it is left out of the slip." Both are
+  statements of logic, not probability — the page computes no new figure
+  (the browser never forms a probability, B22). The honesty paragraph gains
+  the substitute clause.
+- **Always there while the slip has legs**, on §8's terms: signed-out sees
+  "Sign in to place this on betPawa"; a served country always gets the
+  button, **disabled** with the reason when nothing can load; unserved
+  countries, loading and error see nothing.
+- Verified: **103 web tests** (the two refusal tests rewritten); build
+  clean; **17 of 17** on the parlay page at 1280 and 390 px on a scratch
+  `bvp_nearest` (the default two-leg slip loads 1 of 2 and names Bristol;
+  five legs load two own lines and two substitutes, name them and Bristol,
+  and say "4 of these 5 legs"; the per-leg substitute buttons and the
+  honesty clause present; no horizontal scroll, no page errors), then with
+  Swansea's selections removed **7 of 7** (a disabled button, no link, both
+  legs named); §7/§8's 40-check run still 40 of 40. `bvp_nearest` dropped
+  after.
