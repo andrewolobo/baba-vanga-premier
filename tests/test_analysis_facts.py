@@ -10,7 +10,7 @@ from __future__ import annotations
 import re
 
 from services.analysis.facts import (
-    Game, h2h_facts, league_facts, season_start, team_facts,
+    Game, form_trend, h2h_facts, league_facts, season_start, team_facts,
 )
 
 
@@ -158,3 +158,44 @@ def test_season_start_is_the_match_pages_rule():
     from api.main import _season_start
     for day in ("2026-07-01", "2026-06-30", "2026-12-31", "2027-01-01", "2026-08-14"):
         assert season_start(day) == _season_start(day)
+
+
+# --- the listings' form trend ------------------------------------------------ #
+
+
+def results(letters: str) -> list[Game]:
+    """Games oldest first from W/D/L, each 1-0, 1-1 or 0-1."""
+    score = {"W": (1, 0), "D": (1, 1), "L": (0, 1)}
+    return [game(1 + i, i % 2 == 0, *score[r]) for i, r in enumerate(letters)]
+
+
+def test_a_trend_needs_six_games():
+    assert form_trend(results("WWWWW")) is None
+    assert form_trend(results("WWWWWW"))["trend"] == "stable"     # 3.0 vs 3.0
+
+
+def test_the_last_five_are_measured_against_the_season_until_ten():
+    # Season 9 points from 6 games (1.5); last 5: 9 from 5 (1.8).
+    t = form_trend(results("LWLWLW"))
+    assert t == {"trend": "stable", "window": "SEASON", "last5": 1.8, "versus": 1.5}
+    # Twelve games: L10 is the window, and the first two never count.
+    t = form_trend(results("WW" + "LLLLL" + "WWDDD"))
+    assert t == {"trend": "improving", "window": "L10", "last5": 1.8, "versus": 0.9}
+
+
+def test_half_a_point_either_way_is_a_trend_exactly():
+    # Last 5 9 points (1.8), season 13 from 10 (1.3): +0.5 exactly.
+    assert form_trend(results("DDDDL" + "WWWLL"))["trend"] == "improving"
+    # Last 5 1 point (0.2), season 7 from 10 (0.7): -0.5 exactly.
+    assert form_trend(results("WWLLL" + "DLLLL"))["trend"] == "declining"
+    # Last 5 8 points (1.6), season 12 from 10 (1.2): +0.4, under the margin.
+    assert form_trend(results("DDDDL" + "WWDDL")) == {
+        "trend": "stable", "window": "L10", "last5": 1.6, "versus": 1.2}
+
+
+def test_a_missing_score_in_the_window_is_no_trend():
+    games = [game(1, True, None, None)] + results("WWWWWW")
+    assert form_trend(games) is None
+    # Outside the last ten it no longer counts.
+    games = [game(1, True, None, None)] + results("WWWWWWWWWW")
+    assert form_trend(games)["window"] == "L10"

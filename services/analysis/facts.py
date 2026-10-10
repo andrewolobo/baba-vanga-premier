@@ -30,6 +30,7 @@ the side has that many games; SEASON and VENUE need one.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from fractions import Fraction
 from typing import Literal
 
 from engine import db
@@ -45,6 +46,11 @@ WINDOWS = (5, 10)
 SMALL_SAMPLE_GAMES = 5
 #: Meetings shown on the match page; the analysis cites the same ones.
 H2H_MEETINGS = 5
+#: The listings' form trend (`form_trend`, owner decision 2026-10-10): no
+#: trend before this many games, and a change in points per game of at
+#: least this much either way is one.
+TREND_MIN_GAMES = 6
+TREND_MARGIN = Fraction(1, 2)
 
 
 @dataclass(frozen=True)
@@ -394,3 +400,42 @@ def build_facts(conn: db.Connection, fixture: dict) -> tuple[list[Fact], list[Fl
         omitted.append("LEAGUE: no scored games in the division this season yet")
     omitted.append("STANDINGS: the store has no league table")
     return facts + h2h + league, flags, omitted
+
+
+# --- the listings' form trend (pure) ----------------------------------------- #
+
+
+def _points(games: list[Game]) -> int:
+    return sum(3 if g.result == "W" else g.result == "D" for g in games)
+
+
+def form_trend(games: list[Game]) -> dict | None:
+    """Improving, stable or declining, from the side's games oldest first; None
+    when there is nothing honest to say.
+
+    Points per game over the last 5 against the last 10, or the season while
+    the side has fewer than 10 -- the same windows, and so the same figures,
+    as the pack's `PPG_L5` and `PPG_L10`/`PPG_SEASON`. `TREND_MARGIN` or more
+    either way is a trend. Below `TREND_MIN_GAMES` the two windows are nearly
+    the same games, and a window spanning a game with no score would be
+    computed short, so both are None rather than "stable".
+
+    The tip and parlay listings show it to signed-in readers beside the
+    analysis's own `trend` word, which the LLM chose and nothing checks
+    against this: the two can differ, and the page shows both (ANALYSIS_PLAN.md
+    section 8).
+    """
+    if len(games) < TREND_MIN_GAMES:
+        return None
+    longer = games[-10:]
+    if not all(g.known for g in longer):
+        return None
+    last5, versus = Fraction(_points(longer[-5:]), 5), Fraction(_points(longer), len(longer))
+    change = last5 - versus
+    return {
+        "trend": ("improving" if change >= TREND_MARGIN
+                  else "declining" if change <= -TREND_MARGIN else "stable"),
+        "window": "L10" if len(longer) == 10 else "SEASON",
+        "last5": round(float(last5), 2),
+        "versus": round(float(versus), 2),
+    }

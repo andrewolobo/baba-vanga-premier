@@ -46,6 +46,7 @@ from api import auth, betpawa, teams
 from engine import config, db
 from engine.seasons import SERVED_DIVISIONS
 from engine.serve import parlay as parlay_rule
+from services.analysis import facts as analysis_facts
 
 app = FastAPI(
     title="baba.vanga.premier",
@@ -1258,6 +1259,49 @@ def fixture_analysis(fixture_id: int, conn: db.Connection = Depends(get_conn)) -
         "summaries": row["summaries"],
         "evidence_pack": pack,
     }
+
+
+#: Every fixture `/tips` lists, with the newest ok analysis's team summaries
+#: (NULL without one). A fallback stores no summaries, so it is not read.
+TREND_SELECT = """
+    SELECT DISTINCT ON (f.fixture_id)
+           f.fixture_id, f.match_date, f.home_team_id, f.away_team_id, a.summaries
+    FROM tips t
+    JOIN fixtures f ON f.fixture_id = t.fixture_id
+    LEFT JOIN match_analyses a ON a.fixture_id = f.fixture_id AND a.status = 'ok'
+    WHERE t.settled_at IS NULL AND f.match_date >= %s
+    ORDER BY f.fixture_id, a.analysis_id DESC NULLS LAST
+"""
+
+
+@app.get("/trends", dependencies=[Depends(require_user)])
+def trends(conn: db.Connection = Depends(get_conn)) -> dict:
+    """Each listed call's two sides: their form trend and the analysis's word
+    for it, for the icons on the tip and parlay listings (signed-in, owner
+    decision 2026-10-10; docs/ANALYSIS_PLAN.md section 8).
+
+    **Its own route**, as `/betpawa/links` is: `/tips` is public, rendered
+    into the HTML and cached offline, and this is for signed-in readers only.
+
+    Per side, `trend` / `window` / `last5` / `versus` are
+    `services.analysis.facts.form_trend`, worked out on request from the same
+    games the analysis's facts are built from, so the figures match the
+    pack's points per game. All four are null below the game minimum or over
+    a window with a missing score: no icon, rather than "stable". `ai` is the
+    stored analysis's own `trend`, null without an ok analysis. It is the
+    LLM's reading, never checked against `trend`, and the two can differ.
+    """
+    out = []
+    for row in conn.execute(TREND_SELECT, (db.today(),)).fetchall():
+        entry = {"fixture_id": row["fixture_id"]}
+        for side in ("home", "away"):
+            games, _ = analysis_facts.team_games(conn, row[f"{side}_team_id"], row["match_date"])
+            form = analysis_facts.form_trend(games) or dict.fromkeys(
+                ("trend", "window", "last5", "versus"))
+            ai = (row["summaries"] or {}).get(side, {}).get("trend")
+            entry[side] = {**form, "ai": ai}
+        out.append(entry)
+    return {"trends": out}
 
 
 @app.post("/auth/logout", dependencies=[Depends(_same_site_json)])

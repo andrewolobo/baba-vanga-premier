@@ -507,6 +507,61 @@ change from the "Exit" sketch above.
 ## 7. What this does not change
 
 No rule, threshold, ledger or measurement change. The book stays off. No
-odds, return or P&L reaches a page. The API gains one read route and no
-write route. The call is still made by `engine/serve/tips.py` alone; the
+odds, return or P&L reaches a page. The API gains two read routes (the analysis, and §8's
+trends) and no write route. The call is still made by `engine/serve/tips.py` alone; the
 LLM explains it and cannot alter it.
+
+## 8. Form trend on the listings (owner request, 2026-10-10)
+
+The owner asked for an improving / stable / declining icon per team on the
+tip and parlay listings, "already in the analysis". Assessed first:
+
+- the analysis's `trend` is the LLM's reading. The prompt says "clearly
+  better" with no threshold or named measure, and the validator never
+  checks it;
+- over the season's calls on the production copy, 75% of sides had five
+  or fewer games on record, which the prompt's rule turns into "stable";
+- all ten v1 sample profiles said "stable".
+
+**Owner decisions:**
+
+- **T1 Both, side by side.** The icon is calculated, and its note also
+  shows the analysis's own word, which can differ from it. There is no
+  prompt change; v1 stays frozen.
+- **T2 The rule** (`facts.form_trend`):
+  - points per game over the last 5 against the last 10, or against the
+    season while the side has fewer than 10. These are the pack's
+    `PPG_L5` and `PPG_L10`/`PPG_SEASON` windows and figures;
+  - a difference of ±0.5 or more is a trend;
+  - fewer than 6 games, or a missing score in the window, gives no icon,
+    not "stable".
+- **T3 Signed-in only**, as D10, though the calculated trend is not AI
+  text. It is served by `GET /trends` behind `require_user` and fetched in
+  the browser. Nothing goes into `/tips` or the server HTML.
+
+**Built 2026-10-10, uncommitted:**
+
+- `form_trend` and its two constants in `facts.py`;
+- `GET /trends`;
+- `$lib/trend.js` and `$lib/TrendMark.svelte`, a mark on the crest's
+  corner:
+  - it is absolutely positioned, so its arrival shifts nothing;
+  - hover or tap opens a note with the two figures and the analysis's
+    word;
+  - a click on it never reaches the row's drawer;
+- the mark on the front page and `/parlay`;
+- tests: 4 for the rule, 2 for the route, 2 web;
+- a 24/24 click-through on a scratch copy of production with 2026-10-10's
+  calls published. Its AI words were faked.
+
+**On that day's 40 calls**, with the opening-weekend scores backfilled:
+
+| Sides | Count |
+|---|---|
+| Stable | 60 |
+| Improving | 5 |
+| Declining | 3 |
+| No trend | 12 |
+
+Most marks read "stable" until the windows separate, around November. The
+route computes 41 fixtures in about 40 ms.

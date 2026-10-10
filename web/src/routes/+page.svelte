@@ -25,6 +25,8 @@
   import PageHead from '$lib/PageHead.svelte';
   import FactsButton from '$lib/FactsButton.svelte';
   import FixtureSheet from '$lib/FixtureSheet.svelte';
+  import TrendMark from '$lib/TrendMark.svelte';
+  import { getTrends, indexTrends, trendOf } from '$lib/trend.js';
 
   // The opening lists and record, read by `+page.js` -- on the server for a
   // first visit, so they are in the HTML.
@@ -35,6 +37,27 @@
   // drawer, and Enter on it must not be swallowed by the row's key handler.
   const { store: betpawa, promptSignIn } = getContext('betpawa');
   const keep = (event) => event.stopPropagation();
+
+  // The form trend on each crest (docs/ANALYSIS_PLAN.md section 8):
+  // signed-in only, so it is read here in the browser once the layout knows
+  // the reader, never into the server's HTML. A failed read shows no marks.
+  const { store: account } = getContext('account');
+  let trends = $state({});
+  $effect(() => {
+    if ($account !== 'signed_in') {
+      trends = {};
+      return;
+    }
+    let cancelled = false;
+    getTrends()
+      .then((body) => {
+        if (!cancelled) trends = indexTrends(body);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  });
 
   let tipsDivision = $state('');
   // The drawer behind a call (B22): which fixture is open.
@@ -267,7 +290,9 @@
             <div class="fixture">
               <div class="side home">
                 <span class="club">{t.home_team}</span>
-                <Crest name={t.home_team} badge={badge.home} />
+                <TrendMark entry={trendOf(trends, t.fixture_id, 'home')} team={t.home_team} side="home">
+                  <Crest name={t.home_team} badge={badge.home} />
+                </TrendMark>
               </div>
               <div class="kick" title={k ? `${t.kickoff_time} UK time` : undefined}>
                 {#if k}
@@ -275,7 +300,9 @@
                 {:else}—{/if}
               </div>
               <div class="side away">
-                <Crest name={t.away_team} badge={badge.away} />
+                <TrendMark entry={trendOf(trends, t.fixture_id, 'away')} team={t.away_team} side="away">
+                  <Crest name={t.away_team} badge={badge.away} />
+                </TrendMark>
                 <span class="club">{t.away_team}</span>
               </div>
             </div>

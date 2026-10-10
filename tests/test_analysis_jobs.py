@@ -313,6 +313,65 @@ def test_the_public_fixture_says_only_whether_an_analysis_exists(auth_client):  
     assert "The rule weighed the menu" not in json.dumps(body)
 
 
+def leeds_season(url: str, letters: str) -> None:
+    """Leeds's settled games before today, oldest first, from W/D/L."""
+    conn = db.connect(url)
+    score = {"W": (1, 0), "D": (1, 1), "L": (0, 1)}
+    for i, r in enumerate(letters):
+        fid, opponent = 100 + i, 2 + i % 3
+        conn.execute(
+            "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
+            " home_team_id, away_team_id, source_file) VALUES (%s, 'E1', %s, '15:00', 1, %s, 't')",
+            (fid, relative_date(-3 - len(letters) + i), opponent))
+        conn.execute(
+            "INSERT INTO predictions (prediction_id, fixture_id, model_version, information_set,"
+            " lam_h, lam_a, p_home, p_draw, p_away, p_over25, p_under25)"
+            " VALUES (%s, %s, 'test-model', 'pre_close', 1.5, 1.0, 0.5, 0.3, 0.2, 0.5, 0.5)",
+            (fid, fid))
+        conn.execute(
+            "INSERT INTO tips (prediction_id, fixture_id, side, model_prob, floor, rule_version,"
+            f" settled_at, outcome, fthg, ftag) VALUES (%s, %s, 'H', 0.6, 0.55, 'confidence-v3',"
+            f" {db.NOW_TEXT}, 'win', %s, %s)", (fid, fid, *score[r]))
+    conn.commit()
+    conn.close()
+
+
+def test_trends_are_signed_in_only(auth_client):  # noqa: F811
+    client, url = auth_client
+    seed(url)
+    assert client.get("/trends").status_code == 401
+    sign_in(client)
+    assert client.get("/trends").status_code == 200
+
+
+def test_trends_pair_the_calculation_with_the_ok_analysis_word(auth_client):  # noqa: F811
+    client, url = auth_client
+    seed(url)
+    leeds_season(url, "LWWWW")
+    sign_in(client)
+    # Fixture 12, Leeds's latest game, is played but not yet settled: a
+    # window with a missing score is no trend, not a short one.
+    (leeds,) = [t for t in client.get("/trends").json()["trends"] if t["fixture_id"] == 10]
+    assert leeds["home"]["trend"] is None
+
+    conn = db.connect(url)
+    conn.execute(f"UPDATE tips SET settled_at = {db.NOW_TEXT}, outcome = 'win', fthg = 1,"
+                 " ftag = 0 WHERE fixture_id = 12")    # LWWWW + W: 3.0 last 5, 2.5 season
+    conn.commit()
+    jobs.run(conn, [10], Responder(good), llm_model="m")              # an ok, "stable"
+    jobs.run(conn, [11], Responder(invents_a_number), llm_model="m")  # a fallback
+    conn.close()
+    body = {t["fixture_id"]: t for t in client.get("/trends").json()["trends"]}
+    assert set(body) == {10, 11}                 # 12 was played: not listed
+    assert body[10]["home"] == {"trend": "improving", "window": "SEASON", "last5": 3.0,
+                                "versus": 2.5, "ai": "stable"}
+    # Hull has no games on record: no trend, though the analysis has a word.
+    assert body[10]["away"] == {"trend": None, "window": None, "last5": None,
+                                "versus": None, "ai": "stable"}
+    # A fallback stores no summaries, so there is no word to show.
+    assert body[11]["home"]["ai"] is None and body[11]["away"]["ai"] is None
+
+
 # --- the metrics ---------------------------------------------------------- #
 
 

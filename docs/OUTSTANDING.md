@@ -7,7 +7,33 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-10-10** (latest): **Phase 0 of an LLM match-analysis
+Last updated **2026-10-10** (latest): **form-trend marks on the tip and
+parlay listings** (owner request), built and **uncommitted**. The analysis
+itself was committed as `b57d636`. Assessed first: the analysis's own
+`trend` is the LLM's unchecked reading and nearly always "stable" this
+early. The owner chose:
+
+- a calculated trend: points per game over the last 5 against the last 10,
+  or the season below 10 games; ±0.5 is a trend; no mark under 6 games or
+  over a missing score;
+- the analysis's word shown beside it in the mark's note, even where the
+  two differ;
+- signed-in only.
+
+What was built:
+
+- `facts.form_trend`;
+- `GET /trends` behind `require_user`;
+- `$lib/TrendMark.svelte` on both listings, fetched in the browser and
+  absent from the HTML.
+
+Checks: Python **868**, web **110**, and a 24/24 click-through on a
+scratch copy of production. On 2026-10-10's 40 calls, 68 of 80 sides have
+a mark: 60 stable, 5 improving, 3 declining. Details are in
+`ANALYSIS_PLAN.md` §8. **Next, the owner's:** commit, then `deploy.sh`.
+There is no migration and no new setting.
+
+Before that, the same day: **Phase 0 of an LLM match-analysis
 brief** (`tipster-analysis-agent-prompt.md`, owner request). Discovery and
 a plan only; **no code**. Written up in `ANALYSIS_PLAN.md`. The brief is
 generic and contradicts standing decisions in several places, and each one
