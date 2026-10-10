@@ -493,6 +493,46 @@ def step_betpawa(conn: db.Connection, *, dry_run: bool) -> Step:
     return _guard(Step("betpawa"), work, conn)
 
 
+def step_analysis(conn: db.Connection, *, dry_run: bool) -> Step:
+    """Write the analysis of each call published today (docs/ANALYSIS_PLAN.md).
+
+    Additive, like `betpawa`: it writes only its own two tables
+    (`004_analysis.sql`) and touches no fixture, prediction or tip. A model
+    or network failure costs a fixture its text, not the matchday. Each
+    such fixture is stored as a fallback and the page draws the
+    numbers-only card. Runs **last**, because it is the one slow step
+    (`jobs.BUDGET_SECONDS`) and nothing waits on it. Enabled only by
+    `BVP_ANALYSIS=1`. A dry run counts what it would analyse and asks the
+    model nothing, because asking costs money.
+    """
+    from services.analysis import jobs, llm  # the `analysis` extra; only when enabled
+
+    def work(step: Step) -> None:
+        fixtures = jobs.pending(conn)
+        if not fixtures:
+            step.detail = "nothing to analyse"
+            return
+        if dry_run:
+            step.detail = f"{len(fixtures)} call(s) would be analysed"
+            return
+        report = jobs.run(conn, fixtures, llm.client(), llm_model=config.AZURE_MODEL)
+        tokens_in, tokens_out = report.tokens
+        step.detail = (f"{len(fixtures)} call(s): {report.count('ok')} ok, "
+                       f"{report.count('fallback')} fallback, {report.written} stored; "
+                       f"tokens {tokens_in} in / {tokens_out} out")
+        if report.count("fallback"):
+            step.flag(Status.ATTENTION, f"{report.count('fallback')} fallback(s); the page "
+                      "shows the numbers-only card (re-run: python -m services.analysis "
+                      "rerun --fixture N)")
+        if report.refused:
+            step.flag(Status.ATTENTION, "no pack for " + ", ".join(
+                f"{fid} ({why})" for fid, why in sorted(report.refused.items())))
+
+    if not config.ANALYSIS_ENABLED:
+        return Step("analysis", detail="disabled (BVP_ANALYSIS unset)")
+    return _guard(Step("analysis"), work, conn)
+
+
 def _stale(artifact, today: pd.Timestamp) -> bool:
     return (today - pd.Timestamp(artifact.fitted_at[:10])).days > REFIT_AFTER_DAYS
 
@@ -514,6 +554,7 @@ def run(conn: db.Connection, *, dry_run: bool = False, refreeze: bool = False,
     report.steps.append(step_betpawa(conn, dry_run=dry_run))
     report.steps.append(step_results(conn, dry_run=dry_run, today=today))
     report.steps.append(step_grade(conn, dry_run=dry_run, today=today))
+    report.steps.append(step_analysis(conn, dry_run=dry_run))
 
     if not dry_run:
         # Written even when a step failed: an unattended run that left no trace

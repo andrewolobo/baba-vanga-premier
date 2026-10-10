@@ -17,6 +17,7 @@
   import { fixtureBadges } from '$lib/badge.js';
   import Crest from '$lib/Crest.svelte';
   import MatchFacts from '$lib/MatchFacts.svelte';
+  import MatchAnalysis from '$lib/MatchAnalysis.svelte';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
   import { wagerLink, wagerLabel, nearestNote } from '$lib/betpawa.js';
   import { ORIGIN } from '$lib/site.js';
@@ -155,6 +156,8 @@
       </div>
     {/if}
   </section>
+
+  <MatchAnalysis {fx} />
 
   <MatchFacts {fx} />
 

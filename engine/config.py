@@ -85,6 +85,18 @@ SESSION_DAYS = int(setting("BVP_SESSION_DAYS", "30"))
 #: Secure cookie at all.
 COOKIE_SECURE = setting("BVP_COOKIE_SECURE", "1") == "1"
 
+#: The Azure Foundry deployment that writes the match analysis
+#: (docs/ANALYSIS_PLAN.md D7). The URI may be the full Responses endpoint the
+#: portal shows; `services/analysis/llm.py` trims it to the v1 base. The key
+#: is a secret: `.env` on a development machine, a systemd drop-in on the VM.
+#: `AZURE_MODEL` is the deployment's name, which the API takes as `model`.
+#: Opt-in for the cycle's `analysis` step (`services/analysis/jobs.py`). Off
+#: unless set: it calls a paid model every matchday.
+ANALYSIS_ENABLED = setting("BVP_ANALYSIS") == "1"
+AZURE_FOUNDRY_URI = setting("AZURE_FOUNDRY_URI")
+AZURE_FOUNDRY_KEY = setting("AZURE_FOUNDRY_KEY")
+AZURE_MODEL = setting("AZURE_MODEL")
+
 
 def relpath(path: Path) -> str:
     """Provenance string for a source file: repo-relative when it is inside the

@@ -280,6 +280,8 @@ like everything else (§3.10):
 | `BVP_GOOGLE_CLIENT_ID` | the Google OAuth client id for sign-in (`AUTH_PLAN.md`); public, not a secret, but environment — empty means sign-in answers 401 and the site renders no button | *(empty)* |
 | `BVP_COOKIE_SECURE` | `Secure` on the session cookie; a development machine on `http://localhost` sets `0` | `1` |
 | `BVP_SESSION_DAYS` | sliding session length | `30` |
+| `BVP_ANALYSIS` | `1` enables the cycle's `analysis` step (`RUNBOOK.md` §5.12; `ANALYSIS_PLAN.md`): the written match analysis of each call published that day, by the Azure Foundry deployment below | *(off)* |
+| `AZURE_FOUNDRY_URI`, `AZURE_FOUNDRY_KEY`, `AZURE_MODEL` | that deployment: its v1 endpoint (the portal's `.../openai/v1/responses` is fine), its key, and the deployment's name. **The key is a secret**: on the server it lives in `/etc/bvp/analysis.env` (§5.3, the analysis block), never in a unit file | *(empty)* |
 | `BVP_BETPAWA` | `1` enables the cycle's `betpawa` step (`RUNBOOK.md` §5.11; `BETPAWA_PLAN.md` D1) — one GET a morning to `www.betpawa.ug` for the ids behind the wager buttons; the VM's egress was verified served on 2026-09-08 | *(off)* |
 
 **A development machine** points both at its own Postgres in `.env`, with
@@ -773,6 +775,68 @@ The first scrape is the next 06:00 UTC cycle — or by hand, once, from the
 checkout as the service user: `BVP_DATABASE_URL=postgresql:///bvp
 .venv/bin/python -m services.betpawa_feed` (add `--dry-run` first). The VM's
 egress was checked served on 2026-09-08 (`BETPAWA_PLAN.md` §4 Phase 0).
+
+**The match analysis (`ANALYSIS_PLAN.md`), added 2026-10-10.** Nothing on
+the nginx side: `/api/fixture/{id}/analysis` is one more `GET` behind
+`location /api/`, signed-in only.
+
+- **`deploy.sh` does the rest of the application side.** It installs the
+  `analysis` extra (the `openai` SDK) and applies migration
+  `004_analysis`, which is additive (two empty tables).
+- **The step stays off until the drop-in below.** The tracked
+  `bvp-cycle.service` carries `Environment=BVP_ANALYSIS=0`.
+- **The key never goes in a unit file.** `systemctl show` prints
+  `Environment=` lines to any user on the machine. So the credentials live
+  in a file only root and `bvp` can read. The same file serves the cycle
+  and a manual `rerun`.
+
+```bash
+# 1. the credentials -- root:bvp 0640, in /etc so ProtectSystem=strict reads it
+sudo install -d -m 0750 -o root -g bvp /etc/bvp
+sudo install -m 0640 -o root -g bvp /dev/null /etc/bvp/analysis.env
+sudo nano /etc/bvp/analysis.env
+#   AZURE_FOUNDRY_URI=https://<resource>.services.ai.azure.com/openai/v1/responses
+#   AZURE_FOUNDRY_KEY=<key>
+#   AZURE_MODEL=<deployment name>
+
+# 2. one analysis by hand, printed and NOT stored: proves the key, the model
+#    name and the VM's egress to Foundry before the cycle depends on them
+cd /srv/bvp
+FIXTURE=$(sudo -u bvp psql bvp -Atc "SELECT fixture_id FROM tips WHERE rule_version = 'confidence-v3' ORDER BY tip_id DESC LIMIT 1")
+sudo -u bvp bash -c "set -a; . /etc/bvp/analysis.env; set +a; .venv/bin/python -m services.analysis analyse --fixture $FIXTURE" | head -40
+
+# 3. turn the step on: a drop-in on the cycle unit
+sudo cp deploy/systemd/bvp-cycle.service /etc/systemd/system/      # the tracked unit, with BVP_ANALYSIS=0
+sudo mkdir -p /etc/systemd/system/bvp-cycle.service.d
+printf '[Service]\nEnvironmentFile=/etc/bvp/analysis.env\nEnvironment=BVP_ANALYSIS=1\n' \
+  | sudo tee /etc/systemd/system/bvp-cycle.service.d/analysis.conf
+sudo systemctl daemon-reload
+systemctl cat bvp-cycle | grep -E 'BVP_ANALYSIS|EnvironmentFile'  # =0 in the unit, =1 in the drop-in: the drop-in wins
+```
+
+**Verify:**
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://<domain>/api/fixture/1/analysis   # 401 -- signed-in only
+journalctl -u bvp-cycle -n 40 | grep analysis                                        # after the next 06:00 run
+sudo -u bvp psql bvp -c "SELECT status, COUNT(*) FROM match_analyses GROUP BY 1"
+sudo -u bvp .venv/bin/python -m services.analysis metrics
+```
+
+**The first analyses** come with the next 06:00 UTC cycle. To analyse the
+day's calls now, without waiting, run only the step, under the cycle's
+lock so it cannot overlap a run:
+
+```bash
+sudo -u bvp bash -c "set -a; . /etc/bvp/analysis.env; set +a; flock -w 600 db/.cycle.lock .venv/bin/python -m services.analysis run"
+```
+
+- **Rotating the key** is an edit to `/etc/bvp/analysis.env`. The next run
+  reads it; nothing needs restarting.
+- **Turning the step off** is `sudo rm
+  /etc/systemd/system/bvp-cycle.service.d/analysis.conf && sudo systemctl
+  daemon-reload`. Stored analyses stay readable. The card shows for the
+  fixtures that have one and nowhere else.
 
 ### 5.4 The application — _verify:_ `build.validate()` passes, the suite is green
 

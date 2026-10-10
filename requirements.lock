@@ -75,3 +75,14 @@ pyasn1-modules==0.4.2
 requests==2.32.3
 rsa==4.9.1
 urllib3==2.4.0
+
+# --- match analysis (docs/ANALYSIS_PLAN.md), added 2026-10-10 ----------------
+# The `analysis` extra: the openai SDK and its closure beyond what is already
+# pinned above (anyio, httpx, pydantic, sniffio, typing-extensions). The
+# versions the suite and the one live probe passed against on the
+# development machine (Windows, CPython 3.11). deploy.sh installs this extra
+# from Phase 3, when the cycle first imports it.
+distro==1.9.0
+jiter==0.10.0
+openai==1.91.0
+tqdm==4.66.4

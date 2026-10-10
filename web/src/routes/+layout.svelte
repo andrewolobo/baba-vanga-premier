@@ -44,6 +44,13 @@
   const betpawa = writable({ status: 'loading', host: null, byFixture: {} });
   setContext('betpawa', { store: betpawa, promptSignIn });
 
+  // Who is reading, for the pages' signed-in features (the match analysis,
+  // docs/ANALYSIS_PLAN.md D10): `loading` (unknown yet, or the phone gate is
+  // up), `anonymous`, `signed_in`, or `unconfigured` (no client id: no
+  // sign-in on this site). Read from the same server answer as betpawa.
+  const account = writable('loading');
+  setContext('account', { store: account, promptSignIn });
+
   // The signed-out button's action: Google's One Tap where the browser has
   // a Google session, and the header's button brought into view either way.
   function promptSignIn() {
@@ -61,6 +68,8 @@
     const user = me;
     if (!ready) return;
     const idle = (status) => betpawa.set({ status, host: null, byFixture: {} });
+    account.set(!clientId ? 'unconfigured' : !user ? 'anonymous'
+      : phoneRequired(user) ? 'loading' : 'signed_in');
     if (!clientId) return idle('unconfigured');
     if (!user) return idle('anonymous');
     if (phoneRequired(user)) return idle('loading'); // the phone gate is up

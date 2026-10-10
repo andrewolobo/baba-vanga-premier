@@ -60,6 +60,18 @@ Environment=BVP_DATABASE_URL=postgresql:///bvp
 # step is additive and cannot fail the cycle.
 Environment=BVP_BETPAWA=0
 
+# The written match analysis (docs/ANALYSIS_PLAN.md, RUNBOOK.md 5.12). Off
+# here; a drop-in turns it on (DEPLOY.md 5.3, the analysis block):
+#   /etc/systemd/system/bvp-cycle.service.d/analysis.conf
+#     [Service]
+#     EnvironmentFile=/etc/bvp/analysis.env    <- AZURE_FOUNDRY_URI/KEY, AZURE_MODEL
+#     Environment=BVP_ANALYSIS=1
+# The key lives in that root:bvp 0640 file, never in an Environment= line:
+# `systemctl show` prints Environment= to any user on the machine. The step
+# is additive, cannot fail the cycle, and stops starting requests after
+# jobs.BUDGET_SECONDS (15 min), inside the 30-minute timeout above.
+Environment=BVP_ANALYSIS=0
+
 # --- hardening ----------------------------------------------------------- #
 NoNewPrivileges=true
 PrivateTmp=true

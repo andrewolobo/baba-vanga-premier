@@ -14,7 +14,7 @@ Everything below is arranged around not losing a matchday.
 ## 0. What runs
 
 ```
-python -m services.run_cycle          # sync -> calendar -> serve -> tips -> betpawa -> results -> grade -> record
+python -m services.run_cycle          # sync -> calendar -> serve -> tips -> betpawa -> results -> grade -> analysis -> record
 ```
 
 Five independent steps. Each records its own outcome; the cycle reports the
@@ -28,6 +28,7 @@ worst one and always writes a `serving_state` row, including when it failed.
 | `tips` | publish one recommendation per fixture **played today** (§5.7) | no |
 | `betpawa` | store betPawa's event and selection ids for the fixtures ahead — **off by default** (§5.11) | yes |
 | `grade` | settle played fixtures, write CLV, settle tips | yes |
+| `analysis` | write the match analysis of each call published today (Azure Foundry), validated or stored as a fallback — **off by default** (§5.12) | yes |
 
 **The book does not run.** It is measured-negative and absent from the runner
 rather than disabled by a flag.
@@ -543,6 +544,70 @@ never the matchday.** One GET a morning against `www.betpawa.ug`.
   traceback in the journal only if it persists — the API is undocumented and
   a shape change is the likely cause.
 
+### 5.12 The match analysis (`analysis` step)
+
+Off unless `BVP_ANALYSIS=1` (on the server, the drop-in in `DEPLOY.md`
+§5.3's analysis block; the tracked unit keeps `=0`).
+
+- **What it does.** For each call published today it writes the analysis
+  that signed-in readers see on the match page (`ANALYSIS_PLAN.md`), using
+  the Azure Foundry deployment.
+- **What it writes.** Its own two tables, `match_analyses` and
+  `team_summaries`, and nothing else.
+- **Where it runs.** **Last** in the cycle, four fixtures at a time,
+  under a 15-minute budget. Failing costs the analysis, never the
+  matchday.
+- **Nothing unchecked is shown.** Every answer goes through the validator;
+  one that fails three times is stored as a **fallback**, and the page
+  shows the numbers-only card.
+
+Manual commands need the credentials file, so they run as `bvp` with it
+loaded:
+
+```bash
+cd /srv/bvp
+AS_BVP='set -a; . /etc/bvp/analysis.env; set +a;'
+sudo -u bvp bash -c "$AS_BVP .venv/bin/python -m services.analysis rerun --fixture N"
+```
+
+- **`disabled (BVP_ANALYSIS unset)`** → the default. Nothing was asked.
+- **`nothing to analyse`** → no call today, or every call already has an
+  analysis under the current prompt. Normal on a blank day.
+- **`N call(s): K ok, F fallback, S stored; tokens …`** → the normal line.
+  `S` can be lower than `N` only on a re-run, where an existing ok drops
+  the duplicate. That is the unique index doing its job.
+- **`F fallback(s) … (re-run: …)`** (ATTENTION) → those fixtures show the
+  numbers-only card. Before kick-off, `rerun --fixture N` tries again: it
+  turns a fallback into an ok and can never replace an ok. Why it failed
+  is in the row:
+
+  ```bash
+  sudo -u bvp psql bvp -c "SELECT fixture_id, attempts FROM match_analyses WHERE status = 'fallback' ORDER BY analysis_id DESC LIMIT 5"
+  ```
+
+  What the errors mean:
+  - `time budget exhausted` → Foundry was slow. A rerun usually passes.
+  - `APIConnectionError`, `AuthenticationError`, `RateLimitError` → the
+    connection, the key, or the deployment's quota. Check
+    `/etc/bvp/analysis.env` and the Foundry portal.
+  - Repeated `the number … is not in the evidence` or `unknown id` on many
+    fixtures → the model is drifting from the prompt. Look at `metrics`
+    before deciding anything.
+- **`no pack for …`** (ATTENTION) → a call the evidence pack refused.
+  `… was called under confidence-v2` means an older rule; it only happens
+  on the day `RULE_VERSION` changes. `the rule on the stored prediction
+  gives …` is serious: the menu could not reproduce a published call.
+  Stop and investigate before anything is shown.
+- **The step failed** (XX) → a bug, not the model. Every model and network
+  failure becomes a stored fallback instead. The traceback is in the
+  journal. The rest of the cycle already ran.
+
+**Changing a prompt** means a new file (`services/analysis/prompts/*_v2.md`)
+and a new version constant in `analyse.py`, never an edit to v1. The next
+cycle then writes a fresh analysis for every call under v2, and stored v1
+rows stay as they were. **Turning the step off** keeps every stored
+analysis readable.
+
 ## 6. Re-running is safe
 
 Every write path is idempotent, which is what makes an unattended retry
@@ -556,6 +621,8 @@ tolerable:
 | `clv_grades` | `INSERT OR IGNORE`, unique per bet |
 | `serving_state` | one row per run, deliberately — the audit trail |
 | `tips` | `INSERT OR IGNORE`, unique per (fixture, rule_version) — **per version**, see §0 on bumping it |
+| `match_analyses` | `ON CONFLICT DO NOTHING`; one ok and one fallback per (fixture, prompt_version). A re-run can turn a fallback into an ok and never replaces an ok (§5.12) |
+| `team_summaries` | `ON CONFLICT DO NOTHING` on (team, dossier hash, prompt version) — a cache |
 
 Asserted in `tests/test_run_cycle.py::test_rerunning_is_idempotent`.
 
@@ -571,6 +638,18 @@ FROM serving_state ORDER BY state_id DESC LIMIT 10;
 Look for: a run every day; `predictions_written` > 0 on matchday weeks;
 `ATTENTION` in notes explained rather than tolerated. A tolerated warning
 becomes an ignored warning within about three weeks.
+
+With the match analysis on, also:
+
+```bash
+sudo -u bvp .venv/bin/python -m services.analysis metrics --since <last Monday>
+```
+
+Look for the fallback rate, the first-pass rate and which checks reject
+answers. A rising "number not in the evidence" or "cited id does not exist"
+means the model is drifting from the prompt. The fix is a v2 prompt (§5.12),
+never a looser validator. Add `--price-in`/`--price-out` (per million
+tokens, from the Foundry contract) to see the cost.
 
 ## 8. Known gaps
 

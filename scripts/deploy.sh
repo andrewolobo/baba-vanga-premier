@@ -85,7 +85,10 @@ fi
 step "python dependencies"
 # -c pins versions without changing what is required; pyproject stays the
 # source of truth for WHAT, requirements.lock only fixes WHICH. DEPLOY.md 3.5.
-"$PYTHON" -m pip install --quiet -e ".[serve,dev]" -c requirements.lock
+# `analysis` is the match analysis's model client (docs/ANALYSIS_PLAN.md); the
+# cycle imports it only when BVP_ANALYSIS=1, but installing it always keeps
+# turning the flag on from needing a second deploy.
+"$PYTHON" -m pip install --quiet -e ".[serve,dev,analysis]" -c requirements.lock
 echo "ok"
 
 # --- 3. frontend ---------------------------------------------------------- #

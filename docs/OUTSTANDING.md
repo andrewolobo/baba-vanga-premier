@@ -7,7 +7,109 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-09-26** (latest): **B28 — a substitute bet when
+Last updated **2026-10-10** (latest): **Phase 0 of an LLM match-analysis
+brief** (`tipster-analysis-agent-prompt.md`, owner request). Discovery and
+a plan only; **no code**. Written up in `ANALYSIS_PLAN.md`. The brief is
+generic and contradicts standing decisions in several places, and each one
+waits on the owner (D1–D9):
+- its "best value" pick is `book.py`'s value rule (book off, no odds on any
+  page);
+- its "most likely" is a 1X2 argmax that would sit beside the published v3
+  call, putting two calls on one fixture;
+- its confidence tier rests on edge and unmeasured H2H;
+- two of its risk flags need data the store does not have (odds history,
+  standings);
+- an admin regenerate route would break the pinned write surface;
+- its forced `tool_choice` and `temperature 0` are rejected by current
+  Claude models.
+
+Recommended in every case: explain the published call from code-computed
+facts, generate once in the cycle, keep it append-only. Data gap found on
+the way: this season's results exist only as `tips.fthg/ftag`, so an
+uncalled fixture is a hole in form. Production coverage is unchecked.
+**The owner approved all of D1–D9 the same day.** The provider is Azure
+Foundry `gpt-6.1-sol`, an OpenAI model, not Claude; the client is verified
+in step 2. Later the same day the owner added **D10: the analysis is for signed-in
+readers only**. It gets its own `require_user` route, as `/betpawa/links`
+has, and stays out of the server HTML.
+
+**The production copy is restored** into the local database `bvp_prod`
+(dump 05:43 UTC, `users` and `user_sessions` schema only; never `bvp`). It
+shows that every played fixture has a call. It also showed 36
+opening-weekend tips (14–17 Aug, E1–E3) with no score. **The owner
+backfilled those on the VM the same day** (36 filled, 0 disagreements).
+
+**Phase 1 is built and uncommitted**: `services/analysis/` (schemas,
+facts, pack, CLI) and 21 tests; the full suite passes, **819**. Checked on
+`bvp_prod`:
+
+- all 302 v3 calls pack, and the rule re-run reproduces each one exactly;
+- form and meetings agree with the match page in 144 and 278 cases;
+- 498 window instances agree with football-data's own 2026-27 results.
+
+Details are in `ANALYSIS_PLAN.md` §5.
+
+**Phase 2 is built the same day, also uncommitted**: the Foundry client
+(`openai` 1.91, a new `analysis` extra), the validator, Stage A → B with
+retry and fallback, prompts v1, and the `analyse` CLI. 24 tests plus one
+opt-in; the full suite passes **843**.
+
+- The owner-approved probe passed first time.
+- Five real fixtures, one per call type, all came back `ok`, with one
+  content retry (the market code "12"; the prompt now asks for labels).
+- Claims resting on text facts were checked by hand and are all true.
+- About 8.4k tokens in and 1.3k out per fixture.
+- The samples are in `tmp/analysis_samples_v1.md`.
+
+The owner read the samples ("look good"), so **prompts v1 are frozen**.
+
+**Phase 3 is built the same day, uncommitted**:
+
+- migration **004** (`team_summaries`, and `match_analyses` with one ok and
+  one fallback per fixture and prompt version, enforced in SQL);
+- `services/analysis/jobs.py`;
+- `run_cycle.step_analysis` (off unless `BVP_ANALYSIS=1`; runs last;
+  fixtures four at a time under a 15-minute deadline, inside the unit's
+  30-minute timeout);
+- the CLI's `run` and `rerun`;
+- `GET /fixture/{id}/analysis` behind `require_user`;
+- `deploy.sh` installs the `analysis` extra;
+- the cycle unit has `BVP_ANALYSIS=0`;
+- 16 tests; the full suite passes **859**.
+
+End to end on `bvp_prod`: fixture 336 stored and read back through the
+route.
+
+**Phase 4 is built the same day, uncommitted**: the panel on the match page
+(`$lib/MatchAnalysis.svelte`, `$lib/analysis.js`), an `account` context in
+the layout, and `has_analysis` on the public `/fixture/{id}`.
+
+- The server renders a fixed card where an analysis exists. The text loads
+  on click for signed-in readers and is never in the HTML.
+- 26/26 click-through checks on a scratch copy of production; Python 860,
+  web 108.
+- **Found on the way, not fixed (B26):** signed out, the betPawa "Sign in
+  to bet" button appears in a live call box after load and shifts the page
+  down 47 px. CLS is 0.014 without the panel and 0.022 with it. Fix:
+  reserve its space while the account loads.
+
+**Phase 5 is built the same day, uncommitted**:
+
+- `services/analysis/metrics.py` and `metrics` on the CLI: first-pass
+  rate, rejections by rule, fallbacks and re-runs, tokens and optional
+  cost;
+- `RUNBOOK.md` §0, §5.12, §6 and §7;
+- `DEPLOY.md` §2.7 and the analysis block in §5.3;
+- the key goes in `/etc/bvp/analysis.env` (root:bvp 0640), via
+  `EnvironmentFile=`, because `systemctl show` prints `Environment=` lines
+  to any user;
+- the full suite passes **862**.
+
+**Next, the owner's:** commit, `deploy.sh`, the credentials file, one
+printed analysis on the VM, then the drop-in. The steps are listed in
+`ANALYSIS_PLAN.md` §6.
+
+Before that, **2026-09-26**: **B28 — a substitute bet when
 betPawa has no line for a +1.5 call** (owner request: "default to the next
 most probable prediction"), **uncommitted**. Assessed first
 (`BETPAWA_PLAN.md` §7), then built on the assessment's recommendation, which

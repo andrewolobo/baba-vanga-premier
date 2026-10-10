@@ -684,6 +684,10 @@ def fixture(fixture_id: int, conn: db.Connection = Depends(get_conn)) -> dict:
 
     404 for an unknown id, a division that is not served, and a fixture
     whose date has passed with no call (D8).
+
+    `has_analysis` says whether a written analysis exists for the call
+    (docs/ANALYSIS_PLAN.md), so the page can offer it. Only that it exists:
+    the text is signed-in only, at `/fixture/{id}/analysis` (D10).
     """
     row = conn.execute(
         "SELECT f.fixture_id, f.division, f.match_date, f.kickoff_time,"
@@ -725,6 +729,9 @@ def fixture(fixture_id: int, conn: db.Connection = Depends(get_conn)) -> dict:
             "away": _form(conn, row["away_team_id"], played),
         },
         "meetings": _meetings(conn, row["home_team_id"], row["away_team_id"], played),
+        "has_analysis": bool(db.scalar(
+            conn, "SELECT EXISTS (SELECT 1 FROM match_analyses WHERE fixture_id = %s)",
+            (fixture_id,))),
     }
 
 
@@ -1187,6 +1194,70 @@ def betpawa_links(
             }
     return {"eligible": True, "country": country, "host": host,
             "links": list(links.values())}
+
+
+# --- the match analysis (docs/ANALYSIS_PLAN.md, D10) ------------------------ #
+
+#: What a reader is shown: an ok under any prompt version ahead of a fallback,
+#: newest first. Migration 004 allows one of each per prompt version, so
+#: once an ok has been written, it is the one returned.
+ANALYSIS_SELECT = """
+    SELECT a.status, a.prompt_version, a.created_at, a.evidence_pack, a.analysis,
+           a.summaries
+    FROM match_analyses a
+    JOIN fixtures f ON f.fixture_id = a.fixture_id
+    WHERE a.fixture_id = %s AND f.division = ANY(%s)
+    ORDER BY (a.status = 'ok') DESC, a.analysis_id DESC
+    LIMIT 1
+"""
+
+
+@app.get("/fixture/{fixture_id}/analysis", dependencies=[Depends(require_user)])
+def fixture_analysis(fixture_id: int, conn: db.Connection = Depends(get_conn)) -> dict:
+    """The written analysis of a fixture's call, for signed-in readers (D10).
+
+    **Its own route, on purpose**, as `/betpawa/links` is. `/fixture/{id}` is
+    public and server-rendered; this is signed-in only (401 otherwise), so no
+    analysis text reaches a signed-out reader, a crawler or a shared cache.
+    The service worker leaves it uncached.
+
+    `status` "ok" carries the validated text; "fallback" carries none, and
+    the page draws its numbers-only card from `evidence_pack`. Each cited id
+    comes back resolved to its label and value, so the page displays rather
+    than looks up. Nothing here is written on request: the cycle wrote it
+    once, when the call was published (D5, D6). 404 before an analysis
+    exists.
+    """
+    row = conn.execute(ANALYSIS_SELECT, (fixture_id, list(SERVED_DIVISIONS))).fetchone()
+    if row is None:
+        raise HTTPException(404, "no analysis for this fixture")
+    pack = row["evidence_pack"]
+    cited = {f["id"]: {"id": f["id"], "label": f["label"], "value": f["value"],
+                       "unit": f.get("unit")} for f in pack["facts"]}
+    cited |= {m["id"]: {"id": m["id"], "label": m["label"], "value": m["p_model"],
+                        "unit": "%"} for m in pack["menu"]}
+    analysis = row["analysis"]
+    if analysis is not None:
+        call = analysis["call"]
+        analysis = {
+            "preview": analysis["preview"],
+            "risk_commentary": analysis["risk_commentary"],
+            "call": {
+                "side": call["side"],
+                "rationale": call["rationale"],
+                "supporting": [cited[i] for i in call["supporting_facts"] if i in cited],
+                "contradicting": [cited[i] for i in call["contradicting_facts"] if i in cited],
+            },
+        }
+    return {
+        "fixture_id": fixture_id,
+        "status": row["status"],
+        "prompt_version": row["prompt_version"],
+        "generated_at": _iso_utc(row["created_at"]),
+        "analysis": analysis,
+        "summaries": row["summaries"],
+        "evidence_pack": pack,
+    }
 
 
 @app.post("/auth/logout", dependencies=[Depends(_same_site_json)])
