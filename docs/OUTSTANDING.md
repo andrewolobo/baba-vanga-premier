@@ -7,7 +7,56 @@ both before finishing. Anything not written down here does not survive the end
 of a session; anything not reflected in `STATE.md` will be missed by the next
 thread.
 
-Last updated **2026-10-10** (latest): **form-trend marks on the tip and
+Last updated **2026-10-16** (latest): **split the parlay slip into several
+betPawa tickets** (owner request), built and **uncommitted**. Assessed
+first (`BETPAWA_PLAN.md` §10); then betPawa's live bundle was read: the
+prefill route takes only `selectionIds` and its reducer merges
+(`filter-conflicts`, hard-coded; `replace` exists and is wired to nothing),
+so the slip cannot be told to replace, and the owner chose the buttons with
+the usage pattern — place one ticket, then open the next. Built: `tickets`
+on `select_legs` and `GET /parlay` (snake draft, every ticket a double,
+earliest kick-off first, per-ticket product server-side per D1), a Tickets
+slider, ticket marks on the legs, one link per ticket with its own claim,
+warning and notes, and the one-at-a-time copy. Checks: Python **875**, web
+**112**, build clean, 28/28 click-through on a scratch copy of production.
+Three small things left are listed under §10's BUILT paragraph. Ledger
+`--check` clean at 114 rows. **Next, the owner's:** commit, then
+`deploy.sh` (API and frontend; no migration, no setting).
+
+Before that, the same day: **B30 — an Over/Under 1.5 prediction
+option** (owner question): scanned, nothing built, no ledger row (the
+outcome reads are on the B11 footing — one quantity of the shipped head,
+no arm chosen; pre-register as a 0-configuration probe if it is to count).
+On this head the line is a constant: "over 1.5" is the likelier side in
+15,824 of 15,824 dev matches (min P 0.529) and 302 of 302 live, so its
+strike is the league's over-1.5 rate — 73.6% dev [72.9, 74.2], 4.3 pts ✱
+under v3 on the same matches; 76.2% [71.1, 80.1] live against v3's 77.5%.
+P(over 1.5) is null against a per-division base rate and resolved worse
+than the market's O/U 2.5 price pushed through the same Poisson (+0.0031
+nats ✱, under-claims it by 0.9 pt). As a v3 fallback candidate it would
+displace 11% of calls for a λ-only ceiling of +0.25 pt strike. The one shape
+with product logic is a *second* "goals" line beside the call (negatively
+correlated with it, −0.17), which breaks one-call-per-fixture and reopens
+B4 — owner decision. Record in `BACKLOG.md` B30. **Do not build as a
+prediction option.** Ledger `--check` clean at 114 rows this session.
+Owner follow-up (shapes per league, same day, B30 table): the one shape
+with a bounded honest benefit is **over 1.5 as a derived parlay leg type**
+(thin matchdays gain a leg at both presets, extras calibrated, mostly E0;
+needs a row-114-shaped probe and a betPawa O/U 1.5 mapping). An E0-only
+cross-family selector would add ≈ +2.5 pt to E0's strike by replacing
+named favourites with "over 1.5" — the components have been seen, so any
+gate on it is not blind. Not recommended; owner decides.
+
+Before that, **2026-10-12**: **B29 — a heuristic second stage for
+selection** (owner question): assessed and scanned, nothing built, no
+ledger row. Form, H2H, draw/O-U histories and "prediction history" are all
+null beyond the market price on 20,032 walk-forward dev matches, with a
+planted control firing; live, the +1.5 sides strike 85% and the named
+winners 55%, so the premise "the losing +1.5" is inverted. Record and the
+two shapes that survive (a lower floor on v3; B1 on v3) are in
+`BACKLOG.md` B29. Owner decides whether either is read.
+
+Before that, **2026-10-10**: **form-trend marks on the tip and
 parlay listings** (owner request), built and **uncommitted**. The analysis
 itself was committed as `b57d636`. Assessed first: the analysis's own
 `trend` is the LLM's unchecked reading and nearly always "stable" this

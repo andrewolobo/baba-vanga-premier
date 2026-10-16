@@ -73,12 +73,13 @@ export const getTeam = (id, f) => get(`/team/${id}`, {}, f);
 // of codes, or an empty list for every league -- which travels as no param
 // at all, because `get` drops the empty string. Every other read here takes
 // the one division its page has a tab for.
-export const getParlay = (divisions, legs, minClaim, sides, f) =>
-  get('/parlay', { division: divisions.join(','), legs, min_claim: minClaim, sides }, f);
+export const getParlay = (divisions, legs, minClaim, sides, tickets, f) =>
+  get('/parlay', { division: divisions.join(','), legs, min_claim: minClaim, sides, tickets }, f);
 
 // The parlay page's controls (`docs/PARLAY_PLAN.md` D2, D8, D9). These mirror
-// `engine/serve/parlay.py` -- PRESETS, SIDE_GROUPS and MIN/MAX_LEGS -- and
-// `tests/test_parlay.py` pins the numbers against it, so a change on one
+// `engine/serve/parlay.py` -- PRESETS, SIDE_GROUPS, MIN/MAX_LEGS and
+// DEFAULT/MAX_TICKETS -- and `tests/test_parlay.py` pins the numbers
+// against it, so a change on one
 // side that is not made on the other goes red rather than quietly drifting.
 // The API validates every request against its own copy either way.
 export const RISK_PRESETS = [
@@ -87,6 +88,10 @@ export const RISK_PRESETS = [
   ['any', 'Any call', 0]
 ];
 export const LEGS = { min: 2, max: 46, default: 2 };
+// How many betPawa tickets the slip is split into (`BETPAWA_PLAN.md` §10): 1
+// is the slip as one ticket; every ticket is at least a double, so the page's
+// real ceiling is half the slip on show, under this cap.
+export const TICKETS = { min: 1, max: 23, default: 1 };
 // Toggle chips, not radio buttons (D8 amended: any mix of the three, never
 // none). The page sends the picked keys comma-separated, or 'any' for all.
 export const SIDE_GROUPS = [

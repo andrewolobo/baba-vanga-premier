@@ -43,3 +43,18 @@ export const claimLabel = (x) => {
   if (x >= 0.005) return `${(100 * x).toFixed(1)}%`;
   return `about 1 in ${Math.round(1 / x).toLocaleString('en-GB')}`;
 };
+
+// The slip's betPawa tickets (`BETPAWA_PLAN.md` §10): each ticket's
+// `tip_ids` resolved against the slip's legs, kept in the slip's order.
+// Display grouping only -- which legs share a ticket, and every ticket's
+// claimed figure and below-even flag, are the API's; nothing is multiplied
+// here. Returns `[{ legs, claimed, below_even }]`, or [] with no slip.
+export const ticketLegs = (parlay) =>
+  (parlay?.tickets ?? []).map((ticket) => {
+    const ids = new Set(ticket.tip_ids);
+    return {
+      legs: parlay.legs.filter((leg) => ids.has(leg.tip_id)),
+      claimed: ticket.claimed,
+      below_even: ticket.below_even
+    };
+  });

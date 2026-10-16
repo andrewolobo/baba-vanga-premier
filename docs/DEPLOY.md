@@ -19,11 +19,11 @@ Written **2026-08-08**. Nothing here has been executed.
 Three pieces with different lifecycles. Getting this distinction right is most
 of the deployment.
 
-| piece                | what it is                                                 | how it runs                   |
-| -------------------- | ---------------------------------------------------------- | ----------------------------- |
-| `services.run_cycle` | a**batch job that exits** — sync → serve → tips → grade    | systemd**timer**, daily       |
-| `api.main:app`       | a FastAPI over what the cycle wrote; its only writes are the account rows (`AUTH_PLAN.md`) | systemd**service**, always up |
-| `web/build`          | a**server-rendered site** (SvelteKit `adapter-node`, since `SEO_PLAN.md` 2.1) | systemd**service** `bvp-web` for pages; nginx serves `build/client` files |
+| piece                  | what it is                                                                                   | how it runs                                                                         |
+| ---------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `services.run_cycle` | a**batch job that exits** — sync → serve → tips → grade                            | systemd**timer**, daily                                                       |
+| `api.main:app`       | a FastAPI over what the cycle wrote; its only writes are the account rows (`AUTH_PLAN.md`) | systemd**service**, always up                                                 |
+| `web/build`          | a**server-rendered site** (SvelteKit `adapter-node`, since `SEO_PLAN.md` 2.1)      | systemd**service** `bvp-web` for pages; nginx serves `build/client` files |
 
 Nothing daemonises itself and nothing retries itself, by design
 (`services/run_cycle.py` docstring). The scheduler owns recurrence; the
@@ -33,13 +33,13 @@ application owns one run.
 
 Timed on this machine, 2026-08-08, against the live 44 MB database:
 
-|                                              | measured                                      |
-| -------------------------------------------- | --------------------------------------------- |
+|                                                | measured                                            |
+| ---------------------------------------------- | --------------------------------------------------- |
 | full artifact refit (`cycle.build_artifact`) | **1.5 s**, 13,973 training matches, 151 clubs |
-| peak process RSS during the refit            | **167 MB**                                    |
-| test suite                                   | **437 passed in 44 s**                        |
-| `db/premier.db`                              | 44 MB                                         |
-| `data/` (tracked CSV corpus)                 | 59 MB                                         |
+| peak process RSS during the refit              | **167 MB**                                    |
+| test suite                                     | **437 passed in 44 s**                        |
+| `db/premier.db`                              | 44 MB                                               |
+| `data/` (tracked CSV corpus)                 | 59 MB                                               |
 
 **The weekly refit is not a sizing constraint.** The heaviest thing this
 application will do on the server is `npm run build`, and that happens only on
@@ -108,7 +108,6 @@ Host github.com
   publishing it. **`web/static/` is a publication list, not a folder**, and the
   only reliable way to keep something out of it is for the file not to be in it.
   Design source lives in `docs/ui/`, which is never served.
-
 - `web/static/player.png` is the hero image on the one public page and is
   therefore the largest thing this VM will ever serve. See §2.6 — it also
   carries a defect worth fixing before it is published.
@@ -252,9 +251,9 @@ keeping its alpha — a standard matte de-fringe, 54,696 → 107 green pixels �
 downscaling to 2000 px and quantising. `.art` is `width: min(64%, 1000px)`, so
 2000 px is exactly 2× and nothing visible is lost.
 
-|                                     | bytes      |
-| ----------------------------------- | ---------- |
-| as found                            | 2.72 MB    |
+|                                     | bytes            |
+| ----------------------------------- | ---------------- |
+| as found                            | 2.72 MB          |
 | de-fringed, 2000 px, 256-colour PNG | **127 KB** |
 
 A 95% reduction with the defect removed, and it stays a PNG, so
@@ -273,21 +272,20 @@ Since 2026-09-04 (`POSTGRES_PLAN.md`) the store is **PostgreSQL 16**, not
 `db/premier.db`. Two settings, both libpq URLs, resolved environment-first
 like everything else (§3.10):
 
-| setting | what | default |
-| --- | --- | --- |
-| `BVP_DATABASE_URL` | the store | `postgresql:///bvp` — database `bvp` over the local socket as the OS user, which is the server's shape (peer auth, no password) |
-| `BVP_TEST_DATABASE_URL` | a **maintenance** database on a server the test suite may `CREATE`/`DROP` databases on — never the store | `postgresql:///postgres` |
-| `BVP_GOOGLE_CLIENT_ID` | the Google OAuth client id for sign-in (`AUTH_PLAN.md`); public, not a secret, but environment — empty means sign-in answers 401 and the site renders no button | *(empty)* |
-| `BVP_COOKIE_SECURE` | `Secure` on the session cookie; a development machine on `http://localhost` sets `0` | `1` |
-| `BVP_SESSION_DAYS` | sliding session length | `30` |
-| `BVP_ANALYSIS` | `1` enables the cycle's `analysis` step (`RUNBOOK.md` §5.12; `ANALYSIS_PLAN.md`): the written match analysis of each call published that day, by the Azure Foundry deployment below | *(off)* |
-| `AZURE_FOUNDRY_URI`, `AZURE_FOUNDRY_KEY`, `AZURE_MODEL` | that deployment: its v1 endpoint (the portal's `.../openai/v1/responses` is fine), its key, and the deployment's name. **The key is a secret**: on the server it lives in `/etc/bvp/analysis.env` (§5.3, the analysis block), never in a unit file | *(empty)* |
-| `BVP_BETPAWA` | `1` enables the cycle's `betpawa` step (`RUNBOOK.md` §5.11; `BETPAWA_PLAN.md` D1) — one GET a morning to `www.betpawa.ug` for the ids behind the wager buttons; the VM's egress was verified served on 2026-09-08 | *(off)* |
+| setting                                                       | what                                                                                                                                                                                                                                                         | default                                                                                                                              |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `BVP_DATABASE_URL`                                          | the store                                                                                                                                                                                                                                                    | `postgresql:///bvp` — database `bvp` over the local socket as the OS user, which is the server's shape (peer auth, no password) |
+| `BVP_TEST_DATABASE_URL`                                     | a**maintenance** database on a server the test suite may `CREATE`/`DROP` databases on — never the store                                                                                                                                           | `postgresql:///postgres`                                                                                                           |
+| `BVP_GOOGLE_CLIENT_ID`                                      | the Google OAuth client id for sign-in (`AUTH_PLAN.md`); public, not a secret, but environment — empty means sign-in answers 401 and the site renders no button                                                                                           | *(empty)*                                                                                                                          |
+| `BVP_COOKIE_SECURE`                                         | `Secure` on the session cookie; a development machine on `http://localhost` sets `0`                                                                                                                                                                   | `1`                                                                                                                                |
+| `BVP_SESSION_DAYS`                                          | sliding session length                                                                                                                                                                                                                                       | `30`                                                                                                                               |
+| `BVP_ANALYSIS`                                              | `1` enables the cycle's `analysis` step (`RUNBOOK.md` §5.12; `ANALYSIS_PLAN.md`): the written match analysis of each call published that day, by the Azure Foundry deployment below                                                                 | *(off)*                                                                                                                            |
+| `AZURE_FOUNDRY_URI`, `AZURE_FOUNDRY_KEY`, `AZURE_MODEL` | that deployment: its v1 endpoint (the portal's`.../openai/v1/responses` is fine), its key, and the deployment's name. **The key is a secret**: on the server it lives in `/etc/bvp/analysis.env` (§5.3, the analysis block), never in a unit file | *(empty)*                                                                                                                          |
+| `BVP_BETPAWA`                                               | `1` enables the cycle's `betpawa` step (`RUNBOOK.md` §5.11; `BETPAWA_PLAN.md` D1) — one GET a morning to `www.betpawa.ug` for the ids behind the wager buttons; the VM's egress was verified served on 2026-09-08                                | *(off)*                                                                                                                            |
 
 **A development machine** points both at its own Postgres in `.env`, with
 credentials in the URL (`postgresql://user:password@127.0.0.1:5433/bvp`;
-URL-encode the password). Any 16.x install does: the Windows installer, `apt
-install postgresql`, Docker. Nothing needs configuring on the server side —
+URL-encode the password). Any 16.x install does: the Windows installer, `apt install postgresql`, Docker. Nothing needs configuring on the server side —
 `engine/db.py` forces UTC per connection and the suite creates every
 database with `LC_COLLATE 'C'`, so the server's zone and locale do not reach
 the store. Then:
@@ -473,16 +471,16 @@ VM; there is nothing there that needs it.
 
 ## 4. Azure shape
 
-|              | choice                                                          | why                                                                     |
-| ------------ | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+|              | choice                                                                | why                                                                       |
+| ------------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | VM           | **2 vCPU / 4 GiB burstable** (B2s or the current v2 equivalent) | runtime needs ~200 MB; the 4 GiB is for`npm run build` and headroom     |
-| image        | Ubuntu Server**24.04 LTS**, Gen2                                | as specified                                                            |
-| OS disk      | 30 GiB Standard SSD, ext4                                       | repo 130 MB + DB 44 MB +`node_modules`; no IOPS pressure at this size   |
-| data disk    | none                                                            | see §3.2 — if one is added it must be a managed disk, never Azure Files |
-| public IP    | static                                                          | needed for a stable DNS A record and TLS                                |
-| NSG inbound  | 22 from your address only; 80 and 443 from anywhere             | 80 exists to redirect to 443 and for the ACME challenge                 |
-| NSG outbound | default (allow)                                                 | §3.9                                                                    |
-| backups      | Blob container, versioning on, lifecycle rule                   | §6.1                                                                    |
+| image        | Ubuntu Server**24.04 LTS**, Gen2                                | as specified                                                              |
+| OS disk      | 30 GiB Standard SSD, ext4                                             | repo 130 MB + DB 44 MB +`node_modules`; no IOPS pressure at this size   |
+| data disk    | none                                                                  | see §3.2 — if one is added it must be a managed disk, never Azure Files |
+| public IP    | static                                                                | needed for a stable DNS A record and TLS                                  |
+| NSG inbound  | 22 from your address only; 80 and 443 from anywhere                   | 80 exists to redirect to 443 and for the ACME challenge                   |
+| NSG outbound | default (allow)                                                       | §3.9                                                                     |
+| backups      | Blob container, versioning on, lifecycle rule                         | §6.1                                                                     |
 
 **A 1 vCPU / 2 GiB B1ms would run the application fine** — the measured
 footprint is 167 MB. It is tight for the Node build. If cost matters more than
@@ -761,8 +759,7 @@ on the nginx side — `/api/betpawa/links` is one more `GET` behind the same
 `location /api/`. One drop-in on the *cycle* unit, on the client-id pattern:
 the tracked `bvp-cycle.service` carries `Environment=BVP_BETPAWA=0`, and
 `/etc/systemd/system/bvp-cycle.service.d/betpawa.conf` (`[Service]` +
-`Environment=BVP_BETPAWA=1`) turns the scrape on; `systemctl cat bvp-cycle |
-grep BETPAWA` shows both lines and the drop-in wins. Migration `003_betpawa`
+`Environment=BVP_BETPAWA=1`) turns the scrape on; `systemctl cat bvp-cycle | grep BETPAWA` shows both lines and the drop-in wins. Migration `003_betpawa`
 is additive (two empty tables) and `deploy.sh` applies it before the
 restart. Verify:
 
@@ -772,8 +769,7 @@ sudo -u bvp psql bvp -c "SELECT COUNT(*) AS fixtures FROM betpawa_events"       
 ```
 
 The first scrape is the next 06:00 UTC cycle — or by hand, once, from the
-checkout as the service user: `BVP_DATABASE_URL=postgresql:///bvp
-.venv/bin/python -m services.betpawa_feed` (add `--dry-run` first). The VM's
+checkout as the service user: `BVP_DATABASE_URL=postgresql:///bvp .venv/bin/python -m services.betpawa_feed` (add `--dry-run` first). The VM's
 egress was checked served on 2026-09-08 (`BETPAWA_PLAN.md` §4 Phase 0).
 
 **The match analysis (`ANALYSIS_PLAN.md`), added 2026-10-10.** Nothing on
@@ -833,9 +829,7 @@ sudo -u bvp bash -c "set -a; . /etc/bvp/analysis.env; set +a; flock -w 600 db/.c
 
 - **Rotating the key** is an edit to `/etc/bvp/analysis.env`. The next run
   reads it; nothing needs restarting.
-- **Turning the step off** is `sudo rm
-  /etc/systemd/system/bvp-cycle.service.d/analysis.conf && sudo systemctl
-  daemon-reload`. Stored analyses stay readable. The card shows for the
+- **Turning the step off** is `sudo rm /etc/systemd/system/bvp-cycle.service.d/analysis.conf && sudo systemctl daemon-reload`. Stored analyses stay readable. The card shows for the
   fixtures that have one and nowhere else.
 
 ### 5.4 The application — _verify:_ `build.validate()` passes, the suite is green
@@ -895,10 +889,10 @@ lacking them is the correct state, not a missing step.
 The first fix gated on `bs4` alone and **did not work**, because the two fail
 at different moments:
 
-| package | when its absence bites                                                                                            |
-| ------- | ----------------------------------------------------------------------------------------------------------------- |
-| `bs4`   | `ImportError` at collection — loud, and what the first fix saw                                                    |
-| `lxml`  | **not at import.** `bs4` loads fine; `BeautifulSoup(html, "lxml")` then raises `FeatureNotFound` at **call** time |
+| package  | when its absence bites                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `bs4`  | `ImportError` at collection — loud, and what the first fix saw                                                                   |
+| `lxml` | **not at import.** `bs4` loads fine; `BeautifulSoup(html, "lxml")` then raises `FeatureNotFound` at **call** time |
 
 So on a host with `bs4` but no `lxml`, 13 of the 22 ran and blew up — 6 failed,
 7 errored — while the module-level guard reported nothing. **Gating on one
@@ -979,11 +973,11 @@ Four decisions worth stating outside the files:
 
 Three things this buys, mapped to what the Windows setup did:
 
-| Task Scheduler                 | systemd                              | note                                                                                                        |
-| ------------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| `-StartWhenAvailable`          | `Persistent=true`                    | catches up a run missed while the VM was down                                                               |
-| `-MultipleInstances IgnoreNew` | **free**                             | systemd will not run two instances of one unit — this closes`RUNBOOK.md` §8's "no lock file" gap at no cost |
-| `LastTaskResult`               | `systemctl status` / `journalctl -u` | plus §6.2's alerting, which Task Scheduler never had                                                        |
+| Task Scheduler                   | systemd                                  | note                                                                                                            |
+| -------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `-StartWhenAvailable`          | `Persistent=true`                      | catches up a run missed while the VM was down                                                                   |
+| `-MultipleInstances IgnoreNew` | **free**                           | systemd will not run two instances of one unit — this closes`RUNBOOK.md` §8's "no lock file" gap at no cost |
+| `LastTaskResult`               | `systemctl status` / `journalctl -u` | plus §6.2's alerting, which Task Scheduler never had                                                           |
 
 `SuccessExitStatus=2` is load-bearing and is the direct translation of
 `RUNBOOK.md` §1. Without it systemd marks the unit **failed** every day of the
@@ -1062,9 +1056,9 @@ There is no backup of any kind.
 
 So §6.1's scope is wider than "back up the server":
 
-| machine         | holds                                                | irreplaceable because                                         |
-| --------------- | ---------------------------------------------------- | ------------------------------------------------------------- |
-| server          | `predictions`, `tips`, `clv_grades`, `serving_state` | opening-weekend predictions cannot be recovered afterwards    |
+| machine               | holds                                                        | irreplaceable because                                               |
+| --------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------- |
+| server                | `predictions`, `tips`, `clv_grades`, `serving_state` | opening-weekend predictions cannot be recovered afterwards          |
 | **development** | **`gate_ledger`**                                    | **a record of what was measured, not a function of the data** |
 
 The server's backup is not yet built and the machine does not yet exist. The
@@ -1147,11 +1141,11 @@ Today nothing pushes. Failures are visible in the exit code, the log and
 `RUNBOOK.md` §1 turned into wiring, and collapsing them re-creates the problem
 that section exists to prevent.
 
-| condition                     | channel                                               | urgency                                 |
-| ----------------------------- | ----------------------------------------------------- | --------------------------------------- |
+| condition                            | channel                                                  | urgency                                 |
+| ------------------------------------ | -------------------------------------------------------- | --------------------------------------- |
 | exit**1** — a step raised     | `OnFailure=bvp-alert@.service` → push (email/webhook) | same day                                |
-| exit**2** — ran, needs a look | append to a digest; one message Monday morning        | weekly, unless it repeats into matchday |
-| **no run at all**             | **dead-man's switch** — see below                     | same day                                |
+| exit**2** — ran, needs a look | append to a digest; one message Monday morning           | weekly, unless it repeats into matchday |
+| **no run at all**              | **dead-man's switch** — see below                 | same day                                |
 
 The third is the one that matters most and the one `OnFailure` **cannot**
 provide: if the VM is off, or the timer got disabled, or systemd never started
@@ -1190,20 +1184,20 @@ to prevent.
 
 ## 7. Sequence
 
-| #      | step                                                                              | gate                                                                          |                        |
-| ------ | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------- |
-| #      | step                                                                              | gate                                                                          | state                  |
-| ---    | ---                                                                               | ---                                                                           | ---                    |
-| 1      | Commit + push everything; fix`player.rar` / `player.png`; add `requirements.lock` | `git status` clean, `origin/main` moved                                       | **done** `e840951`     |
-| 2      | Provision VM, harden, UTC confirmed                                               | ssh +`timedatectl`                                                            | **done**               |
-| 3      | Clone, venv,`ingest.build`, `pytest -q`                                           | `all passed`; **414 passed, 2 skipped** (§5.4)                                | **done** 414/2         |
-| 4      | systemd units for API and cycle                                                   | API answers after`reboot`; `systemctl list-timers` shows the next run         | **done**               |
-| **5a** | **nginx over HTTP, internal endpoints fenced by source IP**                       | the four curls in §5.3, against the public IP                                 | **done** HTTP only     |
-| 6      | `deploy.sh`, run once against no changes                                          | `/api/health` answers afterwards                                              | **done** `3c58e43`     |
-| 7      | Backup timer + first restore drill —**and the development machine first** (§6.1)  | a restored copy passes`integrity_check` and matches row counts                |                        |
-| 8      | Alerting:`OnFailure` + dead-man's switch                                          | **test all three** — break the cycle on purpose, and stop the timer for a day |                        |
-| **5b** | **Domain, TLS, basic auth**                                                       | `https://` serves; `/api/performance` is 401                                  | **done** — `https://babavanga.net`, confirmed by the B25 sign-in deploy 2026-09-07 (`AUTH_PLAN.md` §9.1) |
-| 9      | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck                             | the runbook describes the machine that is serving                             |                        |
+| #            | step                                                                                     | gate                                                                                 |                                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| #            | step                                                                                     | gate                                                                                 | state                                                                                                                |
+| ---          | ---                                                                                      | ---                                                                                  | ---                                                                                                                  |
+| 1            | Commit + push everything; fix`player.rar` / `player.png`; add `requirements.lock`  | `git status` clean, `origin/main` moved                                          | **done** `e840951`                                                                                           |
+| 2            | Provision VM, harden, UTC confirmed                                                      | ssh +`timedatectl`                                                                 | **done**                                                                                                       |
+| 3            | Clone, venv,`ingest.build`, `pytest -q`                                              | `all passed`; **414 passed, 2 skipped** (§5.4)                              | **done** 414/2                                                                                                 |
+| 4            | systemd units for API and cycle                                                          | API answers after`reboot`; `systemctl list-timers` shows the next run            | **done**                                                                                                       |
+| **5a** | **nginx over HTTP, internal endpoints fenced by source IP**                        | the four curls in §5.3, against the public IP                                       | **done** HTTP only                                                                                             |
+| 6            | `deploy.sh`, run once against no changes                                               | `/api/health` answers afterwards                                                   | **done** `3c58e43`                                                                                           |
+| 7            | Backup timer + first restore drill —**and the development machine first** (§6.1) | a restored copy passes`integrity_check` and matches row counts                     |                                                                                                                      |
+| 8            | Alerting:`OnFailure` + dead-man's switch                                               | **test all three** — break the cycle on purpose, and stop the timer for a day |                                                                                                                      |
+| **5b** | **Domain, TLS, basic auth**                                                        | `https://` serves; `/api/performance` is 401                                     | **done** — `https://babavanga.net`, confirmed by the B25 sign-in deploy 2026-09-07 (`AUTH_PLAN.md` §9.1) |
+| 9            | `RUNBOOK.md` gains an Ubuntu column; §8's gaps struck                                 | the runbook describes the machine that is serving                                    |                                                                                                                      |
 
 **Step 5 splits and 5b moves to the end**, because there is no domain yet
 (§5.3). That is a deliberate reordering, not a deferral of the hard part: 5a

@@ -231,6 +231,95 @@ def test_size_bounds_hold_at_the_hard_cap():
         parlay.select_legs(POOL, legs=2, min_claim=1.5, now=NOW)
 
 
+# --- tickets: the slip split for betPawa (BETPAWA_PLAN.md §10) -------------
+
+
+def ranked(n):
+    """`n` legs of strictly falling claim at one kick-off: rank i is tip i + 1."""
+    return [row(i + 1, 0.95 - 0.01 * i) for i in range(n)]
+
+
+def ranks(out):
+    """Each ticket's legs as their ranks in the slip."""
+    rank = {r["tip_id"]: i for i, r in enumerate(out["legs"])}
+    return [[rank[t] for t in ticket["tip_ids"]] for ticket in out["tickets"]]
+
+
+def test_tickets_are_dealt_by_snake_draft_so_they_read_alike():
+    """D15: 1-2-2-1-1-2, not 1-2-1-2 -- dealt in turn, ticket 1 would take the
+    stronger leg of every round."""
+    out = parlay.select_legs(ranked(6), legs=6, min_claim=0.0, tickets=2, now=NOW)
+    assert ranks(out) == [[0, 3, 4], [1, 2, 5]]
+    out = parlay.select_legs(ranked(6), legs=6, min_claim=0.0, tickets=3, now=NOW)
+    assert ranks(out) == [[0, 5], [1, 4], [2, 3]]
+
+
+def test_every_ticket_is_at_least_a_double():
+    """D16: the count is clamped to half the slip, so no ticket is a single
+    (that is the tips list's job); under four legs the slip is one ticket
+    whatever was asked."""
+    out = parlay.select_legs(ranked(7), legs=7, min_claim=0.0, tickets=5, now=NOW)
+    assert ranks(out) == [[0, 5, 6], [1, 4], [2, 3]]
+    out = parlay.select_legs(ranked(3), legs=3, min_claim=0.0, tickets=2, now=NOW)
+    assert ranks(out) == [[0, 1, 2]]
+    out = parlay.select_legs(ranked(1), legs=2, min_claim=0.0, tickets=2, now=NOW)
+    assert ranks(out) == [[0]]
+
+
+def test_each_ticket_claims_the_product_of_its_own_legs():
+    """Formed here, never in the browser (D1). The tickets' figures multiply
+    back to the slip's, and `below_even` keys on each ticket's own product:
+    here one ticket sits under a coin flip and the other does not."""
+    legs = [row(1, 0.90), row(2, 0.85), row(3, 0.60), row(4, 0.55)]
+    out = parlay.select_legs(legs, legs=4, min_claim=0.0, tickets=2, now=NOW)
+    assert [t["tip_ids"] for t in out["tickets"]] == [[1, 4], [2, 3]]
+    first, second = out["tickets"]
+    assert first["claimed"] == pytest.approx(0.90 * 0.55) and first["below_even"] is True
+    assert second["claimed"] == pytest.approx(0.85 * 0.60) and second["below_even"] is False
+    assert first["claimed"] * second["claimed"] == pytest.approx(out["claimed"])
+    assert out["below_even"] is True      # the whole slip is unchanged by the split
+
+
+def test_tickets_are_listed_earliest_kickoff_first():
+    """Ticket 1 is the one to place first: the reader places them one after
+    another, and betPawa drops a selection whose game has started. The date
+    outranks the time, and a ticket with no known kick-off goes after the
+    day's timed ones -- the leg sort's own terms."""
+    legs = [row(1, 0.90), row(2, 0.85, kickoff="12:30"), row(3, 0.80), row(4, 0.75)]
+    out = parlay.select_legs(legs, legs=4, min_claim=0.0, tickets=2, now=NOW)
+    assert [t["tip_ids"] for t in out["tickets"]] == [[2, 3], [1, 4]]
+    tomorrow = "2026-09-06"
+    legs = [row(1, 0.95, date=tomorrow, kickoff="09:00"), row(2, 0.94, kickoff=None),
+            row(3, 0.93, kickoff="20:00"), row(4, 0.92, date=tomorrow, kickoff="08:00"),
+            row(5, 0.91, kickoff=None), row(6, 0.90, date=tomorrow, kickoff="10:00")]
+    out = parlay.select_legs(legs, legs=6, min_claim=0.0, tickets=3, now=NOW)
+    # Drafted [1, 6], [2, 5], [3, 4]; listed today 20:00, today untimed, tomorrow.
+    assert [t["tip_ids"] for t in out["tickets"]] == [[3, 4], [2, 5], [1, 6]]
+
+
+def test_one_ticket_is_the_whole_slip():
+    """The default is the slip as it always was: one ticket holding every
+    leg with the slip's own figure. An empty slip has no ticket."""
+    assert (parlay.DEFAULT_TICKETS, parlay.MAX_TICKETS) == (1, 23)
+    out = parlay.select_legs(ranked(6), legs=6, min_claim=0.0, now=NOW)
+    [only] = out["tickets"]
+    assert only["tip_ids"] == [r["tip_id"] for r in out["legs"]]
+    assert only["claimed"] == out["claimed"]
+    assert only["below_even"] == out["below_even"]
+    assert parlay.select_legs(POOL, legs=2, min_claim=0.95, now=NOW)["tickets"] == []
+
+
+def test_ticket_bounds_hold_at_the_hard_cap():
+    """23 is every ticket a double on the largest matchday's 46 legs."""
+    big = [row(i, 0.80) for i in range(1, 47)]
+    out = parlay.select_legs(big, legs=46, min_claim=0.0,
+                             tickets=parlay.MAX_TICKETS, now=NOW)
+    assert [len(t["tip_ids"]) for t in out["tickets"]] == [2] * 23
+    for bad in (0, parlay.MAX_TICKETS + 1):
+        with pytest.raises(ValueError):
+            parlay.select_legs(POOL, tickets=bad, now=NOW)
+
+
 def test_the_defaults_are_the_recommendation():
     assert parlay.DEFAULT_LEGS == 2
     assert parlay.DEFAULT_MIN_CLAIM == parlay.PRESETS["safer"] == 0.80
@@ -244,7 +333,7 @@ def test_the_defaults_are_the_recommendation():
 
 def test_the_pages_controls_mirror_the_selectors_constants():
     """`web/src/lib/api.js` restates the presets, the side groups and the leg
-    bounds for the page's controls. Pinned here so the two cannot drift: the
+    and ticket bounds for the page's controls. Pinned here so the two cannot drift: the
     API validates against its own copy, so a mismatch would show as a control
     that always 400s."""
     from pathlib import Path
@@ -257,3 +346,5 @@ def test_the_pages_controls_mirror_the_selectors_constants():
         assert key in parlay.SIDE_GROUPS
     assert (f"LEGS = {{ min: {parlay.MIN_LEGS}, max: {parlay.MAX_LEGS},"
             f" default: {parlay.DEFAULT_LEGS} }}") in js
+    assert (f"TICKETS = {{ min: 1, max: {parlay.MAX_TICKETS},"
+            f" default: {parlay.DEFAULT_TICKETS} }}") in js

@@ -662,3 +662,121 @@ parlay: the slip button should be there, with the substitutes. Built; this
   Swansea's selections removed **7 of 7** (a disabled button, no link, both
   legs named); §7/§8's 40-check run still 40 of 40. `bvp_nearest` dropped
   after.
+
+## 10. Sixth request — 2026-10-16: split the parlay slip into several betPawa tickets
+
+Owner request, **assessed and not built**: on a large slip, let the reader
+either place the whole slip as one betPawa ticket (as now) or split it into
+a chosen number of tickets and place each on betPawa on its own.
+
+**Mechanics exist — about a day, no migration, no setting.** `slipLink`
+already turns any list of legs into one prefill link, and the route is
+verified from 1 to 54 selections (§6). The browser side is a chunking
+helper beside `slipLink`, a tickets control and one `.place` block per
+ticket, each with its own substitute and left-out notes (the helper
+reports them per call). The server side is a `tickets` parameter on
+`GET /parlay` so that **each ticket's claimed product is the API's** —
+D1 of `PARLAY_PLAN.md` says the browser never forms a probability, and a
+per-ticket product is one. `select_legs` gains the allocation and returns
+`tickets: [{legs, claimed, below_even}]`; the whole-slip figure stays.
+Tests on both sides; deploy is API plus frontend.
+
+**One thing can sink it, and it is unverified.** betPawa's betslip
+**persists in the browser and a second prefill merges into it** (§1.3,
+seen 2026-09-08). A reader who opens ticket 2 before placing or clearing
+ticket 1 gets one merged accumulator — the opposite of what they asked
+for — and nothing on this site can tell. Two facts decide the shape:
+
+1. does placing a bet empty the slip? — needs a funded account, so the
+   owner's check, not a headless one;
+2. can the prefill route be told to replace rather than merge? — an hour
+   reading the bundle for a parameter on `/external-prefill`.
+
+If (2) is yes the feature is clean. If only (1) is yes the copy must say
+"place or clear each ticket before opening the next" and the page marks a
+ticket as opened (local state, lost on reload — it cannot know it was
+placed). If neither, do not build: a feature whose likely misuse places a
+bigger accumulator is worse than no feature. **Run both checks first.**
+
+**A point in favour.** Row 113 verified the product within ±2 pts only up
+to about ten legs; beyond that a slip's figure ships as labelled theory
+(`PARLAY_PLAN.md` §8.2). Four ten-leg tickets each show a figure inside
+the measured range where one forty-leg slip does not.
+
+**What it is not.** Splitting changes the variance of a stake, not its
+expectation; the copy must not call a split "safer", and the page must
+never show "the chance at least one ticket wins" — a new probability, and
+the one a reader would stake on. Each ticket shows what the slip shows
+now: its legs, its own claimed product, its own below-even warning.
+
+**Decisions this needs (D15–D17).**
+
+- **D15 — the allocation.** By rank (ticket 1 the strongest legs; tickets
+  of very unequal claim), **snake** (1-2-3-3-2-1; tickets read alike), or
+  by kick-off (each ticket placeable before its first game starts, which
+  matters because an expired selection drops silently and the reader is
+  placing these one after another). Recommend **snake, kick-off as the
+  tiebreak**, and the tickets listed earliest kick-off first.
+- **D16 — the control.** A number of tickets, 1 meaning the slip as now,
+  up to `floor(legs / 2)` so every ticket is at least a double — a
+  one-leg ticket is a single, which is the tips list's "Place all" job.
+- **D17 — the day slip.** "Place all N calls" on the tips list is the same
+  shape and could take the same chunking; not asked for, not recommended
+  until the parlay page's version has been used.
+
+**An alternative to check in the same pass.** betPawa's own betslip may
+offer **system bets** (every k-fold from n selections) — a native spread
+over one prefill with no merge problem. It is combinations, not a
+partition, and the stake shape differs; unverified here.
+
+**Investigated 2026-10-16 (owner: build it; the slip is not emptied by a
+prefill, and the usage pattern is place one ticket, then open the next).**
+Read from betPawa's live bundle (`www.betpawa.ug`, build
+`e0JeygL_fh1c3OAnhnWOn`, chunk `pages/external-prefill-e84d3e24c0f625ad.js`):
+
+- the prefill page reads **`query.selectionIds` and nothing else** — split
+  on `,`, `_` within an id for a same-event combo, every id a positive
+  integer — then dispatches `betslips/loadExternalSelectionsThunk` and
+  routes home with the slip panel open;
+- that thunk's reducer is built with **`mergeStrategy: "filter-conflicts"`
+  hard-coded** (the map in the betslip slice has `replace`, `override` and
+  `filter-conflicts`; `replace` is wired to nothing, `override` only to the
+  booking-code loader — also a merge). No parameter, on this route or any
+  other in the route table (`/betslip/[betslipId]` and `/share-betslip`
+  are views of a placed bet), replaces the slip.
+
+So the prefill cannot be told to replace: **the feature is the buttons
+and the copy.** Decisions taken as recommended, no owner answer given:
+D15 snake with kick-off as the tiebreak, tickets listed earliest first;
+D16 a count of tickets, 1 the slip as now, at most half the legs; D17 the
+day slip untouched.
+
+**BUILT 2026-10-16 (uncommitted).** `engine/serve/parlay.py`:
+`DEFAULT_TICKETS = 1`, `MAX_TICKETS = MAX_LEGS // 2`; `select_legs(...,
+tickets)` deals the chosen legs by snake draft into `max(1, min(tickets,
+len // 2))` tickets, lists them earliest kick-off first, and serves
+`tickets: [{tip_ids, claimed, below_even}]` beside the unchanged whole-slip
+figure. `GET /parlay` takes `tickets` (400 outside `1..23`).
+`$lib/api.js` `TICKETS` mirrors the cap (pinned by the mirror test);
+`$lib/parlay.js` `ticketLegs` resolves ids to rows, display only. The page
+has a Tickets slider under Legs (1 to half the slip on show, disabled
+under four legs, follows the slip down without a second fetch), a "Ticket
+k" mark on each leg, and — signed in from a served country, more than one
+ticket — the one-at-a-time instruction once, then per ticket its head
+line (legs, claimed, its own below-even sentence), a "Place ticket k on
+betPawa ↗" link with the slip's substitute and left-out notes worded for
+a ticket, and an "opened" mark after a click (local; it cannot know the
+bet was placed). One ticket renders exactly the page as it was. Checks:
+Python **875** (+7), web **112** (+2), build clean, a 28/28 Playwright
+click-through on a scratch copy of production with eight planted
+fixtures (three tickets' selection ids partition the whole slip's, their
+claims multiply to its, the clamp and the signed-out button hold, no
+horizontal scroll at 390px). Deploy: API and frontend; no migration, no
+setting.
+
+Known and left: (1) when a response shrinks the slip under two legs per
+ticket the page fetches once more at the clamped count — same slip back,
+one wasted request; (2) a two-leg ticket with one lineless leg loads as a
+single, said in its fine print as the slip does today — owner may want
+the link withheld instead; (3) the Tickets control and marks show
+signed-out too, with no per-ticket figures.

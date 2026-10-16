@@ -35,6 +35,16 @@ qualifying legs than asked for are returned as they are, **never padded**.
 Goal lines are absent deliberately: the rule publishes no over/under call
 (B4 closed by measurement) and the owner left them out.
 
+**Tickets** (`BETPAWA_PLAN.md` §10, owner 2026-10-16): the slip can be
+split into several betPawa tickets, each its own accumulator placed on its
+own. The legs are dealt in rank order by a snake draft (1-2-3-3-2-1), so
+the tickets read alike in claim; every ticket is at least a double -- a
+single is the tips list's job -- so the count is clamped to half the legs.
+Each ticket's product is formed here for the reason the slip's is: the
+browser never forms a probability (D1). betPawa's prefill adds to whatever
+its slip already holds, so the page tells the reader to place one ticket
+before opening the next; nothing here can know whether they did.
+
 No import from `engine.eval` or `engine.serve.tips`: the API loads this
 module and must keep starting without the measurement stack.
 """
@@ -51,6 +61,12 @@ from typing import Any
 DEFAULT_LEGS = 2
 MIN_LEGS = 2
 MAX_LEGS = 46
+
+#: Tickets (`BETPAWA_PLAN.md` §10): 1 is the slip as one betPawa ticket. The
+#: cap is half the hard cap on legs, every ticket being at least a double;
+#: the control's real ceiling is half the slip on show.
+DEFAULT_TICKETS = 1
+MAX_TICKETS = MAX_LEGS // 2
 
 #: The risk presets: a minimum claimed probability per leg, in the currency
 #: the rule's own floor and ceiling use. `web/src/lib/api.js` mirrors these
@@ -153,7 +169,8 @@ def kicked_off(row: dict[str, Any], now: datetime) -> bool:
 
 def select_legs(rows: list[dict[str, Any]], *, legs: int = DEFAULT_LEGS,
                 min_claim: float = DEFAULT_MIN_CLAIM,
-                sides: str = DEFAULT_SIDES, now: datetime) -> dict:
+                sides: str = DEFAULT_SIDES, tickets: int = DEFAULT_TICKETS,
+                now: datetime) -> dict:
     """The top `legs` of the day in the chosen markets, at or above `min_claim`.
 
     `rows` are tip rows as `/tips` serves them, model view included. Each
@@ -171,9 +188,19 @@ def select_legs(rows: list[dict[str, Any]], *, legs: int = DEFAULT_LEGS,
     clears the threshold, before the cut), `pool` (distinct live fixtures
     with a leg -- the slider's ceiling), `min_claim`, `sides` echoed in its
     canonical form, and `below_even` (the product sits under a coin flip).
+
+    `tickets` splits the slip for betPawa (module docstring): the chosen
+    legs dealt by snake draft into `min(tickets, len // 2)` tickets (at
+    least one), listed earliest kick-off first so ticket 1 is the one to
+    place first, each leg keeping the slip's order. Served as `tickets`,
+    `[{tip_ids, claimed, below_even}]` with the same meanings per ticket;
+    one ticket is the whole slip, an empty slip has none. The whole-slip
+    `claimed` and `below_even` are unchanged by the split.
     """
     if not MIN_LEGS <= legs <= MAX_LEGS:
         raise ValueError(f"legs must be {MIN_LEGS}..{MAX_LEGS}, got {legs}")
+    if not 1 <= tickets <= MAX_TICKETS:
+        raise ValueError(f"tickets must be 1..{MAX_TICKETS}, got {tickets}")
     if not 0.0 <= min_claim <= 1.0:
         raise ValueError(f"min_claim must be a probability, got {min_claim}")
     sides, keys = parse_sides(sides)
@@ -193,6 +220,26 @@ def select_legs(rows: list[dict[str, Any]], *, legs: int = DEFAULT_LEGS,
             distinct.append(r)
     chosen = distinct[:legs]
     claimed = math.prod(r["model_prob"] for r in chosen) if chosen else None
+
+    # D15 (§10): a snake draft in rank order, so no ticket is all the strong
+    # legs; D16: never more tickets than doubles, so 0-3 legs is one ticket.
+    n = max(1, min(tickets, len(chosen) // 2)) if chosen else 0
+    dealt: list[list[dict[str, Any]]] = [[] for _ in range(n)]
+    for i, r in enumerate(chosen):
+        turn, pos = divmod(i, n)
+        dealt[pos if turn % 2 == 0 else n - 1 - pos].append(r)
+    # Earliest kick-off first, on the leg sort's missing-time-last terms: the
+    # reader places them one after another, and betPawa drops a selection
+    # that has started silently. The sort is stable, so a tie keeps the
+    # draft's order.
+    dealt.sort(key=lambda ticket: min(
+        (r["match_date"], r.get("kickoff_time") is None, r.get("kickoff_time") or "")
+        for r in ticket))
+    split = []
+    for ticket in dealt:
+        product = math.prod(r["model_prob"] for r in ticket)
+        split.append({"tip_ids": [r["tip_id"] for r in ticket],
+                      "claimed": product, "below_even": product < 0.5})
     return {
         "legs": chosen,
         "claimed": claimed,
@@ -202,4 +249,5 @@ def select_legs(rows: list[dict[str, Any]], *, legs: int = DEFAULT_LEGS,
         "min_claim": min_claim,
         "sides": sides,
         "below_even": bool(chosen) and claimed < 0.5,
+        "tickets": split,
     }

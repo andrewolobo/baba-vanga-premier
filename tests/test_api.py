@@ -597,6 +597,55 @@ def test_parlay_rejects_bad_sizes_thresholds_types_and_divisions(tips_client):
     assert tips_client.get("/parlay", params={"division": ""}).status_code == 200
 
 
+def test_parlay_splits_the_slip_into_betpawa_tickets(make_database):
+    """BETPAWA_PLAN.md §10: `tickets` deals the slip's legs into that many
+    tickets, each with its own product, beside the slip's unchanged figure.
+    Four live calls of their own, because every ticket is at least a double
+    and `tips_client` has two."""
+    url = make_database()
+    conn = db.connect(url)
+    db.migrate(conn)
+    conn.execute("INSERT INTO teams (team_id, canonical_name) VALUES (1, 'Luton'), (2, 'Barnsley')")
+    for fixture_id, prob in ((1, 0.80), (2, 0.75), (3, 0.70), (4, 0.65)):
+        conn.execute(
+            "INSERT INTO fixtures (fixture_id, division, match_date, kickoff_time,"
+            " home_team_id, away_team_id, source_file)"
+            " VALUES (%s, 'E2', %s, '15:00', 1, 2, 't')",
+            (fixture_id, relative_date(fixture_id)))
+        conn.execute(
+            "INSERT INTO predictions (prediction_id, fixture_id, model_version,"
+            " information_set, lam_h, lam_a, p_home, p_draw, p_away, p_over25,"
+            " p_under25) VALUES (%s, %s, 'v2', 'pre_close', 1.6, 1.1,"
+            " 0.48, 0.26, 0.26, 0.52, 0.48)", (fixture_id, fixture_id))
+        conn.execute(
+            "INSERT INTO tips (tip_id, prediction_id, fixture_id, side, model_prob,"
+            " floor, ceiling, rule_version) VALUES (%s, %s, %s, '12', %s, 0.55,"
+            " 0.85, 'confidence-v2')", (fixture_id, fixture_id, fixture_id, prob))
+    conn.commit()
+    conn.close()
+
+    app.dependency_overrides[get_conn] = _override(url)
+    try:
+        client = TestClient(app)
+        body = client.get("/parlay", params={"legs": 4, "min_claim": 0.5,
+                                             "tickets": 2}).json()
+        whole = client.get("/parlay", params={"legs": 4, "min_claim": 0.5}).json()
+        assert client.get("/parlay", params={"tickets": 0}).status_code == 400
+        assert client.get("/parlay", params={"tickets": 24}).status_code == 400
+    finally:
+        app.dependency_overrides.clear()
+    # Snake-drafted, earliest kick-off first; together exactly the slip's legs.
+    assert [t["tip_ids"] for t in body["tickets"]] == [[1, 4], [2, 3]]
+    assert sorted(i for t in body["tickets"] for i in t["tip_ids"]) \
+        == sorted(t["tip_id"] for t in body["legs"])
+    assert [t["claimed"] for t in body["tickets"]] \
+        == pytest.approx([0.80 * 0.65, 0.75 * 0.70])
+    assert body["claimed"] == pytest.approx(0.80 * 0.75 * 0.70 * 0.65)
+    # One ticket, the default, is the slip as it always was.
+    assert whole["tickets"] == [{"tip_ids": [1, 2, 3, 4], "claimed": whole["claimed"],
+                                 "below_even": True}]
+
+
 def test_parlay_drops_fixtures_whose_kickoff_has_passed(tips_client, monkeypatch):
     """The pool is `/tips` minus anything already under way, on the UK clock.
     The clock is pinned rather than the fixture dated, so the test does not

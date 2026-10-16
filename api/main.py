@@ -388,6 +388,10 @@ def parlay(
     sides: str = Query(parlay_rule.DEFAULT_SIDES,
                        description="'any', or a comma-separated mix of"
                                    " win,dc,ah -- call-type filter"),
+    tickets: int = Query(parlay_rule.DEFAULT_TICKETS,
+                         description=f"1..{parlay_rule.MAX_TICKETS} -- split the"
+                                     " slip into this many betPawa tickets,"
+                                     " every ticket at least a double"),
     conn: db.Connection = Depends(get_conn),
 ) -> dict:
     """A parlay generated from the published tip list (`PARLAY_PLAN.md`, B24).
@@ -409,6 +413,10 @@ def parlay(
     legs of those two leagues, never two parlays merged -- which is also why
     the page cannot do this with two calls of its own.
 
+    `tickets` splits the same slip into that many betPawa tickets, each with
+    its own claimed product, served beside the whole-slip figure
+    (`BETPAWA_PLAN.md` §10).
+
     The selection is `engine.serve.parlay.select_legs`, computed here rather
     than in the browser because the frontend never forms a probability
     (`web/src/lib/api.js`). Sizes and presets live there too; the page
@@ -421,6 +429,8 @@ def parlay(
             400, f"legs must be {parlay_rule.MIN_LEGS}..{parlay_rule.MAX_LEGS}")
     if not 0.0 <= min_claim <= 1.0:
         raise HTTPException(400, "min_claim must be between 0 and 1")
+    if not 1 <= tickets <= parlay_rule.MAX_TICKETS:
+        raise HTTPException(400, f"tickets must be 1..{parlay_rule.MAX_TICKETS}")
     try:
         parlay_rule.parse_sides(sides)
     except ValueError as error:
@@ -437,7 +447,8 @@ def parlay(
         params,
     )))
     selected = parlay_rule.select_legs(rows, legs=legs, min_claim=min_claim,
-                                       sides=sides, now=_london_now())
+                                       sides=sides, tickets=tickets,
+                                       now=_london_now())
     return {**selected, "division": ",".join(chosen) or None}
 
 

@@ -14,12 +14,13 @@
     RISK_PRESETS,
     SIDE_GROUPS,
     LEGS,
+    TICKETS,
     pct
   } from '$lib/api.js';
   import { fixtureBadges } from '$lib/badge.js';
   import Crest from '$lib/Crest.svelte';
   import { localKickoff, viewerZone } from '$lib/kickoff.js';
-  import { availability, claimLabel } from '$lib/parlay.js';
+  import { availability, claimLabel, ticketLegs } from '$lib/parlay.js';
   import { getContext, onMount } from 'svelte';
   import { wagerLink, wagerLabel, nearestNote, slipLink } from '$lib/betpawa.js';
   import PageHead from '$lib/PageHead.svelte';
@@ -68,6 +69,9 @@
   // none. All three on is the default and travels as 'any'.
   let sides = $state(SIDE_GROUPS.map(([key]) => key));
   let legs = $state(data.launch.legs);
+  // BETPAWA_PLAN.md §10: how many betPawa tickets the slip is split into; 1
+  // is the slip as one ticket, which is where the page opens.
+  let tickets = $state(data.launch.tickets);
 
   let parlay = $state(data.parlay);
   let error = $state(data.error);
@@ -100,22 +104,39 @@
     // The last chip stays on: a parlay drawn from no call types is nothing.
   };
 
-  async function load(picked, size, min, type) {
+  async function load(picked, size, min, type, count) {
     loading = true;
     error = null;
     try {
-      parlay = await getParlay(picked, size, min, type);
+      parlay = await getParlay(picked, size, min, type, count);
     } catch (e) {
       error = e.message;
     } finally {
       loading = false;
     }
   }
+  // D16 (BETPAWA_PLAN.md §10): every ticket is at least a double, so the
+  // tickets control runs to half the slip on show and follows it down, as
+  // the legs slider does. The request carries the clamped count, so the
+  // clamp's own run changes nothing `settings` reads and asks for nothing.
+  const ticketMax = $derived(
+    Math.max(1, Math.min(TICKETS.max, Math.floor((parlay?.legs.length ?? 0) / 2)))
+  );
+  $effect(() => {
+    if (tickets > ticketMax) tickets = ticketMax;
+  });
+
   // One fetch per control change; the opening slip came with the page, so
   // the effect's first run (hydration) matches what is shown and is skipped.
   // The controls are read here, synchronously, which is what makes the
   // effect track them.
-  const settings = () => [leaguesParam(), legs, minClaim(), sidesParam()];
+  const settings = () => [
+    leaguesParam(),
+    legs,
+    minClaim(),
+    sidesParam(),
+    Math.min(tickets, ticketMax)
+  ];
   let shown = settings().join('|');
   $effect(() => {
     const now = settings();
@@ -132,6 +153,21 @@
   const sliderMax = $derived(Math.max(LEGS.min, Math.min(LEGS.max, parlay?.pool ?? LEGS.min)));
   $effect(() => {
     if (legs > sliderMax) legs = sliderMax;
+  });
+
+  // The tickets as the page draws them (`$lib/parlay.js`): which legs share
+  // a ticket, and each ticket's claimed figure, are the API's. `ticketOf`
+  // tags each leg with its ticket's number when there is more than one.
+  const split = $derived(ticketLegs(parlay));
+  const ticketOf = $derived(
+    new Map(split.flatMap((ticket, i) => ticket.legs.map((leg) => [leg.tip_id, i + 1])))
+  );
+  // The tickets whose link was followed, marked "opened" -- not "placed":
+  // the page cannot see betPawa. Local to this view; a new slip clears it.
+  let opened = $state(new Set());
+  $effect(() => {
+    void parlay;
+    opened = new Set();
   });
 
   // Kick-offs arrive as UK wall-clock and are shown in the viewer's zone
@@ -226,6 +262,19 @@
         disabled={sliderMax <= LEGS.min}
       />
     </div>
+    <div class="control">
+      <span class="label">Tickets · {tickets}</span>
+      <input
+        type="range"
+        min={TICKETS.min}
+        max={ticketMax}
+        step="1"
+        bind:value={tickets}
+        aria-label="Number of betPawa tickets"
+        disabled={ticketMax <= 1}
+      />
+      <span class="hint">1 is the whole slip as one ticket; every ticket is at least a double.</span>
+    </div>
   </div>
 
   {#if error}
@@ -288,7 +337,8 @@
                     >
                   {/if}
                 </div>
-                <div class="league">{divisionName(t.division)} · {shortDay(t.match_date)}</div>
+                <div class="league">{divisionName(t.division)} · {shortDay(t.match_date)}{#if split.length > 1}
+                    <span class="tag">Ticket {ticketOf.get(t.tip_id)}</span>{/if}</div>
                 <!-- D14: a derived leg is not the published call and is not
                      graded; it says so and names the call beside it. -->
                 {#if t.derived}
@@ -344,6 +394,54 @@
           <div class="place">
             <button type="button" class="bet ghost" onclick={promptSignIn}>Sign in to place this on betPawa</button>
           </div>
+        {:else if $betpawa.status === 'ready' && split.length > 1}
+          <!-- The slip split into tickets (BETPAWA_PLAN.md §10): one link
+               per ticket, each with its own claimed figure, warning and
+               notes, all the API's. betPawa's prefill adds to whatever its
+               slip still holds, so the page says once, above the tickets,
+               to place one before opening the next. -->
+          <div class="place">
+            <p class="fine once">
+              One ticket at a time: open a ticket, place it on betPawa, then come back for the
+              next. betPawa keeps its betslip between visits and adds the next ticket's legs to
+              whatever is still in it, which would make one bigger accumulator — so place or
+              clear the slip before opening another ticket.
+            </p>
+          </div>
+          {#each split as ticket, i}
+            {@const slip = slipLink($betpawa.host, ticket.legs, $betpawa.byFixture)}
+            {@const n = ticket.legs.length}
+            <div class="place">
+              <div class="ticket">
+                Ticket {i + 1} of {split.length} · {n} legs · claimed {claimLabel(ticket.claimed)}
+                {#if ticket.below_even}
+                  <span class="under">
+                    This ticket is more likely to lose than win: its {n} legs multiply to
+                    {claimLabel(ticket.claimed)}.
+                  </span>
+                {/if}
+              </div>
+              {#if slip.url}
+                <a class="bet big" href={slip.url} target="_blank" rel="noopener noreferrer"
+                  onclick={() => (opened = new Set(opened).add(i))}>Place ticket {i + 1} on betPawa ↗</a>
+              {:else}
+                <button type="button" class="bet big" disabled>Place ticket {i + 1} on betPawa</button>
+              {/if}
+              {#if opened.has(i)}<span class="tag">opened</span>{/if}
+              <p class="fine">
+                {#if slip.url}Opens a betPawa betslip with {slip.loaded === n
+                  ? `this ticket's ${n} legs` : `${slip.loaded} of this ticket's ${n} legs`}. The
+                odds and any payout there are the bookmaker's, not ours.
+                {:else}Nothing to load on betPawa right now.{/if}
+                {#if slip.substituted.length}In place of a +1.5 betPawa has no line for, the
+                ticket carries the closest bet it lists: {slip.substituted.join(', ')}.
+                {slip.substituted.length === 1 ? 'It loses' : 'Each loses'} on a one-goal defeat
+                the +1.5 would survive, so the ticket can lose where its legs win.{/if}
+                {#if slip.missing.length}No line on betPawa for {slip.missing.join(', ')}, so
+                {slip.missing.length === 1 ? 'it is' : 'they are'} left out of the ticket.{/if}
+              </p>
+            </div>
+          {/each}
         {:else if $betpawa.status === 'ready'}
           {@const slip = slipLink($betpawa.host, parlay.legs, $betpawa.byFixture)}
           <div class="place">
@@ -402,7 +500,9 @@
         or, for a +1.5 betPawa has no line for, the closest bet it lists, named
         beside the button; the
         odds, the payout and the terms there are the bookmaker's. This site shows
-        no odds and takes no stake.
+        no odds and takes no stake. Split into tickets, each ticket is its own
+        accumulator with its own claimed figure; splitting spreads a stake across
+        smaller accumulators and does not make any leg likelier to win.
       </p>
     </div>
   {/if}
@@ -470,6 +570,7 @@
   .switch button.on { background: var(--bg); border-color: var(--accent); color: var(--accent); }
   .control input[type='range'] { width: 100%; accent-color: var(--accent); margin: 8px 0 0; }
   .control input[type='range']:disabled { opacity: 0.4; }
+  .hint { font-family: var(--mono); font-size: 11px; color: var(--muted); }
   .switch button:focus-visible, .tabs button:focus-visible {
     outline: 2px solid var(--accent); outline-offset: 2px;
   }
@@ -542,6 +643,25 @@
     padding: 16px 22px; border-top: 1px solid var(--line-2);
   }
   .place .fine { margin: 0; }
+  /* A split slip (BETPAWA_PLAN.md §10): the one-at-a-time instruction, each
+     ticket's head line with its own below-even sentence, and the small marks
+     for a leg's ticket and a ticket whose link was opened -- `.code`'s look
+     without its help cursor. */
+  .place .once { max-width: 80ch; color: var(--body); }
+  .ticket {
+    flex-basis: 100%; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text);
+  }
+  .ticket .under {
+    display: block; margin-top: 6px; padding-left: 10px; border-left: 3px solid var(--bad);
+    font-family: var(--sans); font-size: 13px; line-height: 1.5; letter-spacing: 0;
+    text-transform: none; color: var(--body);
+  }
+  .tag {
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600; color: var(--body);
+    background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 3px; padding: 1px 5px; white-space: nowrap;
+  }
   .conf { width: 92px; flex: none; }
   .confhead {
     display: flex; justify-content: space-between; font-family: var(--mono);

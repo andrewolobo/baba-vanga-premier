@@ -158,11 +158,13 @@ and gated B4.
 | **B26** | A "bet this on betPawa" button on every call and on the parlay slip — betPawa's selection ids scraped daily, a prefill deep link per side, gated behind sign-in and the countries betPawa serves (`docs/BETPAWA_PLAN.md`) | **assessed and built (phases A–D) 2026-09-08; deploy is the owner's** (`BETPAWA_PLAN.md` §4 Phase D checklist) — JSON API verified from the VM; `services/betpawa_feed.py`, `003_betpawa.sql`, `reference/betpawa_teams.csv` (92/92 clubs), `step_betpawa` off unless `BVP_BETPAWA=1`; `api/betpawa.py` + `GET /betpawa/links` behind `require_user`, country from `phone_country`, 17 hosts (South Sudan unverified, left out); `$lib/betpawa.js` + the buttons on every call, per parlay leg and on the slip, the signed-out sign-in state, no odds shown; **749 pass, 49 web, 30-check click-through**; `PRODUCT.md` §6. Decisions D1–D12 as recommended; D10: no affiliate agreement | 0 (reads no outcomes) | — |
 | **B27** | A **Form & H2H** button on every call on the front page and every `/parlay` leg, opening that fixture's recent form (with our call on each game) and last meetings in a sheet over the page | **built 2026-09-26, uncommitted** (`OUTSTANDING.md` top): the match page's form and meetings extracted to `$lib/MatchFacts.svelte` (server HTML and screenshots unchanged), `$lib/FixtureSheet.svelte` (a native modal `<dialog>` opened by `pushState`, so back closes it), `$lib/FactsButton.svelte` (a link to the match page, so it is in the server's HTML and a modified click opens the page); `/parlay` legs gain `slug`; no new endpoint — `GET /fixture/{id}`, read on click and kept per page; 100-check click-through | 0 (reads no outcomes) | SEO 2.3 |
 | **B28** | When betPawa has no line for a +1.5 call, the button offers the same team's double chance instead of only the event page (owner request: "default to the next most probable prediction") | **built 2026-09-26, uncommitted** (`BETPAWA_PLAN.md` §7): the next most probable market was assessed and declined — it is `12` for 9 of 9 +1.5 calls that day and loses on the draw the call wins on; `$lib/betpawa.js` `wagerLink` gains a `nearest` kind (`H+1.5`→`1X`, `A+1.5`→`X2`), `wagerLabel` names the bet, `nearestNote` names the one-goal defeat it loses on; front page, match page, parlay legs; **extended the same day (§8): the "Place all N calls" slip carries the substitutes, named, and is always present while the list has calls — disabled with the reason when nothing can load** (unserved countries still see nothing); **and the parlay slip likewise (§9)** — substitutes load and are named, a leg with neither is left out and named, the copy says the slip can then lose where the legs shown win, disabled with the reason when nothing can load; no API, schema or cycle change; 103 web, 40-check click-through + a five-leg parlay check + a 9-check nothing-loadable check + 17 + 7 on the parlay slip; `PRODUCT.md` §6, D11 and D13 amended | 0 (reads no outcomes) | B26 |
+| **B29** | A heuristic second stage for selection — form, H2H, draw and O/U histories, "prediction history" — to name a winner where v3 falls back to +1.5 (owner question 2026-10-12) | **scanned 2026-10-12, market-only footing, 0 configurations, no ledger row — every history is null beyond the market price; the live +1.5 is the best side, not the losing one.** Assessment and the two shapes that are not disqualified below | 0 spent | — |
 
 ## Later
 
 | id | item | status | cost | depends on |
 | --- | --- | --- | --- | --- |
+| **B30** | An Over/Under 1.5 prediction option — how has it performed, how is it doing this season, is it worth adding? (owner question 2026-10-16) | **scanned 2026-10-16, 0 configurations, no ledger row — on this head the line is a constant: "over 1.5" in 15,824 of 15,824 dev matches and 302 of 302 live, so its strike is the league's over-1.5 rate (73.6% dev, 76.2% live), 4.3 pts ✱ under v3; P(over 1.5) is null against a per-division base rate and resolved worse than the market's O/U 2.5 price; as a fallback candidate the λ-only ceiling is +0.25 pt. Do not build as a prediction option.** Section below | 0 spent | B4, B11, B5 |
 | B5 | Acquire prices for goal lines other than 2.5 | open | 0 (acquisition) | — |
 | **B6** | Customer-facing surface for the tip list | **done** 2026-08-07 | 0 | B0 |
 | **B7** | Honesty check on how the strike rate is reported downstream | **done 2026-08-16** — v2 return measured, −4.56% ✱ at avg / ~0 at best (`TIPSTER.md` A) | 4 spent | B6 |
@@ -1265,6 +1267,224 @@ the cycle can log model-vs-referee gap per matchday (labelled "derived from
 on a drift beyond ±1 pt of the historical −0.23, publication-window claims
 only. That restores the P7-style honesty check for the one market that
 cannot have a real price until B9-style capture exists.
+
+## B29 — A heuristic second stage for selection — **SCANNED 2026-10-12, market-only, 0 configurations, do not gate as asked**
+
+Owner question 2026-10-12: alongside surfacing every outright at or above
+the 0.55 floor, can a data-driven heuristic — last meetings, each side's
+recent play and the model's recent record on it, over/under and draw
+histories — pick the selection that will most probably win where the rule
+now falls back to the underdog +1.5, even when that pick is not the model's
+likeliest market?
+
+**Two facts first, from the production copy (`bvp_prod`, settled v3 tips
+2026-08-20 → 2026-10-09, 302 settled):**
+
+| side | n | wins | strike |
+| --- | --- | --- | --- |
+| `A+1.5` | 140 | 114 | 81.4% |
+| `H+1.5` | 54 | 51 | 94.4% |
+| `1X` | 20 | 17 | 85.0% |
+| `12` | 28 | 19 | 67.9% |
+| `H` | 47 | 26 | 55.3% |
+| `A` | 9 | 4 | 44.4% |
+| **all v3** | **302** | **234** | **77.5%** — the gate said 77.9% |
+
+The +1.5 is the product's best side live, not its losing one. The losing
+sides are the named winners the floor already surfaces. Any rule that
+swaps a +1.5 call (≈ 80–85% event) for a named winner (≈ 50–60% event)
+**lowers** the strike rate by construction unless the heuristic finds
+winners the market cannot — so the question is whether such information
+exists in those histories.
+
+**The scan.** 25,838 priced dev matches, E0–E3, 2010-11 → 2022-23, both
+sides with 6+ prior games. Pre-match features, strictly prior games,
+cross-season: L5 points per game, L5 goal difference per game, L5-vs-L10
+trend (the listings' `form_trend` measure), L10 draw share, L10 over-2.5
+share, last-5 H2H edge, and "prediction history" as each side's last-5 mean
+of (won − market win probability). All stated favourite-relative. Referee:
+the devigged avg 1X2 price (`devig_probs`), the thing the model names
+essentially always. Walk-forward by season (3 burn-in, 20,032 scored),
+logistic regression for "favourite wins" with the market logit alone
+against market + features, paired by ISO week; a planted control feature
+(outcome + N(0, 1.5)) run through the same instrument. **No model pick was
+read, nothing was written; the script lived in the session scratchpad and
+the definitions above re-derive it.**
+
+| arm vs market alone | Δ log loss | 95% CI | verdict |
+| --- | --- | --- | --- |
+| + form, H2H, draw, O/U histories | +0.00031 | [−0.00008, +0.00067] | null (if anything worse) |
+| + prediction history (residual momentum) | −0.00001 | [−0.00025, +0.00022] | null |
+| + draw histories, on the draw | +0.00009 | [−0.00007, +0.00026] | null |
+| **+ planted control** | **−0.05184** | **[−0.05581, −0.04787]** | **fires** |
+
+Naming a winner at ≥ 0.55 from market + form: 16.9% of matches at 65.5%
+strike — identical to the market alone (16.8%, 65.5%). In the band v3
+hedges in (market favourite 0.45–0.55, n = 7,895, favourite wins 50.1%),
+no feature's terciles move the favourite's win rate outside ±2 pts of 50%.
+
+**Reading.** Every history the question names is already in the price, and
+the head tracks the price (B21 referee R2: −0.23 pts). A heuristic built on
+them re-ranks noise. This is the same answer P5 gave for the meta-label and
+B1/B2/B10/B20 gave for mix shifts, now on the feature family the owner
+asked about, with a control that proves the instrument can see an edge.
+
+**What is not disqualified**, each an owner decision before anything is
+spent:
+
+1. **Restate the objective.** "Most probably win" is what v3 already does;
+   what is wanted is a *more specific* call at an *acceptable* strike —
+   e.g. publish the outright in the fallback whenever its probability is
+   ≥ F′ < 0.55, and accept the strike cost. That is the floor dial B3
+   measured (0.45 → 63.5%, 0.50 → 69.3%) re-offered on v3, 1 configuration
+   per floor, paired against v3. The cost is known in advance; the question
+   is only whether a lower strike for more named winners is the product.
+2. **B1, the agreement filter, on v3.** Publish the outright below the
+   floor only when the market's probability also clears it — the one
+   signal the scan shows carries information. It changes selection from
+   price-free to price-aware, which `PRODUCT.md` built against; owner call.
+   ~1–2 configurations.
+3. **A second-stage model on the model's own residuals** (λ-side rather
+   than market-side) is the only unmeasured corner, and the market-side
+   null bounds it: the head's λs sit on the market's λs on these calls.
+   Not recommended.
+
+**Siloed per league (owner follow-up, same day).** Each division fitted
+and scored on its own, same instrument, control fired in all four:
+
+| div | n scored | + histories vs market | winner ≥ 0.55 strike, market / + histories |
+| --- | --- | --- | --- |
+| E0 | 3,800 | +0.00113 [−0.00088, +0.00310] null | 69.3% / 68.7% |
+| E1 | 5,520 | **+0.00153 [+0.00004, +0.00300] worse, resolved** | 63.1% / 61.7% |
+| E2 | 5,367 | +0.00079 [−0.00034, +0.00186] null | 63.6% / 63.0% |
+| E3 | 5,296 | +0.00091 [−0.00054, +0.00236] null | 60.8% / 61.7% |
+
+Siloing does not surface a signal; it removes data and the fits get
+worse. The live per-division gap (E0 70%, E1 87%, E2 71%, E3 79% on
+50–90 calls each) is mostly **mix**: 40% of E0's calls are named winners
+(strong favourites clear the floor more often there) against 10–17%
+elsewhere, and named winners strike ~55% in every division. Within the
+non-outright calls E0 is 80% against E1 93%, E2 74%, E3 83% — inside the
+noise of 30–76 calls. No per-division v3 strike was recorded by the gate
+(`b21_results.json` is pooled); 50 calls resolve ~13 pts, so "E0 performs
+poorly" is not a measured fact yet.
+
+## B30 — An Over/Under 1.5 prediction option — **SCANNED 2026-10-16, 0 configurations, no ledger row, do not build as a prediction option**
+
+Owner question 2026-10-16: explore adding an Over/Under 1.5 pick to the
+line-up — how has it performed, how would it do this season, is it a
+valuable addition? Scratch scripts in the session scratchpad (`ou15_dev.py`,
+`ou15_live.py`); the definitions here re-derive them. Outcomes were read
+to score one quantity of the shipped head, P(over 1.5), on the B11 footing
+(no arm chosen, nothing written to the ledger); anything about the rule is
+λ-only. **If the owner wants this on the record, pre-register it as a
+0-configuration probe (the B23 shape) and re-run from a committed module.**
+
+**The line is a constant on this head.** P(over 1.5) from the served pmf on
+the B3 frame (15,824 dev matches, 2014-15 → 2022-23, walk-forward λ): mean
+0.724, p10 0.651, p90 0.794, **minimum 0.529** — under 1.5 is never the
+likelier side, in any of 15,824 matches, nor in any of the 302 settled live
+fixtures (min 0.583). An "O/U 1.5 prediction" therefore says "over 1.5" in
+every fixture, and its strike rate is the division's over-1.5 rate whatever
+the model says. B11's "over 1.5 in 15–30%" was a share of a *menu*; alone,
+the line has one side.
+
+**Historical performance (dev frame).**
+
+| | strike | 95% block CI | claims | gap (delivered − claimed) |
+| --- | --- | --- | --- | --- |
+| over 1.5, every match | **73.6%** | [72.9, 74.2] | 72.4% | **+1.14 [+0.44, +1.81] ✱** under-claims |
+| v3 call, same matches | 77.9% | [77.2, 78.5] | 76.9% | +0.95 |
+| over 1.5 − v3, paired by ISO week | **−4.30 [−5.28, −3.36] ✱** | | | |
+
+Per division the strike *is* the base rate by construction: E0 75.9%, E1
+73.1%, E2 73.9%, E3 72.0%; per season 71.5–75.3%. Buckets re-derive B11
+Part B exactly — [0.60, 0.70) under-claims +4.0 (E1–E3; E0 calibrated),
+[0.70, 0.80) and [0.80, 0.90) calibrated; the planted jitter control fires.
+Gating the claim raises the strike only by shrinking coverage: ≥ 0.70 →
+67% of matches at 75.0%; ≥ 0.75 → 32% at 77.2%; ≥ 0.80 → 8% at 81.1%.
+
+**Skill — does the model know anything about this line?** Log loss of
+P(over 1.5), paired by week:
+
+| against | Δ log loss (model − reference) | verdict |
+| --- | --- | --- |
+| walk-forward per-division base rate (no λ) | −0.00057 [−0.00247, +0.00122] | **null** (E0 alone −0.0074 ✱; E1–E3 null) |
+| market totals referee: Poisson λ-sum fitted to the devigged avg O/U 2.5 price, P(N ≥ 2) read off it (15,818 priced) | **+0.00308 [+0.00181, +0.00434] ✱** | **market better, resolved** (E1, E2 resolved; E0, E3 null) |
+| base rate − referee | +0.00367 ✱ | the market beats history too |
+
+The model under-claims the market by 0.90 [0.79, 1.00] pts; the referee is
+calibrated (+0.23 unresolved). The model's λ-sum averages 2.58 against the
+market-implied 2.62 — the "goals arrive" direction B11 found, now with a
+totals-axis referee rather than B21's margin one. A 50/50 blend with the
+market is still resolved worse than the market alone (+0.00068 ✱): the model
+adds nothing the O/U 2.5 price does not already carry, in E1–E3 at least.
+
+**Current season (2026-27, `bvp_prod`, 302 settled v3 fixtures 2026-08-20 →
+2026-10-09, 8 week blocks — descriptive, not a gate).** Over 1.5 would have
+struck **76.2% [71.1, 80.1]** on a claim of 73.7% (gap +2.46 [−2.61,
++6.40], unresolved); the v3 call struck 77.5% on the same fixtures; paired
+difference −1.3 [−11.1, +8.0]. Buckets: [0.60, 0.70) 76 calls 66.9 → 68.4;
+[0.70, 0.80) 176 calls 74.5 → 77.8; [0.80, 0.90) 48 calls 82.3 → 83.3. The
+season is running goal-heavy so far (2.77 goals a match; realised over-1.5
+76.2% against 73.6% over nine dev seasons) and the market saw it (implied
+P(over 1.5) 76.5% on the 300 priced fixtures; the model 73.7%). Model vs
+referee −0.0009 [−0.0130, +0.0104], unreadable at this n.
+
+**Would it enter the rule?** λ-only, shipped floor 0.55 / ceiling 0.85:
+over 1.5 would win the v3 fallback argmax in **11.3%** of dev matches
+(13.2% of the fallback; live 40 of 302, 13.2%), displacing `12` in 1,123
+and `D+1.5` in 583, lifting the claim there from 76.7% to 79.0%. The
+**ceiling on the strike-rate gain is +0.25 pt** on the whole book (arm mean
+claim 77.16% vs 76.91%), before the over-claim `12` carries (B21) and the
+under-claim over 1.5 carries net out. A gate costs 1 configuration and its
+prediction is null-to-slightly-positive inside the noise; the paired SE on
+this frame is ~0.5 pt. Not worth spending. The live 40 (over 1.5 won 35,
+v3 won 32) is noise at that size.
+
+**One shape with product logic, and why it is still an owner decision.**
+Beside the call rather than instead of it, a "goals" line is a
+*diversifier*: on the dev frame the call and over 1.5 are **negatively**
+correlated (−0.166; both win 54.2%, call-only 23.6%, over-only 19.3%),
+because the +1.5 and double-chance calls win in tight matches and over 1.5
+wins in open ones. Live, by v3 side: where the call is `H` (55% strike)
+over 1.5 struck 85%; where it is `A+1.5` (81%) over 1.5 struck 69%. So as a
+parlay leg or a second line it hedges the call rather than confirming it.
+Against it: it breaks one-call-per-fixture (`PRODUCT.md` §3a), the line
+has no price (B5) so it is unfalsifiable against the market, it would say
+the same thing on every fixture at 65–80%, and B4 is closed by owner
+decision ("do not extend on this head", 2026-08-16). Reopening B4 for this
+one line is the owner's call; the measurement above is what it would be
+reopened on.
+
+**Verdict.** As a *prediction* it is not one — the pick is fixed and its
+strike is the league's over-1.5 rate, 4.3 pts ✱ under what the product
+already publishes; the model's figure is honest in the flattering
+direction but carries no information the O/U 2.5 price does not. As a
+rule candidate the ceiling is a quarter of a point. **Do not build as a
+prediction option.** If anything is read, it is the hedging second line,
+and that is a product decision before a measurement.
+
+**Shapes per league (owner follow-up, same day: "is there ANY shape, even
+for specific leagues?").** Scratch `ou15_shapes.py`. Rule shapes are
+λ-only; the second-line and parlay figures combine the two outcome series
+already read (v3, row 110; over 1.5, above) on λ-defined subsets — nothing
+chosen, but **the E0 selector's components have now been seen**, so a gate
+on it would not be blind and must say so.
+
+| shape | per league | verdict |
+| --- | --- | --- |
+| fallback candidate (joins `1X`/`X2`/`12`/+1.5 under 0.85) | claimed gain E0 +0.35, E1 +0.25, E2 +0.29, E3 +0.14 pt | nothing, anywhere |
+| cross-family selector: over 1.5 *instead of* the call when P ≥ 0.80 and above the call's claim | **E0: fires in 24% of matches, 77% of them named winners (claim 72% → 83%); the E0 ≥ 0.80 band delivers 81.8% (n=726) where the v3 call strikes ~71%; ≈ +2.5 pt on E0's 74.5%.** E1–E3: fires in 2–6%, +0.2–0.6 pt | the only shape that moves the strike rate, and it does it by un-naming Premier League favourites — `PRODUCT.md` §3a's ceiling-as-selector, confined to one league. The opposite of B29's ask. Owner's product call; not recommended |
+| second "goals" line beside the call | corr with the call E0 −0.07, E1 −0.17, E2 −0.19, E3 −0.20 — driven by `D+1.5` (−0.30); on named winners it is a *confirmer* (+0.13, strikes 80%). Same-fixture double over-claims by +0.3 (E0) to +2.0 pt (E2/E3) | honest only in E0; breaks one-call-per-fixture everywhere |
+| **parlay leg type (derived, ungraded, D12 footing)** | at *safer* (≥ 0.80): 20+-fixture days 14 → 16 legs, days with < 2 legs 858 → 756 of 1,450; extra legs E0 618 / E2 236 / E1 214 / E3 82, delivering 80.6% on an 82.3% claim. At *balanced* (≥ 0.70): thin days 1 → 2 legs, < 2-leg days 573 → 492; extras deliver 77.7% on 77.2% | **the one shape with a bounded, honest benefit**: pool depth on thin matchdays, mostly from E0, claims calibrated in the band, one leg per fixture so the correlation never enters, no rule or grading change. Needs its own 0-configuration probe (row 114's shape) and a betPawa O/U 1.5 mapping for the slip |
+| display-only "goals" figure on the match page | under-claims everywhere (flattering direction), so B22's honesty objection to goal lines does not apply to *this* side | harmless information; no strike, no grading |
+
+Why E0 is the league: it is the only division where P(over 1.5) beats the
+base rate (−0.0074 nats ✱) and is not resolved behind the market; its
+≥ 0.80 band is calibrated at n=726 (claims 82.1 → 81.1 in [0.80, 0.85));
+and it supplies 54% of the extra safer legs. E2's ≥ 0.80 band is the one to
+watch (claims 81.7, delivers 78.5, n=260, unresolved).
 
 ## B12 (original scoping note)
 
